@@ -9,9 +9,9 @@ const IntroSection = () => {
                 width={1920}
                 height={1080}
                 src="/background/cityHome.png"
-                className='w-full h-auto object-contain absolute top-32'
+                className='w-full h-auto object-contain absolute'
             />
-            <Image
+            {/* <Image
                 alt="icon"
                 width={1920}
                 height={1080}
@@ -24,16 +24,16 @@ const IntroSection = () => {
                 height={1080}
                 src="/icon/icon_four_point_star.svg"
                 className='w-[25px] h-[25px] object-contain absolute left-[62%] top-[28%]'
-            />
+            /> */}
             <Image
                 alt="background"
                 width={1920}
                 height={1080}
                 src="/background/line_background.png"
-                className='w-full h-auto object-contain absolute -bottom-[126px]'
+                className='w-full h-auto object-contain absolute -bottom-[4px]'
             />
             <div
-                className='h-[60vh] pt-[100px]'
+                className='h-[60vh]'
                 style={{ background: "linear-gradient(0deg, rgba(3, 107, 116, 0.04) -75.88%, rgba(0, 0, 0, 0.00) 129.69%), rgba(194, 249, 249, 0.60)" }}
             >
                 <div className='custom-container relative'>

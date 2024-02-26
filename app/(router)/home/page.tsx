@@ -1,4 +1,5 @@
 import IntroSection from "./components/IntroSection";
+import SectionBannerPromotion from "./components/SectionBannerPromotion";
 import SectionCardCar from "./components/SectionCardCar";
 
 export default function Home() {
@@ -6,6 +7,7 @@ export default function Home() {
         <>
             <IntroSection />
             <SectionCardCar />
+            <SectionBannerPromotion />
         </>
     );
 }

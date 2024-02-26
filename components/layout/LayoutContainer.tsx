@@ -9,10 +9,10 @@ import Footer from './Footer';
 import { Be_Vietnam_Pro } from 'next/font/google'
 import { useResize } from '@/hooks/useResize';
 
-// import 'swiper/css';
-// import 'swiper/css/navigation';
-// import 'swiper/css/pagination';
-// import 'swiper/css/bundle';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/bundle';
 // import "aos/dist/aos.css";
 import '@/styles/globals.scss';
 import 'react-toastify/dist/ReactToastify.css';

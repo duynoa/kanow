@@ -170,7 +170,7 @@ const Header = () => {
     }
 
     return (
-        <header className='w-full h-[120px] fixed z-50 bg-[#D7F9F9]'>
+        <header className='w-full h-[120px] sticky z-50 bg-[#D7F9F9]'>
             {
                 isVisibleMobile ?
                     // màn hình mobile,tablet

@@ -212,7 +212,7 @@ const Footer = () => {
                     <Image
                         data-aos='fade-right'
                         alt='logo'
-                        src="/other/logo_register.png"
+                        src="/logo/logo_register.png"
                         width={800}
                         height={600}
                         className='w-full h-auto object-contain'
