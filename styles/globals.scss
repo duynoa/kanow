@@ -104,3 +104,15 @@
 .custom-container {
   @apply 3xl:mx-44 2xl:mx-32 xl:mx-28 lg:mx-12 md:mx-10 mx-6;
 }
+
+.custom-swiper-banner {
+  .swiper-pagination {
+    @apply text-start -bottom-[5px];
+    .swiper-pagination-bullet {
+      @apply bg-[#FF9900]/80;
+    }
+    .swiper-pagination-bullet-active {
+      @apply w-8 rounded-sm bg-[#FF9900];
+    }
+  }
+}

@@ -3,7 +3,7 @@ import React from 'react'
 
 const IntroSection = () => {
     return (
-        <div className='h-[100vh] w-full relative bg-[#FCFDFD]'>
+        <div className='h-[100vh] w-full relative'>
             <Image
                 alt="background"
                 width={1920}
@@ -29,8 +29,8 @@ const IntroSection = () => {
                 alt="background"
                 width={1920}
                 height={1080}
-                src="/background/line_background.png"
-                className='w-full h-auto object-contain absolute -bottom-[4px]'
+                src="/background/line_background1.png"
+                className='w-full h-auto object-contain absolute -bottom-[4px] drop-shadow'
             />
             <div
                 className='h-[60vh]'
