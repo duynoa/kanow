@@ -179,8 +179,7 @@ const SectionCardCar = () => {
                                 data-aos='flip-up'
                                 data-aos-delay={index * 150}
                                 className='col-span-1 bg-white shadow-md w-full p-4 flex flex-col gap-4 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
-                                href="/#"
-                                onClick={(e) => { e.stopPropagation() }}
+                                href="#"
                             >
                                 <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-0.5 text-sm font-semibold text-white z-10'>
                                     - {card.promotion}
