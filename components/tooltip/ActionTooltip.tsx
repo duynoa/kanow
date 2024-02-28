@@ -3,9 +3,11 @@
 import {
     Tooltip,
     TooltipContent,
-    TooltipProvider,
-    TooltipTrigger
+    TooltipTrigger,
+    TooltipProvider
 } from "@/components/ui/tooltip";
+
+import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 interface ActionTooltipProps {
     label: React.ReactNode;
@@ -20,14 +22,25 @@ export const ActionTooltip = ({
     side,
     align
 }: ActionTooltipProps) => {
+    const StyledArrow = TooltipPrimitive.Arrow
     return (
         <TooltipProvider>
             <Tooltip delayDuration={50}>
                 <TooltipTrigger asChild>
                     {children}
                 </TooltipTrigger>
-                <TooltipContent side={side} align={align} className='w-fit py-4 px-4 rounded-2xl'>
+                <TooltipContent
+                    side={side}
+                    align={align}
+                    sideOffset={2}
+                    className='w-fit py-4 px-4 rounded-2xl '
+                >
                     {label}
+                    <TooltipPrimitive.Arrow
+                        width={20}
+                        height={12}
+                        className='fill-[#ffffff]'
+                    />
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>

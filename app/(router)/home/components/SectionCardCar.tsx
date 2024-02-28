@@ -166,7 +166,7 @@ const SectionCardCar = () => {
     }
 
     return (
-        <div className='bg-[#FCFDFD] 2xl:py-20 py-16'>
+        <div className='bg-[#FCFDFD] 2xl:py-24 py-16'>
             <div className='custom-container flex flex-col justify-center items-center gap-10'>
                 <div data-aos='fade-down' className='3xl:text-4xl 2xl:text-3xl xl:text-2xl lg:text-xl md:text-xl text-xl leading-tight capitalize font-bold max-w-[85%] text-[#101010]'>
                     Xe dành cho bạn

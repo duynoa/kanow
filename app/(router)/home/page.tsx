@@ -6,6 +6,9 @@ import SectionCardCar from "./components/SectionCardCar";
 import SectionBannerPromotion from "./components/SectionBannerPromotion";
 import SectionTripCarServices from "./components/SectionTripCarServices";
 import SectitonWhyWe from "./components/SectitonWhyWe";
+import SectionShowApp from "./components/SectionShowApp";
+import SectionArticle from "./components/SectionArticle";
+import SectionPlaceProminent from "./components/SectionPlaceProminent";
 
 export default function Home() {
     const [isMounted, setIsMounted] = useState<boolean>(false)
@@ -23,8 +26,11 @@ export default function Home() {
             <IntroSection />
             <SectionCardCar />
             <SectionBannerPromotion />
+            <SectionPlaceProminent />
             <SectionTripCarServices />
             <SectitonWhyWe />
+            <SectionShowApp />
+            <SectionArticle />
         </div>
     );
 }

@@ -8,26 +8,26 @@ const SectitonWhyWe = (props: Props) => {
     const dataServicesWhyMe = [
         {
             id: uuidv4(),
-            icon: "/sponsor/pvi.png",
+            icon: "/icon/icon_map.svg",
             title: "Thủ tục đơn giản",
             content: "Chỉ cần có Thẻ Căn cước / CMND/ CCCD gắn chip (Hoặc Passport) & Giấy phép lái xe là bạn đã đủ điều kiện thuê xe trên KANOW."
         },
         {
             id: uuidv4(),
-            icon: "/sponsor/pvi.png",
+            icon: "/icon/icon_support.svg",
             title: "Hỗ trợ 24/7",
             content: "Chúng tôi luôn sẵn sàng hỗ trợ khách hàng đặt xe trong mọi thời gian không kể nghỉ lễ tết. Đa dạng hình thức thanh toán: ATM, thẻ Visa & Ví điện tử"
         },
         {
             id: uuidv4(),
-            icon: "/sponsor/pvi.png",
+            icon: "/icon/icon_building.svg",
             title: "An tâm đặt xe",
             content: "Không tính phí huỷ chuyến trong vòng 1h sau khi đặt cọc. Hoàn cọc và bồi thường 100% nếu chủ xe huỷ chuyến trong vòng 7 ngày trước chuyến đi."
         },
     ]
 
     return (
-        <div className="relative flex bg-[url('/background/why_background.png')] bg-cover 3xl:pb-24 3xl:pt-52 py-16">
+        <div className="relative flex bg-[url('/background/why_background.png')] bg-cover drop-shadow 3xl:pb-32 3xl:pt-56 py-16">
             <div className='custom-container z-20 flex flex-col items-center gap-4 w-full'>
                 <div data-aos='fade-down' className='3xl:text-4xl 2xl:text-3xl xl:text-2xl lg:text-xl md:text-xl text-xl leading-tight capitalize font-bold text-[#101010]'>
                     Vì sao chọn chúng tôi
@@ -57,25 +57,36 @@ const SectitonWhyWe = (props: Props) => {
                     }
                 </div>
             </div>
-        </div>
-        // <div className="relative flex h-[720px] bg-[url('/background/background_contact.png')]">
-        //     <div className='custom-container z-20 flex flex-col items-center gap-4 3xl:pt-44 3xl:pb-32 py-16 w-full'>
-        //         <div data-aos='fade-down' className='3xl:text-4xl 2xl:text-3xl xl:text-2xl lg:text-xl md:text-xl text-xl leading-tight capitalize font-bold text-[#101010]'>
-        //             Vì sao chọn chúng tôi
-        //         </div>
-        //         <div data-aos='fade-down' className='3xl:text-base text-sm text-[#8C93A3] font-medium'>
-        //             Chúng tôi luôn cố gắng để giúp bạn dễ dàng hơn khi thuê xe
-        //         </div>
-        //     </div>
 
-        //     <Image
-        //         alt="background"
-        //         width={1920}
-        //         height={1080}
-        //         src="/background/why_background.png"
-        //         className='w-full h-[720px] object-fill absolute bottom-0 drop-shadow z-[2]'
-        //     />
-        // </div>
+            <Image
+                alt="cloud1"
+                width={1920}
+                height={1080}
+                src="/icon/cloud.svg"
+                className='w-[140px] h-[60px] object-contain absolute top-[45%] -left-[3%] -rotate-6'
+            />
+            <Image
+                alt="cloud2"
+                width={1920}
+                height={1080}
+                src="/icon/cloud.svg"
+                className='w-[140px] h-[60px] object-contain absolute bottom-12 left-[25%]'
+            />
+             <Image
+                alt="cloud3"
+                width={1920}
+                height={1080}
+                src="/icon/cloud.svg"
+                className='w-[140px] h-[60px] object-contain absolute top-[30%] right-[25%] -rotate-6'
+            />
+             <Image
+                alt="cloud3"
+                width={1920}
+                height={1080}
+                src="/icon/cloud.svg"
+                className='w-[110px] h-[50px] object-contain absolute bottom-[5%] right-[5%] -rotate-2'
+            />
+        </div>
     )
 }
 

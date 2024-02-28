@@ -31,7 +31,7 @@ const LayoutContainer = ({
 }) => {
     const { isVisibleMobile, onResizeMobile, onCloseResizeMobile } = useResize()
 
-    // // ẩn/hiện khi chuyển qua màn hình nhỏ khi không dùng chung div để tránh xung đột 
+    // ẩn/hiện khi chuyển qua màn hình nhỏ khi không dùng chung div để tránh xung đột 
     useEffect(() => {
         // Kiểm tra kích thước màn hình và cập nhật trạng thái isVisible
         const handleResize = () => {
@@ -54,13 +54,6 @@ const LayoutContainer = ({
             window.removeEventListener('resize', handleResize);
         };
     }, [isVisibleMobile]);
-
-    // useEffect(() => {
-    //     Aos.init({
-    //         duration: 1800,
-    //         once: true
-    //     });
-    // }, []);
 
     useEffect(() => {
         const scrollTop = () => {

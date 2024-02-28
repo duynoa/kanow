@@ -52,62 +52,28 @@ const Header = () => {
         },
         {
             id: uuidv4(),
-            name: 'Trở thành chủ xe',
+            name: 'Trở thành đối tác của Kanow',
             link: '/introduction',
-            children: false,
+            children: true,
         },
         {
             id: uuidv4(),
             name: 'Chuyến của tôi',
             link: '/services',
-            children: true,
+            children: false,
         }
     ]
 
-    // const dataServices = [
-    //     {
-    //         id: '1',
-    //         icon: '/icon/diamond_icon.svg',
-    //         icon_active: '/icon/diamond_icon_active.svg',
-    //         title: 'Giám định đá quý - Bán quý',
-    //         free: false,
-    //     },
-    //     {
-    //         id: '2',
-    //         icon: '/icon/hexagon_icon.svg',
-    //         icon_active: '/icon/hexagon_icon_active.svg',
-    //         title: 'Giám định cẩm thạch',
-    //         free: false,
-    //     },
-    //     {
-    //         id: '3',
-    //         icon: '/icon/four_point_star_icon.svg',
-    //         icon_active: '/icon/four_point_star_icon_active.svg',
-    //         title: 'Giám định ngọc trai',
-    //         free: false,
-    //     },
-    //     {
-    //         id: '4',
-    //         icon: '/icon/map_trifold_icon.svg',
-    //         icon_active: '/icon/map_trifold_icon_active.svg',
-    //         title: 'Giám định tại hiện trường',
-    //         free: false,
-    //     },
-    //     {
-    //         id: '5',
-    //         icon: '/icon/image_icon.svg',
-    //         icon_active: '/icon/image_icon_active.svg',
-    //         title: 'Giám định tranh đá quý',
-    //         free: false,
-    //     },
-    //     {
-    //         id: '6',
-    //         icon: '/icon/handshake_icon.svg',
-    //         icon_active: '/icon/handshake_icon_active.svg',
-    //         title: 'Tư vấn ngọc học',
-    //         free: true,
-    //     },
-    // ]
+    const dataServicesKanow = [
+        {
+            id: uuidv4(),
+            title: "Đăng ký thành chủ xe"
+        },
+        {
+            id: uuidv4(),
+            title: "Đăng ký thành tài xế"
+        },
+    ]
 
     const [isScrollBlocked, setIsScrollBlocked] = useState<boolean>(false);
     const [showActive, setShowActive] = useState<boolean>(false);
@@ -128,18 +94,6 @@ const Header = () => {
             body.style.overflow = 'hidden'; // Chặn cuộn
         }
     }, [isScrollBlocked]);
-
-    // useEffect(() => {
-    //     const fetchCategoryServices = async () => {
-    //         const res = await getCategoryServices();
-    //         if (res && res.data) {
-    //             setDataCategoryServices(res.data)
-    //         }
-
-    //     }
-    //     fetchCategoryServices()
-    // }, [])
-
 
     const _ToogleIsShow = (): void => {
         setIsScrollBlocked(true);
@@ -311,7 +265,6 @@ const Header = () => {
                         >
                             <Image
                                 alt='logo'
-                                // data-aos='fade-right'
                                 src="/logo/logo_kanow.svg"
                                 width={800}
                                 height={600}
@@ -320,7 +273,7 @@ const Header = () => {
                             />
                         </Link>
                         <div className='col-span-2' />
-                        <NavigationMenu className='col-span-4 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
+                        <NavigationMenu className='col-span-6 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
                             {
                                 dataHeader.map((data, i) => (
                                     <div key={data.id} className='p-2 flex'>
@@ -328,47 +281,34 @@ const Header = () => {
                                             data.children ?
                                                 <ActionTooltip
                                                     side="bottom"
-                                                    align="start"
-                                                    // label="Add a server"
+                                                    align="end"
                                                     label={(
                                                         <div className='flex flex-col gap-2'>
-                                                            {/* {
-                                                                dataCategoryServices && dataCategoryServices?.map((service) => (
+                                                            {
+                                                                dataServicesKanow && dataServicesKanow?.map((item) => (
                                                                     <Link
-                                                                        key={service.id}
-                                                                        href={`/services/${service.id}?${ConvertToSlug(service.title)}`}
-                                                                        className={`${pathname.includes(`/services/${service.id}`) ? 'bg-[#F6F6F6]' : ''} flex flex-row items-center gap-3 group hover:bg-[#F6F6F6] py-2 px-4 rounded-lg cursor-pointer`}
+                                                                        key={item.id}
+                                                                        href={`/services/${item.id}?${ConvertToSlug(item.title)}`}
+                                                                        className={`${pathname.includes(`/services/${item.id}`) ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
                                                                     >
-                                                                        <Image
-                                                                            width={100}
-                                                                            height={100}
-                                                                            alt="icon"
-                                                                            src={pathname.includes(`/services/${service.id}`) ? service.icon_active : service.icon}
-                                                                            className={`${pathname.includes(`/services/${service.id}`) ? '' : 'mix-blend-difference'} w-6 h-6 object-contain`}
-                                                                        />
-                                                                        <div className='flex items-center justify-between gap-2'>
-                                                                            <div className={`${service.free ? "3xl:max-w-[80%] xxl:max-w-[75%] xl:max-w-[70%] lg:max-w-[65%] max-w-[65%]" : "max-w-full"} font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-500 ease-in-out line-clamp-2`}>
-                                                                                {service?.title ? service?.title : ''}
-                                                                            </div>
-                                                                            {service.free &&
-                                                                                <div
-                                                                                    className='text-[#EC0000] xxl:text-[13px] text-xs px-2 py-1 font-semibold w-fit rounded-md'
-                                                                                    style={{ background: 'linear-gradient(111deg, rgba(252, 104, 104, 0.12) 3.06%, rgba(254, 51, 6, 0.12) 54.19%, rgba(248, 93, 44, 0.12) 54.2%, rgba(236, 1, 1, 0.12) 117.48%)' }}
-                                                                                >
-                                                                                    Miễn phí
-                                                                                </div>
-                                                                            }
+
+                                                                        <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-300 ease-in-out line-clamp-2`}>
+                                                                            {item?.title ? item?.title : ''}
                                                                         </div>
                                                                     </Link>
                                                                 ))
-                                                            } */}
-                                                            hello
+                                                            }
                                                         </div>
                                                     )}
                                                 >
                                                     <div
-                                                        className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#0E0E0E]/80'} flex items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all`}>
-                                                        {data.name}
+                                                        className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ?
+                                                            'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' :
+                                                            'text-[#0E0E0E]/80'}
+                                                            flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all`}
+                                                    >
+                                                        <span>{data.name}</span>
+                                                        <IoIosArrowDown className='text-2xl text-[#2FB9BD]' />
                                                     </div>
                                                 </ActionTooltip>
                                                 :
@@ -383,7 +323,7 @@ const Header = () => {
                                 ))
                             }
                         </NavigationMenu>
-                        <div className='col-span-2' />
+                        {/* <div className='col-span-1' /> */}
                         <div className='col-span-2 flex justify-end 3xl:gap-4 gap-2'>
                             <Button className='xxl:text-base xl:text-sm lg:text-[13px] text-sm px-10 py-6 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'                            >
                                 Đăng nhập

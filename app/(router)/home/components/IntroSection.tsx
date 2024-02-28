@@ -1,7 +1,23 @@
 import Image from 'next/image'
 import React from 'react'
+import { v4 as uuidv4 } from 'uuid';
 
 const IntroSection = () => {
+    const tabSearch = [
+        {
+            id: uuidv4(),
+            name: "Xe tự lái"
+        },
+        {
+            id: uuidv4(),
+            name: "Xe có tài xế"
+        },
+        {
+            id: uuidv4(),
+            name: "Tìm tài xế"
+        },
+    ]
+
     return (
         <div className='h-[100vh] w-full relative'>
             <Image
@@ -11,20 +27,6 @@ const IntroSection = () => {
                 src="/background/cityHome.png"
                 className='w-full h-auto object-contain absolute'
             />
-            {/* <Image
-                alt="icon"
-                width={1920}
-                height={1080}
-                src="/icon/icon_four_point_star.svg"
-                className='w-[45px] h-[45px] object-contain absolute left-[64%] top-[22%]'
-            />
-            <Image
-                alt="icon"
-                width={1920}
-                height={1080}
-                src="/icon/icon_four_point_star.svg"
-                className='w-[25px] h-[25px] object-contain absolute left-[62%] top-[28%]'
-            /> */}
             <Image
                 alt="background"
                 width={1920}
@@ -40,8 +42,17 @@ const IntroSection = () => {
                     <div className='text-6xl leading-tight font-bold max-w-[45%] pt-24 pb-24 capitalize'>
                         KANOW - Đồng hành mọi chuyến đi của bạn
                     </div>
-                    <div className='bg-white w-[500px] h-[320px] z-50'>
+                    <div className='flex flex-col  w-[500px] h-[320px]'>
+                        <div className='flex items-center bg-white/0'>
+                            {tabSearch && tabSearch.map((tab) => (
+                                <div key={tab.id} className='px-6 py-3 text-sm text-[#585F71] font-medium bg-[#BEE9EA] rounded-t-xl border-l border-l-[#BEE9EA]'>
+                                    {tab.name ? tab.name : ""}
+                                </div>
+                            ))}
+                        </div>
+                        <div className='bg-white h-full'>
 
+                        </div>
                     </div>
                 </div>
             </div>
