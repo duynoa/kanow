@@ -173,10 +173,10 @@ const Footer = () => {
                     </div>
                     <div className='flex flex-col lg:gap-3 gap-1'>
                         <div className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1'>
-                            Đăng ký chủ xe Kanow
+                            Đăng ký thành chủ xe
                         </div>
                         <div className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1'>
-                            Đăng ký GPS MITRACK4G
+                            Đăng ký thành tài xế
                         </div>
                     </div>
                 </div>

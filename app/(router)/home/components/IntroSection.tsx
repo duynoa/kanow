@@ -38,7 +38,7 @@ const IntroSection = () => {
 
 
     return (
-        <div className='h-[100vh] w-full relative'>
+        <div className='xl:h-[100vh] h-[80vh] w-full relative'>
             <Image
                 alt="background"
                 width={1920}
@@ -52,34 +52,32 @@ const IntroSection = () => {
                 width={1920}
                 height={1080}
                 src="/background/line_background1.png"
-                className='w-full h-auto object-contain absolute 3xl:-bottom-[4px] 2xl:-bottom-[20px] xxl:-bottom-[16px] drop-shadow'
+                className='w-full h-auto object-contain absolute 3xl:-bottom-[4px] 2xl:-bottom-[20px] xxl:-bottom-[16px] xl:bottom-0 -bottom-[10px] drop-shadow'
                 priority
             />
             <div
-                className='h-[60vh]'
+                className='xl:h-[60vh] h-[40vh]'
                 style={{ background: "linear-gradient(0deg, rgba(3, 107, 116, 0.04) -75.88%, rgba(0, 0, 0, 0.00) 129.69%), rgba(194, 249, 249, 0.60)" }}
             >
                 <div className='custom-container relative'>
-                    <div className='3xl:text-6xl 2xl:text-5xl xxl:text-4xl text-4xl leading-tight font-bold max-w-[45%] 3xl:py-24 2xl:py-16 py-16 capitalize'>
+                    <div className='3xl:text-6xl 2xl:text-5xl xxl:text-4xl xl:text-4xl lg:text-3xl leading-tight font-bold max-w-[45%] 3xl:py-24 2xl:py-16 xl:py-16 py-10 capitalize'>
                         KANOW - Đồng hành mọi chuyến đi của bạn
                     </div>
-                    <div className='flex flex-col w-[500px]'>
+                    <div className='flex flex-col xl:w-[500px] w-[400px]'>
                         <div className='flex gap-[2px] items-center bg-white/0'>
-                            {tabSearch && tabSearch.map((tab) => {
-                                console.log('tab dsds: ', tab);
-
-                                return (
+                            {
+                                tabSearch && tabSearch.map((tab) => (
                                     <div
                                         key={tab.id}
-                                        className={`${tab.id == tabId ? "bg-white underline underline-offset-[6px] decoration-[3px] decoration-[#2FB9BD]" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} px-6 py-3 text-sm text-[#585F71] font-medium rounded-t-xl cursor-pointer`}
+                                        className={`${tab.id == tabId ? "bg-white underline underline-offset-[6px] decoration-[3px] decoration-[#2FB9BD]" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} xl:px-6 xl:py-3 px-4 py-2 text-sm text-[#585F71] font-medium rounded-t-xl cursor-pointer`}
                                         onClick={() => handleTabChange(tab.id)}
                                     >
                                         {tab.name ? tab.name : ""}
                                     </div>
-                                )
-                            })}
+                                ))
+                            }
                         </div>
-                        <div className='flex flex-col gap-4 bg-white w-full h-full rounded-tr-xl rounded-b-xl px-6 py-4'>
+                        <div className='flex flex-col gap-4 bg-white w-full h-full rounded-tr-xl rounded-b-xl xl:px-6 xl:py-4 p-4'>
                             <div className='flex flex-col gap-2'>
                                 <Label className='text-sm text-[#6F7689]' htmlFor="place">
                                     Địa điểm
@@ -105,7 +103,7 @@ const IntroSection = () => {
                             <Button
                                 type='button'
                                 size="basic"
-                                className='3xl:text-base text-sm w-full 3xl:py-4 py-3 text-center uppercase text-white bg-[#FF9900] hover:bg-[#FF9900]/80 font-bold rounded-xl'
+                                className='3xl:text-base text-sm w-full 3xl:py-4 xl:py-3 py-2 text-center uppercase text-white bg-[#FF9900] hover:bg-[#FF9900]/80 font-bold rounded-xl'
                             >
                                 <span>Tìm xe</span>
                             </Button>

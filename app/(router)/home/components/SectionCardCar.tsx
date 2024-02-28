@@ -244,7 +244,7 @@ const SectionCardCar = () => {
                                         {card.address ? card.address : ''}
                                     </div>
                                 </div>
-                                <div className='border border-[#D7D9E0]/50' />
+                                <div className='border-b     border-[#D7D9E0]/50' />
                                 <div className='flex items-center gap-4'>
                                     <div className='flex items-center gap-1'>
                                         <div className='3xl:text-lg text-base text-[#D7D9E0] font-medium line-through'>

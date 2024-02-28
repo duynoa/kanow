@@ -272,8 +272,8 @@ const Header = () => {
                                 className='w-full h-auto object-cover'
                             />
                         </Link>
-                        <div className='col-span-2' />
-                        <NavigationMenu className='col-span-6 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
+                        <div className='3xl:col-span-2 col-span-1' />
+                        <NavigationMenu className='3xl:col-span-6 col-span-7 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
                             {
                                 dataHeader.map((data, i) => (
                                     <div key={data.id} className='p-2 flex'>
@@ -305,16 +305,16 @@ const Header = () => {
                                                         className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ?
                                                             'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' :
                                                             'text-[#0E0E0E]/80'}
-                                                            flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all`}
+                                                            flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
                                                     >
                                                         <span>{data.name}</span>
-                                                        <IoIosArrowDown className='text-2xl text-[#2FB9BD]' />
+                                                        <IoIosArrowDown className='2xl:text-2xl text-xl text-[#2FB9BD]' />
                                                     </div>
                                                 </ActionTooltip>
                                                 :
                                                 <Link
                                                     href={data.link}
-                                                    className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#0E0E0E]/80'} font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all`}
+                                                    className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#0E0E0E]/80'} font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
                                                 >
                                                     {data.name}
                                                 </Link>
@@ -323,9 +323,8 @@ const Header = () => {
                                 ))
                             }
                         </NavigationMenu>
-                        {/* <div className='col-span-1' /> */}
                         <div className='col-span-2 flex justify-end 3xl:gap-4 gap-2'>
-                            <Button className='xxl:text-base xl:text-sm lg:text-[13px] text-sm px-10 py-6 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'                            >
+                            <Button className='xxl:text-base xl:text-sm lg:text-[13px] text-sm 2xl:px-10 2xl:py-6 px-6 py-4 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'>
                                 Đăng nhập
                             </Button>
                         </div>
