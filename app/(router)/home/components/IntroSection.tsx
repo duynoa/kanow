@@ -45,6 +45,7 @@ const IntroSection = () => {
                 height={1080}
                 src="/background/cityHome.png"
                 className='w-full h-auto object-contain absolute'
+                priority
             />
             <Image
                 alt="background"
@@ -52,6 +53,7 @@ const IntroSection = () => {
                 height={1080}
                 src="/background/line_background1.png"
                 className='w-full h-auto object-contain absolute -bottom-[4px] drop-shadow'
+                priority
             />
             <div
                 className='h-[60vh]'

@@ -64,6 +64,7 @@ const SectitonWhyWe = (props: Props) => {
                 height={1080}
                 src="/icon/cloud.svg"
                 className='w-[140px] h-[60px] object-contain absolute top-[45%] -left-[3%] -rotate-6'
+                loading="lazy"
             />
             <Image
                 alt="cloud2"
@@ -71,20 +72,23 @@ const SectitonWhyWe = (props: Props) => {
                 height={1080}
                 src="/icon/cloud.svg"
                 className='w-[140px] h-[60px] object-contain absolute bottom-12 left-[25%]'
+                loading="lazy"
             />
-             <Image
+            <Image
                 alt="cloud3"
                 width={1920}
                 height={1080}
                 src="/icon/cloud.svg"
                 className='w-[140px] h-[60px] object-contain absolute top-[30%] right-[25%] -rotate-6'
+                loading="lazy"
             />
-             <Image
+            <Image
                 alt="cloud3"
                 width={1920}
                 height={1080}
                 src="/icon/cloud.svg"
                 className='w-[110px] h-[50px] object-contain absolute bottom-[5%] right-[5%] -rotate-2'
+                loading="lazy"
             />
         </div>
     )

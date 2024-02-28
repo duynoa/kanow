@@ -1,50 +1,37 @@
-import React from 'react'
-import Link from 'next/link';
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { v4 as uuidv4 } from 'uuid';
 
-import PhoneLink from '@/components/contact/PhoneLink';
-import EmailLink from '@/components/contact/EmailLink';
+import { FaInstagram, FaFacebook, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 
 const Footer = () => {
+    const [isMounted, setIsMounted] = useState<boolean>(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+
     const socialMedia = [
         {
             id: uuidv4(),
-            icon: '/icon/facebook.svg',
+            icon: <FaInstagram className='text-xl text-[#B4B8C5] hover:scale-105 transition-colors duration-200 ease-in-out cursor-pointer' />,
             link: '#'
         },
         {
             id: uuidv4(),
-            icon: '/icon/twitter.svg',
+            icon: <FaFacebook className='text-xl text-[#B4B8C5] hover:scale-105 transition-colors duration-200 ease-in-out cursor-pointer' />,
             link: '#'
         },
         {
             id: uuidv4(),
-            icon: '/icon/linkedin.svg',
+            icon: <FaLinkedinIn className='text-xl text-[#B4B8C5] hover:scale-105 transition-colors duration-200 ease-in-out cursor-pointer' />,
             link: '#'
         },
         {
             id: uuidv4(),
-            icon: '/icon/youtube.svg',
+            icon: <FaTwitter className='text-xl text-[#B4B8C5] hover:scale-105 transition-colors duration-200 ease-in-out cursor-pointer' />,
             link: '#'
-        },
-    ]
-
-    const contact = [
-        {
-            id: uuidv4(),
-            icon: '/icon/phone.svg',
-            content: '0976 081 106'
-        },
-        {
-            id: uuidv4(),
-            icon: '/icon/gmail.svg',
-            content: 'leminhphuongph@gmail.com'
-        },
-        {
-            id: uuidv4(),
-            icon: '/icon/address.svg',
-            content: '39 Trần Tấn, phường Tân Sơn Nhì, quận Tân Phú, HCM'
         },
     ]
 
@@ -116,6 +103,10 @@ const Footer = () => {
             ]
         },
     ]
+
+    if (!isMounted) {
+        return null;
+    }
 
     return (
         <footer className='bg-[#FFFFFF] pt-16 pb-10 w-full overflow-hidden'>
@@ -223,6 +214,14 @@ const Footer = () => {
                     <div data-aos='fade-left' className='text-[#484D5C] 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal'>
                         Địa chỉ: Văn phòng 02, Tầng 08, Tòa nhà Pearl Plaza, Số 561A Điện Biên Phủ, Phường 25, Quận Bình Thạnh, Thành phố Hồ Chí Minh, Việt Nam.
                     </div>
+                </div>
+                <div className='col-span-2' />
+                <div className='col-span-2 flex gap-6 items-center'>
+                    {socialMedia && socialMedia.map((social) => (
+                        <React.Fragment key={social.id}>
+                            {social.icon}
+                        </React.Fragment>
+                    ))}
                 </div>
             </div>
         </footer >

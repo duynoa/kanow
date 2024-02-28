@@ -14,6 +14,7 @@ const SectionShowApp = (props: Props) => {
                         width={1920}
                         height={1080}
                         className='w-full h-auto object-contain'
+                        priority
                     />
                 </div>
                 <div className='w-[50%] max-w-[50%] pt-16 flex flex-col gap-6 pl-48'>
@@ -30,6 +31,7 @@ const SectionShowApp = (props: Props) => {
                             width={200}
                             height={200}
                             className='w-[200px] h-[60px] object-cover drop-shadow'
+                            loading="lazy"
                         />
                         <Image
                             alt="googlePlay"
@@ -37,6 +39,7 @@ const SectionShowApp = (props: Props) => {
                             width={200}
                             height={200}
                             className='w-[200px] h-[60px] object-cover drop-shadow'
+                            loading="lazy"
                         />
                     </div>
                 </div>

@@ -11,8 +11,9 @@ const SectionTripCarServices = (props: Props) => {
                     alt="background"
                     width={1920}
                     height={1080}
-                    src="/background/trip_car4.png"
+                    src="/background/trip_car.png"
                     className='w-[50%] max-w-[50%] h-full object-cover'
+                    loading="lazy"
                 />
 
                 {/* phần này absolute */}
@@ -22,6 +23,7 @@ const SectionTripCarServices = (props: Props) => {
                     height={1080}
                     src="/background/icon_the_best.png"
                     className='w-[200px] h-[200px] object-contain absolute top-56 left-[45%]'
+                    loading="lazy"
                 />
                 <div className='flex flex-col gap-2 absolute top-20 left-[40%]'>
                     <div data-aos='fade-down' className='3xl:text-4xl 2xl:text-3xl xl:text-2xl lg:text-xl md:text-xl text-xl leading-tight capitalize font-bold text-[#101010]'>
@@ -41,6 +43,7 @@ const SectionTripCarServices = (props: Props) => {
                             height={400}
                             src="/sponsor/pvi.png"
                             className='w-[300px] h-auto object-contain'
+                            loading="lazy"
                         />
                     </div>
                     <div className='flex justify-center w-full'>
@@ -50,6 +53,7 @@ const SectionTripCarServices = (props: Props) => {
                             height={400}
                             src="/sponsor/global_care.png"
                             className='w-[300px] h-auto object-contain'
+                            loading="lazy"
                         />
                     </div>
                     <div className='flex justify-start w-full'>
@@ -59,11 +63,11 @@ const SectionTripCarServices = (props: Props) => {
                             height={400}
                             src="/sponsor/vni.png"
                             className='w-[300px] h-auto object-contain'
+                            loading="lazy"
                         />
                     </div>
                 </div>
             </div>
-
         </div >
     )
 }

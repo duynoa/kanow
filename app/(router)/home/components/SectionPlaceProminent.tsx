@@ -48,12 +48,12 @@ const SectionPlaceProminent = (props: Props) => {
         },
     ]
 
-     // slider place
-     const swiperRefPlace = useRef<any>(null);
-     const [sliderStartPlace, setSliderStartPlace] = useState<boolean>(true)
-     const [sliderEndPlace, setSliderEndPlace] = useState<boolean>(false)
-     
-     const handlePrev = (e: any, type: string) => {
+    // slider place
+    const swiperRefPlace = useRef<any>(null);
+    const [sliderStartPlace, setSliderStartPlace] = useState<boolean>(true)
+    const [sliderEndPlace, setSliderEndPlace] = useState<boolean>(false)
+
+    const handlePrev = (e: any, type: string) => {
         if (swiperRefPlace.current && !sliderStartPlace && type === 'place') {
             swiperRefPlace?.current?.slidePrev();
             setSliderStartPlace(swiperRefPlace.current.isBeginning)
@@ -114,7 +114,7 @@ const SectionPlaceProminent = (props: Props) => {
                         {
                             dataProminentPlace && dataProminentPlace.map((item, index) => (
                                 <SwiperSlide key={item.id}>
-                                    <div className='flex items-center cursor-pointer gap-4'>
+                                    <div className='flex items-center cursor-pointer gap-4 w-fit'>
                                         <div className='w-[90px] max-w-[90px] h-[90px]'>
                                             <Image
                                                 width={800}
@@ -156,6 +156,7 @@ const SectionPlaceProminent = (props: Props) => {
                 height={1080}
                 src="/background/line_background2.png"
                 className='w-full h-auto object-contain absolute bottom-[-90px] right-12 drop-shadow z-[1]'
+                loading="lazy"
             />
             <Image
                 alt="background"
@@ -163,6 +164,7 @@ const SectionPlaceProminent = (props: Props) => {
                 height={1080}
                 src="/background/triangle.png"
                 className='w-[300px] h-[300px] object-contain absolute -bottom-40 -right-20 z-[1]'
+                loading="lazy"
             />
         </div >
     )
