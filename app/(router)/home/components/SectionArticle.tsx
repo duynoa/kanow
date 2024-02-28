@@ -8,8 +8,8 @@ type Props = {}
 
 const SectionArticle = (props: Props) => {
     return (
-        <div className="flex bg-[url('/background/folder_background.png')] bg-cover border-b drop-shadow -mt-[700px]">
-            <div className='custom-container flex flex-col items-center justify-center w-full 3xl:pb-32 3xl:pt-96 py-16'>
+        <div className="flex bg-[url('/background/folder_background.png')] bg-cover border-b drop-shadow-lg  -mt-[560px]">
+            <div className='custom-container flex flex-col items-center justify-center w-full 3xl:pb-32 3xl:pt-64 py-16'>
                 <div className='3xl:text-4xl 2xl:text-3xl xl:text-2xl lg:text-xl md:text-xl text-xl capitalize font-bold text-[#101010]'>
                     Bài viết
                 </div>

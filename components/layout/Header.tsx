@@ -124,11 +124,11 @@ const Header = () => {
     }
 
     return (
-        <header className='w-full h-[120px] sticky z-50 bg-[#D7F9F9]'>
+        <header className='w-full 3xl:h-[120px] h-[80px] sticky z-50 bg-[#D7F9F9]'>
             {
                 isVisibleMobile ?
                     // màn hình mobile,tablet
-                    <div className="custom-container h-[120px] grid grid-cols-4">
+                    <div className="custom-container 3xl:h-[120px] h-[80px] grid grid-cols-4">
                         {/* <div className="col-span-1 flex items-center">
                             <button onClick={_ToogleIsShow.bind(this)} className='lg:hidden'>
                                 <Menu className='scale-110' />
@@ -258,7 +258,7 @@ const Header = () => {
                     </div>
                     :
                     // màn hình laptop
-                    <div className="custom-container h-[120px] grid grid-cols-12 items-center justify-center">
+                    <div className="custom-container 3xl:h-[120px] h-[80px] grid grid-cols-12 items-center justify-center">
                         <Link
                             href="/"
                             className='col-span-2 w-full h-auto'

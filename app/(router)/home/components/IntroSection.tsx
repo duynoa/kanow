@@ -52,7 +52,7 @@ const IntroSection = () => {
                 width={1920}
                 height={1080}
                 src="/background/line_background1.png"
-                className='w-full h-auto object-contain absolute -bottom-[4px] drop-shadow'
+                className='w-full h-auto object-contain absolute 3xl:-bottom-[4px] 2xl:-bottom-[20px] xxl:-bottom-[16px] drop-shadow'
                 priority
             />
             <div
@@ -60,7 +60,7 @@ const IntroSection = () => {
                 style={{ background: "linear-gradient(0deg, rgba(3, 107, 116, 0.04) -75.88%, rgba(0, 0, 0, 0.00) 129.69%), rgba(194, 249, 249, 0.60)" }}
             >
                 <div className='custom-container relative'>
-                    <div className='text-6xl leading-tight font-bold max-w-[45%] pt-24 pb-24 capitalize'>
+                    <div className='3xl:text-6xl 2xl:text-5xl xxl:text-4xl text-4xl leading-tight font-bold max-w-[45%] 3xl:py-24 2xl:py-16 py-16 capitalize'>
                         KANOW - Đồng hành mọi chuyến đi của bạn
                     </div>
                     <div className='flex flex-col w-[500px]'>
@@ -105,7 +105,7 @@ const IntroSection = () => {
                             <Button
                                 type='button'
                                 size="basic"
-                                className='text-base w-full py-4 text-center uppercase text-white bg-[#FF9900] hover:bg-[#FF9900]/80 font-bold rounded-xl'
+                                className='3xl:text-base text-sm w-full 3xl:py-4 py-3 text-center uppercase text-white bg-[#FF9900] hover:bg-[#FF9900]/80 font-bold rounded-xl'
                             >
                                 <span>Tìm xe</span>
                             </Button>
