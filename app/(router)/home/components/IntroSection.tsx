@@ -38,7 +38,7 @@ const IntroSection = () => {
 
 
     return (
-        <div className='xl:h-[100vh] h-[80vh] w-full relative'>
+        <div className='xl:h-[100vh] lg:h-[80vh] h-[75dvh] w-full relative'>
             <Image
                 alt="background"
                 width={1920}
@@ -52,7 +52,7 @@ const IntroSection = () => {
                 width={1920}
                 height={1080}
                 src="/background/line_background1.png"
-                className='w-full h-auto object-contain absolute 3xl:-bottom-[4px] 2xl:-bottom-[20px] xxl:-bottom-[16px] xl:bottom-0 -bottom-[10px] drop-shadow'
+                className='w-full h-auto object-contain absolute 3xl:-bottom-[4px] 2xl:-bottom-[20px] xxl:-bottom-[16px] xl:bottom-0 lg:-bottom-[10px] md:bottom-0 bottom-0 drop-shadow'
                 priority
             />
             <div

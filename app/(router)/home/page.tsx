@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import IntroSection from "./components/IntroSection";
 import SectionCardCar from "./components/SectionCardCar";
 import SectionBannerPromotion from "./components/SectionBannerPromotion";
+import SectionPlaceProminent from "./components/SectionPlaceProminent";
 import SectionTripCarServices from "./components/SectionTripCarServices";
 import SectitonWhyWe from "./components/SectitonWhyWe";
 import SectionShowApp from "./components/SectionShowApp";
 import SectionArticle from "./components/SectionArticle";
-import SectionPlaceProminent from "./components/SectionPlaceProminent";
 
 export default function Home() {
     const [isMounted, setIsMounted] = useState<boolean>(false)

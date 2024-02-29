@@ -17,7 +17,7 @@ const SectionShowApp = (props: Props) => {
                         priority
                     />
                 </div>
-                <div className='w-[50%] max-w-[50%] pt-16 flex flex-col gap-6 3xl:pl-48 xl:pl-40 pl-28'>
+                <div className='w-[50%] max-w-[50%] lg:pt-16 pt-6 flex flex-col lg:gap-6 gap-3 3xl:pl-48 xl:pl-40 lg:pl-28 pl-6'>
                     <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-xl text-xl capitalize font-bold text-[#101010] 2xl:max-w-[75%] xxl:max-w-[80%] max-w-full'>
                         Trải nghiệm ứng dụng KANOW ngay hôm nay
                     </div>
@@ -30,7 +30,7 @@ const SectionShowApp = (props: Props) => {
                             src="/icon/icon_appStore.svg"
                             width={200}
                             height={200}
-                            className='3xl:w-[180px] 2xl:w-[160px] w-[140px] h-auto object-contain drop-shadow'
+                            className='3xl:w-[180px] 2xl:w-[160px] lg:w-[140px] w-[120px] h-auto object-contain drop-shadow'
                             loading="lazy"
                         />
                         <Image
@@ -38,7 +38,7 @@ const SectionShowApp = (props: Props) => {
                             src="/icon/icon_googlePlay.svg"
                             width={200}
                             height={200}
-                            className='3xl:w-[180px] 2xl:w-[160px] w-[140px] h-auto object-contain drop-shadow'
+                            className='3xl:w-[180px] 2xl:w-[160px] lg:w-[140px] w-[120px] h-auto object-contain drop-shadow'
                             loading="lazy"
                         />
                     </div>

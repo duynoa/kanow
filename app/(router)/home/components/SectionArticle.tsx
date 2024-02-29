@@ -8,19 +8,25 @@ import { IoArrowForwardOutline } from 'react-icons/io5'
 type Props = {}
 
 const SectionArticle = (props: Props) => {
+    // const dataArticle = [
+    //     {
+    //         id:
+    //     }
+    // ]
+
     return (
-        <div className="flex bg-[url('/background/folder_background.png')] bg-cover border-b drop-shadow-lg 3xl:-mt-[520px] 2xl:-mt-[420px] xl:-mt-[390px] -mt-[300px]">
-            <div className='custom-container flex flex-col items-center justify-center w-full 3xl:pt-64 3xl:pb-32 2xl:pt-48 2xl:pb-32 xxl:pt-44 xxl:pb-28 xl:pt-44 xl:pb-24 pt-32 pb-20'>
-                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-xl text-xl capitalize font-bold text-[#101010]'>
+        <div className="flex lg:bg-[url('/background/folder_background.png')] bg-[url('/background/folder_background_mobile.png')] bg-cover border-b drop-shadow-lg 3xl:-mt-[520px] 2xl:-mt-[420px] xl:-mt-[390px] lg:-mt-[300px] -mt-[420px]">
+            <div className='custom-container flex flex-col items-center justify-center w-full 3xl:pt-64 3xl:pb-32 2xl:pt-48 2xl:pb-32 xxl:pt-44 xxl:pb-28 xl:pt-44 xl:pb-24 lg:pt-32 lg:pb-20 pt-72 pb-44'>
+                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-3xl capitalize font-bold text-[#101010]'>
                     Bài viết
                 </div>
                 <div className='xl:mt-10 mt-6 grid grid-cols-3 3xl:gap-8 xl:gap-6 gap-4 w-full'>
-                    <div className='w-full col-span-2'>
+                    <div className='w-full lg:col-span-2 col-span-3'>
                         <Link
                             href="#"
                             className='relative group'
                         >
-                            <div className='w-full 3xl:h-[532px] 2xl:h-[532px] xxl:h-[524px] xl:h-[464px] lg:h-[416px] md:h-[480px] h-[480px] group overflow-hidden rounded-2xl'>
+                            <div className='w-full 3xl:h-[532px] 2xl:h-[532px] xxl:h-[524px] xl:h-[464px] lg:h-[416px] md:h-[320px] h-[200px] group overflow-hidden rounded-2xl'>
                                 {/* <Image
                                     width={1920}
                                     height={1080}
@@ -57,12 +63,12 @@ const SectionArticle = (props: Props) => {
                             </div>
                         </Link>
                     </div>
-                    <div className='w-full col-span-1 flex flex-col 3xl:gap-8 xl:gap-6 gap-4 xxl:max-h-[500px] xl:max-h-[440px] max-h-[400px]'>
+                    <div className='w-full lg:col-span-1 col-span-3 flex flex-col 3xl:gap-8 xl:gap-6 gap-4 xxl:max-h-[500px] xl:max-h-[440px] lg:max-h-[400px] md:max-h-[640px] max-h-[200px]'>
                         <Link
                             href="#"
                             className='relative group'
                         >
-                            <div className='w-full 3xl:h-[250px] 2xl:h-[250px] xxl:h-[250px] xl:h-[220px] lg:h-[200px] md:h-[250px] h-[250px] group overflow-hidden rounded-2xl'>
+                            <div className='w-full 3xl:h-[250px] 2xl:h-[250px] xxl:h-[250px] xl:h-[220px] lg:h-[200px] md:h-[320px] h-[200px] group overflow-hidden rounded-2xl'>
                                 {/* <Image
                                     width={1920}
                                     height={1080}
@@ -102,7 +108,7 @@ const SectionArticle = (props: Props) => {
                             href="#"
                             className='relative group'
                         >
-                            <div className='w-full 3xl:max-h-[250px] 2xl:max-h-[250px] xxl:h-[250px] xl:h-[220px] lg:h-[200px] md:h-[250px] h-[250px] group overflow-hidden rounded-2xl'>
+                            <div className='w-full 3xl:max-h-[250px] 2xl:max-h-[250px] xxl:h-[250px] xl:h-[220px] lg:h-[200px] md:h-[320px] h-[200px] group overflow-hidden rounded-2xl'>
                                 {/* <Image
                                     width={1920}
                                     height={1080}

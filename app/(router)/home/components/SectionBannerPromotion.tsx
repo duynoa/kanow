@@ -70,10 +70,10 @@ const SectionBannerPromotion = (props: Props) => {
     }
 
     return (
-        <div className="relative z-20 bg-[url('/background/banner_background1.png')] bg-cover bg-right-bottom drop-shadow flex flex-col gap-2 w-full 3xl:pb-72 3xl:pt-20 2xl:pb-44 2xl:pt-20 xl:pb-40 xl:pt-14 pt-12 pb-28">
+        <div className="relative z-20 bg-[url('/background/banner_background1.png')] bg-cover bg-right-bottom drop-shadow flex flex-col gap-2 w-full 3xl:pb-72 3xl:pt-20 2xl:pb-44 2xl:pt-20 xl:pb-40 xl:pt-14 lg:pt-12 lg:pb-28 pt-32 pb-16">
             <div className='custom-container flex flex-col 3xl:gap-8 gap-6'>
                 <div className='flex flex-col gap-2'>
-                    <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-xl text-xl leading-tight capitalize font-bold max-w-[85%] text-[#101010]'>
+                    <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-3xl leading-tight capitalize font-bold max-w-[85%] text-[#101010]'>
                         Chương trình khuyến mãi
                     </div>
                     <div className='3xl:text-base xl:text-sm text-xs text-[#8C93A3] font-medium'>
@@ -100,7 +100,7 @@ const SectionBannerPromotion = (props: Props) => {
                                 allowTouchMove: true
                             },
                             768: {
-                                slidesPerView: 1,
+                                slidesPerView: 2,
                                 allowTouchMove: true
                             },
                             1024: {
@@ -130,7 +130,7 @@ const SectionBannerPromotion = (props: Props) => {
                             ))
                         }
                     </Swiper>
-                    <div className='flex gap-2 absolute 3xl:-top-24 xl:top-[-22%] lg:top-[-22%] md:top-[-18%] top-[-18%] right-0 disable-selection'>
+                    <div className='flex gap-2 absolute 3xl:-top-24 xl:top-[-22%] lg:top-[-22%] md:top-[-22%] top-[-18%] right-0 disable-selection'>
                         <TiArrowLeft
                             onClick={(e) => handlePrev(e, 'banner')}
                             className={`${sliderStartBanner ? 'bg-[#F2F2F4] text-[#B8B8C3] cursor-not-allowed' : 'bg-[#FCB203]/10 text-[#DD9200] cursor-pointer hover:scale-125 duration-500 ease-in-out transition'} p-1 2xl:w-10 2xl:h-10 xl:w-9 xl:h-9 w-8 h-8 rounded-full`}

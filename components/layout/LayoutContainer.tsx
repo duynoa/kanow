@@ -1,7 +1,7 @@
 'use client'
 
 // import Aos from 'aos';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Header from './Header';
 import Footer from './Footer';
@@ -31,6 +31,13 @@ const LayoutContainer = ({
 }) => {
     const { isVisibleMobile, onResizeMobile, onCloseResizeMobile } = useResize()
 
+    useEffect(() => {
+        const scrollTop = () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        scrollTop()
+    }, [])
+
     // ẩn/hiện khi chuyển qua màn hình nhỏ khi không dùng chung div để tránh xung đột 
     useEffect(() => {
         // Kiểm tra kích thước màn hình và cập nhật trạng thái isVisible
@@ -54,13 +61,6 @@ const LayoutContainer = ({
             window.removeEventListener('resize', handleResize);
         };
     }, [isVisibleMobile]);
-
-    useEffect(() => {
-        const scrollTop = () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-        scrollTop()
-    }, [])
 
     return (
         <html lang="en">

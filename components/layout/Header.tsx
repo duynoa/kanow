@@ -14,7 +14,7 @@ import { useResize } from '@/hooks/useResize';
 import { ActionTooltip } from '../tooltip/ActionTooltip';
 // import ConvertToSlug from '../convertSlug/ConvertToSlug';
 
-import { IoSearch } from "react-icons/io5";
+import { IoCloseSharp, IoSearch } from "react-icons/io5";
 import { Menu, XSquare } from 'lucide-react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { Button } from '../ui/button';
@@ -77,7 +77,7 @@ const Header = () => {
 
     const [isScrollBlocked, setIsScrollBlocked] = useState<boolean>(false);
     const [showActive, setShowActive] = useState<boolean>(false);
-    // const [activeService, setActiveService] = useState<boolean>(false)
+    const [activeService, setActiveService] = useState<boolean>(false)
     // const [dataCategoryServices, setDataCategoryServices] = useState<ICategoryServices[]>([])
 
     const pathname = usePathname()
@@ -129,35 +129,27 @@ const Header = () => {
                 isVisibleMobile ?
                     // màn hình mobile,tablet
                     <div className="custom-container 3xl:h-[120px] h-[80px] grid grid-cols-4">
-                        {/* <div className="col-span-1 flex items-center">
+                        <Link
+                            href="/"
+                            className='col-span-2 flex items-center justify-start'
+                        >
+                            <Image
+                                alt='logo'
+                                src="/logo/logo_kanow.svg"
+                                width={1920}
+                                height={1080}
+                                priority
+                                className='w-[150px] h-[95px] object-contain'
+                            />
+                        </Link>
+
+                        <div className="col-span-2 flex items-center justify-end">
                             <button onClick={_ToogleIsShow.bind(this)} className='lg:hidden'>
                                 <Menu className='scale-110' />
                             </button>
                         </div>
-                        <Link
-                            href="/"
-                            className='col-span-2 flex items-center justify-center'
-                        >
-                            <Image
-                                alt='logo'
-                                src="/logo/logo_liulab.png"
-                                width={1920}
-                                height={1080}
-                                priority
-                                className='w-[150px] h-[95px] object-contain text-gray-800/50 mix-blend-difference'
-                            />
-                        </Link>
-                        <div className="col-span-1 flex items-center justify-end">
-                            <div
-                                onClick={() => router.push('http://pm.liulab.edu.vn/clients')}
-                                className='h-10 w-10 flex items-center justify-center rounded-lg cursor-pointer group'
-                                style={{ background: 'linear-gradient(107deg, #E3A513 1.3%, #D29006 26.77%, #E19118 57.69%, #F7B740 86.19%, #C07402 117.72%)' }}
-                            >
-                                <IoSearch className='text-2xl text-white group-hover:scale-110 transition-all' />
-                            </div>
-                        </div> */}
                         {/* active services */}
-                        {/* {
+                        {
                             showActive ?
                                 (
                                     <div className={`${showActive ? "translate-x-0" : "translate-x-[100%] hidden"} z-[999] transition duration-300 ease-in-out absolute bg-white h-screen w-screen top-0 left-0`}>
@@ -168,27 +160,18 @@ const Header = () => {
                                             >
                                                 <Image
                                                     alt='logo'
-                                                    src="/logo/logo_liulab.png"
+                                                    src="/logo/logo_kanow.svg"
                                                     width={800}
                                                     height={600}
                                                     priority
-                                                    className='w-[120px] h-[80px] object-contain text-gray-800/50 mix-blend-difference'
+                                                    className='w-[120px] h-[80px] object-contain'
                                                 />
                                             </Link>
                                             <button onClick={_ToogleIsOff.bind(this)} className=''>
-                                                <XSquare className='scale-125' />
+                                                <IoCloseSharp className='text-xl text-[#FA3434]' />
                                             </button>
                                         </div>
                                         <div className='custom-container mt-8 relative flex flex-col items-left h-screen overflow-y-auto'>
-                                            <div className='mx-2 my-4'>
-                                                {
-                                                    token ?
-                                                        <Dropdown infoUser={infoUser} />
-                                                        :
-                                                        <DialogModal title={"Đăng ký / Đăng nhập"} />
-                                                }
-                                            </div>
-
                                             {
                                                 dataHeader.map((data) => (
                                                     data.children ?
@@ -197,42 +180,27 @@ const Header = () => {
                                                                 className='flex justify-between'
                                                                 onClick={() => setActiveService(!activeService)}
                                                             >
-                                                                <div className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-2 decoration-amber-400' : 'text-[#9D9FA6]'} cursor-pointer mb-6 text-base w-fit duration-300 transition ease-in-out flex items-center`}>
+                                                                <div className={`
+                                                                ${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-2 decoration-[#2FB9BD]' : 'text-[#9D9FA6]'}
+                                                                 ${data.children ? "mb-6" : "mb-6"}
+                                                                 cursor-pointer text-base w-fit duration-300 transition ease-in-out flex items-center`}>
                                                                     {data.name}
                                                                 </div>
-                                                                <IoIosArrowDown className={`${activeService ? 'rotate-180 transform transition duration-700 ease-in-out text-amber-400' : ''} md:w-[10%] w-[15%] items-start`} />
+                                                                <IoIosArrowDown className={`${activeService ? 'rotate-180 transform transition duration-700 ease-in-out text-[#2FB9BD]' : ''} md:w-[10%] w-[15%] items-start`} />
                                                             </div>
 
-                                                            <div className={`${activeService ? "mb-2" : ""} flex flex-col gap-2`}>
+                                                            <div className={`${activeService ? "mb-6" : ""} flex flex-col gap-2`}>
                                                                 {
-                                                                    activeService && dataCategoryServices && dataCategoryServices.map((item) => (
+                                                                    activeService && dataServicesKanow && dataServicesKanow.map((item) => (
                                                                         <Link
                                                                             key={item.id}
                                                                             onClick={_ToogleIsOff}
                                                                             href={`/services/${item.id}?${ConvertToSlug(item.title)}`}
                                                                             className={`${pathname.includes(`/services/${item.id}`) ? 'bg-[#F6F6F6]' : ''} flex flex-row items-center gap-3 group hover:bg-[#F6F6F6] py-2 px-8 rounded-lg cursor-pointer`}
                                                                         >
-                                                                            <Image
-                                                                                width={100}
-                                                                                height={100}
-                                                                                alt="icon"
-                                                                                src={pathname.includes(`/services/${item.id}`) ? item.icon_active : item.icon}
-                                                                                className={`${pathname.includes(`/services/${item.id}`) ? '' : 'mix-blend-difference'} w-6 h-6 object-contain`}
-                                                                            />
-                                                                            <div className='flex items-center justify-between gap-2'>
-                                                                                <div className={`${item.free ? "3xl:max-w-[80%] xxl:max-w-[75%] xl:max-w-[70%] lg:max-w-[65%] max-w-[65%]" : "max-w-full"} font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-500 ease-in-out line-clamp-2`}>
+                                                                                <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-500 ease-in-out line-clamp-2`}>
                                                                                     {item?.title ? item?.title : ''}
                                                                                 </div>
-                                                                                {item.free &&
-                                                                                    <div
-                                                                                        className='text-[#EC0000] xxl:text-[13px] text-xs px-2 py-1 font-semibold w-fit rounded-md'
-                                                                                        style={{ background: 'linear-gradient(111deg, rgba(252, 104, 104, 0.12) 3.06%, rgba(254, 51, 6, 0.12) 54.19%, rgba(248, 93, 44, 0.12) 54.2%, rgba(236, 1, 1, 0.12) 117.48%)' }}
-                                                                                    >
-                                                                                        Miễn phí
-                                                                                    </div>
-                                                                                }
-                                                                            </div>
-
                                                                         </Link>
                                                                     ))
                                                                 }
@@ -242,7 +210,7 @@ const Header = () => {
                                                         <Link
                                                             key={data.id}
                                                             href={data.link}
-                                                            className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-2 decoration-amber-400' : 'text-[#9D9FA6]'} mb-6 text-base w-fit duration-300 transition ease-in-out flex items-center`}
+                                                            className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#9D9FA6]'} mb-6 text-base w-fit duration-300 transition ease-in-out flex items-center`}
                                                             onClick={_ToogleIsOff}
                                                         >
                                                             {data.name}
@@ -254,7 +222,7 @@ const Header = () => {
                                 )
                                 :
                                 (null)
-                        } */}
+                        }
                     </div>
                     :
                     // màn hình laptop
