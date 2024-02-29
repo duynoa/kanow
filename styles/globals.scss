@@ -116,3 +116,14 @@
     }
   }
 }
+.custom-swiper-article {
+  .swiper-pagination {
+    @apply text-start 3xl:-bottom-[5px] 2xl:bottom-6 xl:bottom-8 lg:bottom-10 bottom-0;
+    .swiper-pagination-bullet {
+      @apply bg-[#FF9900]/80;
+    }
+    .swiper-pagination-bullet-active {
+      @apply w-8 rounded-sm bg-[#FF9900];
+    }
+  }
+}
