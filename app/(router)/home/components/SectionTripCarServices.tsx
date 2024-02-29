@@ -26,10 +26,10 @@ const SectionTripCarServices = (props: Props) => {
                     loading="lazy"
                 />
                 <div className='flex flex-col gap-2 absolute top-20 left-[40%]'>
-                    <div data-aos='fade-down' className='3xl:text-4xl 2xl:text-3xl xl:text-2xl lg:text-xl md:text-xl text-xl leading-tight capitalize font-bold text-[#101010]'>
+                    <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-xl text-xl leading-tight capitalize font-bold text-[#101010]'>
                         Hành Trình Của Bạn Luôn Được Bảo Vệ
                     </div>
-                    <div data-aos='fade-down' className='3xl:text-base text-sm text-[#8C93A3] font-medium'>
+                    <div className='3xl:text-base xl:text-sm text-xs text-[#8C93A3] font-medium'>
                         Chuyến đi trên KANOW được bảo vệ với Gói bảo hiểm thuê xe tự lái.
                         <br />
                         Khách thuê sẽ chỉ bồi thường tối đa 2,000,000VNĐ trong trường hợp có sự cố ngoài ý muốn.

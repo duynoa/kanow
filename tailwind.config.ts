@@ -74,10 +74,11 @@ const config = {
             },
             screens: {
                 "3xl": "1920px",
-                "xxl": "1440px",
+                xxl: "1440px",
             },
         },
     },
+    important: true,
     plugins: [require("tailwindcss-animate")],
 } satisfies Config;
 

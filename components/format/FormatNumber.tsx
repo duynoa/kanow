@@ -1,4 +1,4 @@
-export const FormatNumber = (number: number): string => {
+export const FormatNumberToThousands = (number: number): string => {
     if (number >= 1000 && number < 1000000) {
         return (number / 1000).toFixed(0) + "k";
     } else if (number >= 1000000) {
@@ -10,4 +10,12 @@ export const FormatNumber = (number: number): string => {
 
 export const FormatNumberDot = (number: number): string => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
+export const FormatNumberHundred = (number: number): string => {
+    if (number >= 100) {
+        return '99+';
+    } else {
+        return number.toString()
+    }
 }

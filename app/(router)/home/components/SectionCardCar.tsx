@@ -1,7 +1,8 @@
 'use client'
 
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
-import { FormatNumber } from '@/components/format/FormatNumber';
+import { FormatNumberHundred, FormatNumberToThousands } from '@/components/format/FormatNumber';
+import BlurImage from '@/components/image/BlurImage';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image'
 import Link from 'next/link';
@@ -24,7 +25,7 @@ const SectionCardCar = () => {
                 doorstepDelivery: true,
             },
             title: "Mitsubishi xpander 2023",
-            address: 'Quận 3, TP.Hồ Chí Minh, Việt Nam',
+            address: 'Quận Phú Nhuận, TP.Hồ Chí Minh',
             promotion: '25%',
             priceBeforePromotion: 392000,
             priceAfterPromotion: 292000,
@@ -42,7 +43,7 @@ const SectionCardCar = () => {
                 doorstepDelivery: true,
             },
             title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh, Việt Nam',
+            address: 'Quận 1, TP.Hồ Chí Minh',
             promotion: '25%',
             priceBeforePromotion: 322000,
             priceAfterPromotion: 282000,
@@ -60,7 +61,7 @@ const SectionCardCar = () => {
                 doorstepDelivery: true,
             },
             title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh, Việt Nam',
+            address: 'Quận 1, TP.Hồ Chí Minh',
             promotion: '25%',
             priceBeforePromotion: 322000,
             priceAfterPromotion: 282000,
@@ -78,7 +79,7 @@ const SectionCardCar = () => {
                 doorstepDelivery: true,
             },
             title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh, Việt Nam',
+            address: 'Quận 1, TP.Hồ Chí Minh',
             promotion: '25%',
             priceBeforePromotion: 322000,
             priceAfterPromotion: 282000,
@@ -96,7 +97,7 @@ const SectionCardCar = () => {
                 doorstepDelivery: true,
             },
             title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh, Việt Nam',
+            address: 'Quận 1, TP.Hồ Chí Minh',
             promotion: '25%',
             priceBeforePromotion: 322000,
             priceAfterPromotion: 282000,
@@ -114,7 +115,7 @@ const SectionCardCar = () => {
                 doorstepDelivery: true,
             },
             title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh, Việt Nam',
+            address: 'Quận 1, TP.Hồ Chí Minh',
             promotion: '25%',
             priceBeforePromotion: 322000,
             priceAfterPromotion: 282000,
@@ -132,7 +133,7 @@ const SectionCardCar = () => {
                 doorstepDelivery: true,
             },
             title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh, Việt Nam',
+            address: 'Quận 1, TP.Hồ Chí Minh',
             promotion: '25%',
             priceBeforePromotion: 322000,
             priceAfterPromotion: 282000,
@@ -150,12 +151,12 @@ const SectionCardCar = () => {
                 doorstepDelivery: true,
             },
             title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh, Việt Nam',
+            address: 'Quận 1, TP.Hồ Chí Minh',
             promotion: '25%',
             priceBeforePromotion: 322000,
             priceAfterPromotion: 282000,
             point: 5,
-            quantityTrips: 30
+            quantityTrips: 101
         },
     ]
 
@@ -168,29 +169,36 @@ const SectionCardCar = () => {
     return (
         <div className='bg-[#FCFDFD] 2xl:pb-24 pb-16'>
             <div className='custom-container flex flex-col justify-center items-center gap-10'>
-                <div data-aos='fade-down' className='3xl:text-4xl 2xl:text-3xl xl:text-2xl lg:text-xl md:text-xl text-xl leading-tight capitalize font-bold max-w-[85%] text-[#101010]'>
+                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-xl text-xl leading-tight capitalize font-bold max-w-[85%] text-[#101010]'>
                     Xe dành cho bạn
                 </div>
-                <div className='grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-8 gap-6 justify-start w-full h-full'>
+                <div className='grid xxl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-8 gap-6 justify-start w-full h-full'>
                     {
                         dataListCardCars && dataListCardCars.map((card, index) => (
                             <Link
                                 key={card.id}
                                 data-aos='flip-up'
                                 data-aos-delay={index * 150}
-                                className='col-span-1 bg-white shadow-md w-full p-4 flex flex-col gap-4 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
+                                className='col-span-1 bg-white shadow-md w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
                                 href="#"
                             >
                                 <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-0.5 text-sm font-semibold text-white z-10'>
                                     - {card.promotion}
                                 </div>
-                                <div className='w-full h-[230px] relative'>
-                                    <Image
+                                <div className='w-full 3xl:h-[230px] xxl:h-[200px] xl:h-[200px] h-[180px] relative'>
+                                    {/* <Image
                                         width={600}
                                         height={600}
                                         alt="image_card"
                                         src={card.image ? card.image : '/default/default.png'}
                                         className='w-full h-full object-cover rounded-xl'
+                                    /> */}
+                                    <BlurImage
+                                        image={card.image ? card.image : '/default/default.png'}
+                                        alt="image_card"
+                                        width={600}
+                                        height={600}
+                                        className='rounded-xl'
                                     />
                                     <div
                                         onClick={handleClickFavorite}
@@ -201,7 +209,7 @@ const SectionCardCar = () => {
                                     <div className='flex gap-2 absolute bottom-[10px] left-[10px]'>
                                         {
                                             card.type.mortgageFree ?
-                                                <Badge className='bg-[#000000]/50 font-normal cursor-default'>
+                                                <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
                                                     Miễn thế chấp
                                                 </Badge>
                                                 :
@@ -209,7 +217,7 @@ const SectionCardCar = () => {
                                         }
                                         {
                                             card.type.orderFastCar ?
-                                                <Badge className='bg-[#000000]/50 font-normal cursor-default'>
+                                                <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
                                                     Đặt xe nhanh
                                                 </Badge>
                                                 :
@@ -220,7 +228,7 @@ const SectionCardCar = () => {
                                 <div className='flex items-center gap-2 mt-2'>
                                     {
                                         card.type.automaticNumber ?
-                                            <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] text-sm font-medium cursor-default'>
+                                            <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default'>
                                                 Số tự động
                                             </Badge>
                                             :
@@ -228,7 +236,7 @@ const SectionCardCar = () => {
                                     }
                                     {
                                         card.type.doorstepDelivery ?
-                                            <Badge className='bg-[#F9ECC9]/35 hover:bg-[#F9ECC9]/50 text-[#FF9900] text-sm font-medium cursor-default'>
+                                            <Badge className='bg-[#F9ECC9]/35 hover:bg-[#F9ECC9]/50 text-[#FF9900] 3xl:text-sm text-xs font-medium cursor-default'>
                                                 Giao tận nơi
                                             </Badge>
                                             :
@@ -239,38 +247,38 @@ const SectionCardCar = () => {
                                     {card.title ? card.title : ''}
                                 </div>
                                 <div className='flex gap-1 items-center'>
-                                    <TiLocation className='text-xl text-[#FA3434]' />
-                                    <div className='3xl:text-base text-sm text-[#8C93A3] font-medium'>
+                                    <TiLocation className='text-base text-[#FA3434] w-[16px] max-w-[16px]' />
+                                    <div className='3xl:text-sm text-xs text-[#8C93A3] font-medium w-[90%] max-w-[90%]'>
                                         {card.address ? card.address : ''}
                                     </div>
                                 </div>
                                 <div className='border-b     border-[#D7D9E0]/50' />
-                                <div className='flex items-center gap-4'>
+                                <div className='flex items-center 3xl:gap-4 xxl:gap-2 xl:gap-4 lg: gap-2'>
                                     <div className='flex items-center gap-1'>
                                         <div className='3xl:text-lg text-base text-[#D7D9E0] font-medium line-through'>
-                                            {card.priceBeforePromotion ? FormatNumber(card.priceBeforePromotion) : 0}
+                                            {card.priceBeforePromotion ? FormatNumberToThousands(card.priceBeforePromotion) : 0}
                                         </div>
                                         <div className='flex'>
                                             <span className='3xl:text-lg text-base text-[#1AC5CA] font-medium'>
-                                                {card.priceAfterPromotion ? FormatNumber(card.priceAfterPromotion) : 0}
+                                                {card.priceAfterPromotion ? FormatNumberToThousands(card.priceAfterPromotion) : 0}
                                             </span>
-                                            <span className='text-[13px] text-[#585F71] flex justify-start font-semibold capitalize'>
+                                            <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
                                                 /ngày
                                             </span>
                                         </div>
                                     </div>
 
                                     <div className='flex items-center gap-1'>
-                                        <FaStar className='text-base text-[#FFC118]' />
-                                        <div className='text-sm text-[#484D5C] font-semibold'>
+                                        <FaStar className='3xl:text-base text-sm text-[#FFC118]' />
+                                        <div className='3xl:text-sm text-xs text-[#484D5C] font-semibold'>
                                             {card.point ? card.point : ''}
                                         </div>
                                     </div>
 
                                     <div className='flex items-center gap-1'>
-                                        <FaCircleCheck className='text-base text-[#3AC996]' />
-                                        <div className='text-sm text-[#484D5C] font-semibold'>
-                                            {card.quantityTrips ? card.quantityTrips : 0} Chuyến
+                                        <FaCircleCheck className='3xl:text-base text-sm text-[#3AC996]' />
+                                        <div className='3xl:text-sm text-xs text-[#484D5C] font-semibold'>
+                                            {card.quantityTrips ? FormatNumberHundred(card.quantityTrips) : 0} Chuyến
                                         </div>
                                     </div>
                                 </div>

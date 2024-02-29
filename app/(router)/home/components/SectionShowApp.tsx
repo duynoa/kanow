@@ -18,10 +18,10 @@ const SectionShowApp = (props: Props) => {
                     />
                 </div>
                 <div className='w-[50%] max-w-[50%] pt-16 flex flex-col gap-6 pl-48'>
-                    <div data-aos='fade-down' className='3xl:text-4xl 2xl:text-3xl xl:text-2xl lg:text-xl md:text-xl text-xl capitalize font-bold text-[#101010] max-w-[75%]'>
+                    <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-xl text-xl capitalize font-bold text-[#101010] max-w-[75%]'>
                         Trải nghiệm ứng dụng KANOW ngay hôm nay
                     </div>
-                    <div data-aos='fade-down' className='3xl:text-base text-sm text-[#8C93A3] font-medium max-w-[75%]'>
+                    <div className='3xl:text-base xl:text-sm text-xs text-[#8C93A3] font-medium max-w-[75%]'>
                         Trải nghiệm trọn vẹn đầy đủ tính năng trên ứng dụng KANOW và nhận được thật nhiều ưu đãi ngay hôm nay
                     </div>
                     <div className='flex items-center gap-8'>

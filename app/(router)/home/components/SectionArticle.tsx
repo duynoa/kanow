@@ -1,3 +1,4 @@
+import BlurImage from '@/components/image/BlurImage'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -10,7 +11,7 @@ const SectionArticle = (props: Props) => {
     return (
         <div className="flex bg-[url('/background/folder_background.png')] bg-cover border-b drop-shadow-lg  -mt-[560px]">
             <div className='custom-container flex flex-col items-center justify-center w-full 3xl:pb-32 3xl:pt-64 py-16'>
-                <div className='3xl:text-4xl 2xl:text-3xl xl:text-2xl lg:text-xl md:text-xl text-xl capitalize font-bold text-[#101010]'>
+                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-xl text-xl capitalize font-bold text-[#101010]'>
                     Bài viết
                 </div>
                 <div className='mt-10 grid grid-cols-3 gap-8 w-full'>
@@ -20,13 +21,21 @@ const SectionArticle = (props: Props) => {
                             className='relative group'
                         >
                             <div className='w-full 3xl:h-[532px] 2xl:h-[500px] xl:h-[500px] md:h-[480px] h-[480px] group overflow-hidden rounded-2xl'>
-                                <Image
+                                {/* <Image
                                     width={1920}
                                     height={1080}
                                     loading='lazy'
                                     alt='image'
                                     src="/other/car/car1.png"
                                     className='w-full h-full object-cover rounded-2xl group-hover:scale-105 duration-500 transition ease-in-out'
+                                /> */}
+                                <BlurImage
+                                    image={"/other/car/car1.png" ? "/other/car/car1.png" : '/default/default.png'}
+                                    alt="image_card"
+                                    width={1200}
+                                    height={600}
+                                    className="rounded-2xl"
+                                    zoomIn={true}
                                 />
                             </div>
                             <div className='flex flex-col md:gap-4 gap-2 absolute md:left-[50px] left-[40px] md:top-[50px] top-[40px] 2xl:pr-4 pr-6'>
@@ -54,13 +63,21 @@ const SectionArticle = (props: Props) => {
                             className='relative group'
                         >
                             <div className='w-full 3xl:h-[250px] 2xl:h-[250px] xl:h-[250px] md:h-[250px] h-[250px] group overflow-hidden rounded-2xl'>
-                                <Image
+                                {/* <Image
                                     width={1920}
                                     height={1080}
                                     loading='lazy'
                                     alt='image'
                                     src="/other/car/car1.png"
                                     className='w-full h-full object-cover rounded-2xl group-hover:scale-105 duration-500 transition ease-in-out'
+                                /> */}
+                                <BlurImage
+                                    image={"/other/car/car1.png" ? "/other/car/car1.png" : '/default/default.png'}
+                                    alt="image_card"
+                                    width={1200}
+                                    height={600}
+                                    className="rounded-2xl"
+                                    zoomIn={true}
                                 />
                             </div>
                             <div className='flex flex-col gap-2 absolute md:left-[30px] left-[20px] md:top-[30px] top-[20px] 2xl:pr-4 pr-6'>
@@ -86,13 +103,21 @@ const SectionArticle = (props: Props) => {
                             className='relative group'
                         >
                             <div className='w-full 3xl:max-h-[250px] 2xl:max-h-[250px] xl:h-[250px] md:h-[250px] h-[250px] group overflow-hidden rounded-2xl'>
-                                <Image
+                                {/* <Image
                                     width={1920}
                                     height={1080}
                                     loading='lazy'
                                     alt='image'
                                     src="/other/car/car1.png"
                                     className='w-full h-full object-cover rounded-2xl group-hover:scale-105 duration-500 transition ease-in-out'
+                                /> */}
+                                <BlurImage
+                                    image={"/other/car/car1.png" ? "/other/car/car1.png" : '/default/default.png'}
+                                    alt="image_card"
+                                    width={1200}
+                                    height={600}
+                                    className="rounded-2xl"
+                                    zoomIn={true}
                                 />
                             </div>
                             <div className='flex flex-col gap-2 absolute md:left-[30px] left-[20px] md:top-[30px] top-[20px] 2xl:pr-4 pr-6'>
