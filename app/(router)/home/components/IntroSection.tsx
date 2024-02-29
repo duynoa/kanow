@@ -60,7 +60,8 @@ const IntroSection = () => {
                 style={{ background: "linear-gradient(0deg, rgba(3, 107, 116, 0.04) -75.88%, rgba(0, 0, 0, 0.00) 129.69%), rgba(194, 249, 249, 0.60)" }}
             >
                 <div className='custom-container relative'>
-                    <div className='3xl:text-6xl 2xl:text-5xl xxl:text-4xl xl:text-4xl lg:text-3xl leading-tight font-bold max-w-[45%] 3xl:py-24 2xl:py-16 xl:py-16 py-10 capitalize'>
+                    <div className='3xl:text-[3.75rem] 2xl:text-[3rem] xxl:text-[2.25rem] xl:text-[2.25rem] lg:text-[1.875rem] text-[1.5rem] font-bold max-w-[45%] 3xl:py-24 2xl:py-16 xl:py-16 py-10 capitalize leading-tight'>
+                        {/* <div className='3xl:text-6xl 2xl:text-5xl xxl:text-4xl xl:text-4xl lg:text-3xl text-2xl font-bold max-w-[45%] 3xl:py-24 2xl:py-16 xl:py-16 py-10 capitalize leading-normal'> */}
                         KANOW - Đồng hành mọi chuyến đi của bạn
                     </div>
                     <div className='flex flex-col xl:w-[500px] w-[400px]'>

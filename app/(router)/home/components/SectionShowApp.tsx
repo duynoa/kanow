@@ -17,20 +17,20 @@ const SectionShowApp = (props: Props) => {
                         priority
                     />
                 </div>
-                <div className='w-[50%] max-w-[50%] pt-16 flex flex-col gap-6 pl-48'>
-                    <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-xl text-xl capitalize font-bold text-[#101010] max-w-[75%]'>
+                <div className='w-[50%] max-w-[50%] pt-16 flex flex-col gap-6 3xl:pl-48 xl:pl-40 pl-28'>
+                    <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-xl text-xl capitalize font-bold text-[#101010] 2xl:max-w-[75%] xxl:max-w-[80%] max-w-full'>
                         Trải nghiệm ứng dụng KANOW ngay hôm nay
                     </div>
-                    <div className='3xl:text-base xl:text-sm text-xs text-[#8C93A3] font-medium max-w-[75%]'>
+                    <div className='3xl:text-base xl:text-sm text-xs text-[#8C93A3] font-medium 2xl:max-w-[75%] xxl:max-w-[80%] max-w-full'>
                         Trải nghiệm trọn vẹn đầy đủ tính năng trên ứng dụng KANOW và nhận được thật nhiều ưu đãi ngay hôm nay
                     </div>
-                    <div className='flex items-center gap-8'>
+                    <div className='flex items-center 2xl:gap-8 gap-6'>
                         <Image
                             alt="appStore"
                             src="/icon/icon_appStore.svg"
                             width={200}
                             height={200}
-                            className='w-[200px] h-[60px] object-cover drop-shadow'
+                            className='3xl:w-[180px] 2xl:w-[160px] w-[140px] h-auto object-contain drop-shadow'
                             loading="lazy"
                         />
                         <Image
@@ -38,7 +38,7 @@ const SectionShowApp = (props: Props) => {
                             src="/icon/icon_googlePlay.svg"
                             width={200}
                             height={200}
-                            className='w-[200px] h-[60px] object-cover drop-shadow'
+                            className='3xl:w-[180px] 2xl:w-[160px] w-[140px] h-auto object-contain drop-shadow'
                             loading="lazy"
                         />
                     </div>

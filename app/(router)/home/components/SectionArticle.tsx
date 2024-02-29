@@ -9,18 +9,18 @@ type Props = {}
 
 const SectionArticle = (props: Props) => {
     return (
-        <div className="flex bg-[url('/background/folder_background.png')] bg-cover border-b drop-shadow-lg  -mt-[560px]">
-            <div className='custom-container flex flex-col items-center justify-center w-full 3xl:pb-32 3xl:pt-64 py-16'>
+        <div className="flex bg-[url('/background/folder_background.png')] bg-cover border-b drop-shadow-lg 3xl:-mt-[520px] 2xl:-mt-[420px] xl:-mt-[390px] -mt-[300px]">
+            <div className='custom-container flex flex-col items-center justify-center w-full 3xl:pt-64 3xl:pb-32 2xl:pt-48 2xl:pb-32 xxl:pt-44 xxl:pb-28 xl:pt-44 xl:pb-24 pt-32 pb-20'>
                 <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-xl text-xl capitalize font-bold text-[#101010]'>
                     Bài viết
                 </div>
-                <div className='mt-10 grid grid-cols-3 gap-8 w-full'>
+                <div className='xl:mt-10 mt-6 grid grid-cols-3 3xl:gap-8 xl:gap-6 gap-4 w-full'>
                     <div className='w-full col-span-2'>
                         <Link
                             href="#"
                             className='relative group'
                         >
-                            <div className='w-full 3xl:h-[532px] 2xl:h-[500px] xl:h-[500px] md:h-[480px] h-[480px] group overflow-hidden rounded-2xl'>
+                            <div className='w-full 3xl:h-[532px] 2xl:h-[532px] xxl:h-[524px] xl:h-[464px] lg:h-[416px] md:h-[480px] h-[480px] group overflow-hidden rounded-2xl'>
                                 {/* <Image
                                     width={1920}
                                     height={1080}
@@ -38,31 +38,31 @@ const SectionArticle = (props: Props) => {
                                     zoomIn={true}
                                 />
                             </div>
-                            <div className='flex flex-col md:gap-4 gap-2 absolute md:left-[50px] left-[40px] md:top-[50px] top-[40px] 2xl:pr-4 pr-6'>
+                            <div className='flex flex-col 2xl:gap-4 gap-2 absolute md:left-[50px] left-[40px] md:top-[50px] top-[40px] 2xl:pr-4 pr-6'>
                                 <div className='lg:text-sm md:text-base text-lg uppercase font-medium font-[inter] text-[#61F7F7] line-clamp-2'>
                                     Thông báo
                                 </div>
-                                <div className='3xl:text-2xl 2xl:text-xl xxl:text-xl xl:text-xl lg:text-xl md:text-sm text-base text-white font-semibold line-clamp-4 max-w-[75%]'>
+                                <div className='3xl:text-2xl 2xl:text-xl xxl:text-xl xl:text-lg lg:text-lg md:text-sm text-base text-white font-semibold line-clamp-2 xxl:max-w-[75%] xl:max-w-[85%] max-w-full'>
                                     Một số lưu ý cho chủ xe khi lần đầu cho thuê xe tại KANOW
                                 </div>
                             </div>
                             <div className='absolute md:left-[50px] left-[40px] md:bottom-[50px] bottom-[40px]'>
                                 <Button
                                     size="readMore"
-                                    className='flex items-center gap-2 lg:text-base md:text-base text-lg font-bold text-[#000000] bg-[#9DF2EE] group-hover:bg-[#9DF2EE]/90 group-hover:translate-x-2 2xl:px-8 2xl:py-3 px-6 py-3'
+                                    className='2xl:px-8 2xl:py-3 xl:px-6 xl:py-3 px-4 py-2 flex items-center gap-2 font-bold text-[#000000] bg-[#9DF2EE] group-hover:bg-[#9DF2EE]/90 group-hover:translate-x-2'
                                 >
-                                    <span>Xem thêm</span>
-                                    <IoArrowForwardOutline className='text-xl -rotate-45' />
+                                    <span className='xl:text-base lg:text-sm md:text-base text-lg'>Xem thêm</span>
+                                    <IoArrowForwardOutline className='xl:text-xl text-lg -rotate-45' />
                                 </Button>
                             </div>
                         </Link>
                     </div>
-                    <div className='w-full col-span-1 flex flex-col gap-8 max-h-[500px]'>
+                    <div className='w-full col-span-1 flex flex-col 3xl:gap-8 xl:gap-6 gap-4 xxl:max-h-[500px] xl:max-h-[440px] max-h-[400px]'>
                         <Link
                             href="#"
                             className='relative group'
                         >
-                            <div className='w-full 3xl:h-[250px] 2xl:h-[250px] xl:h-[250px] md:h-[250px] h-[250px] group overflow-hidden rounded-2xl'>
+                            <div className='w-full 3xl:h-[250px] 2xl:h-[250px] xxl:h-[250px] xl:h-[220px] lg:h-[200px] md:h-[250px] h-[250px] group overflow-hidden rounded-2xl'>
                                 {/* <Image
                                     width={1920}
                                     height={1080}
@@ -84,17 +84,17 @@ const SectionArticle = (props: Props) => {
                                 <div className='lg:text-sm md:text-base text-lg uppercase font-medium font-[inter] text-[#61F7F7] line-clamp-2'>
                                     Thông báo
                                 </div>
-                                <div className='3xl:text-xl 2xl:text-xl xxl:text-xl xl:text-xl lg:text-xl md:text-sm text-base text-white font-semibold line-clamp-4 max-w-[75%]'>
+                                <div className='3xl:text-xl 2xl:text-xl xxl:text-xl xl:text-lg lg:text-lg md:text-sm text-base text-white font-semibold line-clamp-2 xxl:max-w-[75%] xl:max-w-[85%] max-w-full'>
                                     Một số lưu ý cho chủ xe khi lần đầu cho thuê xe tại KANOW
                                 </div>
                             </div>
                             <div className='absolute md:left-[30px] left-[20px] md:bottom-[30px] bottom-[20px]'>
                                 <Button
                                     size="readMore"
-                                    className='flex items-center gap-2 lg:text-base md:text-base text-lg font-bold text-[#000000] bg-[#9DF2EE] group-hover:bg-[#9DF2EE]/90 group-hover:translate-x-2 2xl:px-8 2xl:py-3 px-6 py-3'
+                                    className='2xl:px-8 2xl:py-3 xl:px-6 xl:py-3 px-4 py-2 flex items-center gap-2 font-bold text-[#000000] bg-[#9DF2EE] group-hover:bg-[#9DF2EE]/90 group-hover:translate-x-2'
                                 >
-                                    <span>Xem thêm</span>
-                                    <IoArrowForwardOutline className='text-xl -rotate-45' />
+                                    <span className='xl:text-base lg:text-sm md:text-base text-lg'>Xem thêm</span>
+                                    <IoArrowForwardOutline className='xl:text-xl text-lg -rotate-45' />
                                 </Button>
                             </div>
                         </Link>
@@ -102,7 +102,7 @@ const SectionArticle = (props: Props) => {
                             href="#"
                             className='relative group'
                         >
-                            <div className='w-full 3xl:max-h-[250px] 2xl:max-h-[250px] xl:h-[250px] md:h-[250px] h-[250px] group overflow-hidden rounded-2xl'>
+                            <div className='w-full 3xl:max-h-[250px] 2xl:max-h-[250px] xxl:h-[250px] xl:h-[220px] lg:h-[200px] md:h-[250px] h-[250px] group overflow-hidden rounded-2xl'>
                                 {/* <Image
                                     width={1920}
                                     height={1080}
@@ -124,17 +124,17 @@ const SectionArticle = (props: Props) => {
                                 <div className='lg:text-sm md:text-base text-lg uppercase font-medium font-[inter] text-[#61F7F7] line-clamp-2'>
                                     Thông báo
                                 </div>
-                                <div className='3xl:text-xl 2xl:text-xl xxl:text-xl xl:text-xl lg:text-xl md:text-sm text-base text-white font-semibold line-clamp-4 max-w-[75%]'>
+                                <div className='3xl:text-xl 2xl:text-xl xxl:text-xl xl:text-lg lg:text-lg md:text-sm text-base text-white font-semibold line-clamp-2 xxl:max-w-[75%] xl:max-w-[85%] max-w-full'>
                                     Một số lưu ý cho chủ xe khi lần đầu cho thuê xe tại KANOW
                                 </div>
                             </div>
                             <div className='absolute md:left-[30px] left-[20px] md:bottom-[30px] bottom-[20px]'>
                                 <Button
                                     size="readMore"
-                                    className='flex items-center gap-2 lg:text-base md:text-base text-lg font-bold text-[#000000] bg-[#9DF2EE] group-hover:bg-[#9DF2EE]/90 group-hover:translate-x-2 2xl:px-8 2xl:py-3 px-6 py-3'
+                                    className='2xl:px-8 2xl:py-3 xl:px-6 xl:py-3 px-4 py-2 flex items-center gap-2 font-bold text-[#000000] bg-[#9DF2EE] group-hover:bg-[#9DF2EE]/90 group-hover:translate-x-2'
                                 >
-                                    <span>Xem thêm</span>
-                                    <IoArrowForwardOutline className='text-xl -rotate-45' />
+                                    <span className='xl:text-base lg:text-sm md:text-base text-lg'>Xem thêm</span>
+                                    <IoArrowForwardOutline className='xl:text-xl text-lg -rotate-45' />
                                 </Button>
                             </div>
                         </Link>

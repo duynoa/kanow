@@ -27,12 +27,12 @@ const SectitonWhyWe = (props: Props) => {
     ]
 
     return (
-        <div className="relative flex bg-[url('/background/why_background.png')] bg-cover drop-shadow 3xl:pb-32 3xl:pt-56 py-16">
-            <div className='custom-container z-20 flex flex-col items-center gap-4 w-full'>
+        <div className="relative flex bg-[url('/background/why_background.png')] bg-cover drop-shadow 3xl:pt-56 3xl:pb-32 2xl:pt-44 2xl:pb-28 xl:pt-40 xl:pb-24 pt-36 pb-24">
+            <div className='custom-container z-20 flex flex-col items-center 3xl:gap-4 gap-2 w-full'>
                 <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-xl text-xl leading-tight capitalize font-bold text-[#101010]'>
                     Vì sao chọn chúng tôi
                 </div>
-                <div className='3xl:text-base xl:text-sm text-xs text-[#8C93A3] font-medium'>
+                <div className='3xl:text-base xl:text-sm text-xs text-[#8C93A3] font-normal '>
                     Chúng tôi luôn cố gắng để giúp bạn dễ dàng hơn khi thuê xe
                 </div>
                 <div className='mt-6 grid grid-cols-3 gap-4'>
@@ -46,10 +46,10 @@ const SectitonWhyWe = (props: Props) => {
                                     src={item.icon ? item.icon : '/default/default.png'}
                                     className='w-[64px] h-[64px] object-cover rounded-xl'
                                 />
-                                <div className='3xl:text-2xl text-xl font-semibold max-w-[70%] mt-2'>
+                                <div className='3xl:text-2xl text-xl font-semibold xl:max-w-[70%] max-w-[80%] mt-2'>
                                     {item.title}
                                 </div>
-                                <div className='3xl:text-base text-sm font-normal text-[#595C68]/80 max-w-[60%]'>
+                                <div className='3xl:text-base text-sm font-normal text-[#595C68]/80 xl:max-w-[60%] max-w-[75%]'>
                                     {item.content}
                                 </div>
                             </div>
@@ -63,7 +63,7 @@ const SectitonWhyWe = (props: Props) => {
                 width={1920}
                 height={1080}
                 src="/icon/cloud.svg"
-                className='w-[140px] h-[60px] object-contain absolute top-[45%] -left-[3%] -rotate-6'
+                className='xxl:w-[140px] xxl:h-[60px] w-[100px] h-[50px] object-contain absolute top-[45%] -left-[3%] -rotate-6'
                 loading="lazy"
             />
             <Image
@@ -71,7 +71,7 @@ const SectitonWhyWe = (props: Props) => {
                 width={1920}
                 height={1080}
                 src="/icon/cloud.svg"
-                className='w-[140px] h-[60px] object-contain absolute bottom-12 left-[25%]'
+                className='xxl:w-[140px] xxl:h-[60px] w-[100px] h-[50px] object-contain absolute bottom-12 left-[25%]'
                 loading="lazy"
             />
             <Image
@@ -79,7 +79,7 @@ const SectitonWhyWe = (props: Props) => {
                 width={1920}
                 height={1080}
                 src="/icon/cloud.svg"
-                className='w-[140px] h-[60px] object-contain absolute top-[30%] right-[25%] -rotate-6'
+                className='xxl:w-[140px] xxl:h-[60px] w-[100px] h-[50px] object-contain absolute top-[30%] xxl:right-[25%] xl:right-[20%] right-[15%] -rotate-6'
                 loading="lazy"
             />
             <Image
@@ -87,7 +87,15 @@ const SectitonWhyWe = (props: Props) => {
                 width={1920}
                 height={1080}
                 src="/icon/cloud.svg"
-                className='w-[110px] h-[50px] object-contain absolute bottom-[5%] right-[5%] -rotate-2'
+                className='xxl:w-[110px] xxl:h-[50px] w-[80px] h-[40px] object-contain absolute bottom-[5%] right-[5%] -rotate-2'
+                loading="lazy"
+            />
+            <Image
+                alt="cloud3"
+                width={1920}
+                height={1080}
+                src="/background/line_background3.svg"
+                className='w-full h-auto object-contain absolute top-0 right-0'
                 loading="lazy"
             />
         </div>

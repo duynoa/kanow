@@ -161,7 +161,7 @@ const SectionPlaceProminent = (props: Props) => {
                 width={1920}
                 height={1080}
                 src="/background/triangle.png"
-                className='3xl:w-[300px] 3xl:h-[300px] xl:w-[260px] xl:h-[260px] w-[220px] h-[220px] object-contain absolute 3xl:-bottom-40 2xl:-bottom-32 -bottom-32 -right-20 z-[1]'
+                className='3xl:w-[300px] 3xl:h-[300px] xl:w-[260px] xl:h-[260px] w-[220px] h-[220px] object-contain absolute 3xl:-bottom-56 2xl:-bottom-44 xxl:-bottom-44 xl:-bottom-44 lg:-bottom-40 -right-20 z-[1]'
                 loading="lazy"
             />
         </div >
