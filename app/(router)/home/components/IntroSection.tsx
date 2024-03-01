@@ -2,15 +2,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid';
 import { TiLocation } from 'react-icons/ti';
 
 import { Button } from "@/components/ui/button"
 import { DatePickerWithRange } from '@/components/datePicker/DatePickerWithRange';
 import { useResize } from '@/hooks/useResize';
+import { useRouter } from 'next/navigation';
 
 const IntroSection = () => {
     const { isVisibleMobile } = useResize()
+    const router = useRouter()
 
     const tabSearch = [
         {
@@ -39,9 +40,6 @@ const IntroSection = () => {
 
     var heroTitle: string = "KANOW - Đồng hành mọi chuyến đi của bạn";
     var heroPerTitle: { letter: string, id: number }[] = heroTitle.split('').map((letter, index) => ({ letter: letter, id: index + 1 }));
-
-    console.log('tabId', tabId);
-
 
     return (
         <div className='xl:h-[100vh] lg:h-[80vh] md:h-[80svh] h-[100svh] w-full relative '>
@@ -130,7 +128,7 @@ const IntroSection = () => {
                                         id="place"
                                         type='text'
                                         placeholder='Nhập địa điểm'
-                                        className='pl-12 rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#B4B8C5] placeholder:font-medium' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                        className='pl-12 py-3 rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#B4B8C5] placeholder:font-medium' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
                                     />
                                 </div>
                             </div>
@@ -144,6 +142,7 @@ const IntroSection = () => {
                                 type='button'
                                 size="basic"
                                 className='3xl:text-base text-sm w-full 3xl:py-4 xl:py-3 py-2 text-center uppercase text-white bg-[#FF9900] hover:bg-[#FF9900]/80 font-bold rounded-xl'
+                                onClick={() => router.push('/search-car')}
                             >
                                 <span>Tìm xe</span>
                             </Button>

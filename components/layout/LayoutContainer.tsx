@@ -59,7 +59,7 @@ const LayoutContainer = ({
             if (window.innerWidth <= 768) {
                 onResizeTablet()
             } else {
-                onCloseResizeMobile()
+                onCloseResizeTablet()
             }
         };
 
@@ -73,7 +73,7 @@ const LayoutContainer = ({
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, [isVisibleMobile]);
+    }, [isVisibleMobile, onCloseResizeMobile, onCloseResizeTablet, onResizeMobile, onResizeTablet, isVisibleTablet]);
 
     return (
         <html lang="en">

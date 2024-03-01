@@ -113,16 +113,12 @@ const Header = () => {
     //     // }
     // }, [token])
 
-    console.log('pathname : ', pathname);
+    console.log("isVisibleTablet:::: ", isVisibleTablet);
 
 
     if (!isMounted) {
         return null;
     }
-
-
-    console.log("isVisibleTablet", isVisibleTablet);
-
 
     return (
         <header
@@ -244,11 +240,11 @@ const Header = () => {
                                 className='w-full h-auto object-cover'
                             />
                         </Link>
-                        <div className='3xl:col-span-2 col-span-1' />
-                        <NavigationMenu className='3xl:col-span-6 col-span-7 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
+                        <div className='2xl:col-span-2 col-span-1   ' />
+                        <NavigationMenu className='2xl:col-span-6 col-span-7 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
                             {
                                 dataHeader.map((data, i) => (
-                                    <div key={data.id} className='p-2 flex'>
+                                    <div key={data.id} className='p-2'>
                                         {
                                             data.children ?
                                                 <ActionTooltip
@@ -286,7 +282,7 @@ const Header = () => {
                                                 :
                                                 <Link
                                                     href={data.link}
-                                                    className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#0E0E0E]/80'} font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                                    className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
                                                 >
                                                     {data.name}
                                                 </Link>
@@ -296,7 +292,7 @@ const Header = () => {
                             }
                         </NavigationMenu>
                         <div className='col-span-2 flex justify-end 3xl:gap-4 gap-2'>
-                            <Button className='xxl:text-base xl:text-sm lg:text-[13px] text-sm 2xl:px-10 2xl:py-6 px-6 py-4 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'>
+                            <Button className='3xl:text-base xl:text-xs lg:text-[13px] text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'>
                                 Đăng nhập
                             </Button>
                         </div>

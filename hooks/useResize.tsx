@@ -16,5 +16,5 @@ export const useResize = create<ResizeStore>((set) => ({
     onResizeMobile: () => set({ isVisibleMobile: true }),
     onResizeTablet: () => set({ isVisibleTablet: true }),
     onCloseResizeMobile: () => set({ isVisibleMobile: false }),
-    onCloseResizeTablet: () => set({ isVisibleMobile: false }),
+    onCloseResizeTablet: () => set({ isVisibleTablet: false }),
 }))

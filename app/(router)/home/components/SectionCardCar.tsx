@@ -215,7 +215,7 @@ const SectionCardCar = () => {
                                             className='col-span-1 bg-white shadow-md w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 lg:hover:scale-105 transition duration-200 ease-in-out'
                                             href="#"
                                         >
-                                            <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-0.5 text-sm font-semibold text-white z-10'>
+                                            <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
                                                 - {card.promotion}
                                             </div>
                                             <div className='w-full h-[220px] relative'>
@@ -329,7 +329,7 @@ const SectionCardCar = () => {
                                         className='col-span-1 bg-white shadow-md w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
                                         href="#"
                                     >
-                                        <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-0.5 text-sm font-semibold text-white z-10'>
+                                        <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
                                             - {card.promotion}
                                         </div>
                                         <div className='w-full 3xl:h-[230px] xxl:h-[200px] xl:h-[200px] h-[180px] relative'>
