@@ -34,13 +34,13 @@ import ConvertToSlug from '../convertSlug/ConvertToSlug';
 
 const Header = () => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
-    // const [infoUser, setInfoUser] = useState<IInfoUser | undefined>(undefined)
+    const [isScrollBlocked, setIsScrollBlocked] = useState<boolean>(false);
+    const [showActive, setShowActive] = useState<boolean>(false);
+    const [activeService, setActiveService] = useState<boolean>(false)
 
-    // const { dataCategoryServices, setDataCategoryServices } = useCategoryServicesStore();
-
-    const { isVisibleMobile } = useResize()
+    const { isVisibleTablet } = useResize()
     const router = useRouter();
-
+    const pathname = usePathname()
     // let token = Cookies.get("token")
 
     const dataHeader = [
@@ -75,12 +75,6 @@ const Header = () => {
         },
     ]
 
-    const [isScrollBlocked, setIsScrollBlocked] = useState<boolean>(false);
-    const [showActive, setShowActive] = useState<boolean>(false);
-    const [activeService, setActiveService] = useState<boolean>(false)
-    // const [dataCategoryServices, setDataCategoryServices] = useState<ICategoryServices[]>([])
-
-    const pathname = usePathname()
     useEffect(() => {
         setIsMounted(true)
     }, [])
@@ -119,14 +113,24 @@ const Header = () => {
     //     // }
     // }, [token])
 
+    console.log('pathname : ', pathname);
+
+
     if (!isMounted) {
         return null;
     }
 
+
+    console.log("isVisibleTablet", isVisibleTablet);
+
+
     return (
-        <header className='w-full 3xl:h-[120px] h-[80px] sticky z-50 bg-[#D7F9F9]'>
+        <header
+            className='w-full 3xl:h-[120px] h-[80px] sticky z-50'
+            style={{ background: pathname === "/" || pathname === "/home" ? "#D7F9F9" : "linear-gradient(180deg, rgba(194, 249, 249, 0.60) 0%, rgba(194, 249, 249, 0.00) 100%)" }}
+        >
             {
-                isVisibleMobile ?
+                isVisibleTablet ?
                     // màn hình mobile,tablet
                     <div className="custom-container 3xl:h-[120px] h-[80px] grid grid-cols-4">
                         <Link
@@ -198,9 +202,9 @@ const Header = () => {
                                                                             href={`/services/${item.id}?${ConvertToSlug(item.title)}`}
                                                                             className={`${pathname.includes(`/services/${item.id}`) ? 'bg-[#F6F6F6]' : ''} flex flex-row items-center gap-3 group hover:bg-[#F6F6F6] py-2 px-8 rounded-lg cursor-pointer`}
                                                                         >
-                                                                                <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-500 ease-in-out line-clamp-2`}>
-                                                                                    {item?.title ? item?.title : ''}
-                                                                                </div>
+                                                                            <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-500 ease-in-out line-clamp-2`}>
+                                                                                {item?.title ? item?.title : ''}
+                                                                            </div>
                                                                         </Link>
                                                                     ))
                                                                 }

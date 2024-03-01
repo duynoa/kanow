@@ -1,6 +1,6 @@
 'use client'
 
-// import Aos from 'aos';
+import Aos from 'aos';
 import React, { useEffect, useState } from 'react'
 
 import Header from './Header';
@@ -13,7 +13,8 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/bundle';
-// import "aos/dist/aos.css";
+import 'swiper/css/autoplay'
+import "aos/dist/aos.css";
 import '@/styles/globals.scss';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
@@ -29,7 +30,7 @@ const LayoutContainer = ({
 }: {
     children: React.ReactNode
 }) => {
-    const { isVisibleMobile, onResizeMobile, onCloseResizeMobile } = useResize()
+    const { isVisibleMobile, onResizeMobile, onCloseResizeMobile, isVisibleTablet, onResizeTablet, onCloseResizeTablet } = useResize()
 
     useEffect(() => {
         const scrollTop = () => {
@@ -38,13 +39,25 @@ const LayoutContainer = ({
         scrollTop()
     }, [])
 
+    useEffect(() => {
+        Aos.init({
+            duration: 1800,
+            once: true
+        });
+    }, []);
+
     // ẩn/hiện khi chuyển qua màn hình nhỏ khi không dùng chung div để tránh xung đột 
     useEffect(() => {
         // Kiểm tra kích thước màn hình và cập nhật trạng thái isVisible
         const handleResize = () => {
-            if (window.innerWidth <= 768) {
+            if (window.innerWidth < 768) {
                 // khi đến màn 768 thì bắt đầu thực hiện function
                 onResizeMobile();
+            } else {
+                onCloseResizeMobile()
+            }
+            if (window.innerWidth <= 768) {
+                onResizeTablet()
             } else {
                 onCloseResizeMobile()
             }

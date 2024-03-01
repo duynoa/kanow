@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 type Props = {}
 
 const SectionArticle = (props: Props) => {
-    const { isVisibleMobile } = useResize()
+    const { isVisibleMobile, isVisibleTablet } = useResize()
     const dataArticle = [
         {
             id: uuidv4(),
@@ -34,7 +34,6 @@ const SectionArticle = (props: Props) => {
         },
     ]
 
-    console.log('isVisibleMobile', isVisibleMobile);
 
     const customPaginationBanner = {
         clickable: true,
@@ -45,43 +44,46 @@ const SectionArticle = (props: Props) => {
     }
 
     return (
-        <div className="flex lg:bg-[url('/background/folder_background.png')] bg-[url('/background/folder_background_mobile.png')] bg-cover border-b drop-shadow-lg 3xl:-mt-[520px] 2xl:-mt-[420px] xl:-mt-[390px] lg:-mt-[300px] -mt-[420px]">
-            <div className='custom-container flex flex-col items-center justify-center w-full 3xl:pt-64 3xl:pb-32 2xl:pt-48 2xl:pb-32 xxl:pt-44 xxl:pb-28 xl:pt-44 xl:pb-24 lg:pt-32 lg:pb-20 pt-72 pb-20'>
-                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-3xl capitalize font-bold text-[#101010]'>
+        <div className="flex lg:bg-[url('/background/folder_background.png')] bg-[url('/background/folder_background_mobile.png')] bg-cover border-b drop-shadow-lg 3xl:-mt-[520px] 2xl:-mt-[420px] xl:-mt-[390px] lg:-mt-[300px] md:-mt-[420px] -mt-[280px]">
+            <div className='custom-container flex flex-col md:items-center items-start md:justify-center w-full 3xl:pt-64 3xl:pb-32 2xl:pt-48 2xl:pb-32 xxl:pt-44 xxl:pb-28 xl:pt-44 xl:pb-24 lg:pt-32 lg:pb-20 md:pt-72 md:pb-20 pt-44 pb-10'>
+                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
                     Bài viết
                 </div>
                 {
-                    isVisibleMobile ?
+                    isVisibleTablet ?
                         <Swiper
                             slidesPerView={1}
-                            spaceBetween={10}
+                            spaceBetween={"auto"}
                             modules={[Pagination, A11y]}
                             allowTouchMove={true}
                             breakpoints={{
                                 320: {
                                     slidesPerView: 1,
+                                    spaceBetween: "15",
                                     allowTouchMove: true
                                 },
                                 640: {
                                     slidesPerView: 1,
+                                    spaceBetween: "15",
                                     allowTouchMove: true
                                 },
                                 768: {
                                     slidesPerView: 1,
+                                    spaceBetween: "15",
                                     allowTouchMove: true
                                 },
                             }}
                             pagination={customPaginationBanner}
-                            className='custom-swiper-article w-full mt-4 h-[360px]'
+                            className='custom-swiper-article w-full mt-4 md:h-[420px] h-[300px]'
                         >
                             {
                                 dataArticle && dataArticle.map((item, index) => (
                                     <SwiperSlide key={item.id}>
                                         <Link
                                             href="#"
-                                            className='relative group'
+                                            className='relative group w-full'
                                         >
-                                            <div className='w-full 3xl:h-[532px] 2xl:h-[532px] xxl:h-[524px] xl:h-[464px] lg:h-[416px] md:h-[320px] h-[200px] group overflow-hidden rounded-2xl'>
+                                            <div className='w-full 3xl:h-[532px] 2xl:h-[532px] xxl:h-[524px] xl:h-[464px] lg:h-[416px] md:h-[400px] h-[260px] group overflow-hidden rounded-2xl'>
                                                 <Image
                                                     width={1920}
                                                     height={1080}
@@ -134,14 +136,7 @@ const SectionArticle = (props: Props) => {
                                             className='relative group'
                                         >
                                             <div className='w-full 3xl:h-[532px] 2xl:h-[532px] xxl:h-[524px] xl:h-[464px] lg:h-[416px] md:h-[320px] h-[200px] group overflow-hidden rounded-2xl'>
-                                                {/* <Image
-                                    width={1920}
-                                    height={1080}
-                                    loading='lazy'
-                                    alt='image'
-                                    src="/other/car/car1.png"
-                                    className='w-full h-full object-cover rounded-2xl group-hover:scale-105 duration-500 transition ease-in-out'
-                                /> */}
+
                                                 <BlurImage
                                                     image={dataArticle[0].image ? dataArticle[0].image : '/default/default.png'}
                                                     // image={"/other/car/car1.png" ? "/other/car/car1.png" : '/default/default.png'}
@@ -154,11 +149,9 @@ const SectionArticle = (props: Props) => {
                                             </div>
                                             <div className='flex flex-col 2xl:gap-4 gap-2 absolute md:left-[50px] left-[40px] md:top-[50px] top-[40px] 2xl:pr-4 pr-6'>
                                                 <div className='lg:text-sm md:text-base text-lg uppercase font-medium font-[inter] text-[#61F7F7] line-clamp-2'>
-                                                    {/* Thông báo */}
                                                     {dataArticle[0].type ? dataArticle[0].type : ""}
                                                 </div>
                                                 <div className='3xl:text-2xl 2xl:text-xl xxl:text-xl xl:text-lg lg:text-lg md:text-sm text-base text-white font-semibold line-clamp-2 xxl:max-w-[75%] xl:max-w-[85%] max-w-full'>
-                                                    {/* Một số lưu ý cho chủ xe khi lần đầu cho thuê xe tại KANOW */}
                                                     {dataArticle[0].description ? dataArticle[0].description : ""}
                                                 </div>
                                             </div>

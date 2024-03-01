@@ -27,15 +27,15 @@ const SectitonWhyWe = (props: Props) => {
     ]
 
     return (
-        <div className="relative flex lg:bg-[url('/background/why_background.png')] bg-[url('/background/why_background_mobile.png')] bg-cover drop-shadow 3xl:pt-56 3xl:pb-32 2xl:pt-44 2xl:pb-28 xl:pt-40 xl:pb-24 pt-36 pb-24">
-            <div className='custom-container z-20 flex flex-col items-center 3xl:gap-4 gap-2 w-full'>
-                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-3xl leading-tight capitalize font-bold text-[#101010]'>
+        <div className="relative flex lg:bg-[url('/background/why_background.png')] bg-[url('/background/why_background_mobile.png')] bg-cover drop-shadow 3xl:pt-56 3xl:pb-32 2xl:pt-44 2xl:pb-28 xl:pt-40 xl:pb-24 md:pt-36 md:pb-24 py-20">
+            <div className='custom-container z-20 flex flex-col md:items-center items-start 3xl:gap-4 gap-2 w-full'>
+                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] leading-tight capitalize font-bold text-[#101010]'>
                     Vì sao chọn chúng tôi
                 </div>
-                <div className='3xl:text-base xl:text-sm text-xs text-[#8C93A3] font-normal '>
+                <div className='3xl:text-base xl:text-sm md:text-xs text-sm text-[#8C93A3] font-normal '>
                     Chúng tôi luôn cố gắng để giúp bạn dễ dàng hơn khi thuê xe
                 </div>
-                <div className='mt-6 grid grid-cols-3 gap-4'>
+                <div className='mt-6 grid md:grid-cols-3 grid-cols-1 md:gap-4 gap-10'>
                     {
                         dataServicesWhyMe && dataServicesWhyMe.map((item) => (
                             <div key={item.id} className='col-span-1 w-full flex flex-col gap-3 items-center text-center'>
@@ -71,7 +71,7 @@ const SectitonWhyWe = (props: Props) => {
                 width={1920}
                 height={1080}
                 src="/icon/cloud.svg"
-                className='xxl:w-[140px] xxl:h-[60px] w-[100px] h-[50px] object-contain absolute bottom-12 left-[25%]'
+                className='xxl:w-[140px] xxl:h-[60px] w-[100px] h-[50px] object-contain absolute md:bottom-12 bottom-5 md:left-[20%] left-[10%]'
                 loading="lazy"
             />
             <Image
@@ -79,7 +79,7 @@ const SectitonWhyWe = (props: Props) => {
                 width={1920}
                 height={1080}
                 src="/icon/cloud.svg"
-                className='xxl:w-[140px] xxl:h-[60px] w-[100px] h-[50px] object-contain absolute top-[30%] xxl:right-[25%] xl:right-[20%] lg:right-[15%] right-[10%] -rotate-6'
+                className='xxl:w-[140px] xxl:h-[60px] w-[100px] h-[50px] object-contain absolute md:top-[30%] top-[20%] xxl:right-[25%] xl:right-[20%] lg:right-[15%] md:right-[10%] right-0 -rotate-6'
                 loading="lazy"
             />
             <Image
@@ -87,7 +87,7 @@ const SectitonWhyWe = (props: Props) => {
                 width={1920}
                 height={1080}
                 src="/icon/cloud.svg"
-                className='xxl:w-[110px] xxl:h-[50px] w-[80px] h-[40px] object-contain absolute bottom-[5%] right-[5%] -rotate-2'
+                className='xxl:w-[110px] xxl:h-[50px] w-[80px] h-[40px] object-contain absolute md:bottom-[5%] bottom-[22%] right-[5%] -rotate-2'
                 loading="lazy"
             />
             <Image

@@ -7,8 +7,11 @@ import { TiLocation } from 'react-icons/ti';
 
 import { Button } from "@/components/ui/button"
 import { DatePickerWithRange } from '@/components/datePicker/DatePickerWithRange';
+import { useResize } from '@/hooks/useResize';
 
 const IntroSection = () => {
+    const { isVisibleMobile } = useResize()
+
     const tabSearch = [
         {
             id: "232",
@@ -34,37 +37,73 @@ const IntroSection = () => {
         setTabId(id)
     }
 
+    var heroTitle: string = "KANOW - Đồng hành mọi chuyến đi của bạn";
+    var heroPerTitle: { letter: string, id: number }[] = heroTitle.split('').map((letter, index) => ({ letter: letter, id: index + 1 }));
+
     console.log('tabId', tabId);
 
 
     return (
-        <div className='xl:h-[100vh] lg:h-[80vh] h-[75dvh] w-full relative'>
-            <Image
-                alt="background"
-                width={1920}
-                height={1080}
-                src="/background/cityHome.png"
-                className='w-full h-auto object-contain absolute'
-                priority
-            />
-            <Image
-                alt="background"
-                width={1920}
-                height={1080}
-                src="/background/line_background1.png"
-                className='w-full h-auto object-contain absolute 3xl:-bottom-[4px] 2xl:-bottom-[20px] xxl:-bottom-[16px] xl:bottom-0 lg:-bottom-[10px] md:bottom-0 bottom-0 drop-shadow'
-                priority
-            />
+        <div className='xl:h-[100vh] lg:h-[80vh] md:h-[80svh] h-[100svh] w-full relative '>
+            {
+                isVisibleMobile ?
+                    <>
+                        <Image
+                            alt="background"
+                            width={1920}
+                            height={1080}
+                            src="/background/cityHomeMobile.png"
+                            className='w-full h-auto object-contain absolute'
+                            priority
+                        />
+                        <Image
+                            alt="background"
+                            width={1920}
+                            height={1080}
+                            src="/background/line_background_mobile1.png"
+                            className='w-full h-auto object-contain absolute -bottom-8 drop-shadow'
+                            priority
+                        />
+                    </>
+                    :
+                    <>
+                        <Image
+                            alt="background"
+                            width={1920}
+                            height={1080}
+                            src="/background/cityHome.png"
+                            className='w-full h-auto object-contain absolute'
+                            priority
+                        />
+                        <Image
+                            alt="background"
+                            width={1920}
+                            height={1080}
+                            src="/background/line_background1.png"
+                            className='w-full h-auto object-contain absolute 3xl:-bottom-[4px] 2xl:-bottom-[20px] xxl:-bottom-[16px] xl:bottom-0 lg:-bottom-[10px] md:bottom-0 bottom-0 drop-shadow'
+                            priority
+                        />
+                    </>
+            }
             <div
                 className='xl:h-[60vh] h-[40vh]'
                 style={{ background: "linear-gradient(0deg, rgba(3, 107, 116, 0.04) -75.88%, rgba(0, 0, 0, 0.00) 129.69%), rgba(194, 249, 249, 0.60)" }}
             >
                 <div className='custom-container relative'>
-                    <div className='3xl:text-[3.75rem] 2xl:text-[3rem] xxl:text-[2.25rem] xl:text-[2.25rem] lg:text-[1.875rem] text-[1.5rem] font-bold max-w-[45%] 3xl:py-24 2xl:py-16 xl:py-16 py-10 capitalize leading-tight'>
-                        {/* <div className='3xl:text-6xl 2xl:text-5xl xxl:text-4xl xl:text-4xl lg:text-3xl text-2xl font-bold max-w-[45%] 3xl:py-24 2xl:py-16 xl:py-16 py-10 capitalize leading-normal'> */}
-                        KANOW - Đồng hành mọi chuyến đi của bạn
+                    <div className='3xl:text-[3.75rem] 2xl:text-[3rem] xxl:text-[2.25rem] xl:text-[2.25rem] lg:text-[1.875rem] md:text-[1.5rem] text-[2rem] font-bold md:max-w-[45%] max-w-full 3xl:py-24 2xl:py-16 xl:py-16 py-10 capitalize leading-tight'>
+                        {/* KANOW - Đồng hành mọi chuyến đi của bạn */}
+                        {
+                            heroPerTitle.map(e => (
+                                <span
+                                    key={e.id.toString()}
+                                    data-aos="fade-up"
+                                    data-aos-delay={`${e.letter !== "" && e.id * 50}`}>
+                                    {e.letter}
+                                </span>
+                            ))
+                        }
                     </div>
-                    <div className='flex flex-col xl:w-[500px] w-[400px]'>
+                    <div className='flex flex-col xl:w-[500px] md:w-[400px] w-full'>
                         <div className='flex gap-[2px] items-center bg-white/0'>
                             {
                                 tabSearch && tabSearch.map((tab) => (

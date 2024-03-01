@@ -45,16 +45,8 @@ export function DatePickerWithRange({
                             ) : (
                                 format(date.from, "dd/MM/yyyy", { locale: vi })
                             )
-                            // date.to ? (
-                            //     <>
-                            //         {format(date.from, "LLL dd, y")} -{" "}
-                            //         {format(date.to, "LLL dd, y")}
-                            //     </>
-                            // ) : (
-                            //     format(date.from, "LLL dd, y")
-                            // )
                         ) : (
-                            <span className='text-[#B4B8C5] font-medium'>Pick a date</span>
+                            <span className='text-[#B4B8C5] font-medium'>Chọn ngày</span>
                         )}
                     </Button>
                 </PopoverTrigger>
@@ -68,6 +60,11 @@ export function DatePickerWithRange({
                         numberOfMonths={2}
                         locale={vi}
                     />
+                    <div className='flex w-full justify-end items-center p-2'>
+                        <Button className='xxl:text-base xl:text-sm lg:text-[13px] text-sm 2xl:px-10 2xl:py-6 px-6 py-4 w-fit 3xl:gap-2 gap-1 rounded-md cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'>
+                            Áp dụng
+                        </Button>
+                    </div>
                 </PopoverContent>
             </Popover>
         </div>
