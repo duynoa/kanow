@@ -16,11 +16,12 @@ import { FaStar } from 'react-icons/fa';
 import { LuSettings2 } from "react-icons/lu";
 import { RiSearchLine } from "react-icons/ri";
 import { FaCircleCheck } from 'react-icons/fa6';
-import { TiArrowLeft, TiArrowRight, TiHeartFullOutline, TiLocation } from 'react-icons/ti';
+import {  TiHeartFullOutline, TiLocation } from 'react-icons/ti';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { A11y } from 'swiper/modules';
+import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
 
 type Props = {}
 
@@ -225,24 +226,24 @@ const SearchCars = (props: Props) => {
         },
     ]
 
-    const swiperRefBanner = useRef<any>(null);
-    // slider banner
-    const [sliderStartBanner, setSliderStartBanner] = useState<boolean>(true)
-    const [sliderEndBanner, setSliderEndBanner] = useState<boolean>(false)
+    const swiperRef = useRef<any>(null);
+    // slider filter
+    const [sliderStart, setSliderStart] = useState<boolean>(true)
+    const [sliderEnd, setSliderEnd] = useState<boolean>(false)
 
     const handlePrev = (e: any, type: string) => {
-        if (swiperRefBanner.current && !sliderStartBanner && type === 'banner') {
-            swiperRefBanner?.current?.slidePrev();
-            setSliderStartBanner(swiperRefBanner.current.isBeginning)
-            setSliderEndBanner(swiperRefBanner.current.isEnd)
+        if (swiperRef.current && !sliderStart && type === 'filter') {
+            swiperRef?.current?.slidePrev();
+            setSliderStart(swiperRef.current.isBeginning)
+            setSliderEnd(swiperRef.current.isEnd)
         }
     };
 
     const handleNext = (e: any, type: string) => {
-        if (swiperRefBanner.current && !sliderEndBanner && type === 'banner') {
-            swiperRefBanner?.current?.slideNext();
-            setSliderStartBanner(swiperRefBanner.current.isBeginning)
-            setSliderEndBanner(swiperRefBanner.current.isEnd)
+        if (swiperRef.current && !sliderEnd && type === 'filter') {
+            swiperRef?.current?.slideNext();
+            setSliderStart(swiperRef.current.isBeginning)
+            setSliderEnd(swiperRef.current.isEnd)
         }
     };
 
@@ -285,7 +286,6 @@ const SearchCars = (props: Props) => {
             </div>
             <div className='py-4 border-t border-b  w-full'>
                 <div className='custom-container'>
-
                     {/* <div className='p-3 bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors'>
                         <LuSettings2 className='text-2xl' />
                     </div>
@@ -296,14 +296,13 @@ const SearchCars = (props: Props) => {
                             </div>
                         ))
                     } */}
+
                     <div className='flex items-center justify-center w-full relative'>
-
-
                         <Swiper
                             slidesPerView={8}
                             spaceBetween={0}
                             onSwiper={(swiper) => {
-                                swiperRefBanner.current = swiper;
+                                swiperRef.current = swiper;
                             }}
                             loop={false}
                             allowTouchMove={true}
@@ -333,14 +332,14 @@ const SearchCars = (props: Props) => {
                                     slidesPerView: 8,
                                 },
                             }}
-                            className='flex gap-3 w-fit'
+                            className='flex gap-3 w-fit px-2'
                         >
                             <SwiperSlide className='py-3 px-4 w-fit h-fit bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors'>
-                                <LuSettings2 className='text-2xl' />
+                                <LuSettings2 className='3xl:text-2xl text-xl' />
                             </SwiperSlide>
                             {
                                 listFilter && listFilter.map((item) => (
-                                    <SwiperSlide key={item.id} className='mx-2 py-3 px-4 w-fit bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] font-medium caret-transparent hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors'>
+                                    <SwiperSlide key={item.id} className='3xl:text-base text-sm mx-2 py-3 px-4 w-fit bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] font-medium caret-transparent hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors'>
                                         {item.name ? item.name : ''}
                                     </SwiperSlide>
                                 ))
@@ -349,12 +348,12 @@ const SearchCars = (props: Props) => {
                         </Swiper>
                         {/* <div className='flex gap-2 absolute 3xl:-top-24 xl:top-[-22%] lg:top-[-22%] md:top-[-22%] top-[-18%] right-0 disable-selection'>
                             <TiArrowLeft
-                                onClick={(e) => handlePrev(e, 'banner')}
-                                className={`${sliderStartBanner ? 'bg-[#F2F2F4] text-[#B8B8C3] cursor-not-allowed' : 'bg-[#FCB203]/10 text-[#DD9200] cursor-pointer hover:scale-125 duration-500 ease-in-out transition'} p-1 2xl:w-10 2xl:h-10 xl:w-9 xl:h-9 w-8 h-8 rounded-full`}
+                                onClick={(e) => handlePrev(e, 'filter')}
+                                className={`${sliderStart ? 'bg-[#F2F2F4] text-[#B8B8C3] cursor-not-allowed' : 'bg-[#FCB203]/10 text-[#DD9200] cursor-pointer hover:scale-125 duration-500 ease-in-out transition'} p-1 2xl:w-10 2xl:h-10 xl:w-9 xl:h-9 w-8 h-8 rounded-full`}
                             />
                             <TiArrowRight
-                                onClick={(e) => handleNext(e, 'banner')}
-                                className={`${sliderEndBanner ? 'bg-[#F2F2F4] text-[#B8B8C3] cursor-not-allowed' : 'bg-[#FCB203]/10 text-[#DD9200] cursor-pointer hover:scale-125 duration-500 ease-in-out transition'} p-1 2xl:w-10 2xl:h-10 xl:w-9 xl:h-9 w-8 h-8 rounded-full`}
+                                onClick={(e) => handleNext(e, 'filter')}
+                                className={`${sliderEnd ? 'bg-[#F2F2F4] text-[#B8B8C3] cursor-not-allowed' : 'bg-[#FCB203]/10 text-[#DD9200] cursor-pointer hover:scale-125 duration-500 ease-in-out transition'} p-1 2xl:w-10 2xl:h-10 xl:w-9 xl:h-9 w-8 h-8 rounded-full`}
                             />
                         </div> */}
                     </div>
@@ -367,7 +366,7 @@ const SearchCars = (props: Props) => {
                             <Link
                                 key={card.id}
                                 className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
-                                href="#"
+                                href={`/detail-car/${card.id}?${ConvertToSlug(card?.title)}`}
                             >
                                 <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
                                     - {card.promotion}

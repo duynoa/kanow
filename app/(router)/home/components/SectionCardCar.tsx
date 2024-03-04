@@ -174,7 +174,6 @@ const SectionCardCar = () => {
         renderBullet: function (index: number, className: string) {
             return `<span class=${className}></span>`
         },
-
     }
 
     return (

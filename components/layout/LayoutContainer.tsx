@@ -77,7 +77,7 @@ const LayoutContainer = ({
 
     return (
         <html lang="en">
-            <body className={`${inter.className} w-full`}>
+            <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
                 <Header />
                 <main className='overflow-hidden w-full'>
                     {children}
