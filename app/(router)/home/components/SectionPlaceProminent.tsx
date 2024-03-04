@@ -8,7 +8,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { A11y, Pagination } from 'swiper/modules'
 
 import { TiArrowLeft, TiArrowRight } from 'react-icons/ti';
-import { FormatNumberDot } from '@/components/format/FormatNumber';
+import { FormatNumberComma } from '@/components/format/FormatNumber';
 import { useResize } from '@/hooks/useResize';
 
 type Props = {}
@@ -135,7 +135,7 @@ const SectionPlaceProminent = (props: Props) => {
                                                 {item.name ? item.name : ""}
                                             </div>
                                             <div className='bg-[#D7D9E0]/40 rounded-[32px] py-1 px-3 3xl:text-sm lg:text-xs text-[12px] w-fit'>
-                                                {FormatNumberDot(item.quantityCar)} xe
+                                                {FormatNumberComma(item.quantityCar)} xe
                                             </div>
                                         </div>
                                     </div>

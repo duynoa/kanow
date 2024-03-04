@@ -8,8 +8,11 @@ export const FormatNumberToThousands = (number: number): string => {
     }
 }
 
-export const FormatNumberDot = (number: number): string => {
+export const FormatNumberComma = (number: number): string => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+export const FormatNumberDot = (number: number): string => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 }
 
 export const FormatNumberHundred = (number: number): string => {

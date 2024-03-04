@@ -20,7 +20,7 @@ type Props = {
     classNameButton?: string
 }
 
-export function DatePickerWithRange({
+export function DatePickerWithRangeAndTime({
     className, classNameButton
 }: Props) {
     const [date, setDate] = React.useState<DateRange | undefined>({
@@ -44,11 +44,11 @@ export function DatePickerWithRange({
                         {date?.from ? (
                             date.to ? (
                                 <>
-                                    {format(date.from, "dd/MM/yyyy", { locale: vi })} -{" "}
-                                    {format(date.to, "dd/MM/yyyy", { locale: vi })}
+                                    {format(date.from, "HH:mm:ss dd/MM/yyyy", { locale: vi })} -{" "}
+                                    {format(date.to, "HH:mm:ss dd/MM/yyyy", { locale: vi })}
                                 </>
                             ) : (
-                                format(date.from, "dd/MM/yyyy", { locale: vi })
+                                format(date.from, "HH:mm:ss dd/MM/yyyy", { locale: vi })
                             )
                         ) : (
                             <span className='text-[#B4B8C5] font-medium'>Chọn ngày</span>
@@ -65,11 +65,6 @@ export function DatePickerWithRange({
                         numberOfMonths={2}
                         locale={vi}
                     />
-                    <div className='flex w-full justify-end items-center p-2'>
-                        <Button className='xxl:text-base xl:text-sm lg:text-[13px] text-sm px-6 py-3 w-fit 3xl:gap-2 gap-1 rounded-md cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'>
-                            Áp dụng
-                        </Button>
-                    </div>
                 </PopoverContent>
             </Popover>
         </div>

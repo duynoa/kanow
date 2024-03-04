@@ -1,6 +1,6 @@
 'use client'
 
-import { FormatNumberHundred, FormatNumberToThousands } from '@/components/format/FormatNumber'
+import { FormatNumberDot, FormatNumberHundred, FormatNumberToThousands } from '@/components/format/FormatNumber'
 import Map from '@/components/map/Maps'
 import { Badge } from '@/components/ui/badge'
 import Image from 'next/image'
@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { FaRegQuestionCircle, FaStar } from 'react-icons/fa'
 import { FaCircleCheck } from 'react-icons/fa6'
 import { RiMap2Line } from 'react-icons/ri'
-import { TiHeartFullOutline, TiLocation } from 'react-icons/ti'
+import { TiArrowSortedUp, TiHeartFullOutline, TiLocation } from 'react-icons/ti'
 import { A11y, Autoplay, Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { v4 as uuidv4 } from 'uuid'
@@ -20,6 +20,9 @@ import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
 import { PiShieldCheckFill } from "react-icons/pi";
 import { Label } from '@/components/ui/label'
 import { DatePickerWithRange } from '@/components/datePicker/DatePickerWithRange'
+import { DatePickerWithRangeAndTime } from '@/components/datePicker/DatePickerWithRangeAndTime'
+import { Checkbox } from '@/components/ui/checkbox'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 
 type Props = {}
@@ -810,7 +813,7 @@ const DetailCar = (props: Props) => {
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-2 p-6 bg-white border rounded-2xl'>
+                    <div className='flex flex-col gap-6 p-6 bg-white border rounded-2xl'>
                         <div className='flex items-center gap-1'>
                             <div className='3xl:text-4xl md:text-3xl text-2xl text-[#D7D9E0] font-medium line-through'>
                                 {FormatNumberToThousands(292000)}
@@ -825,15 +828,160 @@ const DetailCar = (props: Props) => {
                             </div>
                         </div>
 
-                        <div className='text-base text-[#16171B] font-semibold'>
-                            Nhu cầu thuê xe
-                        </div>
-
                         <div className='flex flex-col gap-2'>
+                            <div className='text-base text-[#16171B] font-semibold'>
+                                Nhu cầu thuê xe
+                            </div>
                             <Label className='text-base text-[#6F7689] w-fit' htmlFor="date">
                                 Thời gian thuê
                             </Label>
-                            <DatePickerWithRange className='w-full' classNameButton='px-4 py-3' />
+                            <DatePickerWithRangeAndTime className='w-full' classNameButton='px-4 py-3' />
+                            <div className='flex w-full justify-end text-[#3561FF] text-base font-medium'>
+                                Thuê tháng giảm 8%
+                            </div>
+                            <div>
+                                <div className='text-base text-[#FA3434] font-medium'>
+                                    Xe đã được thuê:
+                                </div>
+                                <li className='text-base text-[#FA3434] font-medium'>
+                                    Từ 7h30 12/3/2024 đến 7h30 14/3/2024
+                                </li>
+                            </div>
+                            <div className='flex flex-col gap-2'>
+                                <div className='text-base text-[#6F7689]'>
+                                    Địa điểm giao nhận xe
+                                </div>
+                                <div className="flex items-center gap-4 bg-[#F6F6F8]/70 p-4 rounded-xl w-full">
+                                    <Checkbox disabled id="terms" className='w-5 h-5 text-white border-[#9EA1AE] data-[state=checked]:border-[#2FB9BD] data-[state=checked]:bg-[#2FB9BD] data-[state=checked]:text-white' />
+                                    <label
+                                        htmlFor="terms"
+                                        className="flex flex-col text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-full caret-transparent"
+                                    >
+                                        <span className='text-sm text-[#484D5C]'>
+                                            Giao xe tận nơi
+                                        </span>
+                                        <span className='text-base text-[#16171B] font-medium'>
+                                            12 Hoàn Kiếm Hà Nội
+                                        </span>
+                                    </label>
+                                </div>
+                                <div className='text-base text-[#FA3434] font-medium'>
+                                    Rất tiếc, chủ xe chưa hỗ trợ giao xe tận nơi
+                                </div>
+                            </div>
+
+                            <div className='flex flex-col gap-2'>
+                                <div className="flex items-center gap-4 bg-[#F6F6F8]/70 p-4 rounded-xl w-full border border-[#1EAAB1]">
+                                    <Checkbox id="terms-2" className='w-5 h-5 text-white border-[#9EA1AE] data-[state=checked]:border-[#2FB9BD] data-[state=checked]:bg-[#2FB9BD] data-[state=checked]:text-white' />
+                                    <label
+                                        htmlFor="terms-2"
+                                        className="flex flex-col text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-full caret-transparent"
+                                    >
+                                        <span className='text-sm text-[#484D5C]'>
+                                            Tự đến lấy xe
+                                        </span>
+                                        <span className='text-base text-[#16171B] font-medium'>
+                                            12 Hoàn Kiếm Hà Nội
+                                        </span>
+                                    </label>
+                                </div>
+                                {/* <div className='text-base text-[#FA3434] font-medium'>
+                                    Rất tiếc, chủ xe chưa hỗ trợ giao xe tận nơi
+                                </div> */}
+                            </div>
+                        </div>
+
+                        <div className='flex flex-col gap-2'>
+                            <div className='flex flex-col gap-2 pb-3 border-b'>
+                                <div className='flex justify-between items-center'>
+                                    <div className='flex flex-row items-center gap-2'>
+                                        <div className='text-base text-[#3E424E]'>
+                                            Đơn giá thuê
+                                        </div>
+                                        <FaRegQuestionCircle onClick={() => console.log('check')} className='text-[#FF9900] text-2xl cursor-pointer' />
+                                    </div>
+                                    <div className='text-[#3E424E] font-semibold text-base'>
+                                        {FormatNumberDot(292000)}<span>đ/ngày</span>
+                                    </div>
+                                </div>
+
+                                <div className='flex justify-between items-center'>
+                                    <div className='flex flex-row items-center gap-2'>
+                                        <div className='text-base text-[#3E424E]'>
+                                            Bảo hiểm thuê xe
+                                        </div>
+                                        <FaRegQuestionCircle onClick={() => console.log('check')} className='text-[#FF9900] text-2xl cursor-pointer' />
+                                    </div>
+                                    <div className='text-[#3E424E] font-semibold text-base'>
+                                        {FormatNumberDot(52000)}<span>đ/ngày</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className='flex justify-between items-center'>
+                                <div className='text-base text-[#3E424E] font-medium'>
+                                    Tổng tạm tính
+                                </div>
+                                <div className='text-[#3E424E] font-semibold text-base'>
+                                    {FormatNumberDot(692000)}<span>đ/2 ngày</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className='flex flex-col gap-2 bg-[#F9F9FA] rounded-xl p-4'>
+                            <div className='text-base text-[#2C2F31] font-semibold'>
+                                Khuyến mãi
+                            </div>
+
+                            <RadioGroup defaultValue="comfortable">
+                                <div className="flex items-center space-x-2 caret-transparent">
+                                    <RadioGroupItem value="default" id="r1" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
+                                    <Label htmlFor="r1" className='flex flex-row items-center justify-between gap-2 w-full'>
+                                        <div className='flex flex-col'>
+                                            <div className='flex items-center gap-1'>
+                                                <Image
+                                                    src='/icon/icon_ticket_discount_red.svg'
+                                                    alt="ticket"
+                                                    width={80}
+                                                    height={80}
+                                                    className='w-6 max-w-6 h-6 object-contain'
+                                                />
+                                                <div className='w-[90%] max-w-[90%] text-lg'>
+                                                    Chương trình giảm giá
+                                                </div>
+                                            </div>
+                                            <div className='text-[#6F7689] text-base'>
+                                                Giảm 160k trên đơn giá
+                                            </div>
+                                        </div>
+                                        <div className='text-base text-[#2FB9BD] font-semibold'>
+                                            -{FormatNumberToThousands(160000)}
+                                        </div>
+                                    </Label>
+                                </div>
+                                <div className="flex items-center space-x-2 caret-transparent">
+                                    <RadioGroupItem value="comfortable" id="r2" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
+                                    <Label htmlFor="r2" className='flex flex-row items-center justify-between gap-2 w-full'>
+                                        <div className='flex flex-col'>
+                                            <div className='flex items-center gap-1'>
+                                                <Image
+                                                    src='/icon/icon_ticket_discount_green.svg'
+                                                    alt="ticket"
+                                                    width={80}
+                                                    height={80}
+                                                    className='w-6 max-w-6 h-6 object-contain fill-[#2FB9BD]'
+                                                />
+                                                <div className='w-[90%] max-w-[90%] text-lg'>
+                                                    Chương trình giảm giá
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className='text-base text-[#2FB9BD] font-semibold'>
+                                            <TiArrowSortedUp className='text-2xl rotate-90' />
+                                        </div>
+                                    </Label>
+                                </div>
+                            </RadioGroup>
                         </div>
                     </div>
                 </div>
