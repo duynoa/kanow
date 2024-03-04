@@ -15,9 +15,14 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 
+type Props = {
+    className?: string
+    classNameButton?: string
+}
+
 export function DatePickerWithRange({
-    className,
-}: React.HTMLAttributes<HTMLDivElement>) {
+    className, classNameButton
+}: Props) {
     const [date, setDate] = React.useState<DateRange | undefined>({
         from: new Date(2022, 0, 20),
         to: addDays(new Date(2022, 0, 20), 20),
@@ -31,7 +36,7 @@ export function DatePickerWithRange({
                         id="date"
                         variant={"outline"}
                         className={cn(
-                            "w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 px-4 py-2",
+                            `${classNameButton} w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0`,
                             !date && "text-muted-foreground"
                         )}
                     >

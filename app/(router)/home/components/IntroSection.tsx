@@ -136,7 +136,7 @@ const IntroSection = () => {
                                 <Label className='text-sm text-[#6F7689] w-fit' htmlFor="date">
                                     Thời gian thuê
                                 </Label>
-                                <DatePickerWithRange className='w-full' />
+                                <DatePickerWithRange className='w-full' classNameButton="px-4 py-3" />
                             </div>
                             <Button
                                 type='button'
