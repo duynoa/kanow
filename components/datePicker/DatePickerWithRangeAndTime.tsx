@@ -36,22 +36,22 @@ export function DatePickerWithRangeAndTime({
                         id="date"
                         variant={"outline"}
                         className={cn(
-                            `${classNameButton} w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0`,
+                            `${classNameButton} w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] text-xs`,
                             !date && "text-muted-foreground"
                         )}
                     >
-                        <FaCalendarAlt className="mr-4 text-lg text-[#1EAAB1]" />
+                        <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
                         {date?.from ? (
                             date.to ? (
                                 <>
-                                    {format(date.from, "HH:mm:ss dd/MM/yyyy", { locale: vi })} -{" "}
-                                    {format(date.to, "HH:mm:ss dd/MM/yyyy", { locale: vi })}
+                                    {format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                    {format(date.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
                                 </>
                             ) : (
-                                format(date.from, "HH:mm:ss dd/MM/yyyy", { locale: vi })
+                                format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
                             )
                         ) : (
-                            <span className='text-[#B4B8C5] font-medium'>Chọn ngày</span>
+                            <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
                         )}
                     </Button>
                 </PopoverTrigger>

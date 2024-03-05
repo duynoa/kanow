@@ -369,18 +369,18 @@ const DetailCar = (props: Props) => {
                             allowTouchMove: true
                         },
                         768: {
-                            slidesPerView: 3,
+                            slidesPerView: 1,
                             allowTouchMove: true
                         },
                     }}
                     autoplay={true}
                     pagination={customPagination}
-                    className='custom-swiper-detail-car w-full 3xl:h-[330px] h-[280px] px-2'
+                    className='custom-swiper-detail-car w-full 3xl:h-[330px] xl:h-[280px] lg:h-[240px] h-[360px] px-2'
                 >
                     {
                         imageCard && imageCard.map((card, index) => (
                             <SwiperSlide key={card.id}>
-                                <div className='w-full 3xl:h-[300px] h-[240px] cursor-pointer'>
+                                <div className='w-full 3xl:h-[300px] xl:h-[240px] lg:h-[200px] h-[360px] cursor-pointer'>
                                     <Image
                                         src={card.image ? card.image : '/default/default.png'}
                                         alt="car"
@@ -395,8 +395,8 @@ const DetailCar = (props: Props) => {
                 </Swiper>
             </div>
 
-            <div className='custom-container 3xl:mt-8 mt-4 flex flex-row gap-6'>
-                <div className='flex flex-col gap-6 w-[70%] max-w-[70%] h-full pb-16'>
+            <div className='custom-container 3xl:mt-8 mt-4 flex lg:flex-row flex-col gap-6'>
+                <div className='flex flex-col gap-6 xxl:w-[70%] xxl:max-w-[70%] lg:w-[65%] lg:max-w-[65%] w-full max-w-full h-full pb-16 lg:order-none order-2'>
                     <div className='flex flex-row items-center justify-between 3xl:pb-6 pb-4 border-b-2'>
                         <div className='flex flex-col gap-2'>
                             <div className='3xl:text-4xl text-3xl uppercase text-[#09080D] font-bold'>
@@ -440,58 +440,58 @@ const DetailCar = (props: Props) => {
                         </div>
                         <div className='flex flex-row justify-between items-center max-w-[80%]'>
                             <div className='flex items-center gap-4'>
-                                <div className='w-14 max-w-14 h-14'>
+                                <div className='3xl:w-14 3xl:max-w-14 3xl:h-14 w-12 max-w-12 h-12'>
                                     <Image
                                         src={"/icon/icon_feature1.png"}
                                         alt="icon"
                                         width={100}
                                         height={100}
-                                        className='w-14 h-14 object-contain'
+                                        className='3xl:w-14 3xl:h-14 w-12 h-12 object-contain'
                                     />
                                 </div>
                                 <div className='flex flex-col gap-1'>
-                                    <div className='uppercase text-sm text-[#6F7689]'>
+                                    <div className='uppercase 3xl:text-sm text-xs text-[#6F7689]'>
                                         Truyền động
                                     </div>
-                                    <div className='text-base text-[#3E424E] font-semibold  '>
+                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold  '>
                                         Số tự động
                                     </div>
                                 </div>
                             </div>
                             <div className='flex items-center gap-4'>
-                                <div className='w-14 max-w-14 h-14'>
+                                <div className='3xl:w-14 3xl:max-w-14 3xl:h-14 w-12 max-w-12 h-12'>
                                     <Image
                                         src={"/icon/icon_feature2.png"}
                                         alt="icon"
                                         width={100}
                                         height={100}
-                                        className='w-14 h-14 object-contain'
+                                        className='3xl:w-14 3xl:h-14 w-12 h-12 object-contain'
                                     />
                                 </div>
                                 <div className='flex flex-col gap-1'>
-                                    <div className='uppercase text-sm text-[#6F7689]'>
+                                    <div className='uppercase 3xl:text-sm text-xs text-[#6F7689]'>
                                         Số ghế
                                     </div>
-                                    <div className='text-base text-[#3E424E] font-semibold  '>
+                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold  '>
                                         5 chỗ
                                     </div>
                                 </div>
                             </div>
                             <div className='flex items-center gap-4'>
-                                <div className='w-14 max-w-14 h-14'>
+                                <div className='3xl:w-14 3xl:max-w-14 3xl:h-14 w-12 max-w-12 h-12'>
                                     <Image
                                         src={"/icon/icon_feature3.png"}
                                         alt="icon"
                                         width={100}
                                         height={100}
-                                        className='w-14 h-14 object-contain'
+                                        className='3xl:w-14 3xl:h-14 w-12 h-12 object-contain'
                                     />
                                 </div>
                                 <div className='flex flex-col gap-1'>
-                                    <div className='uppercase text-sm text-[#6F7689]'>
+                                    <div className='uppercase 3xl:text-sm text-xs text-[#6F7689]'>
                                         Nhiên liệu
                                     </div>
-                                    <div className='text-base text-[#3E424E] font-semibold  '>
+                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold  '>
                                         Xăng
                                     </div>
                                 </div>
@@ -504,26 +504,26 @@ const DetailCar = (props: Props) => {
                             Mô tả
                         </div>
                         <div className='flex flex-col'>
-                            <div className='text-base text-[#585F71]'>
+                            <div className='3xl:text-base text-sm text-[#585F71]'>
                                 Xe Vin Fast Fadil số tự động xe mới đăng ký tháng 4/2022.
                             </div>
-                            <div className='text-base text-[#585F71]'>
+                            <div className='3xl:text-base text-sm text-[#585F71]'>
                                 Xe gia đình mới đẹp, bản cao cấp. Nội thất sạch sẽ, bảo dưỡng thường xuyên.
                             </div>
-                            <div className='text-base text-[#585F71]'>
+                            <div className='3xl:text-base text-sm text-[#585F71]'>
                                 Xe rộng rãi, an toàn, tiện nghi động cơ 1.4 mạnh mẽ khỏe khoắn.
                             </div>
-                            <div className='text-base text-[#585F71]'>
+                            <div className='3xl:text-base text-sm text-[#585F71]'>
                                 Xe có cảm biến mà camera lùi, camera hành trình
                             </div>
                         </div>
-                        <div className='text-base text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
+                        <div className='3xl:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
                             Xem thêm
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
-                        <div className='text-2xl text-[#16171B] font-semibold'>
+                    <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
+                        <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                             Tiện nghi trên xe
                         </div>
                         <div className='grid grid-cols-4 gap-2'>
@@ -535,21 +535,21 @@ const DetailCar = (props: Props) => {
                                             alt='icon'
                                             width={80}
                                             height={80}
-                                            className='w-6 max-w-6 h-6 object-contain'
+                                            className='3xl:w-6 3xl:max-w-6 3xl:h-6 w-5 max-w-5 h-5 object-contain'
                                         />
-                                        <div className='text-[#585F71] text-base'>{feature.name}</div>
+                                        <div className='text-[#585F71] 3xl:text-base text-sm'>{feature.name}</div>
                                     </div>
                                 ))
                             }
                         </div>
                     </div>
 
-                    <div id="section-2" className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
-                        <div className='text-2xl text-[#16171B] font-semibold'>
+                    <div id="section-2" className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
+                        <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                             Chủ xe
                         </div>
                         <div className='bg-[#F6F6F8] p-4 flex items-center gap-4 rounded-xl'>
-                            <div className='w-16 h-16 max-w-16 rounded-full border-[3px] border-[#ffffff] drop-shadow'>
+                            <div className='3xl:w-16 3xl:h-16 3xl:min-w-16 w-14 max-w-14 h-14 rounded-full border-[3px] border-[#ffffff] drop-shadow'>
                                 <Image
                                     src="/avatar/avatar1.png"
                                     alt="avatar"
@@ -559,8 +559,8 @@ const DetailCar = (props: Props) => {
                                 />
                             </div>
 
-                            <div className='flex flex-col gap-2'>
-                                <div className='uppercase text-[#16171B] font-semibold'>
+                            <div className='flex flex-col 3xl:gap-2 gap-1'>
+                                <div className='uppercase text-[#16171B] font-semibold 3xl:text-base text-sm'>
                                     Lan vũ
                                 </div>
                                 <div className='flex items-center gap-4'>
@@ -580,40 +580,40 @@ const DetailCar = (props: Props) => {
                                 </div>
                             </div>
 
-                            <div className='pl-20 text-base text-[#6F7689] max-w-[75%]'>
+                            <div className='3xl:pl-20 pl-10 3xl:text-base text-sm text-[#6F7689] 3xl:max-w-[75%] max-w-[70%]'>
                                 Chủ xe 5 sao có thời gian phản hồi nhanh chóng, tỉ lệ đồng ý cao, mức giá cạnh tranh và dịch vụ nhận được nhiều đánh giá tốt từ khách hàng
                             </div>
                         </div>
                         <div className='grid grid-cols-3 gap-20'>
                             <div className='col-span-1 flex flex-col items-center gap-1'>
-                                <div className='text-base text-[#6F7689]'>
+                                <div className='3xl:text-base text-sm text-[#6F7689]'>
                                     Tỉ lệ phản hồi
                                 </div>
-                                <div className='text-lg text-[#000000] font-semibold'>
+                                <div className='3xl:text-lg text-sm text-[#000000] font-semibold'>
                                     100%
                                 </div>
                             </div>
                             <div className='col-span-1 flex flex-col items-center gap-1'>
-                                <div className='text-base text-[#6F7689]'>
+                                <div className='3xl:text-base text-sm text-[#6F7689]'>
                                     Tỉ lệ đồng ý
                                 </div>
-                                <div className='text-lg text-[#000000] font-semibold'>
+                                <div className='3xl:text-lg text-sm text-[#000000] font-semibold'>
                                     100%
                                 </div>
                             </div>
                             <div className='col-span-1 flex flex-col items-center gap-1'>
-                                <div className='text-base text-[#6F7689]'>
+                                <div className='3xl:text-base text-sm text-[#6F7689]'>
                                     Phản hồi trong
                                 </div>
-                                <div className='text-lg text-[#000000] font-semibold'>
+                                <div className='3xl:text-lg text-sm text-[#000000] font-semibold'>
                                     5 phút
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div id="section-3" className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
-                        <div className='text-2xl text-[#16171B] font-semibold'>
+                    <div id="section-3" className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
+                        <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                             Vị trí xe
                         </div>
                         <div className='flex gap-1 items-center'>
@@ -630,7 +630,7 @@ const DetailCar = (props: Props) => {
                     <div className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
                         <div className='flex items-center justify-between'>
                             <div className='flex flex-col gap-1'>
-                                <div className='text-2xl text-[#16171B] font-semibold'>
+                                <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                                     Đánh giá
                                 </div>
                                 <div className='flex items-center gap-2'>
@@ -643,15 +643,15 @@ const DetailCar = (props: Props) => {
                                         numberOfStars={5}
                                         name='rating'
                                     />
-                                    <div className='text-base text-[#FF9900] font-semibold'>
+                                    <div className='3xl:text-base text-sm text-[#FF9900] font-semibold'>
                                         4.5/5
                                     </div>
-                                    <div className='text-base text-[#6F7689]'>
+                                    <div className='3xl:text-base text-sm text-[#6F7689]'>
                                         (20 đánh giá)
                                     </div>
                                 </div>
                             </div>
-                            <div className='text-lg text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-bold cursor-pointer duration-300 transition ease-in-out'>
+                            <div className='3xl:text-lg text-base text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
                                 Xem tất cả
                             </div>
                         </div>
@@ -659,7 +659,7 @@ const DetailCar = (props: Props) => {
                             listComment && listComment.map((item, index) => (
                                 <div key={item.id} className={`${index !== listComment.length - 1 ? "border-b pb-3" : ""} flex flex-col`}>
                                     <div className='flex items-center gap-3'>
-                                        <div className='w-14 h-14 max-w-14 rounded-full drop-shadow'>
+                                        <div className='3xl:w-14 3xl:h-14 3xl:max-w-14 w-12 h-12 max-w-12 rounded-full drop-shadow'>
                                             <Image
                                                 src="/avatar/avatar1.png"
                                                 alt="avatar"
@@ -669,15 +669,15 @@ const DetailCar = (props: Props) => {
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <div className='capitalize text-base text-[#484D5C] font-semibold'>
+                                            <div className='capitalize 3xl:text-base text-sm text-[#484D5C] font-semibold'>
                                                 {item.fullName ? item.fullName : ''}
                                             </div>
-                                            <div className='text-sm text-[#8C93A3]'>
+                                            <div className='3xl:text-sm text-xs text-[#8C93A3]'>
                                                 {item.createdTime}
                                             </div>
                                         </div>
                                     </div>
-                                    <div className='text-base text-[#585F71] mt-2'>
+                                    <div className='3xl:text-base text-sm text-[#585F71] mt-2'>
                                         {item.content ? item.content : ''}
                                     </div>
                                     <div className='flex items-center'>
@@ -685,7 +685,7 @@ const DetailCar = (props: Props) => {
                                             rating={item.rating ? item.rating : 0}
                                             starRatedColor="#FCC43E"
                                             starHoverColor='#FCC43E'
-                                            starDimension='16px'
+                                            starDimension='14px'
                                             starSpacing='2px'
                                             numberOfStars={5}
                                             name='rating'
@@ -697,14 +697,14 @@ const DetailCar = (props: Props) => {
                     </div>
 
                     {/* // */}
-                    <div id="section-4" className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
+                    <div id="section-4" className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
                         <div className='flex flex-row items-center gap-2'>
-                            <div className='text-2xl text-[#16171B] font-semibold'>
+                            <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                                 Giấy tờ thuê xe
                             </div>
-                            <FaRegQuestionCircle onClick={() => console.log('check')} className='text-[#FF9900] text-2xl cursor-pointer' />
+                            <FaRegQuestionCircle onClick={() => console.log('check')} className='text-[#FF9900] 3xl:text-2xl text-xl cursor-pointer' />
                         </div>
-                        <div className='text-base text-[#484D5C]'>
+                        <div className='3xl:text-base text-sm text-[#484D5C] 3xl:mb-0 mb-3'>
                             Vui lòng chuẩn bị 2 loại giấy tờ:
                         </div>
                         <div className='flex flex-col w-full gap-4'>
@@ -723,10 +723,10 @@ const DetailCar = (props: Props) => {
                                         />
                                     </div>
                                     <div className='w-full flex flex-col gap-1'>
-                                        <div className='text-base text-[#3561FF] font-semibold'>
+                                        <div className='3xl:text-base text-sm text-[#3561FF] font-semibold'>
                                             Giấy phép lái xe
                                         </div>
-                                        <div className='text-base text-[#585F71]'>
+                                        <div className='3xl:text-base text-sm text-[#585F71]'>
                                             Chủ xe đối chiếu và gửi lại bạn
                                         </div>
                                     </div>
@@ -748,16 +748,16 @@ const DetailCar = (props: Props) => {
                                             />
                                         </div>
                                         <div className='w-full flex flex-col gap-1'>
-                                            <div className='text-base text-[#3561FF] font-semibold'>
+                                            <div className='3xl:text-base text-sm text-[#3561FF] font-semibold'>
                                                 CCCD có gắn chip
                                             </div>
-                                            <div className='text-base text-[#585F71]'>
+                                            <div className='3xl:text-base text-sm text-[#585F71]'>
                                                 Chủ xe đối chiếu và gửi lại bạn
                                             </div>
                                         </div>
                                     </div>
                                     <div className='flex items-center gap-6'>
-                                        <div className='uppercase text-[#FF9900] text-base font-semibold'>
+                                        <div className='uppercase text-[#FF9900] 3xl:text-base text-sm font-semibold'>
                                             Hoặc
                                         </div>
                                         <div className='border-b w-full' />
@@ -773,10 +773,10 @@ const DetailCar = (props: Props) => {
                                             />
                                         </div>
                                         <div className='w-full flex flex-col gap-1'>
-                                            <div className='text-base text-[#3561FF] font-semibold'>
+                                            <div className='3xl:text-base text-sm text-[#3561FF] font-semibold'>
                                                 Hộ chiếu
                                             </div>
-                                            <div className='text-base text-[#585F71]'>
+                                            <div className='3xl:text-base text-sm text-[#585F71]'>
                                                 Chủ xe đối chiếu, giữ lại và hoàn trả khi bạn trả xe
                                             </div>
                                         </div>
@@ -817,20 +817,20 @@ const DetailCar = (props: Props) => {
                     </div> */}
                     {/* // */}
 
-                    <div className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
+                    <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
                         <div className='flex flex-row items-center gap-2'>
-                            <div className='text-2xl text-[#16171B] font-semibold'>
+                            <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                                 Tài sản thế chấp
                             </div>
-                            <FaRegQuestionCircle onClick={() => console.log('check')} className='text-[#FF9900] text-2xl cursor-pointer' />
+                            <FaRegQuestionCircle onClick={() => console.log('check')} className='text-[#FF9900] 3xl:text-2xl text-xl cursor-pointer' />
                         </div>
-                        <div className='text-base text-[#585F71]'>
+                        <div className='3xl:text-base text-sm text-[#585F71]'>
                             15 triệu (tiền mặt hoặc chuyển khoản cho chủ xe khi nhận xe) hoặc xe máy (kèm cà vẹt gốc) giá trị 15 triệu
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
-                        <div className='text-2xl text-[#16171B] font-semibold'>
+                    <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
+                        <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                             Phụ phí có thể phát sinh
                         </div>
                         <div className='flex flex-col gap-4'>
@@ -838,58 +838,58 @@ const DetailCar = (props: Props) => {
                                 listSurcharge && listSurcharge.map((item) => (
                                     <div key={item.id} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
                                         <div className='w-[90%] max-w-[90%] flex flex-col gap-1'>
-                                            <div className='text-base text-[#16171B] font-semibold'>
+                                            <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
                                                 {item.title ? item.title : ""}
                                             </div>
-                                            <div className='text-base text-[#585F71]'>
+                                            <div className='3xl:text-base text-sm text-[#585F71]'>
                                                 {item.description ? item.description : ""}
                                             </div>
                                         </div>
-                                        <div className='w-[10%] max-w-[10%] flex justify-end'>
+                                        <div className='3xl:text-base text-sm w-[10%] max-w-[10%] flex justify-end text-[#FA3434] font-medium'>
                                             {item.money ? item.money : ""}
                                         </div>
                                     </div>
                                 ))
                             }
                         </div>
-                        <div className='text-base text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
+                        <div className='mt-2 3xl:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
                             Xem thêm
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-4'>
-                        <div className='text-2xl text-[#16171B] font-semibold'>
+                    <div className='flex flex-col 3xl:gap-4 gap-2'>
+                        <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                             Chính sách huỷ chuyến
                         </div>
-                        <div className='text-base text-[#585F71]'>
+                        <div className='3xl:text-base text-sm text-[#585F71]'>
                             An tâm thuê xe, không lo bị hủy chuyến với chính sách hủy chuyến của KANOW
                         </div>
-                        <div className='text-base text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
+                        <div className='3xl:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
                             Xem thêm
                         </div>
                     </div>
                 </div>
 
-                <div className='flex flex-col gap-4 w-[30%] max-w-[30%] h-full'>
-                    <div className='flex flex-col gap-2 py-4 px-6 bg-[#C2F9F9]/[63] rounded-2xl '>
+                <div className='flex flex-col 3xl:gap-4 gap-2 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
+                    <div className='flex flex-col gap-2 xl:px-6 xl:py-4 p-4 bg-[#C2F9F9]/[63] rounded-2xl '>
                         <div className='flex flex-row items-center gap-2'>
-                            <div className='text-2xl text-[#16171B] font-semibold'>
+                            <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                                 Bảo hiểm thuê xe
                             </div>
                             <PiShieldCheckFill
                                 onClick={() => console.log('check')}
-                                className='text-[#3561FF] text-2xl cursor-pointer'
+                                className='text-[#3561FF] 3xl:text-2xl text-xl cursor-pointer'
                             />
                         </div>
-                        <div className='text-base text-[#585F71]'>
+                        <div className='3xl:text-base text-sm text-[#585F71]'>
                             Chuyến đi có mua bảo hiểm. Khách thuê bồi thường tối đa 2 triệu đồng trong trường hợp có sự cố ngoài ý muốn
                         </div>
-                        <div className='text-base text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
+                        <div className='3xl:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
                             Xem chi tiết
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-6 p-6 bg-white border rounded-2xl'>
+                    <div className='flex flex-col 3xl:gap-6 gap-4 xl:p-6 p-4 bg-white border rounded-2xl'>
                         <div className='flex items-center gap-1'>
                             <div className='3xl:text-4xl md:text-3xl text-2xl text-[#D7D9E0] font-medium line-through'>
                                 {FormatNumberToThousands(292000)}
@@ -905,45 +905,45 @@ const DetailCar = (props: Props) => {
                         </div>
 
                         <div className='flex flex-col gap-2'>
-                            <div className='text-base text-[#16171B] font-semibold'>
+                            <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
                                 Nhu cầu thuê xe
                             </div>
-                            <Label className='text-base text-[#6F7689] w-fit' htmlFor="date">
+                            <Label className='3xl:text-base text-sm text-[#6F7689] w-fit' htmlFor="date">
                                 Thời gian thuê
                             </Label>
                             <DatePickerWithRangeAndTime className='w-full' classNameButton='px-4 py-3' />
-                            <div className='flex w-full justify-end text-[#3561FF] text-base font-medium'>
+                            <div className='flex w-full justify-end text-[#3561FF] 3xl:text-base text-sm font-medium'>
                                 Thuê tháng giảm 8%
                             </div>
 
                             <div className='flex flex-col'>
-                                <div className='text-base text-[#FA3434] font-medium'>
+                                <div className='3xl:text-base text-sm text-[#FA3434] font-medium'>
                                     Xe đã được thuê:
                                 </div>
-                                <li className='text-base text-[#FA3434] font-medium'>
+                                <li className='3xl:text-base text-sm text-[#FA3434] font-medium'>
                                     Từ 7h30 12/3/2024 đến 7h30 14/3/2024
                                 </li>
                             </div>
 
                             <div className='flex flex-col gap-2'>
-                                <div className='text-base text-[#6F7689]'>
+                                <div className='3xl:text-base text-sm text-[#6F7689]'>
                                     Địa điểm giao nhận xe
                                 </div>
                                 <div className="flex items-center gap-4 bg-[#F6F6F8]/70 p-4 rounded-xl w-full">
                                     <Checkbox disabled id="terms" className='w-5 h-5 text-white border-[#9EA1AE] data-[state=checked]:border-[#2FB9BD] data-[state=checked]:bg-[#2FB9BD] data-[state=checked]:text-white' />
                                     <label
                                         htmlFor="terms"
-                                        className="flex flex-col text-sm font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-full caret-transparent"
+                                        className="flex flex-col 3xl:text-sm text-xs font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-full caret-transparent"
                                     >
-                                        <span className='text-sm text-[#484D5C]'>
+                                        <span className='3xl:text-sm text-xs text-[#484D5C]'>
                                             Giao xe tận nơi
                                         </span>
-                                        <span className='text-base text-[#16171B] font-medium'>
+                                        <span className='3xl:text-base text-sm text-[#16171B] font-medium'>
                                             12 Hoàn Kiếm Hà Nội
                                         </span>
                                     </label>
                                 </div>
-                                <div className='text-base text-[#FA3434] font-medium'>
+                                <div className='3xl:text-base text-sm text-[#FA3434] font-medium'>
                                     Rất tiếc, chủ xe chưa hỗ trợ giao xe tận nơi
                                 </div>
                             </div>
@@ -953,12 +953,12 @@ const DetailCar = (props: Props) => {
                                     <Checkbox id="terms-2" className='w-5 h-5 text-white border-[#9EA1AE] data-[state=checked]:border-[#2FB9BD] data-[state=checked]:bg-[#2FB9BD] data-[state=checked]:text-white' />
                                     <label
                                         htmlFor="terms-2"
-                                        className="flex flex-col text-sm font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-full caret-transparent"
+                                        className="flex flex-col 3xl:text-sm text-xs font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-full caret-transparent"
                                     >
-                                        <span className='text-sm text-[#484D5C]'>
+                                        <span className='3xl:text-sm text-xs text-[#484D5C]'>
                                             Tự đến lấy xe
                                         </span>
-                                        <span className='text-base text-[#16171B] font-medium'>
+                                        <span className='3xl:text-base text-sm text-[#16171B] font-medium'>
                                             12 Hoàn Kiếm Hà Nội
                                         </span>
                                     </label>
@@ -973,34 +973,34 @@ const DetailCar = (props: Props) => {
                             <div className='flex flex-col gap-2 pb-3 border-b'>
                                 <div className='flex justify-between items-center'>
                                     <div className='flex flex-row items-center gap-2'>
-                                        <div className='text-base text-[#3E424E]'>
+                                        <div className='3xl:text-base text-sm text-[#3E424E]'>
                                             Đơn giá thuê
                                         </div>
-                                        <FaRegQuestionCircle onClick={() => console.log('check')} className='text-[#FF9900] text-2xl cursor-pointer' />
+                                        <FaRegQuestionCircle onClick={() => console.log('check')} className='text-[#FF9900] 3xl:text-2xl text-xl cursor-pointer' />
                                     </div>
-                                    <div className='text-[#3E424E] font-semibold text-base'>
+                                    <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
                                         {FormatNumberDot(292000)}<span>đ/ngày</span>
                                     </div>
                                 </div>
 
                                 <div className='flex justify-between items-center'>
                                     <div className='flex flex-row items-center gap-2'>
-                                        <div className='text-base text-[#3E424E]'>
+                                        <div className='3xl:text-base text-sm text-[#3E424E]'>
                                             Bảo hiểm thuê xe
                                         </div>
-                                        <FaRegQuestionCircle onClick={() => console.log('check')} className='text-[#FF9900] text-2xl cursor-pointer' />
+                                        <FaRegQuestionCircle onClick={() => console.log('check')} className='text-[#FF9900] 3xl:text-2xl text-xl cursor-pointer' />
                                     </div>
-                                    <div className='text-[#3E424E] font-semibold text-base'>
+                                    <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
                                         {FormatNumberDot(52000)}<span>đ/ngày</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className='flex justify-between items-center'>
-                                <div className='text-base text-[#3E424E] font-medium'>
+                                <div className='3xl:text-base text-sm text-[#3E424E] font-medium'>
                                     Tổng tạm tính
                                 </div>
-                                <div className='text-[#3E424E] font-semibold text-base'>
+                                <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
                                     {FormatNumberDot(692000)}<span>đ/2 ngày</span>
                                 </div>
                             </div>
@@ -1008,11 +1008,11 @@ const DetailCar = (props: Props) => {
 
                         <div className='flex flex-col gap-4'>
                             <div className='flex flex-col gap-2 bg-[#F9F9FA] rounded-xl p-4'>
-                                <div className='text-base text-[#2C2F31] font-semibold'>
+                                <div className='3xl:text-lg xl:text-base text-sm text-[#2C2F31] font-semibold'>
                                     Khuyến mãi
                                 </div>
 
-                                <RadioGroup defaultValue="comfortable">
+                                <RadioGroup defaultValue="comfortable" className='flex flex-col gap-3'>
                                     <div className="flex items-center space-x-2 caret-transparent">
                                         <RadioGroupItem value="default" id="r1" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
                                         <Label htmlFor="r1" className='flex flex-row items-center justify-between gap-2 w-full'>
@@ -1023,17 +1023,17 @@ const DetailCar = (props: Props) => {
                                                         alt="ticket"
                                                         width={80}
                                                         height={80}
-                                                        className='w-6 max-w-6 h-6 object-contain'
+                                                        className='3xl:w-6 3xl:max-w-6 3xl:h-6 w-5 max-w-5 h-5 object-contain'
                                                     />
-                                                    <div className='w-[90%] max-w-[90%] text-lg'>
+                                                    <div className='w-[90%] max-w-[90%] 3xl:text-lg xl:text-base text-sm'>
                                                         Chương trình giảm giá
                                                     </div>
                                                 </div>
-                                                <div className='text-[#6F7689] text-base'>
+                                                <div className='text-[#6F7689] 3xl:text-base xl:text-sm text-xs'>
                                                     Giảm 160k trên đơn giá
                                                 </div>
                                             </div>
-                                            <div className='text-base text-[#2FB9BD] font-semibold'>
+                                            <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
                                                 -{FormatNumberToThousands(160000)}
                                             </div>
                                         </Label>
@@ -1048,44 +1048,46 @@ const DetailCar = (props: Props) => {
                                                         alt="ticket"
                                                         width={80}
                                                         height={80}
-                                                        className='w-6 max-w-6 h-6 object-contain fill-[#2FB9BD]'
+                                                        className='3xl:w-6 3xl:max-w-6 3xl:h-6 w-5 max-w-5 h-5 object-contain fill-[#2FB9BD]'
                                                     />
-                                                    <div className='w-[90%] max-w-[90%] text-lg'>
+                                                    <div className='w-[90%] max-w-[90%] 3xl:text-lg xl:text-base text-sm'>
                                                         Chương trình giảm giá
                                                     </div>
                                                 </div>
                                             </div>
-                                            <TiArrowSortedUp className='text-2xl text-[#16171B] rotate-90' />
+                                            <TiArrowSortedUp className='3xl:text-2xl text-xl text-[#16171B] rotate-90' />
                                         </Label>
                                     </div>
                                 </RadioGroup>
                             </div>
                             <div className='border w-full' />
                             <div className='flex justify-between items-center'>
-                                <div className='text-base text-[#3E424E] font-medium'>
+                                <div className='3xl:text-base text-sm text-[#3E424E] font-medium'>
                                     Thành tiền
                                 </div>
-                                <div className='text-[#3E424E] font-semibold text-base'>
+                                <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
                                     {FormatNumberDot(592000)}<span>đ/2 ngày</span>
                                 </div>
                             </div>
                         </div>
 
-                        <Button className='py-4 w-full flex justify-center items-center text-lg text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-2xl'>
+                        <Button className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-2xl'>
                             Chọn thuê
                         </Button>
 
                     </div>
 
-                    <div className='text-base text-[#FA3434] hover:text-[#FA3434]/80 duration-300 transition-all font-semibold cursor-pointer w-full text-center'>
-                        Báo cáo xe này
+                    <div className='flex w-full items-center justify-center'>
+                        <div className='3xl:text-base text-sm text-[#FA3434] hover:text-[#FA3434]/80 duration-300 transition-all font-semibold cursor-pointer w-fit text-center caret-transparent'>
+                            Báo cáo xe này
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div className='bg-[#F6F6F8] py-20'>
-                <div className='custom-container flex flex-col gap-10'>
-                    <div className='text-4xl capitalize text-[#09080D] font-bold'>
+                <div className='custom-container flex flex-col 3xl:gap-10 gap-6'>
+                    <div className='3xl:text-4xl text-3xl capitalize text-[#09080D] font-bold'>
                         Xe tương tự
                     </div>
                     <div className='grid xxl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-8 gap-6 justify-start w-full h-full'>
@@ -1093,26 +1095,19 @@ const DetailCar = (props: Props) => {
                             dataListCardCars && dataListCardCars.map((card) => (
                                 <Link
                                     key={card.id}
-                                    className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
+                                    className='col-span-1 bg-white border w-full 3xl:p-4 p-3 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
                                     href={`/detail-car/${card.id}?${ConvertToSlug(card?.title)}`}
                                 >
                                     <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
                                         - {card.promotion}
                                     </div>
                                     <div className='w-full 3xl:h-[230px] xxl:h-[200px] xl:h-[200px] h-[180px] relative'>
-                                        {/* <Image
-                                        width={600}
-                                        height={600}
-                                        alt="image_card"
-                                        src={card.image ? card.image : '/default/default.png'}
-                                        className='w-full h-full object-cover rounded-xl'
-                                    /> */}
-                                        <BlurImage
-                                            image={card.image ? card.image : '/default/default.png'}
-                                            alt="image_card"
+                                        <Image
                                             width={600}
                                             height={600}
-                                            className='rounded-xl'
+                                            alt="image_card"
+                                            src={card.image ? card.image : '/default/default.png'}
+                                            className='w-full h-full object-cover rounded-xl'
                                         />
                                         <div
                                             onClick={handleClickFavorite}
@@ -1174,7 +1169,7 @@ const DetailCar = (props: Props) => {
                                                 {card.title ? card.title : ''}
                                             </div>
                                             <div className='flex gap-1 items-center'>
-                                                <TiLocation className='text-base text-[#FA3434] w-[16px] max-w-[16px]' />
+                                                <TiLocation className='text-base text-[#FA3434] w-[16px] min-w-[16px]' />
                                                 <div className='3xl:text-sm text-xs text-[#8C93A3] font-medium w-[90%] max-w-[90%] line-clamp-1'>
                                                     {card.address ? card.address : ''}
                                                 </div>
