@@ -23,6 +23,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { A11y } from 'swiper/modules';
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
 import { useResize } from '@/hooks/useResize';
+import { DatePickerWithRangeAndTime } from '@/components/datePicker/DatePickerWithRangeAndTime';
 
 type Props = {}
 
@@ -280,7 +281,7 @@ const SearchCars = (props: Props) => {
                                     className='3xl:py-4 p-3 pl-12 text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#B4B8C5] placeholder:font-medium' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
                                 />
                             </div>
-                            <DatePickerWithRange className='w-full' classNameButton="px-4 py-3" />
+                            <DatePickerWithRangeAndTime className='w-full' classNameButton="px-4 py-3" />
                             <div>
                                 <Button className={cn('3xl:p-4 p-3 bg-[#FF9900] hover:bg-[#FF9900]/80 hover:scale-105 rounded-xl text-white duration-200 transiton-colors ease-in-out')}>
                                     <RiSearchLine className='3xl:text-2xl text-xl' />

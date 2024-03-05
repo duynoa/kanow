@@ -212,7 +212,7 @@ const SectionCardCar = () => {
                                         <Link
                                             key={card.id}
                                             className='col-span-1 bg-white shadow-md w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 lg:hover:scale-105 transition duration-200 ease-in-out'
-                                            href="#"
+                                            href={`/detail-car/${card.id}?${ConvertToSlug(card?.title)}`}
                                         >
                                             <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
                                                 - {card.promotion}
@@ -326,7 +326,7 @@ const SectionCardCar = () => {
                                     <Link
                                         key={card.id}
                                         className='col-span-1 bg-white shadow-md w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
-                                        href="#"
+                                        href={`/detail-car/${card.id}?${ConvertToSlug(card?.title)}`}
                                     >
                                         <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
                                             - {card.promotion}

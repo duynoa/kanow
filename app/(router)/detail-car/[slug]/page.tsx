@@ -329,25 +329,25 @@ const DetailCar = (props: Props) => {
                 <div className='custom-container h-full flex flex-row items-center gap-10'>
                     <div
                         onClick={() => handleClickToId(1)}
-                        className='text-lg font-semibold cursor-pointer'
+                        className='3xl:text-lg text-base font-semibold cursor-pointer'
                     >
                         Đặc điểm
                     </div>
                     <div
                         onClick={() => handleClickToId(2)}
-                        className='text-lg font-semibold cursor-pointer'
+                        className='3xl:text-lg text-base font-semibold cursor-pointer'
                     >
                         Chủ xe
                     </div>
                     <div
                         onClick={() => handleClickToId(3)}
-                        className='text-lg font-semibold cursor-pointer'
+                        className='3xl:text-lg text-base font-semibold cursor-pointer'
                     >
                         Vị trí xe
                     </div>
                     <div
                         onClick={() => handleClickToId(4)}
-                        className='text-lg font-semibold cursor-pointer'
+                        className='3xl:text-lg text-base font-semibold cursor-pointer'
                     >
                         Giấy tờ thuê xe
                     </div>
@@ -375,18 +375,18 @@ const DetailCar = (props: Props) => {
                     }}
                     autoplay={true}
                     pagination={customPagination}
-                    className='custom-swiper-intro w-full h-[320px] px-2'
+                    className='custom-swiper-detail-car w-full 3xl:h-[330px] h-[280px] px-2'
                 >
                     {
                         imageCard && imageCard.map((card, index) => (
                             <SwiperSlide key={card.id}>
-                                <div className='w-full h-[300px] cursor-pointer'>
+                                <div className='w-full 3xl:h-[300px] h-[240px] cursor-pointer'>
                                     <Image
                                         src={card.image ? card.image : '/default/default.png'}
                                         alt="car"
                                         width={800}
                                         height={600}
-                                        className='w-full h-[300px] object-cover rounded-2xl'
+                                        className='w-full h-full object-cover rounded-2xl'
                                     />
                                 </div>
                             </SwiperSlide>
@@ -395,11 +395,11 @@ const DetailCar = (props: Props) => {
                 </Swiper>
             </div>
 
-            <div className='custom-container mt-8 flex flex-row gap-6'>
+            <div className='custom-container 3xl:mt-8 mt-4 flex flex-row gap-6'>
                 <div className='flex flex-col gap-6 w-[70%] max-w-[70%] h-full pb-16'>
-                    <div className='flex flex-row items-center justify-between pb-6 border-b-2'>
+                    <div className='flex flex-row items-center justify-between 3xl:pb-6 pb-4 border-b-2'>
                         <div className='flex flex-col gap-2'>
-                            <div className='text-4xl uppercase text-[#09080D] font-bold'>
+                            <div className='3xl:text-4xl text-3xl uppercase text-[#09080D] font-bold'>
                                 Mitsubishi xpander 2023
                             </div>
                             <div className='flex gap-3 items-center'>
@@ -427,15 +427,15 @@ const DetailCar = (props: Props) => {
                         </div>
                         <div
                             onClick={handleClickFavorite}
-                            className='w-[52px] max-w-[52px] bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out'
+                            className='bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out'
                         >
-                            <TiHeartFullOutline className={`text-white text-4xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
+                            <TiHeartFullOutline className={`text-white 3xl:text-4xl text-2xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
                             {/* <TiHeartFullOutline className={`${card.favorite ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} /> */}
                         </div>
                     </div>
 
-                    <div id="section-1" className='flex flex-col gap-2 pb-6 border-b-2'>
-                        <div className='text-2xl text-[#16171B] font-semibold'>
+                    <div id="section-1" className='flex flex-col gap-2 3xl:pb-6 pb-4 border-b-2'>
+                        <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                             Đặc điểm
                         </div>
                         <div className='flex flex-row justify-between items-center max-w-[80%]'>
@@ -499,8 +499,8 @@ const DetailCar = (props: Props) => {
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-2 pb-6 border-b-2'>
-                        <div className='text-2xl text-[#16171B] font-semibold'>
+                    <div className='flex flex-col gap-2 3xl:pb-6 pb-4 border-b-2'>
+                        <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                             Mô tả
                         </div>
                         <div className='flex flex-col'>
@@ -522,7 +522,7 @@ const DetailCar = (props: Props) => {
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-4 pb-6 border-b-2'>
+                    <div className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
                         <div className='text-2xl text-[#16171B] font-semibold'>
                             Tiện nghi trên xe
                         </div>
@@ -544,7 +544,7 @@ const DetailCar = (props: Props) => {
                         </div>
                     </div>
 
-                    <div id="section-2" className='flex flex-col gap-4 pb-6 border-b-2'>
+                    <div id="section-2" className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
                         <div className='text-2xl text-[#16171B] font-semibold'>
                             Chủ xe
                         </div>
@@ -612,7 +612,7 @@ const DetailCar = (props: Props) => {
                         </div>
                     </div>
 
-                    <div id="section-3" className='flex flex-col gap-4 pb-6 border-b-2'>
+                    <div id="section-3" className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
                         <div className='text-2xl text-[#16171B] font-semibold'>
                             Vị trí xe
                         </div>
@@ -627,7 +627,7 @@ const DetailCar = (props: Props) => {
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-4 pb-6 border-b-2'>
+                    <div className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
                         <div className='flex items-center justify-between'>
                             <div className='flex flex-col gap-1'>
                                 <div className='text-2xl text-[#16171B] font-semibold'>
@@ -697,7 +697,7 @@ const DetailCar = (props: Props) => {
                     </div>
 
                     {/* // */}
-                    <div id="section-4" className='flex flex-col gap-4 pb-6 border-b-2'>
+                    <div id="section-4" className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
                         <div className='flex flex-row items-center gap-2'>
                             <div className='text-2xl text-[#16171B] font-semibold'>
                                 Giấy tờ thuê xe
@@ -786,7 +786,7 @@ const DetailCar = (props: Props) => {
                         </div>
                     </div>
                     {/* // */}
-                    {/* <div className='flex flex-col gap-4 pb-6 border-b-2'>
+                    {/* <div className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
                         <div className='flex flex-row items-center gap-2'>
                             <div className='text-2xl text-[#16171B] font-semibold'>
                                 Giấy tờ thuê xe
@@ -817,7 +817,7 @@ const DetailCar = (props: Props) => {
                     </div> */}
                     {/* // */}
 
-                    <div className='flex flex-col gap-4 pb-6 border-b-2'>
+                    <div className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
                         <div className='flex flex-row items-center gap-2'>
                             <div className='text-2xl text-[#16171B] font-semibold'>
                                 Tài sản thế chấp
@@ -829,7 +829,7 @@ const DetailCar = (props: Props) => {
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-4 pb-6 border-b-2'>
+                    <div className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
                         <div className='text-2xl text-[#16171B] font-semibold'>
                             Phụ phí có thể phát sinh
                         </div>

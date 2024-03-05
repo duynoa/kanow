@@ -90,16 +90,10 @@ function Calendar({
                 components={{
                     IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
                     IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
-                    Footer: (props) => {
-                        console.log('propssss : ', props);
+                    Footer: () => (
+                        <input type="time" className='w-full border h-10'/>
+                    )
 
-                        return (
-                            <input
-                                type="time"
-                                className='w-full'
-                            />
-                        )
-                    }
                 }}
                 {...props}
             />

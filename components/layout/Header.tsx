@@ -59,7 +59,7 @@ const Header = () => {
         {
             id: uuidv4(),
             name: 'Chuyến của tôi',
-            link: '/services',
+            link: '/search-car',
             children: false,
         }
     ]
@@ -223,7 +223,7 @@ const Header = () => {
                     </div>
                     :
                     // màn hình laptop
-                    <div className="custom-container 3xl:h-[120px] h-[80px] grid grid-cols-12 items-center justify-center">
+                    <div className="custom-container 3xl:h-[120px] h-[80px] grid 3xl:grid-cols-12 grid-cols-11 items-center justify-center">
                         <Link
                             href="/"
                             className='col-span-2 w-full h-auto'
@@ -237,8 +237,8 @@ const Header = () => {
                                 className='w-full h-auto object-cover'
                             />
                         </Link>
-                        <div className='2xl:col-span-2 col-span-1   ' />
-                        <NavigationMenu className='2xl:col-span-6 col-span-7 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
+                        <div className='3xl:col-span-2 col-span-1   ' />
+                        <NavigationMenu className='2xl:col-span-6 col-span-6 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
                             {
                                 dataHeader.map((data, i) => (
                                     <div key={data.id} className='p-2'>
