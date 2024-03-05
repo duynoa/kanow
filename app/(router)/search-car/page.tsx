@@ -16,17 +16,19 @@ import { FaStar } from 'react-icons/fa';
 import { LuSettings2 } from "react-icons/lu";
 import { RiSearchLine } from "react-icons/ri";
 import { FaCircleCheck } from 'react-icons/fa6';
-import {  TiHeartFullOutline, TiLocation } from 'react-icons/ti';
+import { TiHeartFullOutline, TiLocation } from 'react-icons/ti';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { A11y } from 'swiper/modules';
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
+import { useResize } from '@/hooks/useResize';
 
 type Props = {}
 
 const SearchCars = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
+    const { isVisibleMobile } = useResize()
 
     useEffect(() => {
         setIsMounted(true)
@@ -258,31 +260,34 @@ const SearchCars = (props: Props) => {
 
     return (
         <div className='flex flex-col gap-6'>
-            <div className='custom-container flex gap-16 items-center pt-1'>
-                <div className='xl:w-[30%] xl:max-w-[30%] w-[25%] max-w-[25%]'>
-                    <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
-                        Thuê xe tự lái
-                    </div>
+            <div className='custom-container flex lg:flex-row flex-col lg:gap-16 gap-6 items-center lg:justify-start justify-center pt-1'>
+                <div className='xl:w-[30%] xl:max-w-[30%] lg:w-[25%] lg:max-w-[25%] w-full max-w-full lg:text-start text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
+                    Thuê xe tự lái
                 </div>
-                <div className='flex gap-4 xl:w-[70%] xl:max-w-[70%] w-[75%] max-w-[75%]'>
-                    <div className="relative w-full">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-4">
-                            <TiLocation className="3xl:text-2xl text-xl text-[#1EAAB1]" />
-                        </span>
-                        <Input
-                            id="place"
-                            type='text'
-                            placeholder='Nhập địa điểm'
-                            className='3xl:py-4 p-3 pl-12 text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#B4B8C5] placeholder:font-medium' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
-                        />
-                    </div>
-                    <DatePickerWithRange className='w-full' classNameButton="px-4 py-3" />
-                    <div>
-                        <Button className={cn('3xl:p-4 p-3 bg-[#FF9900] hover:bg-[#FF9900]/80 hover:scale-105 rounded-xl text-white duration-200 transiton-colors ease-in-out')}>
-                            <RiSearchLine className='3xl:text-2xl text-xl' />
-                        </Button>
-                    </div>
-                </div>
+                {
+                    isVisibleMobile ?
+                        null
+                        :
+                        <div className='flex gap-4 xl:w-[70%] xl:max-w-[70%] w-[75%] max-w-[75%]'>
+                            <div className="relative w-full">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-4">
+                                    <TiLocation className="3xl:text-2xl text-xl text-[#1EAAB1]" />
+                                </span>
+                                <Input
+                                    id="place"
+                                    type='text'
+                                    placeholder='Nhập địa điểm'
+                                    className='3xl:py-4 p-3 pl-12 text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#B4B8C5] placeholder:font-medium' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                />
+                            </div>
+                            <DatePickerWithRange className='w-full' classNameButton="px-4 py-3" />
+                            <div>
+                                <Button className={cn('3xl:p-4 p-3 bg-[#FF9900] hover:bg-[#FF9900]/80 hover:scale-105 rounded-xl text-white duration-200 transiton-colors ease-in-out')}>
+                                    <RiSearchLine className='3xl:text-2xl text-xl' />
+                                </Button>
+                            </div>
+                        </div>
+                }
             </div>
             <div className='py-4 border-t border-b  w-full'>
                 <div className='custom-container'>
@@ -308,28 +313,28 @@ const SearchCars = (props: Props) => {
                             allowTouchMove={true}
                             breakpoints={{
                                 320: {
-                                    slidesPerView: 1,
+                                    slidesPerView: "auto",
                                 },
                                 640: {
-                                    slidesPerView: 1,
+                                    slidesPerView: "auto",
                                 },
                                 768: {
-                                    slidesPerView: 1,
+                                    slidesPerView: "auto",
                                 },
                                 1024: {
-                                    slidesPerView: 8,
+                                    slidesPerView: "auto",
                                 },
                                 1280: {
-                                    slidesPerView: 8,
+                                    slidesPerView: "auto",
                                 },
                                 1440: {
-                                    slidesPerView: 8,
+                                    slidesPerView: "auto",
                                 },
                                 1536: {
-                                    slidesPerView: 8,
+                                    slidesPerView: "auto",
                                 },
                                 1920: {
-                                    slidesPerView: 8,
+                                    slidesPerView: "auto",
                                 },
                             }}
                             className='flex gap-3 w-fit px-2'
@@ -343,7 +348,6 @@ const SearchCars = (props: Props) => {
                                         {item.name ? item.name : ''}
                                     </SwiperSlide>
                                 ))
-
                             }
                         </Swiper>
                         {/* <div className='flex gap-2 absolute 3xl:-top-24 xl:top-[-22%] lg:top-[-22%] md:top-[-22%] top-[-18%] right-0 disable-selection'>
@@ -454,27 +458,27 @@ const SearchCars = (props: Props) => {
                                     </div>
                                 </div>
                                 <div className='border-b border-[#D7D9E0]/50' />
-                                <div className='flex items-center 3xl:gap-4 xxl:gap-2 xl:gap-4 lg:gap-1 bg-[#F2FCF7] p-2 rounded-lg'>
+                                <div className='flex items-center 3xl:gap-4 xxl:gap-2 xl:gap-4 lg:gap-1 gap-2 bg-[#F2FCF7] p-2 rounded-lg'>
                                     <div className='flex items-center gap-1'>
-                                        <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#FFC118]' />
-                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                        <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#FFC118]' />
+                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
                                             {card.point ? card.point : ''}
                                         </div>
                                     </div>
 
                                     <div className='flex items-center gap-1'>
-                                        <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
-                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                        <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#3AC996]' />
+                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
                                             {card.quantityTrips ? FormatNumberHundred(card.quantityTrips) : 0} Chuyến
                                         </div>
                                     </div>
 
                                     <div className='flex items-center gap-1'>
-                                        <div className='3xl:text-lg 2xl:text-base xxl:text-sm text-[15px] text-[#D7D9E0] font-medium line-through'>
+                                        <div className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#D7D9E0] font-medium line-through'>
                                             {card.priceBeforePromotion ? FormatNumberToThousands(card.priceBeforePromotion) : 0}
                                         </div>
                                         <div className='flex'>
-                                            <span className='3xl:text-lg 2xl:text-base xxl:text-sm text-[15px] text-[#1AC5CA] font-medium'>
+                                            <span className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#1AC5CA] font-medium'>
                                                 {card.priceAfterPromotion ? FormatNumberToThousands(card.priceAfterPromotion) : 0}
                                             </span>
                                             <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>

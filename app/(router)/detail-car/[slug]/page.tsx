@@ -23,12 +23,16 @@ import { DatePickerWithRange } from '@/components/datePicker/DatePickerWithRange
 import { DatePickerWithRangeAndTime } from '@/components/datePicker/DatePickerWithRangeAndTime'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { usePathname } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 
 
 type Props = {}
 
 const DetailCar = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
+    // Sử dụng useState để theo dõi trạng thái của header thứ hai
+    const [showSecondHeader, setShowSecondHeader] = useState(false);
 
     const latitude = 10.796455918645478; // Thay đổi giá trị này bằng vĩ độ thực tế
     const longitude = 106.63445664322627; // Thay đổi giá trị này bằng kinh độ thực tế
@@ -36,13 +40,6 @@ const DetailCar = (props: Props) => {
     useEffect(() => {
         setIsMounted(true)
     }, [])
-
-    const customPaginationBanner = {
-        clickable: true,
-        renderBullet: function (index: number, className: string) {
-            return `<span class=${className}></span>`
-        },
-    }
 
     const imageCard = [
         {
@@ -271,12 +268,91 @@ const DetailCar = (props: Props) => {
         e.preventDefault();
     }
 
+    // Định nghĩa một hàm xử lý sự kiện cuộn trang
+    const handleScroll = () => {
+        // Lấy vị trí cuộn của trang
+        const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+
+        // Kiểm tra nếu vị trí cuộn vượt qua một ngưỡng nhất định, ví dụ 100px
+        if (scrollPosition > 100) {
+            // Nếu vượt qua ngưỡng, hiển thị header thứ hai
+            setShowSecondHeader(true);
+        } else {
+            // Nếu không, ẩn nó đi
+            setShowSecondHeader(false);
+        }
+    }
+
+    // Sử dụng useEffect để đăng ký sự kiện cuộn khi component được mount
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        // Cleanup: đảm bảo gỡ bỏ sự kiện cuộn khi component bị unmount
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    // Click vào chuyển đến id trong header2
+    const handleClickToId = (itemId: number | string, index?: number | string) => {
+        // Tìm phần tử có id tương ứng
+        const targetElement = document.getElementById(`section-${itemId}`);
+
+        // Nếu tìm thấy, cuộn trang đến vị trí của phần tử
+        if (targetElement) {
+            // Tính toán vị trí cuộn mới
+            const scrollToPosition = targetElement.offsetTop;
+
+            window.scrollTo({
+                top: scrollToPosition, // Đặt vị trí đầu tiên của phần tử mục tiêu ở đầu trang
+                behavior: "smooth", // Hiệu ứng cuộn mượt
+            });
+        }
+    };
+
+    const customPagination = {
+        clickable: true,
+        renderBullet: function (index: number, className: string) {
+            return `<span class=${className}></span>`
+        },
+    }
+
     if (!isMounted) {
         return null;
     }
 
     return (
-        <div className='pt-2'>
+        <div className='relative'>
+            <div
+                className={`${showSecondHeader ? "block" : "hidden"} 3xl:h-[120px] w-full h-[80px] z-40 fixed top-0 bg-white`}
+            // style={{ background: "linear-gradient(180deg, rgba(194, 249, 249, 0.60) 0%, rgba(194, 249, 249, 0.00) 100%)" }}
+            >
+                <div className='custom-container h-full flex flex-row items-center gap-10'>
+                    <div
+                        onClick={() => handleClickToId(1)}
+                        className='text-lg font-semibold cursor-pointer'
+                    >
+                        Đặc điểm
+                    </div>
+                    <div
+                        onClick={() => handleClickToId(2)}
+                        className='text-lg font-semibold cursor-pointer'
+                    >
+                        Chủ xe
+                    </div>
+                    <div
+                        onClick={() => handleClickToId(3)}
+                        className='text-lg font-semibold cursor-pointer'
+                    >
+                        Vị trí xe
+                    </div>
+                    <div
+                        onClick={() => handleClickToId(4)}
+                        className='text-lg font-semibold cursor-pointer'
+                    >
+                        Giấy tờ thuê xe
+                    </div>
+                </div>
+            </div>
             <div className='custom-container'>
                 <Swiper
                     slidesPerView={3}
@@ -298,7 +374,7 @@ const DetailCar = (props: Props) => {
                         },
                     }}
                     autoplay={true}
-                    pagination={customPaginationBanner}
+                    pagination={customPagination}
                     className='custom-swiper-intro w-full h-[320px] px-2'
                 >
                     {
@@ -358,7 +434,7 @@ const DetailCar = (props: Props) => {
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-2 pb-6 border-b-2'>
+                    <div id="section-1" className='flex flex-col gap-2 pb-6 border-b-2'>
                         <div className='text-2xl text-[#16171B] font-semibold'>
                             Đặc điểm
                         </div>
@@ -453,7 +529,7 @@ const DetailCar = (props: Props) => {
                         <div className='grid grid-cols-4 gap-2'>
                             {
                                 featuresCar && featuresCar.map((feature) => (
-                                    <div key={feature.id} className='flex gap-2 items-center w-fit bg-white pr-2 py-1'>
+                                    <div key={feature.id} className='flex gap-2 items-center w-fit pr-2 py-1'>
                                         <Image
                                             src={feature.icon}
                                             alt='icon'
@@ -468,7 +544,7 @@ const DetailCar = (props: Props) => {
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-4 pb-6 border-b-2'>
+                    <div id="section-2" className='flex flex-col gap-4 pb-6 border-b-2'>
                         <div className='text-2xl text-[#16171B] font-semibold'>
                             Chủ xe
                         </div>
@@ -536,7 +612,7 @@ const DetailCar = (props: Props) => {
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-4 pb-6 border-b-2'>
+                    <div id="section-3" className='flex flex-col gap-4 pb-6 border-b-2'>
                         <div className='text-2xl text-[#16171B] font-semibold'>
                             Vị trí xe
                         </div>
@@ -621,7 +697,7 @@ const DetailCar = (props: Props) => {
                     </div>
 
                     {/* // */}
-                    <div className='flex flex-col gap-4 pb-6 border-b-2'>
+                    <div id="section-4" className='flex flex-col gap-4 pb-6 border-b-2'>
                         <div className='flex flex-row items-center gap-2'>
                             <div className='text-2xl text-[#16171B] font-semibold'>
                                 Giấy tờ thuê xe
@@ -631,12 +707,12 @@ const DetailCar = (props: Props) => {
                         <div className='text-base text-[#484D5C]'>
                             Vui lòng chuẩn bị 2 loại giấy tờ:
                         </div>
-                        <div className='flex flex-col gap-4'>
-                            <div className='flex flex-row items-center   gap-8'>
-                                <div className='w-8 max-w-8 h-8 flex items-center justify-center text-base rounded-full font-bold bg-[#14868E] text-white'>
+                        <div className='flex flex-col w-full gap-4'>
+                            <div className='flex flex-row items-center w-full gap-8'>
+                                <div className='w-8 min-w-8 h-8 flex items-center justify-center text-base rounded-full font-bold bg-[#14868E] text-white'>
                                     1
                                 </div>
-                                <div className='w-[85%] p-4 border-2 rounded-2xl flex items-center gap-6'>
+                                <div className='w-full p-4 border-2 rounded-2xl flex items-center gap-6'>
                                     <div className='w-[140px] max-w-[140px] h-auto'>
                                         <Image
                                             src="/other/info/driverLicense.png"
@@ -656,11 +732,11 @@ const DetailCar = (props: Props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className='flex flex-row items-center   gap-8'>
-                                <div className='w-8 max-w-8 h-8 flex items-center justify-center text-base rounded-full font-bold bg-[#14868E] text-white'>
+                            <div className='flex flex-row items-center gap-8'>
+                                <div className='w-8 min-w-8 h-8 flex items-center justify-center text-base rounded-full font-bold bg-[#14868E] text-white'>
                                     2
                                 </div>
-                                <div className='w-[85%] p-4 border-2 rounded-2xl flex flex-col gap-2'>
+                                <div className='w-full p-4 border-2 rounded-2xl flex flex-col gap-2'>
                                     <div className='flex items-center gap-6'>
                                         <div className='w-[140px] max-w-[140px] h-auto'>
                                             <Image
@@ -839,7 +915,8 @@ const DetailCar = (props: Props) => {
                             <div className='flex w-full justify-end text-[#3561FF] text-base font-medium'>
                                 Thuê tháng giảm 8%
                             </div>
-                            <div>
+
+                            <div className='flex flex-col'>
                                 <div className='text-base text-[#FA3434] font-medium'>
                                     Xe đã được thuê:
                                 </div>
@@ -847,6 +924,7 @@ const DetailCar = (props: Props) => {
                                     Từ 7h30 12/3/2024 đến 7h30 14/3/2024
                                 </li>
                             </div>
+
                             <div className='flex flex-col gap-2'>
                                 <div className='text-base text-[#6F7689]'>
                                     Địa điểm giao nhận xe
@@ -855,7 +933,7 @@ const DetailCar = (props: Props) => {
                                     <Checkbox disabled id="terms" className='w-5 h-5 text-white border-[#9EA1AE] data-[state=checked]:border-[#2FB9BD] data-[state=checked]:bg-[#2FB9BD] data-[state=checked]:text-white' />
                                     <label
                                         htmlFor="terms"
-                                        className="flex flex-col text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-full caret-transparent"
+                                        className="flex flex-col text-sm font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-full caret-transparent"
                                     >
                                         <span className='text-sm text-[#484D5C]'>
                                             Giao xe tận nơi
@@ -875,7 +953,7 @@ const DetailCar = (props: Props) => {
                                     <Checkbox id="terms-2" className='w-5 h-5 text-white border-[#9EA1AE] data-[state=checked]:border-[#2FB9BD] data-[state=checked]:bg-[#2FB9BD] data-[state=checked]:text-white' />
                                     <label
                                         htmlFor="terms-2"
-                                        className="flex flex-col text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-full caret-transparent"
+                                        className="flex flex-col text-sm font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-full caret-transparent"
                                     >
                                         <span className='text-sm text-[#484D5C]'>
                                             Tự đến lấy xe
@@ -928,61 +1006,79 @@ const DetailCar = (props: Props) => {
                             </div>
                         </div>
 
-                        <div className='flex flex-col gap-2 bg-[#F9F9FA] rounded-xl p-4'>
-                            <div className='text-base text-[#2C2F31] font-semibold'>
-                                Khuyến mãi
-                            </div>
+                        <div className='flex flex-col gap-4'>
+                            <div className='flex flex-col gap-2 bg-[#F9F9FA] rounded-xl p-4'>
+                                <div className='text-base text-[#2C2F31] font-semibold'>
+                                    Khuyến mãi
+                                </div>
 
-                            <RadioGroup defaultValue="comfortable">
-                                <div className="flex items-center space-x-2 caret-transparent">
-                                    <RadioGroupItem value="default" id="r1" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
-                                    <Label htmlFor="r1" className='flex flex-row items-center justify-between gap-2 w-full'>
-                                        <div className='flex flex-col'>
-                                            <div className='flex items-center gap-1'>
-                                                <Image
-                                                    src='/icon/icon_ticket_discount_red.svg'
-                                                    alt="ticket"
-                                                    width={80}
-                                                    height={80}
-                                                    className='w-6 max-w-6 h-6 object-contain'
-                                                />
-                                                <div className='w-[90%] max-w-[90%] text-lg'>
-                                                    Chương trình giảm giá
+                                <RadioGroup defaultValue="comfortable">
+                                    <div className="flex items-center space-x-2 caret-transparent">
+                                        <RadioGroupItem value="default" id="r1" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
+                                        <Label htmlFor="r1" className='flex flex-row items-center justify-between gap-2 w-full'>
+                                            <div className='flex flex-col'>
+                                                <div className='flex items-center gap-1'>
+                                                    <Image
+                                                        src='/icon/icon_ticket_discount_red.svg'
+                                                        alt="ticket"
+                                                        width={80}
+                                                        height={80}
+                                                        className='w-6 max-w-6 h-6 object-contain'
+                                                    />
+                                                    <div className='w-[90%] max-w-[90%] text-lg'>
+                                                        Chương trình giảm giá
+                                                    </div>
+                                                </div>
+                                                <div className='text-[#6F7689] text-base'>
+                                                    Giảm 160k trên đơn giá
                                                 </div>
                                             </div>
-                                            <div className='text-[#6F7689] text-base'>
-                                                Giảm 160k trên đơn giá
+                                            <div className='text-base text-[#2FB9BD] font-semibold'>
+                                                -{FormatNumberToThousands(160000)}
                                             </div>
-                                        </div>
-                                        <div className='text-base text-[#2FB9BD] font-semibold'>
-                                            -{FormatNumberToThousands(160000)}
-                                        </div>
-                                    </Label>
-                                </div>
-                                <div className="flex items-center space-x-2 caret-transparent">
-                                    <RadioGroupItem value="comfortable" id="r2" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
-                                    <Label htmlFor="r2" className='flex flex-row items-center justify-between gap-2 w-full'>
-                                        <div className='flex flex-col'>
-                                            <div className='flex items-center gap-1'>
-                                                <Image
-                                                    src='/icon/icon_ticket_discount_green.svg'
-                                                    alt="ticket"
-                                                    width={80}
-                                                    height={80}
-                                                    className='w-6 max-w-6 h-6 object-contain fill-[#2FB9BD]'
-                                                />
-                                                <div className='w-[90%] max-w-[90%] text-lg'>
-                                                    Chương trình giảm giá
+                                        </Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 caret-transparent">
+                                        <RadioGroupItem value="comfortable" id="r2" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
+                                        <Label htmlFor="r2" className='flex flex-row items-center justify-between gap-2 w-full'>
+                                            <div className='flex flex-col'>
+                                                <div className='flex items-center gap-1'>
+                                                    <Image
+                                                        src='/icon/icon_ticket_discount_green.svg'
+                                                        alt="ticket"
+                                                        width={80}
+                                                        height={80}
+                                                        className='w-6 max-w-6 h-6 object-contain fill-[#2FB9BD]'
+                                                    />
+                                                    <div className='w-[90%] max-w-[90%] text-lg'>
+                                                        Chương trình giảm giá
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className='text-base text-[#2FB9BD] font-semibold'>
-                                            <TiArrowSortedUp className='text-2xl rotate-90' />
-                                        </div>
-                                    </Label>
+                                            <TiArrowSortedUp className='text-2xl text-[#16171B] rotate-90' />
+                                        </Label>
+                                    </div>
+                                </RadioGroup>
+                            </div>
+                            <div className='border w-full' />
+                            <div className='flex justify-between items-center'>
+                                <div className='text-base text-[#3E424E] font-medium'>
+                                    Thành tiền
                                 </div>
-                            </RadioGroup>
+                                <div className='text-[#3E424E] font-semibold text-base'>
+                                    {FormatNumberDot(592000)}<span>đ/2 ngày</span>
+                                </div>
+                            </div>
                         </div>
+
+                        <Button className='py-4 w-full flex justify-center items-center text-lg text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-2xl'>
+                            Chọn thuê
+                        </Button>
+
+                    </div>
+
+                    <div className='text-base text-[#FA3434] hover:text-[#FA3434]/80 duration-300 transition-all font-semibold cursor-pointer w-full text-center'>
+                        Báo cáo xe này
                     </div>
                 </div>
             </div>

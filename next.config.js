@@ -18,6 +18,8 @@ const nextConfig = {
             },
         ]
     },
+    fastRefresh: true,
+    concurrentFeatures: true,
     async rewrites() {
         return [
             {

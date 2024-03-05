@@ -113,9 +113,6 @@ const Header = () => {
     //     // }
     // }, [token])
 
-    console.log("isVisibleTablet:::: ", isVisibleTablet);
-
-
     if (!isMounted) {
         return null;
     }

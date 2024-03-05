@@ -63,7 +63,6 @@ export function DatePickerWithRangeAndTime({
                         selected={date}
                         onSelect={setDate}
                         numberOfMonths={2}
-                        locale={vi}
                     />
                 </PopoverContent>
             </Popover>
