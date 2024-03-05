@@ -361,17 +361,21 @@ const DetailCar = (props: Props) => {
                     allowTouchMove={true}
                     breakpoints={{
                         320: {
-                            slidesPerView: 3,
+                            slidesPerView: 1,
                             allowTouchMove: true
                         },
                         640: {
-                            slidesPerView: 3,
+                            slidesPerView: 1,
                             allowTouchMove: true
                         },
                         768: {
                             slidesPerView: 1,
                             allowTouchMove: true
                         },
+                        1024:{
+                            slidesPerView: 3,
+                            allowTouchMove: true
+                        }
                     }}
                     autoplay={true}
                     pagination={customPagination}
