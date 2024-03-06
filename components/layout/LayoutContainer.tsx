@@ -18,6 +18,7 @@ import "aos/dist/aos.css";
 import '@/styles/globals.scss';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import ButtonToTop from '../button/ButtonToTop';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -81,6 +82,7 @@ const LayoutContainer = ({
                 <Header />
                 <main className='overflow-hidden w-full'>
                     {children}
+                    <ButtonToTop />
                 </main>
                 <Footer />
                 <ToastContainer

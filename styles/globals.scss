@@ -164,10 +164,10 @@
 
 // map
 .custom-container-map {
-  @apply w-full 3xl:h-[508px] 2xl:h-[440px] xxl:h-[400px] xl:h-[400px] lg:h-[375px] md:h-[380px] h-[400px] py-2 rounded-3xl;
+  @apply w-full 3xl:h-[508px] 2xl:h-[440px] xxl:h-[400px] xl:h-[400px] lg:h-[375px] md:h-[380px] h-[320px] py-2 rounded-3xl;
 }
 .custom-container-map-iframe {
-  @apply w-[100%] 3xl:h-[530px] 2xl:h-[461px] xxl:h-[419px] xl:h-[420px] lg:h-[495px] md:h-[396px] h-[419px] py-2 rounded-3xl;
+  @apply w-[100%] 3xl:h-[530px] 2xl:h-[461px] xxl:h-[419px] xl:h-[420px] lg:h-[495px] md:h-[396px] h-[360px] py-2 rounded-3xl;
 }
 
 // rating

@@ -305,39 +305,13 @@ const SearchCars = (props: Props) => {
 
                     <div className='flex items-center justify-center w-full relative'>
                         <Swiper
-                            slidesPerView={8}
+                            slidesPerView={"auto"}
                             spaceBetween={0}
                             onSwiper={(swiper) => {
                                 swiperRef.current = swiper;
                             }}
                             loop={false}
                             allowTouchMove={true}
-                            breakpoints={{
-                                320: {
-                                    slidesPerView: "auto",
-                                },
-                                640: {
-                                    slidesPerView: "auto",
-                                },
-                                768: {
-                                    slidesPerView: "auto",
-                                },
-                                1024: {
-                                    slidesPerView: "auto",
-                                },
-                                1280: {
-                                    slidesPerView: "auto",
-                                },
-                                1440: {
-                                    slidesPerView: "auto",
-                                },
-                                1536: {
-                                    slidesPerView: "auto",
-                                },
-                                1920: {
-                                    slidesPerView: "auto",
-                                },
-                            }}
                             className='flex gap-3 w-fit px-2'
                         >
                             <SwiperSlide className='py-3 px-4 w-fit h-fit bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors'>

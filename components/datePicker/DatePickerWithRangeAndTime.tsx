@@ -36,7 +36,7 @@ export function DatePickerWithRangeAndTime({
                         id="date"
                         variant={"outline"}
                         className={cn(
-                            `${classNameButton} w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] text-xs`,
+                            `${classNameButton} w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-sm text-xs`,
                             !date && "text-muted-foreground"
                         )}
                     >

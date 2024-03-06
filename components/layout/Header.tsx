@@ -23,6 +23,7 @@ import { Button } from '../ui/button';
 // import { DialogModal } from '../dialog/DialogModal';
 import { cn } from '@/lib/utils';
 import ConvertToSlug from '../convertSlug/ConvertToSlug';
+import { DialogLogin } from '../modals/DialogLogin';
 
 // import { postAutoLoginAccount } from '@/services/account/account.services';
 // import { Dropdown } from '../dropdown/Dropdown';
@@ -33,13 +34,14 @@ import ConvertToSlug from '../convertSlug/ConvertToSlug';
 // import { useCategoryServicesStore } from '@/hooks/useService';
 
 const Header = () => {
+    const { isVisibleTablet } = useResize()
+
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [isScrollBlocked, setIsScrollBlocked] = useState<boolean>(false);
     const [showActive, setShowActive] = useState<boolean>(false);
     const [activeService, setActiveService] = useState<boolean>(false)
+    const [openModalLogin, setOpenModalLogin] = useState<boolean>(false)
 
-    const { isVisibleTablet } = useResize()
-    const router = useRouter();
     const pathname = usePathname()
     // let token = Cookies.get("token")
 
@@ -289,9 +291,11 @@ const Header = () => {
                             }
                         </NavigationMenu>
                         <div className='col-span-2 flex justify-end 3xl:gap-4 gap-2'>
-                            <Button className='3xl:text-base xl:text-xs lg:text-[13px] text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'>
-                                Đăng nhập
-                            </Button>
+                            <DialogLogin openModal={openModalLogin} setOpenModal={setOpenModalLogin}>
+                                <Button onClick={() => setOpenModalLogin(true)} className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'>
+                                    Đăng nhập
+                                </Button>
+                            </DialogLogin>
                         </div>
                     </div>
             }

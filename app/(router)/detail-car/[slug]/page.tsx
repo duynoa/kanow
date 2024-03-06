@@ -25,14 +25,27 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { useResize } from '@/hooks/useResize'
+import { DialogReviewImage } from '@/components/modals/DialogReviewImage'
+import { useDialogImage } from '@/hooks/useDialogImage'
 
 
 type Props = {}
 
 const DetailCar = (props: Props) => {
+    const { isVisibleMobile, isVisibleTablet } = useResize()
+    const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
+
     const [isMounted, setIsMounted] = useState<boolean>(false)
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
     const [showSecondHeader, setShowSecondHeader] = useState(false);
+    const [openModalReview, setOpenModalReview] = useState<boolean>(false)
+
+    const initialState: any = {
+    };
+
+    const [isState, setIsState] = useState<any>(initialState)
+    const queryKeyIsState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
     const latitude = 10.796455918645478; // Thay đổi giá trị này bằng vĩ độ thực tế
     const longitude = 106.63445664322627; // Thay đổi giá trị này bằng kinh độ thực tế
@@ -316,6 +329,12 @@ const DetailCar = (props: Props) => {
         },
     }
 
+    const handleOpenReviewImage = (id: number | string, index: number) => {
+        setOpenDialogReview(true)
+        setIndexImage(index)
+        setDataImage(imageCard)
+    }
+
     if (!isMounted) {
         return null;
     }
@@ -353,78 +372,133 @@ const DetailCar = (props: Props) => {
                     </div>
                 </div>
             </div>
-            <div className='custom-container'>
-                <Swiper
-                    slidesPerView={3}
-                    spaceBetween={20}
-                    modules={[Autoplay, Pagination, A11y]}
-                    allowTouchMove={true}
-                    breakpoints={{
-                        320: {
-                            slidesPerView: 1,
-                            allowTouchMove: true
-                        },
-                        640: {
-                            slidesPerView: 1,
-                            allowTouchMove: true
-                        },
-                        768: {
-                            slidesPerView: 1,
-                            allowTouchMove: true
-                        },
-                        1024:{
-                            slidesPerView: 3,
-                            allowTouchMove: true
-                        }
-                    }}
-                    autoplay={true}
-                    pagination={customPagination}
-                    className='custom-swiper-detail-car w-full 3xl:h-[330px] xl:h-[280px] lg:h-[240px] h-[360px] px-2'
-                >
-                    {
-                        imageCard && imageCard.map((card, index) => (
-                            <SwiperSlide key={card.id}>
-                                <div className='w-full 3xl:h-[300px] xl:h-[240px] lg:h-[200px] h-[360px] cursor-pointer'>
-                                    <Image
-                                        src={card.image ? card.image : '/default/default.png'}
-                                        alt="car"
-                                        width={800}
-                                        height={600}
-                                        className='w-full h-full object-cover rounded-2xl'
-                                    />
-                                </div>
-                            </SwiperSlide>
-                        ))
-                    }
-                </Swiper>
-            </div>
+            {
+                isVisibleTablet ?
+                    <div className=''>
+                        <Swiper
+                            slidesPerView={3}
+                            spaceBetween={20}
+                            modules={[Autoplay, Pagination, A11y]}
+                            allowTouchMove={true}
+                            breakpoints={{
+                                320: {
+                                    slidesPerView: 1,
+                                    allowTouchMove: true,
+                                },
+                                640: {
+                                    slidesPerView: 1,
+                                    allowTouchMove: true,
+                                },
+                                768: {
+                                    slidesPerView: 1,
+                                    allowTouchMove: true
+                                },
+                                1024: {
+                                    slidesPerView: 3,
+                                    allowTouchMove: true
+                                }
+                            }}
+                            autoplay={true}
+                            pagination={customPagination}
+                            className='custom-swiper-detail-car w-full 3xl:h-[330px] xl:h-[280px] lg:h-[240px] md:h-[380px] h-[240px] lg:px-2'
+                        >
+                            {
+                                imageCard && imageCard.map((card, index) => (
+                                    <SwiperSlide key={card.id}>
+                                        <div className='w-full 3xl:h-[300px] xl:h-[240px] lg:h-[200px] md:h-[380px] h-[240px] cursor-pointer'>
+                                            <Image
+                                                src={card.image ? card.image : '/default/default.png'}
+                                                alt="car"
+                                                width={800}
+                                                height={600}
+                                                className='w-full h-full object-cover lg:rounded-2xl'
+                                            />
+                                        </div>
+                                    </SwiperSlide>
+                                ))
+                            }
+                        </Swiper>
+                    </div>
+                    :
+                    <div className='custom-container'>
+                        <Swiper
+                            slidesPerView={3}
+                            spaceBetween={20}
+                            modules={[Autoplay, Pagination, A11y]}
+                            allowTouchMove={true}
+                            breakpoints={{
+                                320: {
+                                    slidesPerView: 1,
+                                    allowTouchMove: true,
+                                    spaceBetween: "auto"
+                                },
+                                640: {
+                                    slidesPerView: 1,
+                                    allowTouchMove: true,
+                                    spaceBetween: "auto"
+                                },
+                                768: {
+                                    slidesPerView: 1,
+                                    allowTouchMove: true
+                                },
+                                1024: {
+                                    slidesPerView: 3,
+                                    allowTouchMove: true
+                                }
+                            }}
+                            autoplay={true}
+                            pagination={customPagination}
+                            className='custom-swiper-detail-car w-full 3xl:h-[330px] xl:h-[280px] lg:h-[240px] md:h-[380px] h-[240px] lg:px-2'
+                        >
+                            {
+                                imageCard && imageCard.map((card, index) => (
+                                    <SwiperSlide key={card.id} onClick={() => handleOpenReviewImage(card.id, index)}>
+                                        <div className='w-full 3xl:h-[300px] xl:h-[240px] lg:h-[200px] md:h-[380px] h-[240px] cursor-pointer'>
+                                            <Image
+                                                src={card.image ? card.image : '/default/default.png'}
+                                                alt="car"
+                                                width={800}
+                                                height={600}
+                                                className='w-full h-full object-cover lg:rounded-2xl'
+                                            />
+                                        </div>
+                                    </SwiperSlide>
+                                ))
+                            }
+                        </Swiper>
+                    </div>
+            }
 
             <div className='custom-container 3xl:mt-8 mt-4 flex lg:flex-row flex-col gap-6'>
                 <div className='flex flex-col gap-6 xxl:w-[70%] xxl:max-w-[70%] lg:w-[65%] lg:max-w-[65%] w-full max-w-full h-full pb-16 lg:order-none order-2'>
                     <div className='flex flex-row items-center justify-between 3xl:pb-6 pb-4 border-b-2'>
                         <div className='flex flex-col gap-2'>
-                            <div className='3xl:text-4xl text-3xl uppercase text-[#09080D] font-bold'>
+                            <div className='3xl:text-4xl md:text-3xl text-xl uppercase text-[#09080D] font-bold'>
                                 Mitsubishi xpander 2023
                             </div>
-                            <div className='flex gap-3 items-center'>
-                                <Badge className='bg-[#000000]/50 font-normal cursor-default text-xs py-1 px-3'>
-                                    Miễn thế chấp
-                                </Badge>
-                                <Badge className='bg-[#000000]/50 font-normal cursor-default text-xs py-1 px-3'>
-                                    Đặt xe nhanh
-                                </Badge>
-
-                                <div className='flex items-center gap-1'>
-                                    <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#FF9900]' />
-                                    <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-medium      '>
-                                        4.9
-                                    </div>
+                            <div className='flex md:flex-row flex-col gap-3 md:items-center items-start'>
+                                <div className='flex gap-3 md:items-center items-start'>
+                                    <Badge className='bg-[#000000]/50 font-normal cursor-default md:text-xs text-[10px] py-1 px-3'>
+                                        Miễn thế chấp
+                                    </Badge>
+                                    <Badge className='bg-[#000000]/50 font-normal cursor-default md:text-xs text-[10px] py-1 px-3'>
+                                        Đặt xe nhanh
+                                    </Badge>
                                 </div>
 
-                                <div className='flex items-center gap-1'>
-                                    <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
-                                    <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
-                                        {FormatNumberHundred(19)} Chuyến
+                                <div className='flex gap-3 md:items-center items-start'>
+                                    <div className='flex items-center gap-1'>
+                                        <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#FF9900]' />
+                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-medium      '>
+                                            4.9
+                                        </div>
+                                    </div>
+
+                                    <div className='flex items-center gap-1'>
+                                        <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
+                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                            {FormatNumberHundred(19)} Chuyến
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -442,9 +516,9 @@ const DetailCar = (props: Props) => {
                         <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                             Đặc điểm
                         </div>
-                        <div className='flex flex-row justify-between items-center max-w-[80%]'>
-                            <div className='flex items-center gap-4'>
-                                <div className='3xl:w-14 3xl:max-w-14 3xl:h-14 w-12 max-w-12 h-12'>
+                        <div className='flex flex-row justify-between items-center lg:max-w-[80%] max-w-full'>
+                            <div className='flex md:flex-row flex-col items-center gap-4'>
+                                <div className='3xl:w-14 3xl:min-w-14 3xl:h-14 w-12 min-w-12 h-12'>
                                     <Image
                                         src={"/icon/icon_feature1.png"}
                                         alt="icon"
@@ -457,13 +531,13 @@ const DetailCar = (props: Props) => {
                                     <div className='uppercase 3xl:text-sm text-xs text-[#6F7689]'>
                                         Truyền động
                                     </div>
-                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold  '>
+                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold text-center'>
                                         Số tự động
                                     </div>
                                 </div>
                             </div>
-                            <div className='flex items-center gap-4'>
-                                <div className='3xl:w-14 3xl:max-w-14 3xl:h-14 w-12 max-w-12 h-12'>
+                            <div className='flex md:flex-row flex-col items-center gap-4'>
+                                <div className='3xl:w-14 3xl:min-w-14 3xl:h-14 w-12 min-w-12 h-12'>
                                     <Image
                                         src={"/icon/icon_feature2.png"}
                                         alt="icon"
@@ -476,13 +550,13 @@ const DetailCar = (props: Props) => {
                                     <div className='uppercase 3xl:text-sm text-xs text-[#6F7689]'>
                                         Số ghế
                                     </div>
-                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold  '>
+                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold text-center'>
                                         5 chỗ
                                     </div>
                                 </div>
                             </div>
-                            <div className='flex items-center gap-4'>
-                                <div className='3xl:w-14 3xl:max-w-14 3xl:h-14 w-12 max-w-12 h-12'>
+                            <div className='flex md:flex-row flex-col items-center gap-4'>
+                                <div className='3xl:w-14 3xl:min-w-14 3xl:h-14 w-12 min-w-12 h-12'>
                                     <Image
                                         src={"/icon/icon_feature3.png"}
                                         alt="icon"
@@ -495,7 +569,7 @@ const DetailCar = (props: Props) => {
                                     <div className='uppercase 3xl:text-sm text-xs text-[#6F7689]'>
                                         Nhiên liệu
                                     </div>
-                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold  '>
+                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold text-center '>
                                         Xăng
                                     </div>
                                 </div>
@@ -530,7 +604,7 @@ const DetailCar = (props: Props) => {
                         <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                             Tiện nghi trên xe
                         </div>
-                        <div className='grid grid-cols-4 gap-2'>
+                        <div className='grid md:grid-cols-4 grid-cols-2 gap-2'>
                             {
                                 featuresCar && featuresCar.map((feature) => (
                                     <div key={feature.id} className='flex gap-2 items-center w-fit pr-2 py-1'>
@@ -552,43 +626,45 @@ const DetailCar = (props: Props) => {
                         <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                             Chủ xe
                         </div>
-                        <div className='bg-[#F6F6F8] p-4 flex items-center gap-4 rounded-xl'>
-                            <div className='3xl:w-16 3xl:h-16 3xl:min-w-16 w-14 max-w-14 h-14 rounded-full border-[3px] border-[#ffffff] drop-shadow'>
-                                <Image
-                                    src="/avatar/avatar1.png"
-                                    alt="avatar"
-                                    width={100}
-                                    height={100}
-                                    className='w-full h-full object-contain rounded-full'
-                                />
-                            </div>
-
-                            <div className='flex flex-col 3xl:gap-2 gap-1'>
-                                <div className='uppercase text-[#16171B] font-semibold 3xl:text-base text-sm'>
-                                    Lan vũ
+                        <div className='bg-[#F6F6F8] p-4 flex md:flex-row flex-col md:items-center items-start gap-4 rounded-xl'>
+                            <div className='flex items-center gap-4'>
+                                <div className='3xl:w-16 3xl:h-16 3xl:min-w-16 w-14 min-w-14 h-14 rounded-full border-[3px] border-[#ffffff] drop-shadow'>
+                                    <Image
+                                        src="/avatar/avatar1.png"
+                                        alt="avatar"
+                                        width={100}
+                                        height={100}
+                                        className='w-full h-full object-contain rounded-full'
+                                    />
                                 </div>
-                                <div className='flex items-center gap-4'>
-                                    <div className='flex items-center gap-1'>
-                                        <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#FF9900]' />
-                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-medium      '>
-                                            4.9
+
+                                <div className='flex flex-col 3xl:gap-2 gap-1'>
+                                    <div className='uppercase text-[#16171B] font-semibold 3xl:text-base text-sm'>
+                                        Lan vũ
+                                    </div>
+                                    <div className='flex items-center gap-4'>
+                                        <div className='flex items-center gap-1'>
+                                            <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#FF9900]' />
+                                            <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-medium      '>
+                                                4.9
+                                            </div>
+                                        </div>
+
+                                        <div className='flex items-center gap-1'>
+                                            <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
+                                            <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                                {FormatNumberHundred(19)} Chuyến
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <div className='flex items-center gap-1'>
-                                        <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
-                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
-                                            {FormatNumberHundred(19)} Chuyến
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
-                            <div className='3xl:pl-20 pl-10 3xl:text-base text-sm text-[#6F7689] 3xl:max-w-[75%] max-w-[70%]'>
+                            <div className='3xl:pl-20 lg:pl-10 md:pl-6 p-0 3xl:text-base text-sm text-[#6F7689] 3xl:max-w-[75%] lg:max-w-[70%] md:max-w-[65%] max-w-full'>
                                 Chủ xe 5 sao có thời gian phản hồi nhanh chóng, tỉ lệ đồng ý cao, mức giá cạnh tranh và dịch vụ nhận được nhiều đánh giá tốt từ khách hàng
                             </div>
                         </div>
-                        <div className='grid grid-cols-3 gap-20'>
+                        <div className='grid grid-cols-3 md:gap-20 gap-4'>
                             <div className='col-span-1 flex flex-col items-center gap-1'>
                                 <div className='3xl:text-base text-sm text-[#6F7689]'>
                                     Tỉ lệ phản hồi
@@ -638,15 +714,28 @@ const DetailCar = (props: Props) => {
                                     Đánh giá
                                 </div>
                                 <div className='flex items-center gap-2'>
-                                    <StarRatings
-                                        rating={4.5}
-                                        starRatedColor="#FCC43E"
-                                        starHoverColor='#FCC43E'
-                                        starDimension='16px'
-                                        starSpacing='2px'
-                                        numberOfStars={5}
-                                        name='rating'
-                                    />
+                                    {
+                                        isVisibleMobile ?
+                                            <StarRatings
+                                                rating={4.5}
+                                                starRatedColor="#FCC43E"
+                                                starHoverColor='#FCC43E'
+                                                starDimension='16px'
+                                                starSpacing='0px'
+                                                numberOfStars={5}
+                                                name='rating'
+                                            />
+                                            :
+                                            <StarRatings
+                                                rating={4.5}
+                                                starRatedColor="#FCC43E"
+                                                starHoverColor='#FCC43E'
+                                                starDimension='16px'
+                                                starSpacing='2px'
+                                                numberOfStars={5}
+                                                name='rating'
+                                            />
+                                    }
                                     <div className='3xl:text-base text-sm text-[#FF9900] font-semibold'>
                                         4.5/5
                                     </div>
@@ -655,7 +744,7 @@ const DetailCar = (props: Props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className='3xl:text-lg text-base text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
+                            <div className='3xl:text-lg md:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
                                 Xem tất cả
                             </div>
                         </div>
@@ -685,15 +774,28 @@ const DetailCar = (props: Props) => {
                                         {item.content ? item.content : ''}
                                     </div>
                                     <div className='flex items-center'>
-                                        <StarRatings
-                                            rating={item.rating ? item.rating : 0}
-                                            starRatedColor="#FCC43E"
-                                            starHoverColor='#FCC43E'
-                                            starDimension='14px'
-                                            starSpacing='2px'
-                                            numberOfStars={5}
-                                            name='rating'
-                                        />
+                                        {
+                                            isVisibleMobile ?
+                                                <StarRatings
+                                                    rating={item.rating ? item.rating : 0}
+                                                    starRatedColor="#FCC43E"
+                                                    starHoverColor='#FCC43E'
+                                                    starDimension='14px'
+                                                    starSpacing='0px'
+                                                    numberOfStars={5}
+                                                    name='rating'
+                                                />
+                                                :
+                                                <StarRatings
+                                                    rating={item.rating ? item.rating : 0}
+                                                    starRatedColor="#FCC43E"
+                                                    starHoverColor='#FCC43E'
+                                                    starDimension='14px'
+                                                    starSpacing='2px'
+                                                    numberOfStars={5}
+                                                    name='rating'
+                                                />
+                                        }
                                     </div>
                                 </div>
                             ))
@@ -841,7 +943,7 @@ const DetailCar = (props: Props) => {
                             {
                                 listSurcharge && listSurcharge.map((item) => (
                                     <div key={item.id} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
-                                        <div className='w-[90%] max-w-[90%] flex flex-col gap-1'>
+                                        <div className='md:w-[90%] md:max-w-[90%] w-[85%] max-w-[85%] flex flex-col gap-1'>
                                             <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
                                                 {item.title ? item.title : ""}
                                             </div>
@@ -874,7 +976,7 @@ const DetailCar = (props: Props) => {
                     </div>
                 </div>
 
-                <div className='flex flex-col 3xl:gap-4 gap-2 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
+                <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
                     <div className='flex flex-col gap-2 xl:px-6 xl:py-4 p-4 bg-[#C2F9F9]/[63] rounded-2xl '>
                         <div className='flex flex-row items-center gap-2'>
                             <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
@@ -1054,7 +1156,7 @@ const DetailCar = (props: Props) => {
                                                         height={80}
                                                         className='3xl:w-6 3xl:max-w-6 3xl:h-6 w-5 max-w-5 h-5 object-contain fill-[#2FB9BD]'
                                                     />
-                                                    <div className='w-[90%] max-w-[90%] 3xl:text-lg xl:text-base text-sm'>
+                                                    <div className='w-[90%] max-w-[90%] 3xl:text-lg xl:text-base text-sm '>
                                                         Chương trình giảm giá
                                                     </div>
                                                 </div>
@@ -1089,133 +1191,281 @@ const DetailCar = (props: Props) => {
                 </div>
             </div>
 
-            <div className='bg-[#F6F6F8] py-20'>
+            <div className='bg-[#F6F6F8] md:py-20 py-10'>
                 <div className='custom-container flex flex-col 3xl:gap-10 gap-6'>
                     <div className='3xl:text-4xl text-3xl capitalize text-[#09080D] font-bold'>
                         Xe tương tự
                     </div>
-                    <div className='grid xxl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-8 gap-6 justify-start w-full h-full'>
-                        {
-                            dataListCardCars && dataListCardCars.map((card) => (
-                                <Link
-                                    key={card.id}
-                                    className='col-span-1 bg-white border w-full 3xl:p-4 p-3 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
-                                    href={`/detail-car/${card.id}?${ConvertToSlug(card?.title)}`}
-                                >
-                                    <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
-                                        - {card.promotion}
-                                    </div>
-                                    <div className='w-full 3xl:h-[230px] xxl:h-[200px] xl:h-[200px] h-[180px] relative'>
-                                        <Image
-                                            width={600}
-                                            height={600}
-                                            alt="image_card"
-                                            src={card.image ? card.image : '/default/default.png'}
-                                            className='w-full h-full object-cover rounded-xl'
-                                        />
-                                        <div
-                                            onClick={handleClickFavorite}
-                                            className='absolute right-2 top-2 bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out z-20'
+                    {
+                        isVisibleMobile ?
+                            <Swiper
+                                slidesPerView={1}
+                                spaceBetween={10}
+                                modules={[Pagination, A11y]}
+                                allowTouchMove={true}
+                                breakpoints={{
+                                    320: {
+                                        slidesPerView: 1,
+                                        allowTouchMove: true
+                                    },
+                                    640: {
+                                        slidesPerView: 1,
+                                        allowTouchMove: true
+                                    },
+                                    768: {
+                                        slidesPerView: 1,
+                                        allowTouchMove: true
+                                    },
+                                }}
+                                pagination={customPagination}
+                                className='custom-swiper-intro w-full h-[420px]'
+                            >
+                                {
+                                    dataListCardCars && dataListCardCars.map((card, index) => (
+                                        <SwiperSlide key={card.id}>
+                                            <Link
+                                                key={card.id}
+                                                className='col-span-1 bg-white border w-full 3xl:p-4 p-3 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
+                                                href={`/detail-car/${card.id}?${ConvertToSlug(card?.title)}`}
+                                            >
+                                                <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
+                                                    - {card.promotion}
+                                                </div>
+                                                <div className='w-full 3xl:h-[230px] xxl:h-[200px] xl:h-[200px] h-[200px] relative'>
+                                                    <Image
+                                                        width={600}
+                                                        height={600}
+                                                        alt="image_card"
+                                                        src={card.image ? card.image : '/default/default.png'}
+                                                        className='w-full h-full object-cover rounded-xl'
+                                                    />
+                                                    <div
+                                                        onClick={handleClickFavorite}
+                                                        className='absolute right-2 top-2 bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out z-20'
+                                                    >
+                                                        <TiHeartFullOutline className={`${card.favorite ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
+                                                    </div>
+                                                    <div className='flex gap-2 absolute bottom-[10px] left-[10px]'>
+                                                        {
+                                                            card.type.mortgageFree ?
+                                                                <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
+                                                                    Miễn thế chấp
+                                                                </Badge>
+                                                                :
+                                                                null
+                                                        }
+                                                        {
+                                                            card.type.orderFastCar ?
+                                                                <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
+                                                                    Đặt xe nhanh
+                                                                </Badge>
+                                                                :
+                                                                null
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className='flex items-center gap-2 mt-2'>
+                                                    {
+                                                        card.type.automaticNumber ?
+                                                            <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default'>
+                                                                Số tự động
+                                                            </Badge>
+                                                            :
+                                                            null
+                                                    }
+                                                    {
+                                                        card.type.doorstepDelivery ?
+                                                            <Badge className='bg-[#F9ECC9]/35 hover:bg-[#F9ECC9]/50 text-[#FF9900] 3xl:text-sm text-xs font-medium cursor-default'>
+                                                                Giao tận nơi
+                                                            </Badge>
+                                                            :
+                                                            null
+                                                    }
+                                                </div>
+                                                <div className='flex gap-3 items-center'>
+                                                    <div className='3xl:w-12 3xl:max-w-12 3xl:h-12 w-10 max-w-10 h-10 '>
+                                                        <Avatar className='w-full h-full shadow'>
+                                                            <AvatarImage
+                                                                src={card.avatar ? card.avatar : '/default/default.png'}
+                                                                alt="@kanow"
+                                                            />
+                                                            <AvatarFallback >
+                                                                KN
+                                                            </AvatarFallback>
+                                                        </Avatar>
+                                                    </div>
+                                                    <div className='flex flex-col gap-1 w-[80%] max-w-[80%]'>
+                                                        <div className='3xl:text-lg text-base text-[#1D1D1D] font-bold uppercase line-clamp-1'>
+                                                            {card.title ? card.title : ''}
+                                                        </div>
+                                                        <div className='flex gap-1 items-center'>
+                                                            <TiLocation className='text-base text-[#FA3434] w-[16px] min-w-[16px]' />
+                                                            <div className='3xl:text-sm text-xs text-[#8C93A3] font-medium w-[90%] max-w-[90%] line-clamp-1'>
+                                                                {card.address ? card.address : ''}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className='border-b border-[#D7D9E0]/50' />
+                                                <div className='flex items-center 3xl:gap-4 xxl:gap-2 xl:gap-4 lg:gap-1 gap-2 bg-[#F2FCF7] p-2 rounded-lg'>
+                                                    <div className='flex items-center gap-1'>
+                                                        <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#FFC118]' />
+                                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                                            {card.point ? card.point : ''}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className='flex items-center gap-1'>
+                                                        <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
+                                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                                            {card.quantityTrips ? FormatNumberHundred(card.quantityTrips) : 0} Chuyến
+                                                        </div>
+                                                    </div>
+
+                                                    <div className='flex items-center gap-1'>
+                                                        <div className='3xl:text-lg 2xl:text-base xxl:text-sm text-[15px] text-[#D7D9E0] font-medium line-through'>
+                                                            {card.priceBeforePromotion ? FormatNumberToThousands(card.priceBeforePromotion) : 0}
+                                                        </div>
+                                                        <div className='flex'>
+                                                            <span className='3xl:text-lg 2xl:text-base xxl:text-sm text-[15px] text-[#1AC5CA] font-medium'>
+                                                                {card.priceAfterPromotion ? FormatNumberToThousands(card.priceAfterPromotion) : 0}
+                                                            </span>
+                                                            <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
+                                                                /ngày
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        </SwiperSlide>
+                                    ))
+                                }
+                            </Swiper>
+                            :
+                            <div className='grid xxl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-8 gap-6 justify-start w-full h-full'>
+                                {
+                                    dataListCardCars && dataListCardCars.map((card) => (
+                                        <Link
+                                            key={card.id}
+                                            className='col-span-1 bg-white border w-full 3xl:p-4 p-3 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
+                                            href={`/detail-car/${card.id}?${ConvertToSlug(card?.title)}`}
                                         >
-                                            <TiHeartFullOutline className={`${card.favorite ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
-                                        </div>
-                                        <div className='flex gap-2 absolute bottom-[10px] left-[10px]'>
-                                            {
-                                                card.type.mortgageFree ?
-                                                    <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
-                                                        Miễn thế chấp
-                                                    </Badge>
-                                                    :
-                                                    null
-                                            }
-                                            {
-                                                card.type.orderFastCar ?
-                                                    <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
-                                                        Đặt xe nhanh
-                                                    </Badge>
-                                                    :
-                                                    null
-                                            }
-                                        </div>
-                                    </div>
-                                    <div className='flex items-center gap-2 mt-2'>
-                                        {
-                                            card.type.automaticNumber ?
-                                                <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default'>
-                                                    Số tự động
-                                                </Badge>
-                                                :
-                                                null
-                                        }
-                                        {
-                                            card.type.doorstepDelivery ?
-                                                <Badge className='bg-[#F9ECC9]/35 hover:bg-[#F9ECC9]/50 text-[#FF9900] 3xl:text-sm text-xs font-medium cursor-default'>
-                                                    Giao tận nơi
-                                                </Badge>
-                                                :
-                                                null
-                                        }
-                                    </div>
-                                    <div className='flex gap-3 items-center'>
-                                        <div className='3xl:w-12 3xl:max-w-12 3xl:h-12 w-10 max-w-10 h-10 '>
-                                            <Avatar className='w-full h-full shadow'>
-                                                <AvatarImage
-                                                    src={card.avatar ? card.avatar : '/default/default.png'}
-                                                    alt="@kanow"
-                                                />
-                                                <AvatarFallback >
-                                                    KN
-                                                </AvatarFallback>
-                                            </Avatar>
-                                        </div>
-                                        <div className='flex flex-col gap-1 w-[80%] max-w-[80%]'>
-                                            <div className='3xl:text-lg text-base text-[#1D1D1D] font-bold uppercase line-clamp-1'>
-                                                {card.title ? card.title : ''}
+                                            <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
+                                                - {card.promotion}
                                             </div>
-                                            <div className='flex gap-1 items-center'>
-                                                <TiLocation className='text-base text-[#FA3434] w-[16px] min-w-[16px]' />
-                                                <div className='3xl:text-sm text-xs text-[#8C93A3] font-medium w-[90%] max-w-[90%] line-clamp-1'>
-                                                    {card.address ? card.address : ''}
+                                            <div className='w-full 3xl:h-[230px] xxl:h-[200px] xl:h-[200px] h-[180px] relative'>
+                                                <Image
+                                                    width={600}
+                                                    height={600}
+                                                    alt="image_card"
+                                                    src={card.image ? card.image : '/default/default.png'}
+                                                    className='w-full h-full object-cover rounded-xl'
+                                                />
+                                                <div
+                                                    onClick={handleClickFavorite}
+                                                    className='absolute right-2 top-2 bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out z-20'
+                                                >
+                                                    <TiHeartFullOutline className={`${card.favorite ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
+                                                </div>
+                                                <div className='flex gap-2 absolute bottom-[10px] left-[10px]'>
+                                                    {
+                                                        card.type.mortgageFree ?
+                                                            <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
+                                                                Miễn thế chấp
+                                                            </Badge>
+                                                            :
+                                                            null
+                                                    }
+                                                    {
+                                                        card.type.orderFastCar ?
+                                                            <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
+                                                                Đặt xe nhanh
+                                                            </Badge>
+                                                            :
+                                                            null
+                                                    }
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div className='border-b border-[#D7D9E0]/50' />
-                                    <div className='flex items-center 3xl:gap-4 xxl:gap-2 xl:gap-4 lg:gap-1 bg-[#F2FCF7] p-2 rounded-lg'>
-                                        <div className='flex items-center gap-1'>
-                                            <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#FFC118]' />
-                                            <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
-                                                {card.point ? card.point : ''}
+                                            <div className='flex items-center gap-2 mt-2'>
+                                                {
+                                                    card.type.automaticNumber ?
+                                                        <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default'>
+                                                            Số tự động
+                                                        </Badge>
+                                                        :
+                                                        null
+                                                }
+                                                {
+                                                    card.type.doorstepDelivery ?
+                                                        <Badge className='bg-[#F9ECC9]/35 hover:bg-[#F9ECC9]/50 text-[#FF9900] 3xl:text-sm text-xs font-medium cursor-default'>
+                                                            Giao tận nơi
+                                                        </Badge>
+                                                        :
+                                                        null
+                                                }
                                             </div>
-                                        </div>
+                                            <div className='flex gap-3 items-center'>
+                                                <div className='3xl:w-12 3xl:max-w-12 3xl:h-12 w-10 max-w-10 h-10 '>
+                                                    <Avatar className='w-full h-full shadow'>
+                                                        <AvatarImage
+                                                            src={card.avatar ? card.avatar : '/default/default.png'}
+                                                            alt="@kanow"
+                                                        />
+                                                        <AvatarFallback >
+                                                            KN
+                                                        </AvatarFallback>
+                                                    </Avatar>
+                                                </div>
+                                                <div className='flex flex-col gap-1 w-[80%] max-w-[80%]'>
+                                                    <div className='3xl:text-lg text-base text-[#1D1D1D] font-bold uppercase line-clamp-1'>
+                                                        {card.title ? card.title : ''}
+                                                    </div>
+                                                    <div className='flex gap-1 items-center'>
+                                                        <TiLocation className='text-base text-[#FA3434] w-[16px] min-w-[16px]' />
+                                                        <div className='3xl:text-sm text-xs text-[#8C93A3] font-medium w-[90%] max-w-[90%] line-clamp-1'>
+                                                            {card.address ? card.address : ''}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className='border-b border-[#D7D9E0]/50' />
+                                            <div className='flex items-center 3xl:gap-4 xxl:gap-2 xl:gap-4 lg:gap-1 gap-2 bg-[#F2FCF7] p-2 rounded-lg'>
+                                                <div className='flex items-center gap-1'>
+                                                    <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#FFC118]' />
+                                                    <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                                        {card.point ? card.point : ''}
+                                                    </div>
+                                                </div>
 
-                                        <div className='flex items-center gap-1'>
-                                            <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
-                                            <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
-                                                {card.quantityTrips ? FormatNumberHundred(card.quantityTrips) : 0} Chuyến
-                                            </div>
-                                        </div>
+                                                <div className='flex items-center gap-1'>
+                                                    <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
+                                                    <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                                        {card.quantityTrips ? FormatNumberHundred(card.quantityTrips) : 0} Chuyến
+                                                    </div>
+                                                </div>
 
-                                        <div className='flex items-center gap-1'>
-                                            <div className='3xl:text-lg 2xl:text-base xxl:text-sm text-[15px] text-[#D7D9E0] font-medium line-through'>
-                                                {card.priceBeforePromotion ? FormatNumberToThousands(card.priceBeforePromotion) : 0}
+                                                <div className='flex items-center gap-1'>
+                                                    <div className='3xl:text-lg 2xl:text-base xxl:text-sm text-[15px] text-[#D7D9E0] font-medium line-through'>
+                                                        {card.priceBeforePromotion ? FormatNumberToThousands(card.priceBeforePromotion) : 0}
+                                                    </div>
+                                                    <div className='flex'>
+                                                        <span className='3xl:text-lg 2xl:text-base xxl:text-sm text-[15px] text-[#1AC5CA] font-medium'>
+                                                            {card.priceAfterPromotion ? FormatNumberToThousands(card.priceAfterPromotion) : 0}
+                                                        </span>
+                                                        <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
+                                                            /ngày
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className='flex'>
-                                                <span className='3xl:text-lg 2xl:text-base xxl:text-sm text-[15px] text-[#1AC5CA] font-medium'>
-                                                    {card.priceAfterPromotion ? FormatNumberToThousands(card.priceAfterPromotion) : 0}
-                                                </span>
-                                                <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
-                                                    /ngày
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))
-                        }
-                    </div>
+                                        </Link>
+                                    ))
+                                }
+                            </div>
+                    }
                 </div>
             </div>
+            <DialogReviewImage />
         </div>
     )
 }
