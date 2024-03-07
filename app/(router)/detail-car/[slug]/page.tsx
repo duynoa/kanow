@@ -28,6 +28,8 @@ import { Button } from '@/components/ui/button'
 import { useResize } from '@/hooks/useResize'
 import { DialogReviewImage } from '@/components/modals/DialogReviewImage'
 import { useDialogImage } from '@/hooks/useDialogImage'
+import { useDialogPromotion } from '@/hooks/useOpenDialog'
+import { DialogPromotion } from '@/components/modals/DialogPromotion'
 
 
 type Props = {}
@@ -35,11 +37,11 @@ type Props = {}
 const DetailCar = (props: Props) => {
     const { isVisibleMobile, isVisibleTablet } = useResize()
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
+    const { openDialogPromotion, setOpenDialogPromotion, setDataPromotion } = useDialogPromotion()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
     const [showSecondHeader, setShowSecondHeader] = useState(false);
-    const [openModalReview, setOpenModalReview] = useState<boolean>(false)
 
     const initialState: any = {
     };
@@ -73,7 +75,7 @@ const DetailCar = (props: Props) => {
         },
         {
             id: uuidv4(),
-            image: "/other/car/car3.png"
+            image: "/background/why_background.png"
         },
     ]
 
@@ -272,6 +274,37 @@ const DetailCar = (props: Props) => {
         },
     ]
 
+    const dataPromotion = [
+        {
+            id: uuidv4(),
+            code: 'BANMOI',
+            discountMax: 80000,
+            discountPercent: 8,
+            title: 'banmoi',
+            expireTime: 1,
+            expireTimeDescription: "Hết hạn sau 1 ngày",
+
+        },
+        {
+            id: uuidv4(),
+            code: 'BANMOI',
+            discountMax: 120000,
+            discountPercent: 0,
+            title: 'banmoi',
+            expireTime: 1,
+            expireTimeDescription: "Hết hạn sau 1 ngày"
+        },
+        {
+            id: uuidv4(),
+            code: 'BANMOI',
+            discountMax: 100000,
+            discountPercent: 0,
+            title: 'banmoi',
+            expireTime: 0,
+            expireTimeDescription: "Mã khuyến mãi không khả dụng!"
+        },
+    ]
+
     const dataMaps = {
         google_map_link: ""
     }
@@ -334,6 +367,14 @@ const DetailCar = (props: Props) => {
         setIndexImage(index)
         setDataImage(imageCard)
     }
+
+    const handleOpenDialogPromo = () => {
+        console.log('check');
+        setOpenDialogPromotion(true)
+        setDataPromotion(dataPromotion)
+    }
+    console.log('openDialogPromotion', openDialogPromotion);
+
 
     if (!isMounted) {
         return null;
@@ -404,7 +445,7 @@ const DetailCar = (props: Props) => {
                         >
                             {
                                 imageCard && imageCard.map((card, index) => (
-                                    <SwiperSlide key={card.id}>
+                                    <SwiperSlide key={card.id} onClick={() => handleOpenReviewImage(card.id, index)}>
                                         <div className='w-full 3xl:h-[300px] xl:h-[240px] lg:h-[200px] md:h-[380px] h-[240px] cursor-pointer'>
                                             <Image
                                                 src={card.image ? card.image : '/default/default.png'}
@@ -1145,8 +1186,8 @@ const DetailCar = (props: Props) => {
                                         </Label>
                                     </div>
                                     <div className="flex items-center space-x-2 caret-transparent">
-                                        <RadioGroupItem value="comfortable" id="r2" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
-                                        <Label htmlFor="r2" className='flex flex-row items-center justify-between gap-2 w-full'>
+                                        <RadioGroupItem onClick={handleOpenDialogPromo} value="comfortable" id="r2" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
+                                        <Label htmlFor="r2" className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
                                             <div className='flex flex-col'>
                                                 <div className='flex items-center gap-1'>
                                                     <Image
@@ -1466,6 +1507,7 @@ const DetailCar = (props: Props) => {
                 </div>
             </div>
             <DialogReviewImage />
+            <DialogPromotion />
         </div>
     )
 }
