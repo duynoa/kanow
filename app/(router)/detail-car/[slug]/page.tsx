@@ -5,7 +5,7 @@ import Map from '@/components/map/Maps'
 import { Badge } from '@/components/ui/badge'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import { FaRegQuestionCircle, FaStar } from 'react-icons/fa'
+import { FaCalendarAlt, FaRegQuestionCircle, FaStar } from 'react-icons/fa'
 import { FaCircleCheck } from 'react-icons/fa6'
 import { RiMap2Line } from 'react-icons/ri'
 import { TiArrowSortedUp, TiHeartFullOutline, TiLocation } from 'react-icons/ti'
@@ -28,8 +28,13 @@ import { Button } from '@/components/ui/button'
 import { useResize } from '@/hooks/useResize'
 import { DialogReviewImage } from '@/components/modals/DialogReviewImage'
 import { useDialogImage } from '@/hooks/useDialogImage'
-import { useDialogPromotion } from '@/hooks/useOpenDialog'
+import { useDialogCalendar, useDialogPromotion } from '@/hooks/useOpenDialog'
 import { DialogPromotion } from '@/components/modals/DialogPromotion'
+import { addDays, format } from 'date-fns'
+import { cn } from '@/lib/utils'
+import { DateRange } from 'react-day-picker'
+import { vi } from 'date-fns/locale'
+import { DialogCalendar } from '@/components/modals/DialogCalendar'
 
 
 type Props = {}
@@ -37,11 +42,17 @@ type Props = {}
 const DetailCar = (props: Props) => {
     const { isVisibleMobile, isVisibleTablet } = useResize()
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
-    const { openDialogPromotion, setOpenDialogPromotion, setDataPromotion } = useDialogPromotion()
+    const { setOpenDialogPromotion, setDataPromotion } = useDialogPromotion()
+    const { date, setDate, setOpenDialogCalendar } = useDialogCalendar()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
     const [showSecondHeader, setShowSecondHeader] = useState(false);
+
+    // const [date, setDate] = useState<DateRange | undefined>({
+    //     from: new Date(),
+    //     to: addDays(new Date(), 20),
+    // })
 
     const initialState: any = {
     };
@@ -368,13 +379,15 @@ const DetailCar = (props: Props) => {
         setDataImage(imageCard)
     }
 
-    const handleOpenDialogPromo = () => {
+    const handleOpenDialog = (type: string) => {
         console.log('check');
-        setOpenDialogPromotion(true)
-        setDataPromotion(dataPromotion)
+        if (type === 'promotion') {
+            setOpenDialogPromotion(true)
+            setDataPromotion(dataPromotion)
+        } else if (type === 'calendar') {
+            setOpenDialogCalendar(true)
+        }
     }
-    console.log('openDialogPromotion', openDialogPromotion);
-
 
     if (!isMounted) {
         return null;
@@ -1058,7 +1071,34 @@ const DetailCar = (props: Props) => {
                             <Label className='3xl:text-base text-sm text-[#6F7689] w-fit' htmlFor="date">
                                 Thời gian thuê
                             </Label>
-                            <DatePickerWithRangeAndTime className='w-full' classNameButton='px-4 py-3' />
+
+                            <div>
+                                <Button
+                                    id="date"
+                                    variant={"outline"}
+                                    className={cn(
+                                        `px-4 py-3 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-sm text-xs`,
+                                        !date && "text-muted-foreground"
+                                    )}
+                                    onClick={() => handleOpenDialog('calendar')}
+                                >
+                                    <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
+                                    {date?.from ? (
+                                        date.to ? (
+                                            <>
+                                                {format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                                {format(date.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                            </>
+                                        ) : (
+                                            format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                        )
+                                    ) : (
+                                        <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
+                                    )}
+                                </Button>
+                            </div>
+                            {/* <DatePickerWithRangeAndTime className='w-full' classNameButton='px-4 py-3' /> */}
+
                             <div className='flex w-full justify-end text-[#3561FF] 3xl:text-base text-sm font-medium'>
                                 Thuê tháng giảm 8%
                             </div>
@@ -1186,7 +1226,7 @@ const DetailCar = (props: Props) => {
                                         </Label>
                                     </div>
                                     <div className="flex items-center space-x-2 caret-transparent">
-                                        <RadioGroupItem onClick={handleOpenDialogPromo} value="comfortable" id="r2" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
+                                        <RadioGroupItem onClick={() => handleOpenDialog('promotion')} value="comfortable" id="r2" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
                                         <Label htmlFor="r2" className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
                                             <div className='flex flex-col'>
                                                 <div className='flex items-center gap-1'>
@@ -1506,8 +1546,10 @@ const DetailCar = (props: Props) => {
                     }
                 </div>
             </div>
+
             <DialogReviewImage />
             <DialogPromotion />
+            <DialogCalendar />
         </div>
     )
 }

@@ -44,8 +44,6 @@ function Calendar({
         );
     };
 
-    console.log('props', props);
-
     return (
         <>
             <DayPicker
@@ -53,7 +51,7 @@ function Calendar({
                 formatters={{ formatCaption }}
                 footer
                 locale={vi}
-                className={cn("p-3", className)}
+                className={cn("p-3 caret-transparent", className)}
                 classNames={{
                     months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
                     month: "space-y-4",
@@ -90,18 +88,9 @@ function Calendar({
                 components={{
                     IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
                     IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
-                    Footer: () => (
-                        <input type="time" className='w-full border h-10'/>
-                    )
-
                 }}
                 {...props}
             />
-            {/* <div className='flex w-full justify-end items-center p-2'>
-        <Button onClick={() => props.onSelect()} className='xxl:text-base xl:text-sm lg:text-[13px] text-sm px-6 py-3 w-fit 3xl:gap-2 gap-1 rounded-md cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'>
-          Áp dụng
-        </Button>
-      </div> */}
         </>
 
     )
