@@ -8,7 +8,7 @@ type Props = {}
 const DriverArticle = (props: Props) => {
     return (
         <div className='grid grid-cols-4 gap-4 custom-container'>
-            <div className="col-span-2 bg-[url('/other/car/car1.png')] bg-cover bg-center 3xl:h-[420px] 2xl:h-[380px] xxl:h-[420px] xl:h-[420px] lg:h-[420px] md:h-[400px] h-[260px] w-full rounded-2xl flex flex-col justify-between p-8">
+            <div className="col-span-2 bg-[url('/other/car/car1.png')] bg-cover bg-center 3xl:h-[420px] 2xl:h-[380px] xxl:h-[380px] xl:h-[380px] lg:h-[380px] md:h-[380px] h-[260px] w-full rounded-2xl flex flex-col justify-between p-8">
                 <div className='3xl:text-4xl 2xl:text-3xl xxl:text-2xl xl:text-xl lg:text-xl md:text-base text-base text-white font-semibold line-clamp-2 max-w-full'>
                     Tư vấn đăng ký trở thành tài xế KANOW
                 </div>
