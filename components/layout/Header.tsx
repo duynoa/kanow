@@ -36,6 +36,8 @@ import { DialogLogin } from '../modals/DialogLogin';
 const Header = () => {
     const { isVisibleTablet } = useResize()
 
+    const [isZoomAnimated, setIsZoomAnimated] = useState<boolean>(false);
+
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [isScrollBlocked, setIsScrollBlocked] = useState<boolean>(false);
     const [showActive, setShowActive] = useState<boolean>(false);
@@ -55,7 +57,7 @@ const Header = () => {
         {
             id: uuidv4(),
             name: 'Trở thành đối tác của Kanow',
-            link: '/introduction',
+            link: '/partner',
             children: true,
         },
         {
@@ -66,14 +68,16 @@ const Header = () => {
         }
     ]
 
-    const dataServicesKanow = [
+    const dataPartnerKanow = [
         {
             id: uuidv4(),
-            title: "Đăng ký thành chủ xe"
+            title: "Đăng ký thành chủ xe",
+            link: '/vehicle-owner'
         },
         {
             id: uuidv4(),
-            title: "Đăng ký thành tài xế"
+            title: "Đăng ký thành tài xế",
+            link: '/driver'
         },
     ]
 
@@ -81,6 +85,21 @@ const Header = () => {
         setIsMounted(true)
     }, [])
 
+
+
+    const handleClickToZoom = () => {
+        setIsZoomAnimated(true);
+
+        setTimeout(() => {
+            setIsZoomAnimated(false);
+        }, 200);
+    };
+
+    const zoomedStyle = {
+        transform: isZoomAnimated ? "scale(1.1)" : "scale(1)",
+        transition: "transform 0.2s",
+        willChange: "transform",
+    };
 
     useEffect(() => {
         const body = document.body;
@@ -190,12 +209,12 @@ const Header = () => {
 
                                                             <div className={`${activeService ? "mb-6" : ""} flex flex-col gap-2`}>
                                                                 {
-                                                                    activeService && dataServicesKanow && dataServicesKanow.map((item) => (
+                                                                    activeService && dataPartnerKanow && dataPartnerKanow.map((item) => (
                                                                         <Link
                                                                             key={item.id}
                                                                             onClick={_ToogleIsOff}
-                                                                            href={`/services/${item.id}?${ConvertToSlug(item.title)}`}
-                                                                            className={`${pathname.includes(`/services/${item.id}`) ? 'bg-[#F6F6F6]' : ''} flex flex-row items-center gap-3 group hover:bg-[#F6F6F6] py-2 px-8 rounded-lg cursor-pointer`}
+                                                                            href={`/partner/${item.link}`}
+                                                                            className={`${(item.link === '/' && pathname === '/') || (pathname.includes(item.link) && item.link !== '/') ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#F6F6F6] py-2 px-8 rounded-lg cursor-pointer`}
                                                                         >
                                                                             <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-500 ease-in-out line-clamp-2`}>
                                                                                 {item?.title ? item?.title : ''}
@@ -242,7 +261,7 @@ const Header = () => {
                         <div className='3xl:col-span-2 col-span-1   ' />
                         <NavigationMenu className='2xl:col-span-6 col-span-6 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
                             {
-                                dataHeader.map((data, i) => (
+                                dataHeader && dataHeader.map((data, i) => (
                                     <div key={data.id} className='p-2'>
                                         {
                                             data.children ?
@@ -252,17 +271,29 @@ const Header = () => {
                                                     label={(
                                                         <div className='flex flex-col gap-2'>
                                                             {
-                                                                dataServicesKanow && dataServicesKanow?.map((item) => (
+                                                                dataPartnerKanow && dataPartnerKanow?.map((item) => (
                                                                     <Link
                                                                         key={item.id}
-                                                                        href={`/services/${item.id}?${ConvertToSlug(item.title)}`}
-                                                                        className={`${pathname.includes(`/services/${item.id}`) ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
+                                                                        href={`/partner/${item.link}`}
+                                                                        className={`${(item.link === '/' && pathname === '/') || (pathname.includes(item.link) && item.link !== '/') ? 'bg-[#C2F9F9]' : ''} focus:scale-105 flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
+                                                                        style={zoomedStyle}
+                                                                        onClick={handleClickToZoom}
                                                                     >
 
                                                                         <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-300 ease-in-out line-clamp-2`}>
                                                                             {item?.title ? item?.title : ''}
                                                                         </div>
                                                                     </Link>
+                                                                    // <Link
+                                                                    //     key={item.id}
+                                                                    //     href={`/partner/${item.link}`}
+                                                                    //     className={`${pathname.includes(`/partner/${item.link}`) ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
+                                                                    // >
+
+                                                                    //     <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-300 ease-in-out line-clamp-2`}>
+                                                                    //         {item?.title ? item?.title : ''}
+                                                                    //     </div>
+                                                                    // </Link>
                                                                 ))
                                                             }
                                                         </div>

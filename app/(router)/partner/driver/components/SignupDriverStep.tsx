@@ -1,0 +1,427 @@
+import Image from 'next/image';
+import React, { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid';
+import { HiArrowLongRight, HiArrowLongLeft } from "react-icons/hi2";
+import Link from 'next/link';
+import { Clock4 } from 'lucide-react';
+
+
+type Props = {}
+
+const SignupDriverStep = (props: Props) => {
+    const dataStep = [
+        {
+            id: '1',
+            step: 'Bước 1',
+            title: 'Chuẩn bị về thể trạng',
+        },
+        {
+            id: '2',
+            step: 'Bước 2',
+            title: 'Chuẩn bị về hồ sơ',
+        },
+        {
+            id: '3',
+            step: 'Bước 3',
+            title: 'Nộp hồ sơ',
+        },
+        {
+            id: '4',
+            step: 'Bước 4',
+            title: 'Thực hiện các thủ tục tài xế',
+        },
+    ]
+
+    const [activeStep, setActiveStep] = useState<string>(dataStep[0].id)
+
+    const dataStep1 = [
+        {
+            id: uuidv4(),
+            icon: '/icon/step/icon_weighing_scale.png',
+            title: 'Cân nặng',
+            description: '56 kg trở lên'
+        },
+        {
+            id: uuidv4(),
+            icon: '/icon/step/icon_head.png',
+            title: 'Ngoại hình',
+            description: 'Đầu tóc gọn gàng'
+        },
+        {
+            id: uuidv4(),
+            icon: '/icon/step/icon_height.png',
+            title: 'Chiều cao',
+            description: 'Từ 1.60 m'
+        },
+        {
+            id: uuidv4(),
+            icon: '/icon/step/icon_portrait.png',
+            title: 'Hình xăm',
+            description: 'Không lộ hình xăm ra ngoài'
+        },
+        {
+            id: uuidv4(),
+            icon: '/icon/step/icon_birthday_cake.png',
+            title: 'Độ tuổi',
+            description: '26 - 50 tuổi'
+        },
+    ]
+
+    const dataStep2 = [
+        {
+            id: uuidv4(),
+            descriptionFirst: "1. Giấy phép lái xe",
+            descriptionSecond: "B2 trở lên còn hạn sử dụng",
+            link: "#"
+        },
+        {
+            id: uuidv4(),
+            descriptionFirst: "2. Căn cước công dân khai báo",
+            descriptionSecond: "VNID cấp 2",
+            link: "#"
+        },
+        {
+            id: uuidv4(),
+            descriptionFirst: "3. Lí lịch tư pháp",
+            descriptionSecond: "mẫu 1 hoặc 2",
+            link: "#"
+        },
+        {
+            id: uuidv4(),
+            descriptionFirst: "4. Giấy xác nhận hạnh kiểm",
+            descriptionSecond: "địa phương cư trú",
+            link: "#"
+        },
+        {
+            id: uuidv4(),
+            descriptionFirst: "5. Giấy khám sức khoẻ theo",
+            descriptionSecond: "mẫu TT14",
+            link: "#"
+        },
+        {
+            id: uuidv4(),
+            descriptionFirst: "6. Giấy khám xác nhận",
+            descriptionSecond: "HIV và chất gây nghiện",
+            link: "#"
+        },
+    ]
+
+    const dataStep4 = [
+        {
+            id: uuidv4(),
+            description: "Mua đồng phục tài xế lái xe",
+        },
+        {
+            id: uuidv4(),
+            description: "Nộp ví tiền tài xế để tạo số dư trong tài khoản",
+        },
+    ]
+
+    const handleChangeStep = (id: string) => {
+        setActiveStep(id)
+    }
+
+    return (
+        <div className='py-20 flex flex-col gap-10 custom-container'>
+            <div className='text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
+                Đăng ký thành tài xế
+            </div>
+            <div className='border rounded-lg grid grid-cols-5'>
+                <div className='col-span-1 bg-[#F1F4F4] p-6 flex flex-col h-full rounded-tl-lg rounded-bl-lg'>
+                    {
+                        dataStep && dataStep.map((item, index) => (
+                            <div key={item.id} className='flex flex-row gap-4 cursor-pointer group' onClick={() => handleChangeStep(item.id)}>
+                                <div className='flex flex-col items-center'>
+                                    <div className={`${activeStep === item.id ? 'bg-[#1EAAB1]' : 'bg-[#B4B8C5]'} group-hover:scale-105 duration-300 transition-colors 3xl:text-lg text-base text-white size-10 flex items-center justify-center rounded-full`}>
+                                        {index + 1}
+                                    </div>
+                                    {
+                                        index === dataStep.length - 1 ?
+                                            null
+                                            :
+                                            <div className={`${activeStep === item.id ? 'border-[#2FB9BD]' : 'border-[#B4B8C5]'} h-12 border-x border-y-0 border-dashed`} />
+                                    }
+                                </div>
+                                <div className='flex flex-col gap-1'>
+                                    <div className='text-xs uppercase text-[#1EAAB1] font-semibold'>
+                                        {item.step ? item.step : ''}
+                                    </div>
+                                    <div className={`${activeStep === item.id ? 'text-[#16171B] font-semibold' : 'text-[#3E424E] font-medium'} text-base `}>
+                                        {item.title ? item.title : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+                {
+                    activeStep === '1' &&
+                    <div className='col-span-4 bg-white flex flex-col min-h-[620px] rounded-tr-lg rounded-br-lg'>
+                        <div className='px-8 py-6 border-b flex flex-col gap-1'>
+                            <div className='text-base uppercase text-[#2FB9BD] font-semibold'>
+                                Bước 1
+                            </div>
+                            <div className={`text-3xl text-[#383A43] font-semibold`}>
+                                Quy định về thể trạng
+                            </div>
+                        </div>
+                        <div className='flex flex-col justify-between h-full'>
+                            <div className='py-10 px-20 grid grid-cols-2 gap-14 '>
+                                {
+                                    dataStep1 && dataStep1.map((item) => (
+                                        <div key={item.id} className='col-span-1 max-w-[80%] h-full'>
+                                            <div className='flex items-center gap-4'>
+                                                <div className='w-[70px] h-[70px]'>
+                                                    <Image
+                                                        alt="icon"
+                                                        src={item.icon ? item.icon : '/default/default.png'}
+                                                        width={100}
+                                                        height={100}
+                                                        className='w-full h-full object-contain'
+                                                    />
+                                                </div>
+                                                <div className='flex flex-col'>
+                                                    <div className='3xl:text-sm text-xs text-[#2FB9BD] uppercase font-semibold'>
+                                                        {item.title ? item.title : ''}
+                                                    </div>
+                                                    <div className='3xl:text-lg text-base text-[#16171B] font-bold'>
+                                                        {item.description ? item.description : ''}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                            <div className='flex justify-between items-center px-8 py-6'>
+                                <div className='flex items-center gap-2 cursor-not-allowed group'>
+                                    <HiArrowLongLeft className='size-10 text-[#B4B8C5]' />
+                                </div>
+                                <div onClick={() => setActiveStep('2')} className='flex items-center gap-2 cursor-pointer group'>
+                                    <div className='text-base text-[#FF9900] font-semibold group-hover:translate-x-2 duration-300 transition-all'>Xem bước 2</div>
+                                    <HiArrowLongRight className='size-10 text-[#FF9900] group-hover:translate-x-2 duration-300 transition-all' />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                {
+                    activeStep === '2' &&
+                    <div className='col-span-4 bg-white flex flex-col min-h-[620px] rounded-tr-lg rounded-br-lg'>
+                        <div className='px-8 py-6 border-b flex flex-col gap-1'>
+                            <div className='text-base uppercase text-[#1EAAB1] font-semibold'>
+                                Bước 2
+                            </div>
+                            <div className={`text-3xl text-[#383A43] font-semibold`}>
+                                Chuẩn bị về hồ sơ
+                            </div>
+                        </div>
+                        <div className='flex flex-col justify-between h-full'>
+                            <div className='px-8 pt-12 flex flex-col gap-12'>
+                                <div className='flex flex-col gap-2'>
+                                    {
+                                        dataStep2 && dataStep2.map((item) => (
+                                            <div key={item.id} className='flex flex-row items-center gap-1 font-bold'>
+                                                <div className='3xl:text-lg text-base text-[#16171B]'>
+                                                    {item.descriptionFirst}
+                                                </div>
+
+                                                <div className='3xl:text-lg text-base text-[#FF9900]'>
+                                                    {item.descriptionSecond}
+                                                </div>
+
+                                                <Link
+                                                    href={item.link}
+                                                    className='3xl:text-lg text-base text-[#2FB9BD] hover:text-[#2FB9BD]/80 duration-300 transition ease-in-out underline underline-offset-2 underline-[#2FB9BD]'
+                                                >
+                                                    (Xem mẫu)
+                                                </Link>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+
+                                <div className='p-4 border border-[#FF9900] bg-[#FF9900]/[0.12] rounded-xl flex flex-col gap-1'>
+                                    <div className='text-sm text-[#FF9900] font-semibold uppercase'>
+                                        Yêu cầu bắt buộc
+                                    </div>
+                                    <div className='text-lg text-[#16171B] font-bold'>
+                                        Bạn cần có kinh nghiệm lái xe từ 5 năm trở lên
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='flex justify-between items-center px-8 py-6'>
+                                <div onClick={() => setActiveStep('1')} className='flex items-center gap-2 cursor-pointer group'>
+                                    <HiArrowLongLeft className='size-10 text-[#FF9900] group-hover:-translate-x-2 duration-300 transition-all' />
+                                    <div className='text-base text-[#FF9900] font-semibold group-hover:-translate-x-2 duration-300 transition-all'>Xem bước 1</div>
+                                </div>
+                                <div onClick={() => setActiveStep('3')} className='flex items-center gap-2 cursor-pointer group'>
+                                    <div className='text-base text-[#FF9900] font-semibold group-hover:translate-x-2 duration-300 transition-all'>Xem bước 3</div>
+                                    <HiArrowLongRight className='size-10 text-[#FF9900] group-hover:translate-x-2 duration-300 transition-all' />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                {
+                    activeStep === '3' &&
+                    <div className='col-span-4 bg-white flex flex-col min-h-[620px] rounded-tr-lg rounded-br-lg'>
+                        <div className='px-8 py-6 border-b flex flex-col gap-1'>
+                            <div className='text-base uppercase text-[#1EAAB1] font-semibold'>
+                                Bước 3
+                            </div>
+                            <div className={`text-3xl text-[#383A43] font-semibold`}>
+                                Nộp hồ sơ
+                            </div>
+                        </div>
+                        <div className='flex flex-col justify-between h-full'>
+                            <div className='p-8 flex flex-col gap-12'>
+                                <div className='flex flex-col gap-3'>
+                                    <div className='px-2 py-1 bg-[#C2F9F9] text-lg text-[#16171B] font-bold'>
+                                        Nộp hồ sơ trực tiếp tại:
+                                    </div>
+                                    <div className='flex flex-row gap-3'>
+                                        <div className='size-6'>
+                                            <Image
+                                                src="/icon/step/icon_buildings.svg"
+                                                alt="icon"
+                                                width={80}
+                                                height={80}
+                                                className='size-6 object-contain'
+                                            />
+                                        </div>
+                                        <div className='flex flex-col gap-1'>
+                                            <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
+                                                Văn phòng Công Ty CPDV Bạn Uống Tôi Lái
+                                            </div>
+                                            <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
+                                                24 DN7, Phường Tân Hưng Thuận, Quận 12, Thành phố Hồ Chí Minh
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-row gap-3'>
+                                        <div className='size-6'>
+                                            <Clock4 className='size-6 text-[#3E424E]' />
+                                        </div>
+                                        <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
+                                            Nộp hồ sơ vào 8h00 - 8h45 sáng Chủ nhật hàng tuần và tham gia đào tạo kỹ năng mềm
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className='flex flex-col gap-3'>
+                                    <div className='px-2 py-1 bg-[#C2F9F9] text-lg text-[#16171B] font-bold'>
+                                        Đăng ký hồ sơ online
+                                    </div>
+                                    <div className='flex flex-row gap-3'>
+                                        <div className='size-6'>
+                                            <Image
+                                                src="/icon/step/icon_zalo.svg"
+                                                alt="icon"
+                                                width={80}
+                                                height={80}
+                                                className='size-6 object-contain'
+                                            />
+                                        </div>
+                                        <Link
+                                            href="https://zalo.me/banuongtoilai"
+                                            target='_blank'
+                                            className='3xl:text-base text-sm text-[#3E424E] font-semibold hover:underline hover:underline-offset-2'
+                                        >
+                                            https://zalo.me/banuongtoilai
+                                        </Link>
+                                    </div>
+                                    <div className='flex flex-row gap-3'>
+                                        <div className='size-6'>
+                                            <Image
+                                                src="/icon/step/icon_call.svg"
+                                                alt="icon"
+                                                width={80}
+                                                height={80}
+                                                className='size-6 object-contain'
+                                            />
+                                        </div>
+                                        <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
+                                            19009235 - 0908.084.499
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-row gap-3'>
+                                        <div className='size-6'>
+                                            <Image
+                                                src="/icon/step/icon_monitor.svg"
+                                                alt="icon"
+                                                width={80}
+                                                height={80}
+                                                className='size-6 object-contain'
+                                            />
+                                        </div>
+                                        <Link
+                                            href="https://butl.vn"
+                                            target='_blank'
+                                            className='3xl:text-base text-sm text-[#3E424E] font-semibold hover:underline hover:underline-offset-2'
+                                        >
+                                            https://butl.vn
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='flex justify-between items-center px-8 py-6'>
+                                <div onClick={() => setActiveStep('2')} className='flex items-center gap-2 cursor-pointer group'>
+                                    <HiArrowLongLeft className='size-10 text-[#FF9900] group-hover:-translate-x-2 duration-300 transition-all' />
+                                    <div className='text-base text-[#FF9900] font-semibold group-hover:-translate-x-2 duration-300 transition-all'>Xem bước 2</div>
+                                </div>
+                                <div onClick={() => setActiveStep('4')} className='flex items-center gap-2 cursor-pointer group'>
+                                    <div className='text-base text-[#FF9900] font-semibold group-hover:translate-x-2 duration-300 transition-all'>Xem bước 4</div>
+                                    <HiArrowLongRight className='size-10 text-[#FF9900] group-hover:translate-x-2 duration-300 transition-all' />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                {
+                    activeStep === '4' &&
+                    <div className='col-span-4 bg-white flex flex-col min-h-[620px] rounded-tr-lg rounded-br-lg'>
+                        <div className='px-8 py-6 border-b flex flex-col gap-1'>
+                            <div className='text-base uppercase text-[#1EAAB1] font-semibold'>
+                                Bước 4
+                            </div>
+                            <div className={`text-3xl text-[#383A43] font-semibold`}>
+                                Thực hiện các thủ tục tài xế
+                            </div>
+                        </div>
+                        <div className='flex flex-col justify-between h-full'>
+                            <div className='px-14 py-8 flex flex-col gap-12'>
+                                <ol className='list-decimal font-bold'>
+                                    {
+                                        dataStep4 && dataStep4.map((item) => (
+                                            <li key={item.id}>
+                                                <div className='3xl:text-lg text-base text-[#16171B] font-bold'>
+                                                    {item.description ? item.description : ""}
+                                                </div>
+                                            </li>
+                                        ))
+                                    }
+                                </ol>
+                            </div>
+                            <div className='flex justify-between items-center px-8 py-6'>
+                                <div onClick={() => setActiveStep('3')} className='flex items-center gap-2 cursor-pointer group'>
+                                    <HiArrowLongLeft className='size-10 text-[#FF9900] group-hover:-translate-x-2 duration-300 transition-all' />
+                                    <div className='text-base text-[#FF9900] font-semibold group-hover:-translate-x-2 duration-300 transition-all'>Xem bước 3</div>
+                                </div>
+                                {/* <div onClick={() => setActiveStep('4')} className='flex items-center gap-2 cursor-pointer group'>
+                                    <div className='text-base text-[#FF9900] font-semibold group-hover:translate-x-2 duration-300 transition-all'>Xem bước 4</div>
+                                    <HiArrowLongRight className='size-10 text-[#FF9900] group-hover:translate-x-2 duration-300 transition-all' />
+                                </div> */}
+                                <div className='flex items-center gap-2 cursor-not-allowed group'>
+                                    <HiArrowLongRight className='size-10 text-[#B4B8C5]' />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    )
+}
+
+export default SignupDriverStep

@@ -174,3 +174,17 @@
 .star-ratings {
   @apply flex items-center;
 }
+
+// rotate icon in accordion
+.accordionChevron {
+  transition: transform 300ms;
+}
+
+.custom-accordion[data-state="open"] {
+  @apply bg-white;
+}
+
+.custom-accordion[data-state="open"] .accordionChevron {
+  transform: rotate(180deg);
+  @apply fill-[#FF9900];
+}
