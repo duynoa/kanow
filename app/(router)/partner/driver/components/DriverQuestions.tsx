@@ -55,7 +55,7 @@ const DriverQuestions = (props: Props) => {
                                         className="focus-visible:outline-none w-full p-6 rounded-l-md"
                                     >
                                         <div className='flex items-center justify-between w-full'>
-                                            <div className='text-lg text-[#3E424E] font-semibold'>
+                                            <div className='3xl:text-xl text-lg text-[#3E424E] font-semibold'>
                                                 {question.title ? question.title : ''}
                                             </div>
                                             <div className="3xl:min-w-[30px] min-w-[20px]">
@@ -63,7 +63,7 @@ const DriverQuestions = (props: Props) => {
                                             </div>
                                         </div>
                                     </AccordionTrigger>
-                                    <AccordionContent className='px-6'>
+                                    <AccordionContent className='px-6 pb-6 3xl:text-base text-sm'>
                                         {question.description ? question.description : ''}
                                     </AccordionContent>
                                 </AccordionItem>

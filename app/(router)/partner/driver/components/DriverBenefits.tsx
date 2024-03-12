@@ -50,7 +50,7 @@ const DriverBenefits = (props: Props) => {
 
     return (
         <div className="bg-[url('/background/benefit_background1.png')] bg-cover h-full -mt-[120px] relative z-10">
-            <div className='custom-container pt-40 pb-36 flex flex-col gap-10'>
+            <div className='custom-container 3xl:pt-40 3xl:pb-36 pt-28 pb-28 flex flex-col gap-10'>
                 <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
                     Những quyền lợi của tài xế
                 </div>
@@ -58,7 +58,7 @@ const DriverBenefits = (props: Props) => {
                     {
                         benefitsList && benefitsList.map((benefit) => (
                             <div key={benefit.id} className='col-span-1 p-6 flex items-center gap-4 border border-[#64E4E4] hover:bg-[#9DF2EE] bg-[#F1FCFC] rounded-xl duration-200 transition ease-in-out'>
-                                <div className='w-16 min-w-16 h-auto'>
+                                <div className='3xl:w-16 3xl:min-w-16 w-12 min-w-12 h-auto'>
                                     <Image
                                         src={benefit.icon ? benefit.icon : '/default/default.png'}
                                         alt="icon"
