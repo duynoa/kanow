@@ -81,7 +81,7 @@ const SectionPlaceProminent = (props: Props) => {
     return (
         <div className='relative flex flex-col gap-2 2xl:pt-0 2xl:pb-60 xxl:pb-52 xl:pb-44 md:pb-36 pb-0'>
             <div className='custom-container z-20 flex flex-col justify-center md:items-center items-start gap-2'>
-                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] leading-tight capitalize font-bold md:max-w-[85%] max-w-full text-[#101010]'>
+                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-[26px] text-[26px] leading-tight capitalize font-bold md:max-w-[85%] max-w-full text-[#101010]'>
                     Khám phá địa điểm nổi bật
                 </div>
                 <div className='3xl:text-base xl:text-sm md:text-xs text-sm text-[#8C93A3] font-medium'>

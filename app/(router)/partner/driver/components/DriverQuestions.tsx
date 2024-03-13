@@ -38,7 +38,7 @@ const DriverQuestions = (props: Props) => {
         <div className='py-20'>
             <div className='custom-container flex flex-col gap-8'>
                 <div className='flex flex-col gap-2'>
-                    <div className='text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
+                    <div className='text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
                         Câu hỏi thường gặp
                     </div>
                     <div className='text-center 3xl:text-base text-sm text-[#585F71]'>
@@ -55,7 +55,7 @@ const DriverQuestions = (props: Props) => {
                                         className="focus-visible:outline-none w-full p-6 rounded-l-md"
                                     >
                                         <div className='flex items-center justify-between w-full'>
-                                            <div className='3xl:text-xl text-lg text-[#3E424E] font-semibold'>
+                                            <div className='xl:text-xl text-lg text-[#3E424E] font-semibold'>
                                                 {question.title ? question.title : ''}
                                             </div>
                                             <div className="3xl:min-w-[30px] min-w-[20px]">
@@ -63,7 +63,7 @@ const DriverQuestions = (props: Props) => {
                                             </div>
                                         </div>
                                     </AccordionTrigger>
-                                    <AccordionContent className='px-6 pb-6 3xl:text-base text-sm'>
+                                    <AccordionContent className='px-6 pb-6 xl:text-base text-sm'>
                                         {question.description ? question.description : ''}
                                     </AccordionContent>
                                 </AccordionItem>

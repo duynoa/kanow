@@ -179,7 +179,7 @@ const SectionCardCar = () => {
     return (
         <div className='bg-[#FCFDFD] 2xl:pb-24 lg:pb-16 md:pt-0 md:pb-8 py-16'>
             <div className='custom-container flex flex-col justify-center items-center md:gap-10 gap-6'>
-                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] leading-tight capitalize font-bold md:max-w-[85%] max-w-full text-[#101010]'>
+                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-[26px] text-[26px] leading-tight capitalize font-bold md:max-w-[85%] max-w-full text-[#101010]'>
                     Xe dành cho bạn
                 </div>
                 {
