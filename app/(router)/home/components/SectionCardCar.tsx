@@ -218,19 +218,12 @@ const SectionCardCar = () => {
                                                 - {card.promotion}
                                             </div>
                                             <div className='w-full h-[220px] relative'>
-                                                {/* <Image
-                                        width={600}
-                                        height={600}
-                                        alt="image_card"
-                                        src={card.image ? card.image : '/default/default.png'}
-                                        className='w-full h-full object-cover rounded-xl'
-                                    /> */}
-                                                <BlurImage
-                                                    image={card.image ? card.image : '/default/default.png'}
-                                                    alt="image_card"
+                                                <Image
                                                     width={600}
                                                     height={600}
-                                                    className='rounded-xl'
+                                                    alt="image_card"
+                                                    src={card.image ? card.image : '/default/default.png'}
+                                                    className='w-full h-full object-cover rounded-xl'
                                                 />
                                                 <div
                                                     onClick={handleClickFavorite}

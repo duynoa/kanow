@@ -12,7 +12,7 @@ import BlurImage from '@/components/image/BlurImage';
 import { DatePickerWithRange } from '@/components/datePicker/DatePickerWithRange';
 import { FormatNumberHundred, FormatNumberToThousands } from '@/components/format/FormatNumber';
 
-import { FaStar } from 'react-icons/fa';
+import { FaCalendarAlt, FaStar } from 'react-icons/fa';
 import { LuSettings2 } from "react-icons/lu";
 import { RiSearchLine } from "react-icons/ri";
 import { FaCircleCheck } from 'react-icons/fa6';
@@ -24,11 +24,18 @@ import { A11y } from 'swiper/modules';
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
 import { useResize } from '@/hooks/useResize';
 import { DatePickerWithRangeAndTime } from '@/components/datePicker/DatePickerWithRangeAndTime';
+import { useDialogCalendar } from '@/hooks/useOpenDialog';
+import { DialogCalendar } from '@/components/modals/DialogCalendar';
+import { format } from 'date-fns';
+import { vi } from 'date-fns/locale';
+import Image from 'next/image';
 
 type Props = {}
 
 const SearchCars = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
+    const { date, setDate, setOpenDialogCalendar } = useDialogCalendar()
+
     const { isVisibleMobile } = useResize()
 
     useEffect(() => {
@@ -255,22 +262,63 @@ const SearchCars = (props: Props) => {
         e.preventDefault();
     }
 
+    const handleOpenDialog = (type: string) => {
+        console.log('check');
+        if (type === 'calendar') {
+            setOpenDialogCalendar(true)
+        }
+    }
+
     if (!isMounted) {
         return null;
     }
 
     return (
         <div className='flex flex-col gap-6'>
-            <div className='custom-container flex lg:flex-row flex-col lg:gap-16 gap-6 items-center lg:justify-start justify-center pt-1'>
+            <div className='custom-container flex lg:flex-row flex-col lg:gap-16 gap-6 md:items-center lg:justify-start justify-center pt-1'>
                 <div className='xl:w-[30%] xl:max-w-[30%] lg:w-[25%] lg:max-w-[25%] w-full max-w-full lg:text-start text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
                     Thuê xe tự lái
                 </div>
                 {
                     isVisibleMobile ?
-                        null
+                        <div className='flex items-center justify-between'>
+                            <div className='flex flex-col p-1'>
+                                <div className='text-sm font-semibold'>
+                                    12 hồ hoàn kiếm, Hà Nội
+                                </div>
+                                <div>
+                                    <Button
+                                        id="date"
+                                        variant={"outline"}
+                                        className={cn(
+                                            `w-full justify-start text-left font-normal rounded-xl bg-inherit border-0 text-xs`,
+                                            !date && "text-muted-foreground"
+                                        )}
+                                        onClick={() => handleOpenDialog('calendar')}
+                                    >
+                                        {date?.from ? (
+                                            date.to ? (
+                                                <>
+                                                    {format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                                    {format(date.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                                </>
+                                            ) : (
+                                                format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                            )
+                                        ) : (
+                                            <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
+                                        )}
+                                    </Button>
+                                </div>
+
+                            </div>
+                            <div>
+                                <RiSearchLine className='size-6' />
+                            </div>
+                        </div>
                         :
-                        <div className='flex gap-4 xl:w-[70%] xl:max-w-[70%] w-[75%] max-w-[75%]'>
-                            <div className="relative w-full">
+                        <div className='grid grid-cols-11 gap-4 xl:w-[70%] xl:max-w-[70%] lg:w-[75%] lg:max-w-[75%] w-full max-w-full'>
+                            <div className="relative w-full col-span-5">
                                 <span className="absolute inset-y-0 left-0 flex items-center pl-4">
                                     <TiLocation className="3xl:text-2xl text-xl text-[#1EAAB1]" />
                                 </span>
@@ -278,11 +326,38 @@ const SearchCars = (props: Props) => {
                                     id="place"
                                     type='text'
                                     placeholder='Nhập địa điểm'
-                                    className='3xl:py-4 p-3 pl-12 text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#B4B8C5] placeholder:font-medium' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                    className='3xl:py-[18px] p-3 pl-12 text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#B4B8C5] placeholder:font-medium' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
                                 />
                             </div>
-                            <DatePickerWithRangeAndTime className='w-full' classNameButton="px-4 py-3" />
-                            <div>
+
+                            {/* <DatePickerWithRangeAndTime className='w-full' classNameButton="px-4 py-3" /> */}
+                            <div className='col-span-5'>
+                                <Button
+                                    id="date"
+                                    variant={"outline"}
+                                    className={cn(
+                                        `3xl:py-4 3xl:px-3 px-3 py-3.5 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs`,
+                                        !date && "text-muted-foreground"
+                                    )}
+                                    onClick={() => handleOpenDialog('calendar')}
+                                >
+                                    <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
+                                    {date?.from ? (
+                                        date.to ? (
+                                            <>
+                                                {format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                                {format(date.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                            </>
+                                        ) : (
+                                            format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                        )
+                                    ) : (
+                                        <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
+                                    )}
+                                </Button>
+                            </div>
+
+                            <div className='col-span-1'>
                                 <Button className={cn('3xl:p-4 p-3 bg-[#FF9900] hover:bg-[#FF9900]/80 hover:scale-105 rounded-xl text-white duration-200 transiton-colors ease-in-out')}>
                                     <RiSearchLine className='3xl:text-2xl text-xl' />
                                 </Button>
@@ -351,20 +426,20 @@ const SearchCars = (props: Props) => {
                                     - {card.promotion}
                                 </div>
                                 <div className='w-full 3xl:h-[230px] xxl:h-[200px] xl:h-[200px] h-[180px] relative'>
-                                    {/* <Image
+                                    <Image
                                         width={600}
                                         height={600}
                                         alt="image_card"
                                         src={card.image ? card.image : '/default/default.png'}
                                         className='w-full h-full object-cover rounded-xl'
-                                    /> */}
-                                    <BlurImage
+                                    />
+                                    {/* <BlurImage
                                         image={card.image ? card.image : '/default/default.png'}
                                         alt="image_card"
                                         width={600}
                                         height={600}
                                         className='rounded-xl'
-                                    />
+                                    /> */}
                                     <div
                                         onClick={handleClickFavorite}
                                         className='absolute right-2 top-2 bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out z-20'
@@ -467,6 +542,8 @@ const SearchCars = (props: Props) => {
                     }
                 </div>
             </div>
+
+            <DialogCalendar />
         </div>
     )
 }

@@ -1,5 +1,5 @@
 import { IDataPromotion } from "@/types/IPromotion";
-import { addDays } from "date-fns";
+import { addDays, setHours, setMinutes } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { create } from "zustand";
 
@@ -27,9 +27,13 @@ interface IOpenDialogCalendar {
 }
 
 const defaultDateRange: DateRange = {
-    from: new Date(),
-    to: addDays(new Date(), 20),
+    from: setMinutes(setHours(new Date(), 21), 0),
+    to: setMinutes(setHours(addDays(new Date(), 7), 20), 0),
 };
+// const defaultDateRange: DateRange = {
+//     from: new Date(),
+//     to: addDays(new Date(), 20),
+// };
 
 export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     openDialogCalendar: false,

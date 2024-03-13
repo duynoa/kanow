@@ -193,7 +193,7 @@ const SignupDriverStep = (props: Props) => {
                                     ))
                                 }
                             </div>
-                            <div className='3xl:px-8 3xl:py-6 p-6 flex justify-between items-center'>
+                            <div className='3xl:px-8 3xl:py-6 p-6 flex justify-between items-center disable-selection'>
                                 <div className='flex items-center gap-2 cursor-not-allowed group'>
                                     <HiArrowLongLeft className='xl:size-10 size-8 text-[#B4B8C5]' />
                                 </div>
@@ -250,7 +250,7 @@ const SignupDriverStep = (props: Props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className='3xl:px-8 3xl:py-6 p-6 flex justify-between items-center'>
+                            <div className='3xl:px-8 3xl:py-6 p-6 flex justify-between items-center disable-selection'>
                                 <div onClick={() => setActiveStep('1')} className='flex items-center gap-2 cursor-pointer group'>
                                     <HiArrowLongLeft className='xl:size-10 size-8 text-[#FF9900] group-hover:-translate-x-2 duration-300 transition-all' />
                                     <div className='xl:text-base text-sm text-[#FF9900] font-semibold group-hover:-translate-x-2 duration-300 transition-all'>Xem bước 1</div>
@@ -365,7 +365,7 @@ const SignupDriverStep = (props: Props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className='3xl:px-8 3xl:py-6 p-6 flex justify-between items-center'>
+                            <div className='3xl:px-8 3xl:py-6 p-6 flex justify-between items-center disable-selection'>
                                 <div onClick={() => setActiveStep('2')} className='flex items-center gap-2 cursor-pointer group'>
                                     <HiArrowLongLeft className='xl:size-10 size-8 text-[#FF9900] group-hover:-translate-x-2 duration-300 transition-all' />
                                     <div className='xl:text-base text-sm text-[#FF9900] font-semibold group-hover:-translate-x-2 duration-300 transition-all'>Xem bước 2</div>
@@ -403,7 +403,7 @@ const SignupDriverStep = (props: Props) => {
                                     }
                                 </ol>
                             </div>
-                            <div className='3xl:px-8 3xl:py-6 p-6 flex justify-between items-center'>
+                            <div className='3xl:px-8 3xl:py-6 p-6 flex justify-between items-center disable-selection'>
                                 <div onClick={() => setActiveStep('3')} className='flex items-center gap-2 cursor-pointer group'>
                                     <HiArrowLongLeft className='xl:size-10 size-8 text-[#FF9900] group-hover:-translate-x-2 duration-300 transition-all' />
                                     <div className='xl:text-base text-sm text-[#FF9900] font-semibold group-hover:-translate-x-2 duration-300 transition-all'>Xem bước 3</div>
