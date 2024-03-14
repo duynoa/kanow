@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { v4 as uuidv4 } from 'uuid';
 
 import { FaInstagram, FaFacebook, FaLinkedinIn, FaTwitter } from "react-icons/fa";
+import Link from 'next/link';
 
 const Footer = () => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
@@ -42,41 +43,23 @@ const Footer = () => {
             list: [
                 {
                     id: uuidv4(),
-                    name: 'Chính sách và quy định'
+                    name: 'Chính sách và quy định',
+                    link: '/policy-regulations'
                 },
                 {
                     id: uuidv4(),
-                    name: 'Quy chế hoạt động'
+                    name: 'Quy chế hoạt động',
+                    link: '/operating-regulations'
                 },
                 {
                     id: uuidv4(),
-                    name: 'Bảo mật thông tin'
+                    name: 'Bảo mật thông tin',
+                    link: '/security-info'
                 },
                 {
                     id: uuidv4(),
-                    name: 'Giải quyết tranh chấp'
-                },
-            ]
-        },
-        {
-            id: uuidv4(),
-            title: '',
-            list: [
-                {
-                    id: uuidv4(),
-                    name: 'Hướng dẫn chung'
-                },
-                {
-                    id: uuidv4(),
-                    name: 'Hướng dẫn đặt xe'
-                },
-                {
-                    id: uuidv4(),
-                    name: 'Hướng dẫn thanh toán'
-                },
-                {
-                    id: uuidv4(),
-                    name: 'Câu hỏi thường gặp'
+                    name: 'Giải quyết tranh chấp',
+                    link: '/dispute-resolution'
                 },
             ]
         },
@@ -86,19 +69,49 @@ const Footer = () => {
             list: [
                 {
                     id: uuidv4(),
-                    name: 'Về KANOW'
+                    name: 'Hướng dẫn chung',
+                    link: '/dispute-resolution'
                 },
                 {
                     id: uuidv4(),
-                    name: 'Tuyển dụng'
+                    name: 'Hướng dẫn đặt xe',
+                    link: '/dispute-resolution'
                 },
                 {
                     id: uuidv4(),
-                    name: 'Tin tức và hoạt động'
+                    name: 'Hướng dẫn thanh toán',
+                    link: '/dispute-resolution'
                 },
                 {
                     id: uuidv4(),
-                    name: 'Bài viết'
+                    name: 'Câu hỏi thường gặp',
+                    link: '/dispute-resolution'
+                },
+            ]
+        },
+        {
+            id: uuidv4(),
+            title: '',
+            list: [
+                {
+                    id: uuidv4(),
+                    name: 'Về KANOW',
+                    link: '/dispute-resolution'
+                },
+                {
+                    id: uuidv4(),
+                    name: 'Tuyển dụng',
+                    link: '/dispute-resolution'
+                },
+                {
+                    id: uuidv4(),
+                    name: 'Tin tức và hoạt động',
+                    link: '/dispute-resolution'
+                },
+                {
+                    id: uuidv4(),
+                    name: 'Bài viết',
+                    link: '/dispute-resolution'
                 },
             ]
         },
@@ -113,7 +126,7 @@ const Footer = () => {
             <div className='custom-container grid lg:grid-cols-12 grid-cols-1 lg:gap-2 gap-6 pb-10'>
                 <div className='lg:col-span-2 col-span-1 w-full flex flex-col 2xl:gap-5 gap-3'>
                     <Image
-                    
+
                         alt='logo'
                         src="/logo/logo.svg"
                         width={800}
@@ -155,9 +168,12 @@ const Footer = () => {
                                     {
                                         item.list.map((e) => (
                                             <React.Fragment key={e.id}>
-                                                <div className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1'>
+                                                <Link
+                                                    href={e.link}
+                                                    className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1 hover:scale-[1.01] hover:font-medium transition-colors'
+                                                >
                                                     {e.name}
-                                                </div>
+                                                </Link>
                                             </React.Fragment>
                                         ))
                                     }
@@ -172,12 +188,18 @@ const Footer = () => {
                         Đối tác
                     </div>
                     <div className='flex flex-col lg:gap-3 gap-1'>
-                        <div className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1'>
+                        <Link
+                            href="/partner/vehicle-owner"
+                            className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1 hover:scale-[1.01] hover:font-medium transition-colors'
+                        >
                             Đăng ký thành chủ xe
-                        </div>
-                        <div className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1'>
+                        </Link>
+                        <Link
+                            href="/partner/driver"
+                            className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1 hover:scale-[1.01] hover:font-medium transition-colors'
+                        >
                             Đăng ký thành tài xế
-                        </div>
+                        </Link>
                     </div>
                 </div>
             </div>
