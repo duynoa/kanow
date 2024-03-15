@@ -43,7 +43,7 @@ const WhyKanow = (props: Props) => {
         <div
             id="section-whykanow"
             style={{ background: "linear-gradient(180deg, #FCFDFD 0%, #C2F9F9 118.27%)" }}
-            className='lg:pt-20 md:pt-0 md:pb-36 pt-0 pb-36'
+            className='lg:pt-20 lg:pb-0 md:pt-0 md:pb-36 pt-0 pb-36'
         >
             <div className='custom-container grid grid-cols-2 xxl:gap-0 gap-6'>
                 <div className='lg:col-span-1 col-span-2 flex flex-col gap-8'>
