@@ -43,7 +43,7 @@ const WhyKanow = (props: Props) => {
         <div
             id="section-whykanow"
             style={{ background: "linear-gradient(180deg, #FCFDFD 0%, #C2F9F9 118.27%)" }}
-            className='lg:pt-20 pt-0 py-16'
+            className='lg:pt-20 md:pt-0 md:pb-36 pt-0 pb-36'
         >
             <div className='custom-container grid grid-cols-2 xxl:gap-0 gap-6'>
                 <div className='lg:col-span-1 col-span-2 flex flex-col gap-8'>
@@ -55,7 +55,7 @@ const WhyKanow = (props: Props) => {
                             Tự do kiếm thêm thu nhập, lái xe với sự tự tin
                         </div>
                     </div>
-                    <div className="3xl:w-[580px] 3xl:h-[740px] xxl:w-[520px] xxl:h-[740px] xl:w-[440px] xl:h-[700px] lg:w-[400px] lg:h-[660px] w-full h-[600px]">
+                    <div className="3xl:w-[580px] 3xl:h-[740px] xxl:w-[520px] xxl:h-[740px] xl:w-[440px] xl:h-[700px] lg:w-[400px] lg:h-[660px] w-full md:h-[600px] h-[480px]">
                         <Image
                             src="/background/step_background.png"
                             alt="image"

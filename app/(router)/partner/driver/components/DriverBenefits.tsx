@@ -49,7 +49,7 @@ const DriverBenefits = (props: Props) => {
     ]
 
     return (
-        <div id={'section-benefits'} className="lg:bg-[url('/background/benefit_background.png')] bg-[url('/background/benefit.png')] bg-cover h-full lg:-mt-[120px] relative z-10">
+        <div id={'section-benefits'} className="lg:bg-[url('/background/benefit_background.png')] bg-[url('/background/benefit_background_mobile.png')] bg-cover h-full lg:-mt-[120px] md:-mt-[80px] -mt-[80px] relative z-10">
             <div className='custom-container 3xl:pt-40 3xl:pb-36 pt-28 pb-28 flex flex-col gap-10'>
                 <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-3xl text-[26px] capitalize font-bold text-[#101010]'>
                     Những quyền lợi của tài xế
