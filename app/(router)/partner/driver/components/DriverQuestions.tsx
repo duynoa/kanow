@@ -35,10 +35,10 @@ const DriverQuestions = (props: Props) => {
     ]
 
     return (
-        <div className='py-20'>
+        <div id="section-questions" className='py-20'>
             <div className='custom-container flex flex-col gap-8'>
                 <div className='flex flex-col gap-2'>
-                    <div className='text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
+                    <div className='text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-3xl text-[26px] capitalize font-bold text-[#101010]'>
                         Câu hỏi thường gặp
                     </div>
                     <div className='text-center 3xl:text-base text-sm text-[#585F71]'>
@@ -46,7 +46,7 @@ const DriverQuestions = (props: Props) => {
                     </div>
                 </div>
                 <div className='flex items-center justify-center'>
-                    <Accordion type="multiple" className="w-[70%] space-y-6">
+                    <Accordion type="multiple" className="lg:w-[70%] md:w-[90%] w-full space-y-6">
                         {
                             listQuestions && listQuestions.map((question, index) => (
                                 <AccordionItem key={question.id} value={`item-${index}`} className='custom-accordion border border-[#B4B8C5] rounded-2xl'>

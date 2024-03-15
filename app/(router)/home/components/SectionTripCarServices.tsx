@@ -29,7 +29,7 @@ const SectionTripCarServices = (props: Props) => {
                     loading="lazy"
                 />
                 <div className='flex flex-col gap-2 md:absolute 3xl:top-20 2xl:top-10 lg:top-10 top-4 left-[40%] md:order-none order-1'>
-                    <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-[26px] text-[26px] leading-tight capitalize font-bold text-[#101010]'>
+                    <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-3xl text-[26px] leading-tight capitalize font-bold text-[#101010]'>
                         Hành Trình Của Bạn Luôn Được Bảo Vệ
                     </div>
                     <div className='3xl:text-base xl:text-sm md:text-xs text-sm text-[#8C93A3] font-normal'>

@@ -22,7 +22,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-import { X } from "lucide-react"
+import { Check, X } from "lucide-react"
 
 import { useDialogCalendar, useDialogPromotion } from "@/hooks/useOpenDialog";
 import { Calendar } from "../ui/calendar";
@@ -33,6 +33,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { Label } from "../ui/label";
 import { BsFillArrowRightCircleFill } from "react-icons/bs";
 import { Button } from "../ui/button";
+
+import * as SelectPrimitive from "@radix-ui/react-select"
 
 type Props = {
 }
@@ -376,8 +378,11 @@ export function DialogCalendar({ }: Props) {
                                                 <SelectItem
                                                     key={item.id}
                                                     value={item.value}
+                                                    className='flex flex-row items-center'
                                                 >
-                                                    {item.time ? item.time : ''}
+                                                    <div>
+                                                        {item.time ? item.time : ''}
+                                                    </div>
                                                 </SelectItem>
                                             ))
                                         }

@@ -49,15 +49,15 @@ const DriverBenefits = (props: Props) => {
     ]
 
     return (
-        <div className="bg-[url('/background/benefit_background.png')] bg-cover h-full -mt-[120px] relative z-10">
+        <div id={'section-benefits'} className="lg:bg-[url('/background/benefit_background.png')] bg-[url('/background/benefit.png')] bg-cover h-full lg:-mt-[120px] relative z-10">
             <div className='custom-container 3xl:pt-40 3xl:pb-36 pt-28 pb-28 flex flex-col gap-10'>
-                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
+                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-3xl text-[26px] capitalize font-bold text-[#101010]'>
                     Những quyền lợi của tài xế
                 </div>
-                <div className='grid grid-cols-3 xl:gap-6 gap-4'>
+                <div className='grid lg:grid-cols-3 grid-cols-4 xl:gap-6 gap-4'>
                     {
                         benefitsList && benefitsList.map((benefit) => (
-                            <div key={benefit.id} className='col-span-1 p-6 flex items-center gap-4 border border-[#64E4E4] hover:bg-[#9DF2EE] bg-[#F1FCFC] rounded-xl duration-200 transition ease-in-out'>
+                            <div key={benefit.id} className='lg:col-span-1 md:col-span-2 col-span-4 p-6 flex items-center gap-4 border border-[#64E4E4] hover:bg-[#9DF2EE] bg-[#F1FCFC] rounded-xl duration-200 transition ease-in-out'>
                                 <div className='3xl:w-16 3xl:min-w-16 w-12 min-w-12 h-auto'>
                                     <Image
                                         src={benefit.icon ? benefit.icon : '/default/default.png'}

@@ -29,7 +29,7 @@ const SectitonWhyWe = (props: Props) => {
     return (
         <div className="relative flex lg:bg-[url('/background/why_background.png')] bg-[url('/background/why_background_mobile.png')] bg-cover drop-shadow 3xl:pt-56 3xl:pb-32 2xl:pt-44 2xl:pb-28 xl:pt-40 xl:pb-24 md:pt-36 md:pb-24 py-20">
             <div className='custom-container z-20 flex flex-col md:items-center items-start 3xl:gap-4 gap-2 w-full'>
-                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-[26px] text-[26px] leading-tight capitalize font-bold text-[#101010]'>
+                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-3xl text-[26px] leading-tight capitalize font-bold text-[#101010]'>
                     Vì sao chọn chúng tôi
                 </div>
                 <div className='3xl:text-base xl:text-sm md:text-xs text-sm text-[#8C93A3] font-normal '>

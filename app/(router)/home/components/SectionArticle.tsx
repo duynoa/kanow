@@ -46,7 +46,7 @@ const SectionArticle = (props: Props) => {
     return (
         <div className="flex lg:bg-[url('/background/folder_background.png')] bg-[url('/background/folder_background_mobile.png')] bg-cover border-b drop-shadow-lg 3xl:-mt-[520px] 2xl:-mt-[420px] xl:-mt-[390px] lg:-mt-[300px] md:-mt-[420px] -mt-[280px]">
             <div className='custom-container flex flex-col md:items-center items-start md:justify-center w-full 3xl:pt-64 3xl:pb-32 2xl:pt-48 2xl:pb-32 xxl:pt-44 xxl:pb-28 xl:pt-44 xl:pb-24 lg:pt-32 lg:pb-20 md:pt-72 md:pb-20 pt-44 pb-10'>
-                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
+                <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-3xl text-[26px] capitalize font-bold text-[#101010]'>
                     Bài viết
                 </div>
                 {

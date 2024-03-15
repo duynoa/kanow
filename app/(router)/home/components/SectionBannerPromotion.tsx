@@ -74,7 +74,7 @@ const SectionBannerPromotion = (props: Props) => {
         <div className="relative z-20 md:bg-[url('/background/banner_background.png')] bg-[url('/background/banner_background_mobile.png')] bg-cover bg-right-bottom drop-shadow flex flex-col gap-2 w-full 3xl:pb-72 3xl:pt-20 2xl:pb-44 2xl:pt-20 xl:pb-40 xl:pt-14 lg:pt-12 lg:pb-28 md:pt-32 md:pb-16 pt-16 pb-28">
             <div className='custom-container flex flex-col 3xl:gap-8 gap-6'>
                 <div className='flex flex-col gap-2'>
-                    <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-[26px] text-[26px] leading-tight capitalize font-bold md:max-w-[85%] max-w-full text-[#101010]'>
+                    <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-3xl text-[26px] leading-tight capitalize font-bold md:max-w-[85%] max-w-full text-[#101010]'>
                         Chương trình khuyến mãi
                     </div>
                     <div className='3xl:text-base xl:text-sm md:text-xs text-sm text-[#8C93A3] font-medium'>

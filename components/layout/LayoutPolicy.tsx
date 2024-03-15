@@ -1,8 +1,10 @@
 'use client'
 
+import { useResize } from '@/hooks/useResize'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import { SelectNocheck, SelectContentNocheck, SelectGroupNocheck, SelectItemNocheck, SelectTriggerNocheck, SelectValueNocheck } from '../ui/selectNocheck'
 
 const LayoutPolicy = ({
     children
@@ -10,6 +12,8 @@ const LayoutPolicy = ({
     children: React.ReactNode
 }) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
+    const { isVisibleTablet } = useResize()
+    const router = useRouter()
 
     useEffect(() => {
         setIsMounted(true)
@@ -39,24 +43,27 @@ const LayoutPolicy = ({
             link: "/dispute-resolution"
         },
     ]
-    console.log('pathname', pathname)
+
+    const handleChangeTab = (value: string) => {
+        router.push(value)
+    }
 
     if (!isMounted) {
         return null;
     }
 
     return (
-        <div className='flex flex-col gap-20 custom-container'>
-            <div className="w-full h-[50vh] bg-[url('/policy/banner_supercar.jpg')] bg-cover bg-center rounded-xl flex justify-center items-center">
-                <div className='3xl:text-6xl text-5xl text-white font-semibold'>
+        <div className='flex flex-col lg:gap-20 md:gap-16 gap-10 custom-container'>
+            <div className="w-full lg:h-[50vh] md:h-[50dvh] h-[30dvh] bg-[url('/policy/banner_supercar.jpg')] bg-cover bg-center rounded-xl flex justify-center items-center">
+                <div className='3xl:text-6xl md:text-5xl text-3xl text-white font-semibold'>
                     Chính sách & quy định
                 </div>
             </div>
-            <div className='bg-[#2FB9BD]/20 w-full p-8 rounded-xl flex flex-col gap-4'>
-                <div className='text-center 3xl:text-4xl xl:text-3xl text-2xl text-[#000000] font-bold'>
+            <div className='bg-[#2FB9BD]/20 w-full xl:p-8 p-4 rounded-xl flex flex-col gap-4'>
+                <div className='text-center 3xl:text-4xl md:text-3xl text-2xl text-[#000000] font-bold'>
                     Thông báo
                 </div>
-                <div className='xl:text-base text-sm font-light flex flex-col gap-2'>
+                <div className='md:text-base text-sm font-light flex flex-col gap-2'>
                     <div className='space-x-1'>
                         <span className='font-bold'>Kanow</span>
                         <span>
@@ -85,21 +92,53 @@ const LayoutPolicy = ({
                 </div>
             </div>
             <div className='grid grid-cols-5 gap-6'>
-                <div className='col-span-1 flex flex-col w-full h-full'>
+                <div className='lg:col-span-1 col-span-5 flex flex-col w-full h-full'>
                     {
-                        tabsNavigation && tabsNavigation.map((tab) => (
-                            <div key={tab.id} className='w-full flex flex-col gap-1'>
-                                <Link
-                                    href={`${tab.link}`}
-                                    className={`${pathname === tab.link ? "bg-[#2FB9BD] text-white rounded-r-3xl font-medium" : "font-light hover:scale-[1.01] hover:font-medium"} w-fit 2xl:text-base text-sm xxl:px-6 xl:px-4 px-2 py-3 `}
-                                >
-                                    {tab.title ? tab.title : ""}
-                                </Link>
-                            </div>
-                        ))
+                        isVisibleTablet
+                            ?
+                            <SelectNocheck
+                                onValueChange={(value) => handleChangeTab(value)}
+                                defaultValue={`${pathname}`}
+                            >
+
+                                <div className='w-full flex justify-center'>
+                                    <SelectTriggerNocheck className="max-w-[80%] focus:outline-none focus:ring-0 focus:ring-offset-0">
+                                        <SelectValueNocheck placeholder="Chọn giờ nhận xe" />
+                                    </SelectTriggerNocheck>
+                                </div>
+                                <SelectContentNocheck>
+                                    <SelectGroupNocheck>
+                                        {
+                                            tabsNavigation && tabsNavigation.map((tab) => (
+                                                <SelectItemNocheck
+                                                    key={tab.id}
+                                                    value={tab.link}
+                                                    className='flex flex-row items-center'
+                                                >
+                                                    {tab.title}
+                                                </SelectItemNocheck>
+                                            ))
+                                        }
+                                    </SelectGroupNocheck>
+                                </SelectContentNocheck>
+                            </SelectNocheck>
+                            :
+
+                            tabsNavigation && tabsNavigation.map((tab) => (
+                                <div key={tab.id} className='w-full flex flex-col gap-1'>
+                                    <Link
+                                        href={`${tab.link}`}
+                                        className={`${pathname === tab.link ? "bg-[#2FB9BD] text-white rounded-r-3xl font-medium" : "font-light hover:scale-[1.01] hover:font-medium"} w-fit 2xl:text-base text-sm xxl:px-6 xl:px-4 px-2 py-3 `}
+                                    >
+                                        {tab.title ? tab.title : ""}
+                                    </Link>
+                                </div>
+                            ))
+
                     }
+
                 </div>
-                <div className='col-span-4 w-full h=full'>
+                <div className='lg:col-span-4 col-span-5 w-full h=full'>
                     {children}
                 </div>
             </div>
