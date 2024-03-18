@@ -21,9 +21,9 @@ const SectionThirdAbout = (props: Props) => {
     return (
         <>
             <div className='bg-[#F1FCFC]'>
-                <div className='custom-container-no-right pt-24 pb-48 grid grid-cols-3 gap-20'>
-                    <div className='col-span-1 flex flex-col gap-8 h-full'>
-                        <div className='w-[280px] h-auto'>
+                <div className='custom-container-no-right xl:pt-24 xl:pb-48 pt-20 pb-40 grid xl:grid-cols-3 grid-cols-5 3xl:gap-20 xl:gap-12 gap-8'>
+                    <div className='xl:col-span-1 lg:col-span-2 col-span-5 lg:mx-0 md:mr-10 mr-6 flex flex-col 3xl:gap-8 gap-4 h-full'>
+                        <div className='3xl:w-[280px] xl:w-[200px] w-[160px] h-auto'>
                             <Image
                                 alt="logo"
                                 src="/logo/logo_kanow_black.png"
@@ -35,7 +35,7 @@ const SectionThirdAbout = (props: Props) => {
 
                         <div className='flex flex-col gap-2'>
                             <div className='flex flex-row items-center gap-2'>
-                                <div className='w-[20px] min-h-[20px] h-auto'>
+                                <div className='w-[18px] min-w-[18px] h-auto'>
                                     <Image
                                         alt="logo"
                                         src="/icon/about/icon_path.png"
@@ -48,14 +48,14 @@ const SectionThirdAbout = (props: Props) => {
                                     Trách nhiệm với Xã hội và môi trường
                                 </div>
                             </div>
-                            <div className='3xl:text-base xl:text-sm md:text-xs text-sm text-[#6F7689] font-medium'>
+                            <div className='3xl:text-base xl:text-sm lg:text-[13px] md:text-sm text-sm text-[#6F7689] font-medium'>
                                 Chúng tôi tin rằng, việc thực hiện tốt các trách nhiệm xã hội và môi trường không chỉ mang lại lợi ích cho doanh nghiệp mà còn góp phần xây dựng một xã hội tốt đẹp hơn cho thế hệ tương lai.
                             </div>
                         </div>
 
                         <div className='flex flex-col gap-2'>
                             <div className='flex flex-row items-center gap-2'>
-                                <div className='w-[20px] min-h-[20px] h-auto'>
+                                <div className='w-[18px] min-w-[18px] h-auto'>
                                     <Image
                                         alt="logo"
                                         src="/icon/about/icon_path.png"
@@ -68,21 +68,22 @@ const SectionThirdAbout = (props: Props) => {
                                     Trách nhiệm với Khách hàng
                                 </div>
                             </div>
-                            <div className='3xl:text-base xl:text-sm md:text-xs text-sm text-[#6F7689] font-medium'>
+                            <div className='3xl:text-base xl:text-sm lg:text-[13px] md:text-sm text-sm text-[#6F7689] font-medium'>
                                 KANOW luôn cam kết với khách hàng những dịch vụ tốt nhất với sự an toàn, tiện lợi và chuyên nghiệp. Chúng tôi ý thức được trách nhiệm của mình trong việc cung cấp dịch vụ cho thuê xe ô tô chất lượng cao và đảm bảo sự an toàn cho khách hàng.
                             </div>
                         </div>
                     </div>
-                    <div className='col-span-2 h-full'>
+                    <div className='xl:col-span-2 lg:col-span-3 col-span-5 h-full'>
                         <Marquee
-                            speed={100}
+                            speed={60}
                             pauseOnHover
                             autoFill={true}
                             gradient={false}
+                            className='rounded-tl-xl rounded-bl-xl'
                         >
                             {
                                 imageSlider.map((item, index) => (
-                                    <div key={item.id} className={`w-[560px] h-full px-2`}>
+                                    <div key={item.id} className={`3xl:w-[560px] xl:w-[500px] w-[480px] h-full px-2`}>
                                         <Image
                                             alt='image'
                                             src={`${item.image}`}
@@ -97,40 +98,40 @@ const SectionThirdAbout = (props: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="bg-[url('/background/about_background_3.png')] bg-cover drop-shadow-2xl pt-40 pb-20 -mt-[120px]">
+            <div className="bg-[url('/background/about_background_3.png')] bg-cover drop-shadow-2xl 2xl:pt-40 xl:pt-28 xl:pb-20 pt-24 pb-16 lg:-mt-[120px] md:-mt-[80px] -mt-[80px]">
                 <div className='custom-container flex flex-col gap-4'>
                     <div className='flex flex-col gap-2'>
-                        <div className='3xl:text-[36px] 2xl:text-[30px] xl:text-[30px] lg:text-[30px] md:text-[30px] text-[26px] leading-tight capitalize font-bold text-[#101010] max-w-[50%]'>
+                        <div className='3xl:text-[36px] 2xl:text-[30px] xl:text-[30px] lg:text-[30px] md:text-[30px] text-[26px] leading-tight capitalize font-bold text-[#101010] lg:max-w-[50%] max-w-full'>
                             Bắt đầu ngay hôm nay
                         </div>
-                        <div className='3xl:text-base xl:text-sm md:text-xs text-sm text-[#6F7689] font-medium max-w-[40%]'>
+                        <div className='3xl:text-base xl:text-sm lg:text-[13px] md:text-sm text-sm text-[#6F7689] font-medium 3xl:max-w-[40%] lg:max-w-[50%] max-w-full'>
                             We&apos;ll get right to the point: we&apos;re asking you to help support Khan Academy. We&apos;re a nonprofit that relies on support from people like you. relies on support
                         </div>
                     </div>
-                    <div className='grid grid-cols-2 gap-10 mt-10'>
+                    <div className='grid grid-cols-2 3xl:gap-10 gap-8 3xl:mt-10 mt-6'>
                         <div className='col-span-1 h-full'>
-                            <div className='flex flex-col gap-4 justify-between bg-[#C2F9F9] p-12 rounded-3xl h-full'>
+                            <div className='flex flex-col gap-4 justify-between bg-[#C2F9F9] 3xl:p-12 xl:p-8 lg:p-6 p-4 3xl:rounded-3xl rounded-xl h-full'>
                                 <div className='flex flex-col gap-2'>
-                                    <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
+                                    <div className='3xl:text-2xl xl:text-xl text-lg text-[#16171B] font-semibold'>
                                         Xe đã sẵn sàng, bắt đầu hành trình ngay!
                                     </div>
-                                    <div className='3xl:text-base xl:text-sm md:text-xs text-sm text-[#6F7689] font-medium max-w-[55%]'>
+                                    <div className='3xl:text-base xl:text-sm lg:text-[13px] md:text-sm text-sm text-[#6F7689] font-medium xl:max-w-[55%] lg:max-w-[80%] max-w-full'>
                                         Tự tay cầm lái chiếc xe mà bạn yêu thích cho hành trình thêm hứng khởi.
                                     </div>
                                 </div>
                                 <div className='flex flex-col gap-4'>
                                     <div className='w-full'>
-                                        <Button className='3xl:text-lg text-base 3xl:px-12 3xl:py-3 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white'>
+                                        <Button className='3xl:text-lg xl:text-base text-sm 3xl:px-12 3xl:py-3 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white'>
                                             Thuê xe tự lái
                                         </Button>
                                     </div>
-                                    <div className='w-full h-[300px]'>
+                                    <div className='w-full 3xl:h-[300px] xl:h-[260px] lg:h-[200px] h-[180px]'>
                                         <Image
                                             alt="image"
                                             src="/other/about/test_image_2.png"
                                             width={800}
                                             height={600}
-                                            className='w-full h-full object-cover rounded-3xl'
+                                            className='w-full h-full object-cover 3xl:rounded-3xl rounded-xl'
                                         />
                                     </div>
                                 </div>
@@ -138,28 +139,28 @@ const SectionThirdAbout = (props: Props) => {
                         </div>
 
                         <div className='col-span-1 h-full'>
-                            <div className='flex flex-col gap-4 justify-between bg-[#14555B] p-12 rounded-3xl h-full'>
+                            <div className='flex flex-col gap-4 justify-between bg-[#14555B] 3xl:p-12 xl:p-8 lg:p-6 p-4 3xl:rounded-3xl rounded-xl h-full'>
                                 <div className='flex flex-col gap-2'>
-                                    <div className='3xl:text-2xl text-xl text-white font-semibold'>
+                                    <div className='3xl:text-2xl xl:text-xl text-lg text-white font-semibold'>
                                         Tài xế của bạn đã đến
                                     </div>
-                                    <div className='3xl:text-base xl:text-sm md:text-xs text-sm text-[#D7D9E0] font-medium max-w-[55%]'>
-                                        Chuyến đi thêm thú
+                                    <div className='3xl:text-base xl:text-sm lg:text-[13px] md:text-sm text-sm text-[#D7D9E0] font-medium xl:max-w-[55%] lg:max-w-[80%] max-w-full'>
+                                        Chuyến đi thêm thú vị cùng các bác tài 5* trên KANOW.
                                     </div>
                                 </div>
                                 <div className='flex flex-col gap-4'>
                                     <div className='w-full'>
-                                        <Button className='3xl:text-lg text-base 3xl:px-12 3xl:py-3 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white'>
+                                        <Button className='3xl:text-lg xl:text-base text-sm 3xl:px-12 3xl:py-3 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white'>
                                             Thuê xe có tài xế
                                         </Button>
                                     </div>
-                                    <div className='w-full h-[300px]'>
+                                    <div className='w-full 3xl:h-[300px] xl:h-[260px] lg:h-[200px] h-[180px]'>
                                         <Image
                                             alt="image"
                                             src="/other/about/test_image_3.png"
                                             width={800}
                                             height={600}
-                                            className='w-full h-full object-cover rounded-3xl'
+                                            className='w-full h-full object-cover 3xl:rounded-3xl rounded-xl'
                                         />
                                     </div>
                                 </div>

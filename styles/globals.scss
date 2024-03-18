@@ -107,6 +107,9 @@
 .custom-container-no-right {
   @apply 3xl:ml-44 2xl:ml-32 xl:ml-28 lg:ml-12 md:ml-10 ml-6;
 }
+.custom-container-no-left {
+  @apply 3xl:mr-44 2xl:mr-32 xl:mr-28 lg:mr-12 md:mr-10 mr-6;
+}
 
 .custom-swiper-intro {
   .swiper-pagination {
