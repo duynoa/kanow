@@ -52,7 +52,7 @@ const Header = () => {
             id: uuidv4(),
             name: 'Về chúng tôi',
             children: false,
-            link: '/'
+            link: '/about-us'
         },
         {
             id: uuidv4(),
@@ -84,8 +84,6 @@ const Header = () => {
     useEffect(() => {
         setIsMounted(true)
     }, [])
-
-
 
     const handleClickToZoom = () => {
         setIsZoomAnimated(true);

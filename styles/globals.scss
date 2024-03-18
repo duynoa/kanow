@@ -104,6 +104,9 @@
 .custom-container {
   @apply 3xl:mx-44 2xl:mx-32 xl:mx-28 lg:mx-12 md:mx-10 mx-6;
 }
+.custom-container-no-right {
+  @apply 3xl:ml-44 2xl:ml-32 xl:ml-28 lg:ml-12 md:ml-10 ml-6;
+}
 
 .custom-swiper-intro {
   .swiper-pagination {
@@ -175,7 +178,7 @@
   @apply flex items-center;
 }
 
-// rotate icon in accordion
+// rotate in accordion
 .accordionChevron {
   transition: transform 300ms;
 }
@@ -188,3 +191,4 @@
   transform: rotate(180deg);
   @apply fill-[#FF9900];
 }
+

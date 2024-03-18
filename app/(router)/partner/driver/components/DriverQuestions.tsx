@@ -38,7 +38,7 @@ const DriverQuestions = (props: Props) => {
         <div id="section-questions" className='py-20'>
             <div className='custom-container flex flex-col gap-8'>
                 <div className='flex flex-col gap-2'>
-                    <div className='text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-3xl text-[26px] capitalize font-bold text-[#101010]'>
+                    <div className='text-center 3xl:text-[36px] 2xl:text-[30px] xl:text-[30px] lg:text-[30px] md:text-[30px] text-[26px] leading-tight capitalize font-bold text-[#101010]'>
                         Câu hỏi thường gặp
                     </div>
                     <div className='text-center 3xl:text-base text-sm text-[#585F71]'>

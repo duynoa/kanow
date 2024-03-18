@@ -48,7 +48,7 @@ const WhyKanow = (props: Props) => {
             <div className='custom-container grid grid-cols-2 xxl:gap-0 gap-6'>
                 <div className='lg:col-span-1 col-span-2 flex flex-col gap-8'>
                     <div className='flex flex-col 3xl:gap-4 gap-2'>
-                        <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-3xl text-[26px] capitalize font-bold text-[#101010] 3xl:max-w-[70%] xl:max-w-[85%] lg:max-w-[80%] max-w-full'>
+                        <div className='3xl:text-[36px] 2xl:text-[30px] xl:text-[30px] lg:text-[30px] md:text-[30px] text-[26px] leading-tight capitalize font-bold text-[#101010] 3xl:max-w-[70%] xl:max-w-[85%] lg:max-w-[80%] max-w-full'>
                             Lý do bạn nên đến với KANOW
                         </div>
                         <div className='3xl:text-base lg:text-sm text-sm text-[#757B8A] font-medium 3xl:max-w-[70%] lg:max-w-[85%] max-w-full'>

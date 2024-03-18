@@ -122,7 +122,7 @@ const Footer = () => {
     }
 
     return (
-        <footer className='bg-[#FFFFFF] pt-16 pb-10 w-full overflow-hidden'>
+        <footer className='bg-[#FFFFFF] pt-16 pb-10 w-full overflow-hidden border border-t border-x-0 border-b-0'>
             <div className='custom-container grid lg:grid-cols-12 grid-cols-1 lg:gap-2 gap-6 pb-10'>
                 <div className='lg:col-span-2 col-span-1 w-full flex flex-col 2xl:gap-5 gap-3'>
                     <Image

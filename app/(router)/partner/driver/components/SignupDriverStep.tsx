@@ -123,7 +123,7 @@ const SignupDriverStep = (props: Props) => {
 
     return (
         <div className='3xl:py-20 py-16 flex flex-col 3xl:gap-10 gap-6 custom-container'>
-            <div className='text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-3xl text-[26px] capitalize font-bold text-[#101010]'>
+            <div className='text-center 3xl:text-[36px] 2xl:text-[30px] xl:text-[30px] lg:text-[30px] md:text-[30px] text-[26px] leading-tight capitalize font-bold text-[#101010]'>
                 Đăng ký thành tài xế
             </div>
             <div className='border rounded-lg grid xxl:grid-cols-5 grid-cols-8'>

@@ -18,7 +18,7 @@ const SectionShowApp = (props: Props) => {
                     />
                 </div>
                 <div className='md:w-[50%] md:max-w-[50%] w-full lg:pt-16 md:pt-6 flex flex-col lg:gap-6 gap-3 3xl:pl-48 xl:pl-40 lg:pl-28 md:pl-6 md:order-none order-1'>
-                    <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-3xl text-[26px] capitalize font-bold text-[#101010] 2xl:max-w-[75%] xxl:max-w-[80%] max-w-full'>
+                    <div className='3xl:text-[36px] 2xl:text-[30px] xl:text-[30px] lg:text-[30px] md:text-[30px] text-[26px] leading-tight capitalize font-bold text-[#101010] 2xl:max-w-[75%] xxl:max-w-[80%] max-w-full'>
                         Trải nghiệm ứng dụng KANOW ngay hôm nay
                     </div>
                     <div className='3xl:text-base xl:text-sm md:text-xs text-sm text-[#8C93A3] font-medium 2xl:max-w-[75%] xxl:max-w-[80%] max-w-full'>
