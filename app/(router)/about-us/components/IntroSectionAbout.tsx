@@ -55,7 +55,7 @@ const IntroSectionAbout = (props: Props) => {
                 <div className='3xl:text-[3rem] 2xl:text-[2.5rem] xxl:text-[2.25rem] xl:text-[2.25rem] lg:text-[1.875rem] md:text-[1.5rem] text-[2rem] font-bold max-w-full capitalize leading-tight'>
                     <span className='text-[#166A71]'>KANOW</span> - Cùng bạn trên mọi nẻo đường
                 </div>
-                <div className='3xl:text-base text-sm text-[#585F71] font-normal xl:max-w-[55%] max-w-[65%] text-center'>
+                <div className='3xl:text-base md:text-sm text-base text-[#585F71] font-normal xl:max-w-[55%] md:max-w-[65%] max-w-full text-center'>
                     Mỗi chuyến đi là một hành trình khám phá cuộc sống và thế giới xung quanh, là cơ hội học hỏi và chinh phục những điều mới lạ của mỗi cá nhân để trở nên tốt hơn.
                 </div>
             </div>
@@ -69,13 +69,13 @@ const IntroSectionAbout = (props: Props) => {
             >
                 {
                     imageSlider && imageSlider.map((item, index) => (
-                        <div key={item.id} className={`${index % 2 === 0 ? "xl:w-[600px] w-[540px] xl:h-[400px] md:h-[320px] h-full" : "3xl:w-[300px] w-[240px] xl:h-[400px] md:h-[320px] h-full"} px-2`}>
+                        <div key={item.id} className={`${index % 2 === 0 ? "xl:w-[600px] md:w-[540px] w-[240px] xl:h-[400px] md:h-[320px] h-[180px]" : "3xl:w-[300px] md:w-[240px] w-[140px] xl:h-[400px] md:h-[320px] h-[180px]"} md:px-2 px-1`}>
                             <Image
                                 alt='image'
                                 src={`${item.image}`}
                                 width={1920}
                                 height={1024}
-                                className='w-full h-full object-cover rounded-xl'
+                                className='w-full h-full object-cover md:rounded-xl rounded-lg'
                             />
                         </div>
                     ))
@@ -83,16 +83,16 @@ const IntroSectionAbout = (props: Props) => {
             </Marquee>
 
             <div className='bg-[#F1FCFC]'>
-                <div className='custom-container xl:py-20 py-16 grid lg:grid-cols-5 grid-cols-6 xl:gap-8 gap-4'>
-                    <div className='lg:col-span-2 col-span-5 flex flex-col gap-2'>
+                <div className='custom-container xl:py-20 py-16 grid lg:grid-cols-5 grid-cols-6 xl:gap-8 md:gap-4 gap-8'>
+                    <div className='lg:col-span-2 md:col-span-6 col-span-6 flex flex-col gap-2'>
                         <div className='3xl:text-[36px] 2xl:text-[30px] xl:text-[30px] lg:text-[30px] md:text-[30px] text-[26px] leading-tight capitalize font-bold text-[#101010] 3xl:max-w-[70%] 2xl:max-w-[55%] lg:max-w-[70%] max-w-full'>
                             Theo bạn đến mọi hành trình
                         </div>
-                        <div className='3xl:text-base xl:text-sm lg:text-[13px] md:text-sm text-sm text-[#8C93A3] font-medium lg:max-w-[75%] max-w-full'>
+                        <div className='3xl:text-base xl:text-sm lg:text-[13px] md:text-sm text-base text-[#8C93A3] font-medium lg:max-w-[75%] max-w-full'>
                             Chúng tôi tin rằng với các biện pháp bảo vệ an toàn và hỗ trợ kịp thời, khách hàng sẽ luôn an tâm khi trải nghiệm KANOW.
                         </div>
                     </div>
-                    <div className='lg:col-span-1 col-span-2 3xl:space-y-6 space-y-4'>
+                    <div className='lg:col-span-1 md:col-span-2 col-span-6 3xl:space-y-6 space-y-4'>
                         <div className={`bg-[#14868E] group-hover:scale-105 duration-300 transition-colors 3xl:text-lg text-base text-white 3xl:size-14 lg:size-12 size-10 flex items-center justify-center rounded-full`}>
                             <Image
                                 width={80}
@@ -111,7 +111,7 @@ const IntroSectionAbout = (props: Props) => {
                             </div>
                         </div>
                     </div>
-                    <div className='lg:col-span-1 col-span-2 3xl:space-y-6 space-y-4'>
+                    <div className='lg:col-span-1 md:col-span-2 col-span-6 3xl:space-y-6 space-y-4'>
                         <div className={`bg-[#FF9900] group-hover:scale-105 duration-300 transition-colors 3xl:text-lg text-base text-white 3xl:size-14 lg:size-12 size-10 flex items-center justify-center rounded-full`}>
                             <Image
                                 width={80}
@@ -130,7 +130,7 @@ const IntroSectionAbout = (props: Props) => {
                             </div>
                         </div>
                     </div>
-                    <div className='lg:col-span-1 col-span-2 3xl:space-y-6 space-y-4'>
+                    <div className='lg:col-span-1 md:col-span-2 col-span-6 3xl:space-y-6 space-y-4'>
                         <div className={`bg-[#383A43] group-hover:scale-105 duration-300 transition-colors 3xl:text-lg text-base text-white 3xl:size-14 lg:size-12 size-10 flex items-center justify-center rounded-full`}>
                             <Image
                                 width={80}
