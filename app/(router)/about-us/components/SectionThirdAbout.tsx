@@ -98,7 +98,7 @@ const SectionThirdAbout = (props: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="md:bg-[url('/background/about_background_3.png')] bg-[url('/background/about_mobile_test_3.png')] bg-cover bg-top md:drop-shadow-2xl drop-shadow-sm 2xl:pt-40 xl:pt-28 xl:pb-20 md:pt-24 pt-44 pb-16 lg:-mt-[120px] md:-mt-[80px] -mt-[180px]">
+            <div className="lg:bg-[url('/background/about_background_3.png')] bg-[url('/background/about_background_mobile_3.png')] bg-cover bg-top md:drop-shadow-2xl drop-shadow-sm 2xl:pt-40 lg:pt-28 md:pt-32 pt-24 xl:pb-20 pb-16 lg:-mt-[120px] md:-mt-[80px] -mt-[80px]">
                 <div className='custom-container flex flex-col gap-4'>
                     <div className='flex flex-col gap-2'>
                         <div className='3xl:text-[36px] 2xl:text-[30px] xl:text-[30px] lg:text-[30px] md:text-[30px] text-[26px] leading-tight capitalize font-bold text-[#101010] lg:max-w-[50%] max-w-full'>
