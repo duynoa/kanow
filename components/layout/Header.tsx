@@ -24,6 +24,7 @@ import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import ConvertToSlug from '../convertSlug/ConvertToSlug';
 import { DialogLogin } from '../modals/DialogLogin';
+import { Separator } from '../ui/separator';
 
 // import { postAutoLoginAccount } from '@/services/account/account.services';
 // import { Dropdown } from '../dropdown/Dropdown';
@@ -43,6 +44,7 @@ const Header = () => {
     const [showActive, setShowActive] = useState<boolean>(false);
     const [activeService, setActiveService] = useState<boolean>(false)
     const [openModalLogin, setOpenModalLogin] = useState<boolean>(false)
+    const [statusModal, setStatusModal] = useState<string>("login")
 
     const pathname = usePathname()
     // let token = Cookies.get("token")
@@ -51,20 +53,23 @@ const Header = () => {
         {
             id: uuidv4(),
             name: 'Về chúng tôi',
+            link: '/about-us',
             children: false,
-            link: '/about-us'
+            visible: true,
         },
         {
             id: uuidv4(),
             name: 'Trở thành đối tác của Kanow',
             link: '/partner',
             children: true,
+            visible: true,
         },
         {
             id: uuidv4(),
             name: 'Chuyến của tôi',
             link: '/search-car',
             children: false,
+            visible: false,
         }
     ]
 
@@ -115,6 +120,20 @@ const Header = () => {
     const _ToogleIsOff = (): void => {
         setIsScrollBlocked(false);
         setShowActive(false)
+    }
+
+    const handleOpenChangeModal = (type: string) => {
+        if (type === 'login') {
+            setOpenModalLogin(!openModalLogin)
+
+            // dùng setTimeout để quản lí flow modal 
+            setTimeout(() => {
+                setStatusModal('login')
+            }, 200);
+        } else if (type === 'signup') {
+            setOpenModalLogin(!openModalLogin)
+            setStatusModal('signup')
+        }
     }
 
     // useEffect(() => {
@@ -308,19 +327,40 @@ const Header = () => {
                                                     </div>
                                                 </ActionTooltip>
                                                 :
-                                                <Link
-                                                    href={data.link}
-                                                    className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
-                                                >
-                                                    {data.name}
-                                                </Link>
+                                                (
+                                                    data.visible ?
+                                                        <Link
+                                                            href={data.link}
+                                                            className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                                        >
+                                                            {data.name}
+                                                        </Link>
+                                                        :
+                                                        null
+                                                )
                                         }
                                     </div>
                                 ))
                             }
                         </NavigationMenu>
                         <div className='col-span-2 flex justify-end 3xl:gap-4 gap-2'>
-                            <DialogLogin openModal={openModalLogin} setOpenModal={setOpenModalLogin}>
+                            <DialogLogin
+                                openModal={openModalLogin}
+                                statusModal={statusModal}
+                                setStatusModal={setStatusModal}
+                                handleOpenChangeModal={() => handleOpenChangeModal('signup')}
+                            >
+                                <Button onClick={() => setOpenModalLogin(true)} className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#B4B8C5]'>
+                                    Đăng Ký
+                                </Button>
+                            </DialogLogin>
+                            <Separator orientation="vertical" className='bg-[#B4B8C5] h-auto my-1' />
+                            <DialogLogin
+                                openModal={openModalLogin}
+                                statusModal={statusModal}
+                                setStatusModal={setStatusModal}
+                                handleOpenChangeModal={() => handleOpenChangeModal('login')}
+                            >
                                 <Button onClick={() => setOpenModalLogin(true)} className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'>
                                     Đăng nhập
                                 </Button>

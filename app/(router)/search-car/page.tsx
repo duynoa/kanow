@@ -29,6 +29,7 @@ import { DialogCalendar } from '@/components/modals/DialogCalendar';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import Image from 'next/image';
+import { IListCardCars } from '@/types/ICars';
 
 type Props = {}
 
@@ -81,7 +82,7 @@ const SearchCars = (props: Props) => {
         },
     ]
 
-    const dataListCardCars = [
+    const dataListCardCars: IListCardCars[] = [
         {
             id: uuidv4(),
             image: '/card/card_car1.png',

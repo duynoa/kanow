@@ -23,14 +23,21 @@ import { Checkbox } from "../ui/checkbox"
 type Props = {
     children: React.ReactNode
     openModal: boolean
-    setOpenModal: any
+    statusModal: string
+    setStatusModal: any
+    handleOpenChangeModal: () => void
 }
 
-export function DialogLogin({ children, openModal, setOpenModal }: Props) {
+export function DialogLogin({
+    children,
+    openModal,
+    statusModal,
+    setStatusModal,
+    handleOpenChangeModal
+}: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [showPasswordConfirm, setShowPasswordConfirm] = useState<boolean>(false);
 
-    const [statusModal, setStatusModal] = useState<string>("login")
     const [checkPolicy, setCheckPolicy] = useState<boolean>(false)
 
     const form = useForm({
@@ -73,12 +80,8 @@ export function DialogLogin({ children, openModal, setOpenModal }: Props) {
         }
     }
 
-    const handleOpenChangeModal = () => {
-        setOpenModal(!openModal)
-        setTimeout(() => {
-            setStatusModal('login')
-        }, 200);
-    }
+    console.log('statusModal: ', statusModal);
+
 
     return (
         <Dialog modal open={openModal} onOpenChange={handleOpenChangeModal}>
