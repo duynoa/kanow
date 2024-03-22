@@ -37,12 +37,16 @@ type Props = {
 export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
     const { openDialogFilterListCars, setOpenDialogFilterListCars, setDataFilterListCars, type } = useDialogFilterListCars()
 
-    const handleOpenChangeModal = () => {
-        setOpenDialogFilterListCars(false)
+    const handleOpenChangeModal = (type?: string) => {
+        if (type === "type_car_search") {
+            setOpenDialogFilterListCars(false)
+        } else {
+            toast("Vui lòng nhấn áp dụng!")
+        }
     }
 
     useEffect(() => {
-        if (type === 'automaker' && isState?.filter?.listAutomaker?.length === 0) {
+        if (type === 'company_car_search' && isState?.filter?.listAutomaker?.length === 0) {
             const fetchDataListAutomaker = async () => {
                 const { data } = await getListAutomaker();
 
@@ -57,7 +61,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
             }
 
             fetchDataListAutomaker()
-        } else if (type === 'typesCar' && isState?.filter?.listTypesCar?.length === 0) {
+        } else if (type === 'type_car_search' && isState?.filter?.listTypesCar?.length === 0) {
             const fetchDataListTypesCar = async () => {
                 const { data } = await getListTypeCars();
 
@@ -81,14 +85,14 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
     ])
 
     const handleFilterListCars = async (value: string | any, type: string) => {
-        if (type === "automaker" && value) {
+        if (type === "company_car_search" && value) {
             queryKeyIsState({
                 dataParams: {
                     ...isState.dataParams,
                     company_car_search: value,
                 }
             })
-        } else if (type === "typesCar" && value) {
+        } else if (type === "type_car_search" && value) {
             const typeId = value.id;
             const currentTypeSearch = isState.dataParams?.type_car_search || [];
 
@@ -147,7 +151,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                     //         delivery_car: item?.delivery_car === 1,
                     //         book_car_flash: item?.book_car_flash === 1,
                     //         mortgage: item?.book_car_flash === 1,
-                    //         transmission: item?.transmission
+                    //         transmission_search: item?.transmission_search
                     //     },
                     //     favorite: item?.favourite_car,
                     //     name_car: item?.name,
@@ -176,13 +180,6 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
             } else {
                 // Nếu tồn tại, loại bỏ khỏi mảng
                 const updatedTypeSearch = currentTypeSearch.filter(id => id !== typeId);
-
-                // const query = {
-                //     company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
-                //     type_car_search: updatedTypeSearch && updatedTypeSearch.length === 0 ? [] : updatedTypeSearch,
-                //     transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
-                //     star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
-                // }
 
                 const query = {
                     company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
@@ -234,7 +231,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                     //         delivery_car: item?.delivery_car === 1,
                     //         book_car_flash: item?.book_car_flash === 1,
                     //         mortgage: item?.book_car_flash === 1,
-                    //         transmission: item?.transmission
+                    //         transmission_search: item?.transmission_search
                     //     },
                     //     favorite: item?.favourite_car,
                     //     name_car: item?.name,
@@ -258,7 +255,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                     })
                 }
             }
-        } else if (type === "transmission" && value) {
+        } else if (type === "transmission_search" && value) {
             queryKeyIsState({
                 dataParams: {
                     ...isState.dataParams,
@@ -269,13 +266,6 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
     }
 
     const handleSubmitFilter = async () => {
-        // const query = {
-        //     company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
-        //     type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
-        //     transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
-        //     star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
-        // }
-
         const query = {
             company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
             type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
@@ -306,33 +296,6 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
         const { data } = await getListCars(1, limit, query)
 
         if (data && data.data && data.base) {
-            // let customData: any[] = data?.data?.map((item: any) => ({
-            //     id: item?.id,
-            //     address: `${item?.district}, ${item?.province}`,
-            //     image_car: item?.image_car?.map((image: any) => ({
-            //         ...image,
-            //         name: `${data?.base?.base}/${image.name}`
-            //     })),
-            //     customer: {
-            //         avatar: item?.customer?.avatar,
-            //         fullname: item?.customer?.fullname,
-            //         id: item?.customer?.id
-            //     },
-            //     type: {
-            //         delivery_car: item?.delivery_car === 1,
-            //         book_car_flash: item?.book_car_flash === 1,
-            //         mortgage: item?.book_car_flash === 1,
-            //         transmission: item?.transmission
-            //     },
-            //     favorite: item?.favourite_car,
-            //     name_car: item?.name,
-            //     point_star: item?.star,
-            //     total_trip: item?.total_trip,
-            //     price_before_promotion: item?.rent_cost,
-            //     price_after_promotion: item?.promotion?.length > 0 ? (item?.rent_cost - item?.promotion[0]?.price_promotion) : 0,
-            //     promotion: item?.promotion
-            // })) || []
-
             let { customData } = CustomDataListCars(data)
 
             queryKeyIsState({
@@ -349,30 +312,33 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
         <Dialog
             modal
             open={openDialogFilterListCars}
-            onOpenChange={handleOpenChangeModal}
+            onOpenChange={() => handleOpenChangeModal(type)}
         >
             <DialogOverlay />
             <DialogContent className="px-0 py-0 lg:max-w-[720px] md:max-w-[620px] w-full max-h-[90vh] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
-                <DialogClose
-                    onClick={handleOpenChangeModal}
-                    className="3xl:size-10 size-8 border border-[#000000] flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-40"
-                >
-                    <X className="size-8 text-[#000000]" />
-                    <span className="sr-only">Close</span>
-                </DialogClose>
+                {
+                    type === "type_car_search" &&
+                    <DialogClose
+                        onClick={() => handleOpenChangeModal(type)}
+                        className="3xl:size-10 size-8 border border-[#000000] flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-40"
+                    >
+                        <X className="size-8 text-[#000000]" />
+                        <span className="sr-only">Close</span>
+                    </DialogClose>
+                }
 
                 <DialogHeader className='flex items-center justify-center w-full border-b drop-shadow-sm py-4'>
                     <DialogTitle className='text-2xl capitalize'>
-                        {type === "typesCar" && "Loại xe"}
-                        {type === "automaker" && "Hãng xe"}
-                        {type === "transmission" && "Truyền động"}
+                        {type === "type_car_search" && "Loại xe"}
+                        {type === "company_car_search" && "Hãng xe"}
+                        {type === "transmission_search" && "Truyền động"}
                     </DialogTitle>
                 </DialogHeader>
 
                 <div className='flex flex-col justify-between h-[500px] gap-3'>
                     <ScrollArea className='md:pl-6 md:pr-6 pl-4 pr-4 h-[50vh]'>
                         {
-                            type === "typesCar" &&
+                            type === "type_car_search" &&
                             <div className='grid grid-cols-3 gap-6 w-full'>
                                 {
                                     isState?.filter?.listTypesCar && isState?.filter?.listTypesCar?.map((item) => {
@@ -380,8 +346,8 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                                         return (
                                             <div
                                                 key={`typesCarId-${item.id}`}
-                                                className={`${isState.dataParams?.type_car_search?.includes(item.id) ? "border-[#2FB9BD]/80 bg-[#2FB9BD]/10 shadow-md" : "border-[#B4B8C5]"} col-span-1 flex flex-col justify-center items-center h-full border hover:shadow-xl hover:drop-shadow-xl duration-300 transition-all cursor-pointer rounded-xl 3xl:p-4 p-4`}
-                                                onClick={() => handleFilterListCars(item, "typesCar")}
+                                                className={`${isState.dataParams?.type_car_search?.includes(item.id) ? "border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD] shadow-md" : "border-[#B4B8C5]"} col-span-1 flex flex-col justify-center items-center h-full border hover:shadow-xl hover:drop-shadow-xl duration-300 transition-all cursor-pointer rounded-xl 3xl:p-4 p-4`}
+                                                onClick={() => handleFilterListCars(item, "type_car_search")}
                                             >
                                                 <div className='w-20 h-auto'>
                                                     <Image
@@ -389,14 +355,14 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                                                         width={200}
                                                         height={200}
                                                         src={item?.image ? item?.image : "/default/default.png"}
-                                                        className='w-full h-full object-contain'
+                                                        className={`w-full h-full object-contain`}
                                                     />
                                                 </div>
                                                 <div className='flex flex-col justify-center items-center gap-1'>
                                                     <div className='3xl:text-base text-sm font-medium text-center'>
                                                         {item?.name ? item?.name : ""}
                                                     </div>
-                                                    <div className='3xl:text-xs text-xs font-light'>
+                                                    <div className='3xl:text-xs text-xs font-light text-gray-400'>
                                                         {item?.total_car ? FormatNumberHundred(item?.total_car, 200) : 0} xe
                                                     </div>
                                                 </div>
@@ -407,9 +373,9 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                             </div>
                         }
                         {
-                            type === "automaker" &&
+                            type === "company_car_search" &&
                             <RadioGroup
-                                onValueChange={(value) => handleFilterListCars(value, "automaker")}
+                                onValueChange={(value) => handleFilterListCars(value, "company_car_search")}
                                 defaultValue="0"
                                 value={isState?.dataParams?.company_car_search}
                                 className='grid grid-cols-2 gap-6 w-full'
@@ -456,11 +422,11 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                             </RadioGroup>
                         }
                         {
-                            type === "transmission" &&
+                            type === "transmission_search" &&
                             <RadioGroup
                                 defaultValue="0"
                                 value={isState?.dataParams?.transmission_search}
-                                onValueChange={(value) => handleFilterListCars(value, "transmission")}
+                                onValueChange={(value) => handleFilterListCars(value, "transmission_search")}
                                 className='grid grid-cols-1 gap-6 w-full'
                             >
                                 <div key={'transmissionId-0'} className='col-span-1 flex items-center space-x-3 group'>
@@ -510,7 +476,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                     </ScrollArea>
 
                     {
-                        type === "typesCar" ?
+                        type === "type_car_search" ?
                             null
                             :
                             <div className='border-t py-4 drop-shadow-2xl bg-white'>

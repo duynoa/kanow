@@ -61,13 +61,13 @@ const SearchCars = (props: Props) => {
     const listFilter = [
         {
             id: uuidv4(),
-            type: "typesCar",
+            type: "type_car_search",
             name: "Loại xe",
             value: 0,
         },
         {
             id: uuidv4(),
-            type: "automaker",
+            type: "company_car_search",
             name: "Hãng xe",
             value: 0,
         },
@@ -109,7 +109,7 @@ const SearchCars = (props: Props) => {
         },
         {
             id: uuidv4(),
-            type: "transmission",
+            type: "transmission_search",
             name: "Truyền động",
             value: 0
         },
@@ -126,10 +126,10 @@ const SearchCars = (props: Props) => {
         },
         dataParams: {
             company_car_search: "0",
+            transmission_search: "0",
             type_car_search: [],
             tram_search: 0,
             discount_search: 0,
-            transmission_search: "0",
             book_car_flash: 0,
             delivery_car: 0,
             mortgage: 0,
@@ -293,6 +293,18 @@ const SearchCars = (props: Props) => {
 
     console.log("isState?.dataParams: ", isState?.dataParams)
 
+    const isValueNonZeroOrNonEmptyArray = (key: string, type: string) => {
+        if (type === "filter") {
+            const value = isState.dataParams[key];
+            return value != 0 && (Array.isArray(value) ? value.length != 0 : true);
+        } else if (type === "reset_filter") {
+            const { dataParams } = isState;
+            console.log('dataParams', dataParams);
+
+            return Object.values(dataParams).some(value => value != 0 && (!Array.isArray(value) || value.length != 0));
+        }
+    };
+
     const handleClickFavorite = (e: any) => {
         e.stopPropagation()
         e.preventDefault();
@@ -301,9 +313,25 @@ const SearchCars = (props: Props) => {
     const handleOpenDialog = (type: string) => {
         if (type === 'calendar') {
             setOpenDialogCalendar(true)
-        } else if (type === 'typesCar' || type === 'automaker' || type === "transmission") {
+        } else if (type === 'type_car_search' || type === 'company_car_search' || type === "transmission_search") {
             setOpenDialogFilterListCars(true, type)
         }
+    }
+
+    const handleResetFilter = () => {
+        queryKeyIsState({
+            dataParams: {
+                company_car_search: "0",
+                transmission_search: "0",
+                type_car_search: [],
+                tram_search: 0,
+                discount_search: 0,
+                book_car_flash: 0,
+                delivery_car: 0,
+                mortgage: 0,
+                star_search: 0,
+            }
+        })
     }
 
     const handleFilterClick = async (item: any) => {
@@ -699,8 +727,18 @@ const SearchCars = (props: Props) => {
                     <div className='custom-container'>
                         <div className='flex items-center justify-center w-full relative'>
                             <div className='flex items-center gap-2'>
-                                <div className='py-3 px-4 w-fit h-fit bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors'>
+                                <div
+                                    onClick={() => handleResetFilter()}
+                                    className={`${isValueNonZeroOrNonEmptyArray("", "reset_filter") ? "border border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD]" : "bg-[#F3F3F6] text-[#06282D] hover:bg-[#F3F3F6]/80 "} py-3 px-4 w-fit h-fit rounded-lg cursor-pointer hover:scale-105 duration-200 transition relative`}
+                                >
                                     <LuSettings2 className='3xl:text-2xl text-xl' />
+                                    {
+                                        isValueNonZeroOrNonEmptyArray("", "reset_filter")
+                                            ?
+                                            <div className='w-2 h-2 rounded-full border border-red-500 bg-red-500 absolute top-1 right-1' />
+                                            :
+                                            null
+                                    }
                                 </div>
                                 {/* <div className='py-3 px-4 w-fit h-fit bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors'>
                                     <HiOutlineRefresh className='3xl:text-2xl text-xl' />
@@ -711,14 +749,14 @@ const SearchCars = (props: Props) => {
                                 spaceBetween={0}
                                 loop={false}
                                 allowTouchMove={true}
-                                className='flex gap-3 w-fit px-2'
+                                className='flex gap-3 w-fit px-2 py-1'
                             >
                                 {
                                     listFilter && listFilter.map((item) => (
                                         <SwiperSlide
                                             key={item.id}
-                                            className={` 3xl:text-base text-sm mx-2 py-3 px-4 w-fit bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] font-medium caret-transparent hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors`}
-                                            onClick={(item?.type === "typesCar" || item?.type === "automaker" || item?.type === "transmission") ? (() => handleOpenDialog(item.type)) : (() => handleFilterClick(item))}
+                                            className={`${isValueNonZeroOrNonEmptyArray(item.type, "filter") ? "border border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD]" : "bg-[#F3F3F6] hover:bg-[#F3F3F6]/80"} 3xl:text-base text-sm mx-2 py-3 px-4 w-fit rounded-lg cursor-pointer text-[#06282D] font-medium caret-transparent hover:scale-105 duration-200 transition`}
+                                            onClick={(item?.type === "type_car_search" || item?.type === "company_car_search" || item?.type === "transmission_search") ? (() => handleOpenDialog(item.type)) : (() => handleFilterClick(item))}
                                         >
                                             {item.name ? item.name : ''}
                                         </SwiperSlide>
@@ -786,7 +824,7 @@ const SearchCars = (props: Props) => {
                                 </div>
                                 <div className='flex items-center gap-2 mt-2'>
                                     <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default'>
-                                        {card?.type?.transmission ? card?.type?.transmission : ""}
+                                        {card?.type?.transmission_search ? card?.type?.transmission_search : ""}
                                     </Badge>
                                     {
                                         card?.type?.delivery_car ?

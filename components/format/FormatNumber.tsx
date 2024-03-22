@@ -21,7 +21,7 @@ export const FormatNumberToDecimal = (number: number, decimalPlaces: number): st
 
 export const FormatNumberHundred = (number: number, max_number: number): string => {
     if (number >= max_number) {
-        return '99+';
+        return `${max_number}+`;
     } else {
         return number.toString()
     }
