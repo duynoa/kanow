@@ -551,7 +551,7 @@ const DetailCar = (props: Props) => {
                                     <div className='flex items-center gap-1'>
                                         <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
                                         <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
-                                            {FormatNumberHundred(19)} Chuyến
+                                            {FormatNumberHundred(19, 100)} Chuyến
                                         </div>
                                     </div>
                                 </div>
@@ -707,7 +707,7 @@ const DetailCar = (props: Props) => {
                                         <div className='flex items-center gap-1'>
                                             <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
                                             <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
-                                                {FormatNumberHundred(19)} Chuyến
+                                                {FormatNumberHundred(19, 100)} Chuyến
                                             </div>
                                         </div>
                                     </div>
@@ -1399,7 +1399,7 @@ const DetailCar = (props: Props) => {
                                                     <div className='flex items-center gap-1'>
                                                         <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
                                                         <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
-                                                            {card.quantityTrips ? FormatNumberHundred(card.quantityTrips) : 0} Chuyến
+                                                            {card.quantityTrips ? FormatNumberHundred(card.quantityTrips, 100) : 0} Chuyến
                                                         </div>
                                                     </div>
 
@@ -1521,7 +1521,7 @@ const DetailCar = (props: Props) => {
                                                 <div className='flex items-center gap-1'>
                                                     <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
                                                     <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
-                                                        {card.quantityTrips ? FormatNumberHundred(card.quantityTrips) : 0} Chuyến
+                                                        {card.quantityTrips ? FormatNumberHundred(card.quantityTrips, 100) : 0} Chuyến
                                                     </div>
                                                 </div>
 

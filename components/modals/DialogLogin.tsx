@@ -80,9 +80,6 @@ export function DialogLogin({
         }
     }
 
-    console.log('statusModal: ', statusModal);
-
-
     return (
         <Dialog modal open={openModal} onOpenChange={handleOpenChangeModal}>
             <DialogTrigger asChild>

@@ -329,8 +329,6 @@ export function DialogCalendar({ }: Props) {
         }
     };
 
-    console.log('date', date);
-
     return (
         <Dialog modal open={openDialogCalendar} onOpenChange={handleOpenChangeModal}>
             <DialogOverlay />

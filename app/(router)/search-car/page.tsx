@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 
 import BlurImage from '@/components/image/BlurImage';
 import { DatePickerWithRange } from '@/components/datePicker/DatePickerWithRange';
-import { FormatNumberHundred, FormatNumberToThousands } from '@/components/format/FormatNumber';
+import { FormatNumberHundred, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber';
 
 import { FaCalendarAlt, FaStar } from 'react-icons/fa';
 import { LuSettings2 } from "react-icons/lu";
@@ -24,239 +24,274 @@ import { A11y } from 'swiper/modules';
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
 import { useResize } from '@/hooks/useResize';
 import { DatePickerWithRangeAndTime } from '@/components/datePicker/DatePickerWithRangeAndTime';
-import { useDialogCalendar } from '@/hooks/useOpenDialog';
+import { useDialogCalendar, useDialogFilterListCars } from '@/hooks/useOpenDialog';
 import { DialogCalendar } from '@/components/modals/DialogCalendar';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import Image from 'next/image';
-import { IListCardCars } from '@/types/ICars';
+import { IInitialStateSearchCar, IListCardCars } from '@/types/Cars/ICars';
+import { getListCars } from '@/services/cars/cars.services';
+import { HiOutlineRefresh } from 'react-icons/hi';
+import { DialogFilterListCars } from '@/components/modals/DialogFilterListCars';
+import { CustomDataListCars } from '@/custom/CustomData';
 
 type Props = {}
 
 const SearchCars = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
-    const { date, setDate, setOpenDialogCalendar } = useDialogCalendar()
-
+    // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
+    const { date, setDate, setOpenDialogCalendar } = useDialogCalendar()
+    const { setOpenDialogFilterListCars } = useDialogFilterListCars()
+
+    // THÊM MỘT HẰNG SỐ ĐỂ ĐỊNH NGHĨA KHOẢNG ĐỘ CHO PHÉP
+    const ALLOWED_OFFSET = 600;
+    // const ALLOWED_OFFSET = 200;
+
+    // KHAI BÁO REF 
+    // SỬ DỤNG TRONG SCROLL ĐỂ NGĂN CHẶN VIỆC GỌI API LIÊN TỤC
+    const isAtBottomRef = useRef<boolean>(false);
+    // CHECK VỊ TRÍ CUỐI CÙNG
+    const lastContainerRef = useRef<HTMLDivElement | null>(null);
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+    const [isFilterFixed, setIsFilterFixed] = useState<boolean>(false);
+
+    // DATA BỘ LỌC FILTER
+    const listFilter = [
+        {
+            id: uuidv4(),
+            type: "typesCar",
+            name: "Loại xe",
+            value: 0,
+        },
+        {
+            id: uuidv4(),
+            type: "automaker",
+            name: "Hãng xe",
+            value: 0,
+        },
+        {
+            id: uuidv4(),
+            type: "star_search",
+            name: "Chủ xe 5 sao",
+            value: 1,
+        },
+        {
+            id: uuidv4(),
+            type: "tram_search",
+            name: "Xe điện",
+            value: 3,
+        },
+        {
+            id: uuidv4(),
+            type: "discount_search",
+            name: "Xe giảm giá",
+            value: 1,
+        },
+        {
+            id: uuidv4(),
+            type: "book_car_flash",
+            name: "Đặt xe nhanh",
+            value: 1,
+        },
+        {
+            id: uuidv4(),
+            type: "mortgage",
+            name: "Miễn thế chấp",
+            value: 2,
+        },
+        {
+            id: uuidv4(),
+            type: "delivery_car",
+            name: "Giao xe tận nơi",
+            value: 1,
+        },
+        {
+            id: uuidv4(),
+            type: "transmission",
+            name: "Truyền động",
+            value: 0
+        },
+    ]
+
+    const initialState: IInitialStateSearchCar = {
+        listCardCars: [],
+        isLoadingScroll: false,
+        page: 1,
+        next: null,
+        filter: {
+            listTypesCar: [],
+            listAutomaker: []
+        },
+        dataParams: {
+            company_car_search: "0",
+            type_car_search: [],
+            tram_search: 0,
+            discount_search: 0,
+            transmission_search: "0",
+            book_car_flash: 0,
+            delivery_car: 0,
+            mortgage: 0,
+            star_search: 0,
+        },
+        onSuccess: {
+            onSuccessPage: false
+        },
+        limit: {
+            limitFilterCars: 50,
+            limitAllCars: 8,
+        }
+    }
+
+    const [isState, setIsState] = useState<IInitialStateSearchCar | any>(initialState)
+
+    const queryKeyIsState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
     useEffect(() => {
         setIsMounted(true)
     }, [])
 
-    const listFilter = [
-        {
-            id: uuidv4(),
-            name: "Bộ lọc"
-        },
-        {
-            id: uuidv4(),
-            name: "Hãng xe"
-        },
-        {
-            id: uuidv4(),
-            name: "Loại xe"
-        },
-        {
-            id: uuidv4(),
-            name: "Chủ xe 5 sao"
-        },
-        {
-            id: uuidv4(),
-            name: "Đặt xe nhanh"
-        },
-        {
-            id: uuidv4(),
-            name: "Giao xe tận nơi"
-        },
-        {
-            id: uuidv4(),
-            name: "Giảm giá"
-        },
-        {
-            id: uuidv4(),
-            name: "Miễn thế chấp"
-        },
-        {
-            id: uuidv4(),
-            name: "Xe điện"
-        },
-    ]
+    // SỬ DỤNG useEffect ĐỂ FETCH LIST CARS LẦN ĐẦU TIÊN VÀO
+    useEffect(() => {
+        const handleFetchListCars = async () => {
+            try {
+                const { data } = await getListCars(isState.page, isState.limit.limitAllCars)
 
-    const dataListCardCars: IListCardCars[] = [
-        {
-            id: uuidv4(),
-            image: '/card/card_car1.png',
-            favorite: false,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            avatar: "/avatar/avatar1.png",
-            title: "Mitsubishi xpander 2023",
-            address: 'Quận Phú Nhuận, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 392000,
-            priceAfterPromotion: 292000,
-            point: 4.9,
-            quantityTrips: 19
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            avatar: "/avatar/avatar2.png",
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            avatar: "/avatar/avatar3.png",
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            avatar: "/avatar/avatar4.png",
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            avatar: "/avatar/avatar2.png",
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            avatar: "/avatar/avatar3.png",
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            avatar: "/avatar/avatar1.png",
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            avatar: "/avatar/avatar4.png",
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 101
-        },
-    ]
+                if (data && data.data && data.base) {
+                    let { customData } = CustomDataListCars(data)
 
-    const swiperRef = useRef<any>(null);
-    // slider filter
-    const [sliderStart, setSliderStart] = useState<boolean>(true)
-    const [sliderEnd, setSliderEnd] = useState<boolean>(false)
+                    queryKeyIsState({
+                        listCardCars: customData,
+                        page: isState.page + 1,
+                        next: data?.links?.next,
+                        onSuccess: {
+                            onSuccessPage: false
+                        }
+                    })
+                }
 
-    const handlePrev = (e: any, type: string) => {
-        if (swiperRef.current && !sliderStart && type === 'filter') {
-            swiperRef?.current?.slidePrev();
-            setSliderStart(swiperRef.current.isBeginning)
-            setSliderEnd(swiperRef.current.isEnd)
+            } catch (err) {
+                throw err
+            }
         }
-    };
+        handleFetchListCars()
+    }, [])
 
-    const handleNext = (e: any, type: string) => {
-        if (swiperRef.current && !sliderEnd && type === 'filter') {
-            swiperRef?.current?.slideNext();
-            setSliderStart(swiperRef.current.isBeginning)
-            setSliderEnd(swiperRef.current.isEnd)
+    // LĂN CHUỘT XUỐNG NẾU VƯỢT 60PX THÌ SẼ HIỆN FIXED BỘ LỌC
+    useEffect(() => {
+        const handleScroll = () => {
+            const topOffset = window.scrollY || document.documentElement.scrollTop;
+
+            if (topOffset > 60) {
+                setIsFilterFixed(true);
+            } else if (topOffset <= 60) {
+                setIsFilterFixed(false);
+
+            }
         }
-    };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    // SCROLL XUỐNG ĐẾN CUỐI MẢNG THÌ SẼ FETCH LẠI DATA ĐỂ THỰC HIỆN SỰ KIỆN LOADMORE
+    useEffect(() => {
+        const handleWheel = () => {
+            const lastScrollCurrentRef = lastContainerRef.current;
+
+            if (lastScrollCurrentRef) {
+                const lastRefBottom = Math.floor(lastScrollCurrentRef.getBoundingClientRect().bottom);
+                const currentScroll = Math.floor(window.scrollY);
+
+                if (currentScroll >= lastRefBottom - ALLOWED_OFFSET && !isAtBottomRef.current && isState.isLoadingScroll === false) {
+                    // Bạn đã cuộn đến cuối phần ScrollArea
+                    if (isState.listCardCars && isState.next !== null) {
+                        queryKeyIsState({ isLoadingScroll: true });
+
+                        const fetchDataListCar = async () => {
+                            const query = {
+                                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
+                                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
+                                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
+                                star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
+                                tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
+                                discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
+                                book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
+                                mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
+                                delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+                            }
+
+                            const { data } = await getListCars(isState.page, isState.limit.limitAllCars, query);
+
+                            if (data && data?.links && data?.data && data?.base) {
+                                let { customData } = CustomDataListCars(data)
+
+                                queryKeyIsState({
+                                    listCardCars: [...(isState.listCardCars || []), ...customData],
+                                    page: isState.page + 1,
+                                    next: data?.links?.next
+                                });
+
+                                const lastElementIndex = isState.listCardCars.length - 1;
+                                // Lấy id của phần tử đầu tiên trong mảng mới
+                                const lastElementId = isState.listCardCars && isState.listCardCars.length > 0 ? `card-${isState.listCardCars[lastElementIndex]?.id}` : "";
+                                const lastElement = document.getElementById(lastElementId);
+
+                                if (lastElement) {
+                                    const newElementTop = lastElement.getBoundingClientRect().bottom + window.scrollY + ALLOWED_OFFSET
+
+                                    window.scrollTo({
+                                        top: newElementTop,
+                                        behavior: "smooth",
+                                    });
+                                }
+
+                                queryKeyIsState({
+                                    isLoadingScroll: false
+                                })
+                            } else {
+                                queryKeyIsState({
+                                    listCardCars: isState.listCardCars,
+                                    next: data?.links?.next,
+                                    page: data?.links?.next !== null ? isState.page + 1 : isState.page,
+                                    isLoadingScroll: false,
+                                });
+                            }
+                        };
+                        setTimeout(() => fetchDataListCar(), 1500);
+                    } else {
+                        console.log("check next false");
+                    }
+                    console.log('check scroll cuối');
+
+                    isAtBottomRef.current = true;
+                } else if (currentScroll < lastRefBottom && isAtBottomRef.current) {
+                    isAtBottomRef.current = false;
+                }
+            }
+        };
+
+        const scrollCurrent = scrollContainerRef.current;
+
+        scrollCurrent?.addEventListener(isVisibleMobile ? "touchmove" : "wheel", handleWheel);
+
+        return () => {
+            scrollCurrent?.removeEventListener(isVisibleMobile ? "touchmove" : "wheel", handleWheel);
+        };
+    }, [
+        scrollContainerRef,
+        isState.next,
+        isState.listCardCars,
+        isState.page,
+        isState.isLoadingScroll,
+        isVisibleMobile
+    ]);
+
+    console.log("isState?.dataParams: ", isState?.dataParams)
 
     const handleClickFavorite = (e: any) => {
         e.stopPropagation()
@@ -264,9 +299,302 @@ const SearchCars = (props: Props) => {
     }
 
     const handleOpenDialog = (type: string) => {
-        console.log('check');
         if (type === 'calendar') {
             setOpenDialogCalendar(true)
+        } else if (type === 'typesCar' || type === 'automaker' || type === "transmission") {
+            setOpenDialogFilterListCars(true, type)
+        }
+    }
+
+    const handleFilterClick = async (item: any) => {
+        if (item.type === "star_search") {
+            const newStarSearch = isState?.dataParams?.star_search !== item.value ? item.value : 0;
+
+            const query = {
+                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
+                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
+                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
+                star_search: newStarSearch == 0 ? undefined : newStarSearch,
+                tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
+                discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
+                book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
+                mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
+                delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+            }
+
+            let limit = isState.limit.limitAllCars;
+
+            if (
+                isState.dataParams?.company_car_search === "0" &&
+                isState.dataParams?.type_car_search?.length === 0 &&
+                isState?.dataParams?.transmission_search == "0" &&
+                newStarSearch === 0 &&
+                isState.dataParams?.tram_search === 0 &&
+                isState.dataParams?.discount_search === 0 &&
+                isState.dataParams?.book_car_flash === 0 &&
+                isState.dataParams?.mortgage === 0 &&
+                isState.dataParams?.delivery_car === 0
+            ) {
+                limit = isState.limit.limitAllCars;
+            } else {
+                limit = isState.limit.limitFilterCars;
+            }
+
+            const { data } = await getListCars(1, limit, query)
+
+            if (data && data.data && data.base) {
+                let { customData } = CustomDataListCars(data)
+
+                queryKeyIsState({
+                    listCardCars: customData,
+                    page: 2,
+                    next: data?.links?.next,
+                    dataParams: {
+                        ...isState.dataParams,
+                        star_search: newStarSearch
+                    }
+                })
+            }
+        } else if (item.type === "tram_search") {
+            const newTramSearch = isState?.dataParams?.tram_search !== item.value ? item.value : 0;
+
+            const query = {
+                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
+                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
+                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
+                star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
+                tram_search: newTramSearch == 0 ? undefined : newTramSearch,
+                discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
+                book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
+                mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
+                delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+            }
+
+            let limit = isState.limit.limitAllCars;
+
+            if (
+                isState.dataParams?.company_car_search === "0" &&
+                isState.dataParams?.type_car_search?.length === 0 &&
+                isState?.dataParams?.transmission_search == "0" &&
+                isState.dataParams?.star_search === 0 &&
+                newTramSearch === 0 &&
+                isState.dataParams?.discount_search === 0 &&
+                isState.dataParams?.book_car_flash === 0 &&
+                isState.dataParams?.mortgage === 0 &&
+                isState.dataParams?.delivery_car === 0
+            ) {
+                limit = isState.limit.limitAllCars;
+            } else {
+                limit = isState.limit.limitFilterCars;
+            }
+
+            const { data } = await getListCars(1, limit, query)
+
+            if (data && data.data && data.base) {
+                let { customData } = CustomDataListCars(data)
+
+                queryKeyIsState({
+                    listCardCars: customData,
+                    page: 2,
+                    next: data?.links?.next,
+                    dataParams: {
+                        ...isState.dataParams,
+                        tram_search: newTramSearch
+                    }
+                })
+            }
+        } else if (item.type === "discount_search") {
+            const newDiscountSearch = isState?.dataParams?.discount_search !== item.value ? item.value : 0;
+
+            const query = {
+                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
+                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
+                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
+                star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
+                tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
+                discount_search: newDiscountSearch == 0 ? undefined : newDiscountSearch,
+                book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
+                mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
+                delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+            }
+
+            let limit = isState.limit.limitAllCars;
+
+            if (
+                isState.dataParams?.company_car_search === "0" &&
+                isState.dataParams?.type_car_search?.length === 0 &&
+                isState?.dataParams?.transmission_search == "0" &&
+                isState.dataParams?.star_search === 0 &&
+                isState.dataParams?.tram_search === 0 &&
+                newDiscountSearch === 0 &&
+                isState.dataParams?.book_car_flash === 0 &&
+                isState.dataParams?.mortgage === 0 &&
+                isState.dataParams?.delivery_car === 0
+            ) {
+                limit = isState.limit.limitAllCars;
+            } else {
+                limit = isState.limit.limitFilterCars;
+            }
+
+            const { data } = await getListCars(1, limit, query)
+
+            if (data && data.data && data.base) {
+                let { customData } = CustomDataListCars(data)
+
+                queryKeyIsState({
+                    listCardCars: customData,
+                    page: 2,
+                    next: data?.links?.next,
+                    dataParams: {
+                        ...isState.dataParams,
+                        discount_search: newDiscountSearch
+                    }
+                })
+            }
+        } else if (item.type === "book_car_flash") {
+            const newBookCarFlashSearch = isState?.dataParams?.book_car_flash !== item.value ? item.value : 0;
+
+            const query = {
+                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
+                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
+                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
+                star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
+                tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
+                discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
+                book_car_flash: newBookCarFlashSearch == 0 ? undefined : newBookCarFlashSearch,
+                mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
+                delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+            }
+
+            let limit = isState.limit.limitAllCars;
+
+            if (
+                isState.dataParams?.company_car_search === "0" &&
+                isState.dataParams?.type_car_search?.length === 0 &&
+                isState?.dataParams?.transmission_search == "0" &&
+                isState.dataParams?.star_search === 0 &&
+                isState.dataParams?.tram_search === 0 &&
+                isState.dataParams?.discount_search === 0 &&
+                newBookCarFlashSearch === 0 &&
+                isState.dataParams?.mortgage === 0 &&
+                isState.dataParams?.delivery_car === 0
+            ) {
+                limit = isState.limit.limitAllCars;
+            } else {
+                limit = isState.limit.limitFilterCars;
+            }
+
+            const { data } = await getListCars(1, limit, query)
+
+            if (data && data.data && data.base) {
+                let { customData } = CustomDataListCars(data)
+
+                queryKeyIsState({
+                    listCardCars: customData,
+                    page: 2,
+                    next: data?.links?.next,
+                    dataParams: {
+                        ...isState.dataParams,
+                        book_car_flash: newBookCarFlashSearch
+                    }
+                })
+            }
+        } else if (item.type === "mortgage") {
+            const newMortgageSearch = isState?.dataParams?.mortgage !== item.value ? item.value : 0;
+
+            const query = {
+                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
+                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
+                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
+                star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
+                tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
+                discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
+                book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
+                mortgage: newMortgageSearch == 0 ? undefined : newMortgageSearch,
+                delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+            }
+
+            let limit = isState.limit.limitAllCars;
+
+            if (
+                isState.dataParams?.company_car_search === "0" &&
+                isState.dataParams?.type_car_search?.length === 0 &&
+                isState?.dataParams?.transmission_search == "0" &&
+                isState.dataParams?.star_search === 0 &&
+                isState.dataParams?.tram_search === 0 &&
+                isState.dataParams?.discount_search === 0 &&
+                isState.dataParams?.book_car_flash === 0 &&
+                newMortgageSearch === 0 &&
+                isState.dataParams?.delivery_car === 0
+            ) {
+                limit = isState.limit.limitAllCars;
+            } else {
+                limit = isState.limit.limitFilterCars;
+            }
+
+            const { data } = await getListCars(1, limit, query)
+
+            if (data && data.data && data.base) {
+                let { customData } = CustomDataListCars(data)
+
+                queryKeyIsState({
+                    listCardCars: customData,
+                    page: 2,
+                    next: data?.links?.next,
+                    dataParams: {
+                        ...isState.dataParams,
+                        mortgage: newMortgageSearch
+                    }
+                })
+            }
+        } else if (item.type === "delivery_car") {
+            const newDeliveryCarSearch = isState?.dataParams?.delivery_car !== item.value ? item.value : 0;
+
+            const query = {
+                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
+                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
+                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
+                star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
+                tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
+                discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
+                book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
+                mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
+                delivery_car: newDeliveryCarSearch == 0 ? undefined : newDeliveryCarSearch,
+            }
+
+            let limit = isState.limit.limitAllCars;
+
+            if (
+                isState.dataParams?.company_car_search === "0" &&
+                isState.dataParams?.type_car_search?.length === 0 &&
+                isState?.dataParams?.transmission_search == "0" &&
+                isState.dataParams?.star_search === 0 &&
+                isState.dataParams?.tram_search === 0 &&
+                isState.dataParams?.discount_search === 0 &&
+                isState.dataParams?.book_car_flash === 0 &&
+                isState.dataParams?.mortgage === 0 &&
+                newDeliveryCarSearch === 0
+            ) {
+                limit = isState.limit.limitAllCars;
+            } else {
+                limit = isState.limit.limitFilterCars;
+            }
+
+            const { data } = await getListCars(1, limit, query)
+
+            if (data && data.data && data.base) {
+                let { customData } = CustomDataListCars(data)
+
+                queryKeyIsState({
+                    listCardCars: customData,
+                    page: 2,
+                    next: data?.links?.next,
+                    dataParams: {
+                        ...isState.dataParams,
+                        delivery_car: newDeliveryCarSearch
+                    }
+                })
+            }
         }
     }
 
@@ -275,28 +603,75 @@ const SearchCars = (props: Props) => {
     }
 
     return (
-        <div className='flex flex-col gap-6'>
-            <div className='custom-container flex lg:flex-row flex-col lg:gap-16 gap-6 md:items-center lg:justify-start justify-center pt-1'>
-                <div className='xl:w-[30%] xl:max-w-[30%] lg:w-[25%] lg:max-w-[25%] w-full max-w-full lg:text-start text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
-                    Thuê xe tự lái
-                </div>
-                {
-                    isVisibleMobile ?
-                        <div className='flex items-center justify-between'>
-                            <div className='flex flex-col p-1'>
-                                <div className='text-sm font-semibold'>
-                                    12 hồ hoàn kiếm, Hà Nội
+        < >
+            <div className={`${isFilterFixed ? "fixed bg-[#FCFDFD] z-50 w-full top-0" : "w-full"}`}>
+                <div className='custom-container flex lg:flex-row flex-col lg:gap-16 gap-6 md:items-center lg:justify-start justify-center py-6'>
+                    <div className='xl:w-[30%] xl:max-w-[30%] lg:w-[25%] lg:max-w-[25%] w-full max-w-full lg:text-start text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
+                        Thuê xe tự lái
+                    </div>
+                    {
+                        isVisibleMobile ?
+                            <div className='flex items-center justify-between'>
+                                <div className='flex flex-col p-1'>
+                                    <div className='text-sm font-semibold'>
+                                        12 hồ hoàn kiếm, Hà Nội
+                                    </div>
+                                    <div>
+                                        <Button
+                                            id="date"
+                                            variant={"outline"}
+                                            className={cn(
+                                                `w-full justify-start text-left font-normal rounded-xl bg-inherit border-0 text-xs`,
+                                                !date && "text-muted-foreground"
+                                            )}
+                                            onClick={() => handleOpenDialog('calendar')}
+                                        >
+                                            {date?.from ? (
+                                                date.to ? (
+                                                    <>
+                                                        {format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                                        {format(date.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                                    </>
+                                                ) : (
+                                                    format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                                )
+                                            ) : (
+                                                <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
+                                            )}
+                                        </Button>
+                                    </div>
+
                                 </div>
                                 <div>
+                                    <RiSearchLine className='size-6' />
+                                </div>
+                            </div>
+                            :
+                            <div className='grid grid-cols-11 gap-4 xl:w-[70%] xl:max-w-[70%] lg:w-[75%] lg:max-w-[75%] w-full max-w-full'>
+                                <div className="relative w-full col-span-5">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-4">
+                                        <TiLocation className="3xl:text-2xl text-xl text-[#1EAAB1]" />
+                                    </span>
+                                    <Input
+                                        id="place"
+                                        type='text'
+                                        placeholder='Nhập địa điểm'
+                                        className='3xl:py-[18px] p-3 pl-12 text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#B4B8C5] placeholder:font-medium' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                    />
+                                </div>
+
+                                {/* <DatePickerWithRangeAndTime className='w-full' classNameButton="px-4 py-3" /> */}
+                                <div className='col-span-5'>
                                     <Button
                                         id="date"
                                         variant={"outline"}
                                         className={cn(
-                                            `w-full justify-start text-left font-normal rounded-xl bg-inherit border-0 text-xs`,
+                                            `3xl:py-4 3xl:px-3 px-3 py-3.5 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs`,
                                             !date && "text-muted-foreground"
                                         )}
                                         onClick={() => handleOpenDialog('calendar')}
                                     >
+                                        <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
                                         {date?.from ? (
                                             date.to ? (
                                                 <>
@@ -312,135 +687,78 @@ const SearchCars = (props: Props) => {
                                     </Button>
                                 </div>
 
+                                <div className='col-span-1'>
+                                    <Button className={cn('3xl:p-4 p-3 bg-[#FF9900] hover:bg-[#FF9900]/80 hover:scale-105 rounded-xl text-white duration-200 transiton-colors ease-in-out')}>
+                                        <RiSearchLine className='3xl:text-2xl text-xl' />
+                                    </Button>
+                                </div>
                             </div>
-                            <div>
-                                <RiSearchLine className='size-6' />
+                    }
+                </div>
+                <div className={` py-4 border-t border-b  w-full`}>
+                    <div className='custom-container'>
+                        <div className='flex items-center justify-center w-full relative'>
+                            <div className='flex items-center gap-2'>
+                                <div className='py-3 px-4 w-fit h-fit bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors'>
+                                    <LuSettings2 className='3xl:text-2xl text-xl' />
+                                </div>
+                                {/* <div className='py-3 px-4 w-fit h-fit bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors'>
+                                    <HiOutlineRefresh className='3xl:text-2xl text-xl' />
+                                </div> */}
                             </div>
+                            <Swiper
+                                slidesPerView={"auto"}
+                                spaceBetween={0}
+                                loop={false}
+                                allowTouchMove={true}
+                                className='flex gap-3 w-fit px-2'
+                            >
+                                {
+                                    listFilter && listFilter.map((item) => (
+                                        <SwiperSlide
+                                            key={item.id}
+                                            className={` 3xl:text-base text-sm mx-2 py-3 px-4 w-fit bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] font-medium caret-transparent hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors`}
+                                            onClick={(item?.type === "typesCar" || item?.type === "automaker" || item?.type === "transmission") ? (() => handleOpenDialog(item.type)) : (() => handleFilterClick(item))}
+                                        >
+                                            {item.name ? item.name : ''}
+                                        </SwiperSlide>
+                                    ))
+                                }
+                            </Swiper>
                         </div>
-                        :
-                        <div className='grid grid-cols-11 gap-4 xl:w-[70%] xl:max-w-[70%] lg:w-[75%] lg:max-w-[75%] w-full max-w-full'>
-                            <div className="relative w-full col-span-5">
-                                <span className="absolute inset-y-0 left-0 flex items-center pl-4">
-                                    <TiLocation className="3xl:text-2xl text-xl text-[#1EAAB1]" />
-                                </span>
-                                <Input
-                                    id="place"
-                                    type='text'
-                                    placeholder='Nhập địa điểm'
-                                    className='3xl:py-[18px] p-3 pl-12 text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#B4B8C5] placeholder:font-medium' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
-                                />
-                            </div>
-
-                            {/* <DatePickerWithRangeAndTime className='w-full' classNameButton="px-4 py-3" /> */}
-                            <div className='col-span-5'>
-                                <Button
-                                    id="date"
-                                    variant={"outline"}
-                                    className={cn(
-                                        `3xl:py-4 3xl:px-3 px-3 py-3.5 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs`,
-                                        !date && "text-muted-foreground"
-                                    )}
-                                    onClick={() => handleOpenDialog('calendar')}
-                                >
-                                    <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
-                                    {date?.from ? (
-                                        date.to ? (
-                                            <>
-                                                {format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
-                                                {format(date.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
-                                            </>
-                                        ) : (
-                                            format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
-                                        )
-                                    ) : (
-                                        <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
-                                    )}
-                                </Button>
-                            </div>
-
-                            <div className='col-span-1'>
-                                <Button className={cn('3xl:p-4 p-3 bg-[#FF9900] hover:bg-[#FF9900]/80 hover:scale-105 rounded-xl text-white duration-200 transiton-colors ease-in-out')}>
-                                    <RiSearchLine className='3xl:text-2xl text-xl' />
-                                </Button>
-                            </div>
-                        </div>
-                }
-            </div>
-            <div className='py-4 border-t border-b  w-full'>
-                <div className='custom-container'>
-                    {/* <div className='p-3 bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors'>
-                        <LuSettings2 className='text-2xl' />
-                    </div>
-                    {
-                        listFilter && listFilter.map((item) => (
-                            <div key={item.id} className='py-3 px-4 bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] font-medium caret-transparent hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors'>
-                                {item.name ? item.name : ''}
-                            </div>
-                        ))
-                    } */}
-
-                    <div className='flex items-center justify-center w-full relative'>
-                        <Swiper
-                            slidesPerView={"auto"}
-                            spaceBetween={0}
-                            onSwiper={(swiper) => {
-                                swiperRef.current = swiper;
-                            }}
-                            loop={false}
-                            allowTouchMove={true}
-                            className='flex gap-3 w-fit px-2'
-                        >
-                            <SwiperSlide className='py-3 px-4 w-fit h-fit bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors'>
-                                <LuSettings2 className='3xl:text-2xl text-xl' />
-                            </SwiperSlide>
-                            {
-                                listFilter && listFilter.map((item) => (
-                                    <SwiperSlide key={item.id} className='3xl:text-base text-sm mx-2 py-3 px-4 w-fit bg-[#F3F3F6] rounded-lg cursor-pointer text-[#06282D] font-medium caret-transparent hover:scale-105 hover:bg-[#F3F3F6]/80 duration-200 transition-colors'>
-                                        {item.name ? item.name : ''}
-                                    </SwiperSlide>
-                                ))
-                            }
-                        </Swiper>
-                        {/* <div className='flex gap-2 absolute 3xl:-top-24 xl:top-[-22%] lg:top-[-22%] md:top-[-22%] top-[-18%] right-0 disable-selection'>
-                            <TiArrowLeft
-                                onClick={(e) => handlePrev(e, 'filter')}
-                                className={`${sliderStart ? 'bg-[#F2F2F4] text-[#B8B8C3] cursor-not-allowed' : 'bg-[#FCB203]/10 text-[#DD9200] cursor-pointer hover:scale-125 duration-500 ease-in-out transition'} p-1 2xl:w-10 2xl:h-10 xl:w-9 xl:h-9 w-8 h-8 rounded-full`}
-                            />
-                            <TiArrowRight
-                                onClick={(e) => handleNext(e, 'filter')}
-                                className={`${sliderEnd ? 'bg-[#F2F2F4] text-[#B8B8C3] cursor-not-allowed' : 'bg-[#FCB203]/10 text-[#DD9200] cursor-pointer hover:scale-125 duration-500 ease-in-out transition'} p-1 2xl:w-10 2xl:h-10 xl:w-9 xl:h-9 w-8 h-8 rounded-full`}
-                            />
-                        </div> */}
                     </div>
                 </div>
-            </div>
-            <div className='pb-20 border-b'>
+            </div >
+
+            <div
+                className={`${isFilterFixed ? "lg:mt-40 mt-60" : "mt-6"} ${isState?.isLoadingScroll ? "pb-0" : "pb-20"}`}
+                ref={scrollContainerRef}
+            >
                 <div className='custom-container grid xxl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-6 gap-4 justify-start h-full'>
                     {
-                        dataListCardCars && dataListCardCars.map((card) => (
+                        isState?.listCardCars && isState?.listCardCars?.map((card: any) => (
                             <Link
                                 key={card.id}
+                                id={`card-${card.id}`}
                                 className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
-                                href={`/detail-car/${card.id}?${ConvertToSlug(card?.title)}`}
+                                href={`/detail-car/${card.id}?${ConvertToSlug(card?.name_car)}`}
                             >
-                                <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
-                                    - {card.promotion}
-                                </div>
+                                {
+                                    card?.promotion?.length > 0 ?
+                                        <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
+                                            - {card?.promotion[0]?.percent} %
+                                        </div>
+                                        :
+                                        null
+                                }
                                 <div className='w-full 3xl:h-[230px] xxl:h-[200px] xl:h-[200px] h-[180px] relative'>
                                     <Image
                                         width={600}
                                         height={600}
                                         alt="image_card"
-                                        src={card.image ? card.image : '/default/default.png'}
+                                        src={card?.image_car?.length > 0 ? card?.image_car[0]?.name : '/default/default.png'}
                                         className='w-full h-full object-cover rounded-xl'
                                     />
-                                    {/* <BlurImage
-                                        image={card.image ? card.image : '/default/default.png'}
-                                        alt="image_card"
-                                        width={600}
-                                        height={600}
-                                        className='rounded-xl'
-                                    /> */}
                                     <div
                                         onClick={handleClickFavorite}
                                         className='absolute right-2 top-2 bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out z-20'
@@ -449,7 +767,7 @@ const SearchCars = (props: Props) => {
                                     </div>
                                     <div className='flex gap-2 absolute bottom-[10px] left-[10px]'>
                                         {
-                                            card.type.mortgageFree ?
+                                            card?.type?.mortgage ?
                                                 <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
                                                     Miễn thế chấp
                                                 </Badge>
@@ -457,7 +775,7 @@ const SearchCars = (props: Props) => {
                                                 null
                                         }
                                         {
-                                            card.type.orderFastCar ?
+                                            card?.type?.book_car_flash ?
                                                 <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
                                                     Đặt xe nhanh
                                                 </Badge>
@@ -467,16 +785,11 @@ const SearchCars = (props: Props) => {
                                     </div>
                                 </div>
                                 <div className='flex items-center gap-2 mt-2'>
+                                    <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default'>
+                                        {card?.type?.transmission ? card?.type?.transmission : ""}
+                                    </Badge>
                                     {
-                                        card.type.automaticNumber ?
-                                            <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default'>
-                                                Số tự động
-                                            </Badge>
-                                            :
-                                            null
-                                    }
-                                    {
-                                        card.type.doorstepDelivery ?
+                                        card?.type?.delivery_car ?
                                             <Badge className='bg-[#F9ECC9]/35 hover:bg-[#F9ECC9]/50 text-[#FF9900] 3xl:text-sm text-xs font-medium cursor-default'>
                                                 Giao tận nơi
                                             </Badge>
@@ -488,17 +801,23 @@ const SearchCars = (props: Props) => {
                                     <div className='3xl:w-12 3xl:max-w-12 3xl:h-12 w-10 max-w-10 h-10 '>
                                         <Avatar className='w-full h-full shadow'>
                                             <AvatarImage
-                                                src={card.avatar ? card.avatar : '/default/default.png'}
+                                                src={card?.customer?.avatar ? card?.customer?.avatar : '/avatar/avatar_default.png'}
                                                 alt="@kanow"
                                             />
                                             <AvatarFallback >
-                                                KN
+                                                <Image
+                                                    width={100}
+                                                    height={100}
+                                                    src='/avatar/avatar_default.png'
+                                                    alt="@kanow"
+                                                    className='w-full h-full'
+                                                />
                                             </AvatarFallback>
                                         </Avatar>
                                     </div>
                                     <div className='flex flex-col gap-1 w-[80%] max-w-[80%]'>
                                         <div className='3xl:text-lg text-base text-[#1D1D1D] font-bold uppercase line-clamp-1'>
-                                            {card.title ? card.title : ''}
+                                            {card.name_car ? card.name_car : ''}
                                         </div>
                                         <div className='flex gap-1 items-center'>
                                             <TiLocation className='text-base text-[#FA3434] w-[16px] max-w-[16px]' />
@@ -513,39 +832,63 @@ const SearchCars = (props: Props) => {
                                     <div className='flex items-center gap-1'>
                                         <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#FFC118]' />
                                         <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
-                                            {card.point ? card.point : ''}
+                                            {card.point_star ? (FormatNumberToDecimal(card.point_star, 1)) : 0}
                                         </div>
                                     </div>
 
                                     <div className='flex items-center gap-1'>
                                         <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#3AC996]' />
                                         <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
-                                            {card.quantityTrips ? FormatNumberHundred(card.quantityTrips) : 0} Chuyến
+                                            {card.total_trip ? FormatNumberHundred(card.total_trip, 100) : 0} Chuyến
                                         </div>
                                     </div>
 
                                     <div className='flex items-center gap-1'>
-                                        <div className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#D7D9E0] font-medium line-through'>
-                                            {card.priceBeforePromotion ? FormatNumberToThousands(card.priceBeforePromotion) : 0}
-                                        </div>
-                                        <div className='flex'>
-                                            <span className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#1AC5CA] font-medium'>
-                                                {card.priceAfterPromotion ? FormatNumberToThousands(card.priceAfterPromotion) : 0}
-                                            </span>
-                                            <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
-                                                /ngày
-                                            </span>
-                                        </div>
+                                        {
+                                            card?.promotion?.length > 0 ?
+                                                <>
+                                                    <div className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#D7D9E0] font-medium line-through'>
+                                                        {card.price_before_promotion ? FormatNumberToThousands(card.price_before_promotion) : 0}
+                                                    </div>
+                                                    <div className='flex'>
+                                                        <span className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#1AC5CA] font-medium'>
+                                                            {card.price_after_promotion ? FormatNumberToThousands(card.price_after_promotion) : 0}
+                                                        </span>
+                                                        <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
+                                                            /ngày
+                                                        </span>
+                                                    </div>
+                                                </>
+                                                :
+                                                <div className='flex'>
+                                                    <span className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#1AC5CA] font-medium'>
+                                                        {card.price_before_promotion ? FormatNumberToThousands(card.price_before_promotion) : 0}
+                                                    </span>
+                                                    <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
+                                                        /ngày
+                                                    </span>
+                                                </div>
+                                        }
                                     </div>
                                 </div>
                             </Link>
                         ))
                     }
                 </div>
+                {
+                    isState?.isLoadingScroll && (
+                        <div className="w-full 3xl:h-[80px] h-[60px] flex justify-center items-center gap-2 bg-white shadow-2xl mt-6">
+                            <div className="text-[#2FB9BD] inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                            <span className="text-[#2FB9BD] xl:text-xl text-base">Loading...</span>
+                        </div>
+                    )
+                }
+                <div ref={lastContainerRef} />
             </div>
 
             <DialogCalendar />
-        </div>
+            <DialogFilterListCars isState={isState} queryKeyIsState={queryKeyIsState} />
+        </>
     )
 }
 

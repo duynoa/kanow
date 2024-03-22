@@ -14,7 +14,7 @@ const nextConfig = {
             },
             {
                 protocol: 'https',
-                hostname: 'quanly.mony.com.vn',
+                hostname: 'system.kanow.vn',
             },
         ]
     },

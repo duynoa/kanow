@@ -303,7 +303,7 @@ const SectionCardCar = () => {
                                                 <div className='flex items-center gap-1'>
                                                     <FaCircleCheck className='3xl:text-base md:text-sm text-base text-[#3AC996]' />
                                                     <div className='3xl:text-sm md:text-xs text-sm text-[#484D5C] font-semibold'>
-                                                        {card.quantityTrips ? FormatNumberHundred(card.quantityTrips) : 0} Chuyến
+                                                        {card.quantityTrips ? FormatNumberHundred(card.quantityTrips, 100) : 0} Chuyến
                                                     </div>
                                                 </div>
                                             </div>
@@ -417,7 +417,7 @@ const SectionCardCar = () => {
                                             <div className='flex items-center gap-1'>
                                                 <FaCircleCheck className='3xl:text-base text-sm text-[#3AC996]' />
                                                 <div className='3xl:text-sm text-xs text-[#484D5C] font-semibold'>
-                                                    {card.quantityTrips ? FormatNumberHundred(card.quantityTrips) : 0} Chuyến
+                                                    {card.quantityTrips ? FormatNumberHundred(card.quantityTrips, 100) : 0} Chuyến
                                                 </div>
                                             </div>
                                         </div>

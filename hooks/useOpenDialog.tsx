@@ -30,10 +30,6 @@ const defaultDateRange: DateRange = {
     from: setMinutes(setHours(new Date(), 21), 0),
     to: setMinutes(setHours(addDays(new Date(), 7), 20), 0),
 };
-// const defaultDateRange: DateRange = {
-//     from: new Date(),
-//     to: addDays(new Date(), 20),
-// };
 
 export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     openDialogCalendar: false,
@@ -41,3 +37,20 @@ export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     setOpenDialogCalendar: (key: any) => set((state) => ({ ...state, openDialogCalendar: key })),
     setDate: (date: DateRange | undefined) => set((state) => ({ ...state, date })),
 }))
+
+// dialog type cars
+interface IOpenDialogFilterListCars {
+    openDialogFilterListCars: boolean;
+    setOpenDialogFilterListCars: (key: any, type?: string) => void;
+    type?: string;
+    dataFilterListCars: any[];
+    setDataFilterListCars: (dataFilterListCars: any) => void
+}
+
+export const useDialogFilterListCars = create<IOpenDialogFilterListCars>((set) => ({
+    openDialogFilterListCars: false,
+    type: "",
+    dataFilterListCars: [],
+    setOpenDialogFilterListCars: (key: any, type?: string) => set((state) => ({ openDialogFilterListCars: key, type: type })),
+    setDataFilterListCars: (key: any) => set((state) => ({ dataFilterListCars: key })),
+}));

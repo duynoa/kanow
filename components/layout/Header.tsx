@@ -156,219 +156,227 @@ const Header = () => {
     }
 
     return (
-        <header
-            className='w-full 3xl:h-[120px] h-[80px] sticky z-50'
-            style={{ background: pathname === "/" || pathname === "/home" ? "#D7F9F9" : "linear-gradient(180deg, rgba(194, 249, 249, 0.60) 0%, rgba(194, 249, 249, 0.00) 100%)" }}
-        >
-            {
-                isVisibleTablet ?
-                    // màn hình mobile,tablet
-                    <div className="custom-container 3xl:h-[120px] h-[80px] grid grid-cols-4">
-                        <Link
-                            href="/"
-                            className='col-span-2 flex items-center justify-start'
-                        >
-                            <Image
-                                alt='logo'
-                                src="/logo/logo_kanow.svg"
-                                width={1920}
-                                height={1080}
-                                priority
-                                className='w-[150px] h-[95px] object-contain'
-                            />
-                        </Link>
+        <>
+            <header
+                className='w-full 3xl:h-[120px] h-[80px] sticky z-40'
+                style={{ background: pathname === "/" || pathname === "/home" ? "#D7F9F9" : "linear-gradient(180deg, rgba(194, 249, 249, 0.60) 0%, rgba(194, 249, 249, 0.00) 100%)" }}
+            >
+                {
+                    isVisibleTablet ?
+                        // màn hình mobile,tablet
+                        <div className="custom-container 3xl:h-[120px] h-[80px] grid grid-cols-4">
+                            <Link
+                                href="/"
+                                className='col-span-2 flex items-center justify-start'
+                            >
+                                <Image
+                                    alt='logo'
+                                    src="/logo/logo_kanow.svg"
+                                    width={1920}
+                                    height={1080}
+                                    priority
+                                    className='w-[150px] h-[95px] object-contain'
+                                />
+                            </Link>
 
-                        <div className="col-span-2 flex items-center justify-end">
-                            <button onClick={_ToogleIsShow.bind(this)} className='lg:hidden'>
-                                <Menu className='scale-110' />
-                            </button>
-                        </div>
-                        {/* active services */}
-                        {
-                            showActive ?
-                                (
-                                    <div className={`${showActive ? "translate-x-0" : "translate-x-[100%] hidden"} z-[999] transition duration-300 ease-in-out absolute bg-white h-screen w-screen top-0 left-0`}>
-                                        <div className='custom-container h-[80px] pt-8 flex justify-between'>
-                                            <Link
-                                                href="/"
-                                                className='flex items-center justify-center'
-                                            >
-                                                <Image
-                                                    alt='logo'
-                                                    src="/logo/logo_kanow.svg"
-                                                    width={800}
-                                                    height={600}
-                                                    priority
-                                                    className='w-[120px] h-[80px] object-contain'
-                                                />
-                                            </Link>
-                                            <button onClick={_ToogleIsOff.bind(this)} className=''>
-                                                <IoCloseSharp className='text-xl text-[#FA3434]' />
-                                            </button>
-                                        </div>
-                                        <div className='custom-container mt-8 relative flex flex-col items-left h-screen overflow-y-auto'>
-                                            {
-                                                dataHeader.map((data) => (
-                                                    data.children ?
-                                                        <React.Fragment key={data.id}>
-                                                            <div
-                                                                className='flex justify-between'
-                                                                onClick={() => setActiveService(!activeService)}
-                                                            >
-                                                                <div className={`
+                            <div className="col-span-2 flex items-center justify-end">
+                                <button onClick={_ToogleIsShow.bind(this)} className='lg:hidden'>
+                                    <Menu className='scale-110' />
+                                </button>
+                            </div>
+                            {/* active services */}
+                            {
+                                showActive ?
+                                    (
+                                        <div className={`${showActive ? "translate-x-0" : "translate-x-[100%] hidden"} z-[999] transition duration-300 ease-in-out absolute bg-white h-screen w-screen top-0 left-0`}>
+                                            <div className='custom-container h-[80px] pt-8 flex justify-between'>
+                                                <Link
+                                                    href="/"
+                                                    className='flex items-center justify-center'
+                                                >
+                                                    <Image
+                                                        alt='logo'
+                                                        src="/logo/logo_kanow.svg"
+                                                        width={800}
+                                                        height={600}
+                                                        priority
+                                                        className='w-[120px] h-[80px] object-contain'
+                                                    />
+                                                </Link>
+                                                <button onClick={_ToogleIsOff.bind(this)} className=''>
+                                                    <IoCloseSharp className='text-xl text-[#FA3434]' />
+                                                </button>
+                                            </div>
+                                            <div className='custom-container mt-8 relative flex flex-col items-left h-screen overflow-y-auto'>
+                                                {
+                                                    dataHeader.map((data) => (
+                                                        data.children ?
+                                                            <React.Fragment key={data.id}>
+                                                                <div
+                                                                    className='flex justify-between'
+                                                                    onClick={() => setActiveService(!activeService)}
+                                                                >
+                                                                    <div className={`
                                                                 ${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-2 decoration-[#2FB9BD]' : 'text-[#9D9FA6]'}
                                                                  ${data.children ? "mb-6" : "mb-6"}
                                                                  cursor-pointer text-base w-fit duration-300 transition ease-in-out flex items-center`}>
-                                                                    {data.name}
+                                                                        {data.name}
+                                                                    </div>
+                                                                    <IoIosArrowDown className={`${activeService ? 'rotate-180 transform transition duration-700 ease-in-out text-[#2FB9BD]' : ''} md:w-[10%] w-[15%] items-start`} />
                                                                 </div>
-                                                                <IoIosArrowDown className={`${activeService ? 'rotate-180 transform transition duration-700 ease-in-out text-[#2FB9BD]' : ''} md:w-[10%] w-[15%] items-start`} />
-                                                            </div>
 
-                                                            <div className={`${activeService ? "mb-6" : ""} flex flex-col gap-2`}>
+                                                                <div className={`${activeService ? "mb-6" : ""} flex flex-col gap-2`}>
+                                                                    {
+                                                                        activeService && dataPartnerKanow && dataPartnerKanow.map((item) => (
+                                                                            <Link
+                                                                                key={item.id}
+                                                                                onClick={_ToogleIsOff}
+                                                                                href={`/partner/${item.link}`}
+                                                                                className={`${(item.link === '/' && pathname === '/') || (pathname.includes(item.link) && item.link !== '/') ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#F6F6F6] py-2 px-8 rounded-lg cursor-pointer`}
+                                                                            >
+                                                                                <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-500 ease-in-out line-clamp-2`}>
+                                                                                    {item?.title ? item?.title : ''}
+                                                                                </div>
+                                                                            </Link>
+                                                                        ))
+                                                                    }
+                                                                </div>
+                                                            </React.Fragment>
+                                                            :
+                                                            <Link
+                                                                key={data.id}
+                                                                href={data.link}
+                                                                className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#9D9FA6]'} mb-6 text-base w-fit duration-300 transition ease-in-out flex items-center`}
+                                                                onClick={_ToogleIsOff}
+                                                            >
+                                                                {data.name}
+                                                            </Link>
+                                                    ))
+                                                }
+                                            </div>
+                                        </div>
+                                    )
+                                    :
+                                    (null)
+                            }
+                        </div>
+                        :
+                        // màn hình laptop
+                        <div className="custom-container 3xl:h-[120px] h-[80px] grid 3xl:grid-cols-12 grid-cols-11 items-center justify-center">
+                            <Link
+                                href="/"
+                                className='col-span-2 w-full h-auto'
+                            >
+                                <Image
+                                    alt='logo'
+                                    src="/logo/logo_kanow.svg"
+                                    width={800}
+                                    height={600}
+                                    priority
+                                    className='w-full h-auto object-cover'
+                                />
+                            </Link>
+                            <div className='3xl:col-span-2 col-span-1   ' />
+                            <NavigationMenu className='2xl:col-span-6 col-span-6 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
+                                {
+                                    dataHeader && dataHeader.map((data, i) => (
+                                        <div key={data.id} className='p-2'>
+                                            {
+                                                data.children ?
+                                                    <ActionTooltip
+                                                        side="bottom"
+                                                        align="end"
+                                                        label={(
+                                                            <div className='flex flex-col gap-2'>
                                                                 {
-                                                                    activeService && dataPartnerKanow && dataPartnerKanow.map((item) => (
+                                                                    dataPartnerKanow && dataPartnerKanow?.map((item) => (
                                                                         <Link
                                                                             key={item.id}
-                                                                            onClick={_ToogleIsOff}
                                                                             href={`/partner/${item.link}`}
-                                                                            className={`${(item.link === '/' && pathname === '/') || (pathname.includes(item.link) && item.link !== '/') ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#F6F6F6] py-2 px-8 rounded-lg cursor-pointer`}
+                                                                            className={`${(item.link === '/' && pathname === '/') || (pathname.includes(item.link) && item.link !== '/') ? 'bg-[#C2F9F9]' : ''} focus:scale-105 flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
+                                                                            style={zoomedStyle}
+                                                                            onClick={handleClickToZoom}
                                                                         >
-                                                                            <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-500 ease-in-out line-clamp-2`}>
+
+                                                                            <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-300 ease-in-out line-clamp-2`}>
                                                                                 {item?.title ? item?.title : ''}
                                                                             </div>
                                                                         </Link>
+                                                                        // <Link
+                                                                        //     key={item.id}
+                                                                        //     href={`/partner/${item.link}`}
+                                                                        //     className={`${pathname.includes(`/partner/${item.link}`) ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
+                                                                        // >
+
+                                                                        //     <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-300 ease-in-out line-clamp-2`}>
+                                                                        //         {item?.title ? item?.title : ''}
+                                                                        //     </div>
+                                                                        // </Link>
                                                                     ))
                                                                 }
                                                             </div>
-                                                        </React.Fragment>
-                                                        :
-                                                        <Link
-                                                            key={data.id}
-                                                            href={data.link}
-                                                            className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#9D9FA6]'} mb-6 text-base w-fit duration-300 transition ease-in-out flex items-center`}
-                                                            onClick={_ToogleIsOff}
+                                                        )}
+                                                    >
+                                                        <div
+                                                            className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ?
+                                                                'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' :
+                                                                'text-[#0E0E0E]/80'}
+                                                            flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
                                                         >
-                                                            {data.name}
-                                                        </Link>
-                                                ))
+                                                            <span>{data.name}</span>
+                                                            <IoIosArrowDown className='2xl:text-2xl text-xl text-[#2FB9BD]' />
+                                                        </div>
+                                                    </ActionTooltip>
+                                                    :
+                                                    (
+                                                        data.visible ?
+                                                            <Link
+                                                                href={data.link}
+                                                                className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                                            >
+                                                                {data.name}
+                                                            </Link>
+                                                            :
+                                                            null
+                                                    )
                                             }
                                         </div>
-                                    </div>
-                                )
-                                :
-                                (null)
-                        }
-                    </div>
-                    :
-                    // màn hình laptop
-                    <div className="custom-container 3xl:h-[120px] h-[80px] grid 3xl:grid-cols-12 grid-cols-11 items-center justify-center">
-                        <Link
-                            href="/"
-                            className='col-span-2 w-full h-auto'
-                        >
-                            <Image
-                                alt='logo'
-                                src="/logo/logo_kanow.svg"
-                                width={800}
-                                height={600}
-                                priority
-                                className='w-full h-auto object-cover'
-                            />
-                        </Link>
-                        <div className='3xl:col-span-2 col-span-1   ' />
-                        <NavigationMenu className='2xl:col-span-6 col-span-6 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
-                            {
-                                dataHeader && dataHeader.map((data, i) => (
-                                    <div key={data.id} className='p-2'>
-                                        {
-                                            data.children ?
-                                                <ActionTooltip
-                                                    side="bottom"
-                                                    align="end"
-                                                    label={(
-                                                        <div className='flex flex-col gap-2'>
-                                                            {
-                                                                dataPartnerKanow && dataPartnerKanow?.map((item) => (
-                                                                    <Link
-                                                                        key={item.id}
-                                                                        href={`/partner/${item.link}`}
-                                                                        className={`${(item.link === '/' && pathname === '/') || (pathname.includes(item.link) && item.link !== '/') ? 'bg-[#C2F9F9]' : ''} focus:scale-105 flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
-                                                                        style={zoomedStyle}
-                                                                        onClick={handleClickToZoom}
-                                                                    >
-
-                                                                        <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-300 ease-in-out line-clamp-2`}>
-                                                                            {item?.title ? item?.title : ''}
-                                                                        </div>
-                                                                    </Link>
-                                                                    // <Link
-                                                                    //     key={item.id}
-                                                                    //     href={`/partner/${item.link}`}
-                                                                    //     className={`${pathname.includes(`/partner/${item.link}`) ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
-                                                                    // >
-
-                                                                    //     <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-300 ease-in-out line-clamp-2`}>
-                                                                    //         {item?.title ? item?.title : ''}
-                                                                    //     </div>
-                                                                    // </Link>
-                                                                ))
-                                                            }
-                                                        </div>
-                                                    )}
-                                                >
-                                                    <div
-                                                        className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ?
-                                                            'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' :
-                                                            'text-[#0E0E0E]/80'}
-                                                            flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
-                                                    >
-                                                        <span>{data.name}</span>
-                                                        <IoIosArrowDown className='2xl:text-2xl text-xl text-[#2FB9BD]' />
-                                                    </div>
-                                                </ActionTooltip>
-                                                :
-                                                (
-                                                    data.visible ?
-                                                        <Link
-                                                            href={data.link}
-                                                            className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
-                                                        >
-                                                            {data.name}
-                                                        </Link>
-                                                        :
-                                                        null
-                                                )
-                                        }
-                                    </div>
-                                ))
-                            }
-                        </NavigationMenu>
-                        <div className='col-span-2 flex justify-end 3xl:gap-4 gap-2'>
-                            <DialogLogin
-                                openModal={openModalLogin}
-                                statusModal={statusModal}
-                                setStatusModal={setStatusModal}
-                                handleOpenChangeModal={() => handleOpenChangeModal('signup')}
-                            >
-                                <Button onClick={() => setOpenModalLogin(true)} className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#B4B8C5]'>
-                                    Đăng Ký
-                                </Button>
-                            </DialogLogin>
-                            <Separator orientation="vertical" className='bg-[#B4B8C5] h-auto my-1' />
-                            <DialogLogin
-                                openModal={openModalLogin}
-                                statusModal={statusModal}
-                                setStatusModal={setStatusModal}
-                                handleOpenChangeModal={() => handleOpenChangeModal('login')}
-                            >
-                                <Button onClick={() => setOpenModalLogin(true)} className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'>
-                                    Đăng nhập
-                                </Button>
-                            </DialogLogin>
+                                    ))
+                                }
+                            </NavigationMenu>
+                            <div className='col-span-2 flex justify-end 3xl:gap-4 gap-2'>
+                                <DialogLogin
+                                    openModal={openModalLogin}
+                                    statusModal={statusModal}
+                                    setStatusModal={setStatusModal}
+                                    handleOpenChangeModal={() => handleOpenChangeModal('signup')}
+                                >
+                                    <Button
+                                        type="button"
+                                        className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
+                                    >
+                                        Đăng Ký
+                                    </Button>
+                                </DialogLogin>
+                                <Separator orientation="vertical" className='bg-[#B4B8C5] h-auto my-1' />
+                                <DialogLogin
+                                    openModal={openModalLogin}
+                                    statusModal={statusModal}
+                                    setStatusModal={setStatusModal}
+                                    handleOpenChangeModal={() => handleOpenChangeModal('login')}
+                                >
+                                    <Button
+                                        type="button"
+                                        className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'
+                                    >
+                                        Đăng nhập
+                                    </Button>
+                                </DialogLogin>
+                            </div>
                         </div>
-                    </div>
-            }
-        </header>
+                }
+            </header>
+        </>
     )
 }
 

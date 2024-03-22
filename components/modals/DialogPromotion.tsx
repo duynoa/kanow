@@ -34,7 +34,6 @@ export function DialogPromotion({ }: Props) {
             setDataPromotion([])
         }, 200);
     }
-    console.log('dataPromotion', dataPromotion);
 
     return (
         <Dialog modal open={openDialogPromotion} onOpenChange={handleOpenChangeModal}>
