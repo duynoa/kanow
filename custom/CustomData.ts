@@ -1,3 +1,4 @@
+// custom detail car
 export const CustomDataListCars = (data: any) => {
     let customData = data?.data?.map((item: any) => ({
         id: item?.id,
@@ -14,7 +15,7 @@ export const CustomDataListCars = (data: any) => {
         type: {
             delivery_car: item?.delivery_car === 1,
             book_car_flash: item?.book_car_flash === 1,
-            // thế chấp bị ngược với các tag bình thường thế chấp là 0 còn lại là 1 
+            // thế chấp bị ngược với các tag bình thường thế chấp là 0 còn lại là 1
             mortgage: item?.mortgage === 0,
             transmission: item?.transmission,
         },
