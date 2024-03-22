@@ -291,15 +291,12 @@ const SearchCars = (props: Props) => {
         isVisibleMobile
     ]);
 
-    console.log("isState?.dataParams: ", isState?.dataParams)
-
     const isValueNonZeroOrNonEmptyArray = (key: string, type: string) => {
         if (type === "filter") {
             const value = isState.dataParams[key];
             return value != 0 && (Array.isArray(value) ? value.length != 0 : true);
         } else if (type === "reset_filter") {
             const { dataParams } = isState;
-            console.log('dataParams', dataParams);
 
             return Object.values(dataParams).some(value => value != 0 && (!Array.isArray(value) || value.length != 0));
         }
@@ -318,20 +315,69 @@ const SearchCars = (props: Props) => {
         }
     }
 
-    const handleResetFilter = () => {
-        queryKeyIsState({
-            dataParams: {
-                company_car_search: "0",
-                transmission_search: "0",
-                type_car_search: [],
-                tram_search: 0,
-                discount_search: 0,
-                book_car_flash: 0,
-                delivery_car: 0,
-                mortgage: 0,
-                star_search: 0,
-            }
-        })
+    const handleResetFilter = async () => {
+
+        // const query = {
+        //     company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
+        //     type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
+        //     transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
+        //     star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
+        //     tram_search: newTramSearch == 0 ? undefined : newTramSearch,
+        //     discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
+        //     book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
+        //     mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
+        //     delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+        // }
+
+        const query = {
+            company_car_search: undefined,
+            type_car_search: [],
+            transmission_search: undefined,
+            star_search: undefined,
+            tram_search: undefined,
+            discount_search: undefined,
+            book_car_flash: undefined,
+            mortgage: undefined,
+            delivery_car: undefined,
+        }
+
+        const { data } = await getListCars(1, isState.limit.limitAllCars, query)
+
+        if (data && data.data && data.base) {
+            let { customData } = CustomDataListCars(data)
+
+            queryKeyIsState({
+                listCardCars: customData,
+                page: 2,
+                next: data?.links?.next,
+                dataParams: {
+                    company_car_search: "0",
+                    transmission_search: "0",
+                    type_car_search: [],
+                    tram_search: 0,
+                    discount_search: 0,
+                    book_car_flash: 0,
+                    delivery_car: 0,
+                    mortgage: 0,
+                    star_search: 0,
+                }
+            })
+        }
+        // queryKeyIsState({
+        //     dataParams: {
+        //         company_car_search: "0",
+        //         transmission_search: "0",
+        //         type_car_search: [],
+        //         tram_search: 0,
+        //         discount_search: 0,
+        //         book_car_flash: 0,
+        //         delivery_car: 0,
+        //         mortgage: 0,
+        //         star_search: 0,
+        //     }
+        // })
+
+
     }
 
     const handleFilterClick = async (item: any) => {
