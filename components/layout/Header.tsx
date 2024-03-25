@@ -3,26 +3,22 @@ import React, { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 import {
     NavigationMenu,
 } from "@/components/ui/navigation-menu"
-// import { Input } from '@/components/ui/input';
 import { useResize } from '@/hooks/useResize';
 
 import { ActionTooltip } from '../tooltip/ActionTooltip';
-// import ConvertToSlug from '../convertSlug/ConvertToSlug';
 
-import { IoCloseSharp, IoSearch } from "react-icons/io5";
-import { Menu, XSquare } from 'lucide-react';
+import { IoCloseSharp } from "react-icons/io5";
+import { Menu } from 'lucide-react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { Button } from '../ui/button';
 // import { getCategoryServices } from '@/services/service.services';
 // import { ICategoryServices } from '@/types/IServices';
 // import { DialogModal } from '../dialog/DialogModal';
-import { cn } from '@/lib/utils';
-import ConvertToSlug from '../convertSlug/ConvertToSlug';
 import { DialogLogin } from '../modals/DialogLogin';
 import { Separator } from '../ui/separator';
 
@@ -262,7 +258,7 @@ const Header = () => {
                         </div>
                         :
                         // màn hình laptop
-                        <div className="custom-container 3xl:h-[120px] h-[80px] grid 3xl:grid-cols-12 grid-cols-11 items-center justify-center">
+                        <div className="custom-container 3xl:h-[120px] h-[80px] grid 3xl:grid-cols-12 grid-cols-12 items-center justify-center">
                             <Link
                                 href="/"
                                 className='col-span-2 w-full h-auto'
@@ -302,16 +298,6 @@ const Header = () => {
                                                                                 {item?.title ? item?.title : ''}
                                                                             </div>
                                                                         </Link>
-                                                                        // <Link
-                                                                        //     key={item.id}
-                                                                        //     href={`/partner/${item.link}`}
-                                                                        //     className={`${pathname.includes(`/partner/${item.link}`) ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
-                                                                        // >
-
-                                                                        //     <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-300 ease-in-out line-clamp-2`}>
-                                                                        //         {item?.title ? item?.title : ''}
-                                                                        //     </div>
-                                                                        // </Link>
                                                                     ))
                                                                 }
                                                             </div>
@@ -344,7 +330,7 @@ const Header = () => {
                                     ))
                                 }
                             </NavigationMenu>
-                            <div className='col-span-2 flex justify-end 3xl:gap-4 gap-2'>
+                            <div className='3xl:col-span-2 col-span-3 flex justify-end 3xl:gap-4 gap-2'>
                                 <DialogLogin
                                     openModal={openModalLogin}
                                     statusModal={statusModal}

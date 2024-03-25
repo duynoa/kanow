@@ -39,7 +39,7 @@ export const ActionTooltip = ({
                     <TooltipPrimitive.Arrow
                         width={20}
                         height={12}
-                        className='fill-[#ffffff]'
+                        className='fill-[#ffffff] drop-shadow-2xl shadow-2xl'
                     />
                 </TooltipContent>
             </Tooltip>

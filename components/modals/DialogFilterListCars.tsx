@@ -336,7 +336,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                 </DialogHeader>
 
                 <div className='flex flex-col justify-between h-[500px] gap-3'>
-                    <ScrollArea className='md:pl-6 md:pr-6 pl-4 pr-4 h-[50vh]'>
+                    <ScrollArea className='md:pl-6 md:pr-6 pl-4 pr-4 h-[50vh] caret-transparent'>
                         {
                             type === "type_car_search" &&
                             <div className='grid grid-cols-3 gap-6 w-full'>
@@ -379,9 +379,14 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                                 defaultValue="0"
                                 value={isState?.dataParams?.company_car_search}
                                 className='grid grid-cols-2 gap-6 w-full'
+                                autoFocus={false}
                             >
                                 <div key={'automakerId-0'} className='col-span-1 flex items-center space-x-3 group'>
-                                    <RadioGroupItem value={`0`} id={`0`} className='border-[#B4B8C5] group-hover:border-[#2FB9BD] focus:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition' />
+                                    <RadioGroupItem
+                                        value={`0`}
+                                        id={`0`}
+                                        className={`${isState?.dataParams?.company_car_search == "0" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
+                                    />
                                     <Label
                                         htmlFor={`0`}
                                         className="flex items-center gap-4 cursor-pointer"
@@ -395,7 +400,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                                 {
                                     isState?.filter?.listAutomaker && isState?.filter?.listAutomaker?.map((item) => (
                                         <div key={`automakerId-${item.id}`} className='col-span-1 flex items-center space-x-3 group'>
-                                            <RadioGroupItem value={`${item.id}`} id={`${item.id}`} className='border-[#B4B8C5] group-hover:border-[#2FB9BD] focus:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition' />
+                                            <RadioGroupItem value={`${item.id}`} id={`${item.id}`} className={`${isState?.dataParams?.company_car_search == `${item.id}` ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`} />
                                             <Label
                                                 htmlFor={`${item.id}`}
                                                 className="flex items-center gap-2 cursor-pointer"
@@ -428,9 +433,14 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                                 value={isState?.dataParams?.transmission_search}
                                 onValueChange={(value) => handleFilterListCars(value, "transmission_search")}
                                 className='grid grid-cols-1 gap-6 w-full'
+                                autoFocus={false}
                             >
                                 <div key={'transmissionId-0'} className='col-span-1 flex items-center space-x-3 group'>
-                                    <RadioGroupItem value={`0`} id={`0`} className='border-[#B4B8C5] group-hover:border-[#2FB9BD] focus:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition' />
+                                    <RadioGroupItem
+                                        value={`0`}
+                                        id={`0`}
+                                        className={`${isState?.dataParams?.transmission_search == "0" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
+                                    />
                                     <Label
                                         htmlFor={`0`}
                                         className="flex items-center gap-4 cursor-pointer"
@@ -444,7 +454,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                                     <RadioGroupItem
                                         value={`1`}
                                         id={`1`}
-                                        className='border-[#B4B8C5] group-hover:border-[#2FB9BD] focus:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition'
+                                        className={`${isState?.dataParams?.transmission_search == "1" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
                                     />
                                     <Label
                                         htmlFor={`1`}
@@ -459,7 +469,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                                     <RadioGroupItem
                                         value={`2`}
                                         id={`2`}
-                                        className='border-[#B4B8C5] group-hover:border-[#2FB9BD] focus:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition'
+                                        className={`${isState?.dataParams?.transmission_search == "2" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
                                     />
                                     <Label
                                         htmlFor={`2`}
