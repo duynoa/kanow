@@ -37,6 +37,11 @@ export const CustomDataListCars = (data: any) => {
 
 // data detail car
 export const CustomDataDetailCar = (res: any) => {
+    const recipe =
+        (res?.data?.price?.rent_cost + res?.data?.price?.price_insurance_day) *
+        2 *
+        (res?.data?.promotion[0].percent / 100);
+
     let customDataDetailCar: IDataDetailCar = {
         id: res?.data?.id,
         address: `${res?.data?.district}, ${res?.data?.province}`,
@@ -62,12 +67,29 @@ export const CustomDataDetailCar = (res: any) => {
         favourite_car: res?.data?.favourite_car,
 
         price: {
-            price_before_promotion: res?.data?.rent_cost,
+            price_before_promotion: res?.data?.price?.rent_cost_day,
             price_after_promotion:
                 res?.data?.promotion?.length > 0
-                    ? res?.data?.rent_cost -
+                    ? res?.data?.price?.rent_cost_day -
                       res?.data?.promotion[0]?.price_promotion
                     : 0,
+
+            percent_deposit: res?.data?.price?.percent_deposit,
+            percent_insurance: res?.data?.price?.percent_insurance,
+            percent_service: res?.data?.price?.percent_service,
+            number_deposit_car: res?.data?.price?.number_deposit_car,
+
+            rent_cost: res?.data?.price?.rent_cost,
+            rent_cost_day: res?.data?.price?.rent_cost_day,
+            price_insurance_day: res?.data?.price?.price_insurance_day,
+
+            // *  ((giá gốc + bảo hiểm) * (tổng số ngày)) - (số tiền khuyến mãi)
+            // *  số tiền khuyến mãi có 2 Option
+            // ** option 1: khuyến mãi tính cho riêng từng ngày (bill = tổng ngày = tổng khuyến mãi)
+            // ** option 2: chọn khuyến mãi từ mã tính cho tổng bill (bill = tổng bill - số tiền cố định của khuyến mãi)
+            temp_total_amount: recipe,
+
+            total_amount: res?.data?.price?.total_amount,
         },
         promotion: res?.data?.promotion,
         trait_car: {

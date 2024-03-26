@@ -22,23 +22,30 @@ import { format, formatDistanceToNow, isYesterday, parseISO } from 'date-fns';
 import "moment/locale/vi";
 import { vi } from 'date-fns/locale';
 import { ActionTooltip } from '@/components/tooltip/ActionTooltip';
+import { useDialogAnswerPolicy } from '@/hooks/useOpenDialog';
+import { postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
 
 type Props = {
     isState: IInitialStateDetailCar,
-    queryKeyIsState: (key: any) => void
+    queryKeyIsState: (key: any) => void,
+    params: {
+        slug: string
+    }
 }
 
 const InfomationCar = ({
     isState,
-    queryKeyIsState
+    queryKeyIsState,
+    params
 }: Props) => {
+    const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const [expandedItems, setExpandedItems] = useState<boolean>(false);
 
     const handleToggleExpand = () => {
         setExpandedItems(!expandedItems);
     };
 
-    const { isVisibleMobile } = useResize()
+    const { isVisibleMobile, isVisibleTablet } = useResize()
     const [isMounted, setIsMounted] = useState<boolean>(false)
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
 
@@ -169,9 +176,22 @@ const InfomationCar = ({
         google_map_link: ""
     }
 
-    const handleClickFavorite = (e: any) => {
+    const handleClickFavorite = async (e: any) => {
         e.stopPropagation()
         e.preventDefault();
+
+        try {
+            const data = {
+                car_id: params.slug,
+                status: 1
+            }
+
+            const res = await postUpdateFavoriteHeartCar(data)
+            console.log('res :', res);
+
+        } catch (err) {
+            throw err
+        }
     }
 
     // function formatDate(item: string) {
@@ -261,10 +281,9 @@ const InfomationCar = ({
                     </div>
                 </div>
                 <div
-                    onClick={handleClickFavorite}
+                    onClick={(event) => handleClickFavorite(event)}
                     className='bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out'
                 >
-                    {/* <TiHeartFullOutline className={`text-white 3xl:text-4xl text-2xl group-hover:scale-105 duration-200 transition-color ease-in-out`} /> */}
                     <TiHeartFullOutline className={`${isState?.dataDetailCar?.favourite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
                 </div>
             </div>
@@ -340,7 +359,7 @@ const InfomationCar = ({
                     Mô tả
                 </div>
 
-                <div className="flex flex-col gap-2" >
+                <div className="flex flex-col gap-2 w-full" >
                     {
                         expandedItems ?
                             <>
@@ -379,7 +398,7 @@ const InfomationCar = ({
                 <div className='grid md:grid-cols-4 grid-cols-2 gap-2'>
                     {
                         isState?.dataDetailCar?.other_amenities_car && isState?.dataDetailCar?.other_amenities_car?.map((item) => (
-                            <div key={item.id} className='flex gap-2 items-center w-fit pr-2 py-1 caret-transparent'>
+                            <div key={`amenities-car-${item.id}`} className='flex gap-2 items-center w-fit pr-2 py-1 caret-transparent'>
                                 <Image
                                     src={item.image}
                                     alt='icon'
@@ -425,15 +444,15 @@ const InfomationCar = ({
                             </div>
                             <div className='flex items-center gap-4'>
                                 <div className='flex items-center gap-1'>
-                                    <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#FF9900]' />
-                                    <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-medium      '>
+                                    <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
+                                    <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
                                         4.9
                                     </div>
                                 </div>
 
                                 <div className='flex items-center gap-1'>
-                                    <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
-                                    <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                    <FaCircleCheck className='3xl:text-base text-sm text-[#3AC996]' />
+                                    <div className='3xl:text-sm text-xs text-[#484D5C] font-semibold'>
                                         {FormatNumberHundred(19, 100)} Chuyến
                                     </div>
                                 </div>
@@ -445,7 +464,7 @@ const InfomationCar = ({
                         Chủ xe 5 sao có thời gian phản hồi nhanh chóng, tỉ lệ đồng ý cao, mức giá cạnh tranh và dịch vụ nhận được nhiều đánh giá tốt từ khách hàng
                     </div>
                 </div>
-                <div className='grid grid-cols-3 md:gap-20 gap-4'>
+                <div className='grid grid-cols-3 md:gap-20 gap-4 md:mt-0 mt-2'>
                     <div className='col-span-1 flex flex-col items-center gap-1'>
                         <div className='3xl:text-base text-sm text-[#6F7689]'>
                             Tỉ lệ phản hồi
@@ -533,9 +552,12 @@ const InfomationCar = ({
                             }
                         </div>
                     </div>
-                    <div className='3xl:text-lg md:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
-                        Xem tất cả
-                    </div>
+                    {
+                        isState?.dataDetailCar?.info_review_car?.review_car?.length > 5 &&
+                        <div className='3xl:text-lg md:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
+                            Xem tất cả
+                        </div>
+                    }
                 </div>
                 {
                     isState?.dataDetailCar?.info_review_car?.review_car && isState?.dataDetailCar?.info_review_car?.review_car?.slice(0, 5)?.map((item, index) => (
@@ -601,19 +623,27 @@ const InfomationCar = ({
                         Giấy tờ thuê xe
                     </div>
 
-                    <ActionTooltip
-                        side="bottom"
-                        align="center"
-                        label={(
-                            <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
-                                <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_rental_policy ? isState?.dataDetailCar?.policy?.car_rental_policy : ''}` }} />
+                    {
+                        isVisibleTablet ?
+                            <div onClick={() => setOpenDialogAnswerPolicy(true, "car_rental_policy")}>
+                                <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                             </div>
-                        )}
-                    >
-                        <div>
-                            <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
-                        </div>
-                    </ActionTooltip>
+                            :
+                            <ActionTooltip
+                                side="bottom"
+                                align="center"
+                                label={(
+                                    <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
+                                        <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_rental_policy ? isState?.dataDetailCar?.policy?.car_rental_policy : ''}` }} />
+                                    </div>
+                                )}
+                            >
+                                <div>
+                                    <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
+                                </div>
+                            </ActionTooltip>
+                    }
+
                 </div>
                 <div className='3xl:text-base text-sm text-[#484D5C] 3xl:mb-0 mb-3'>
                     Vui lòng chuẩn bị 2 loại giấy tờ:
@@ -702,23 +732,26 @@ const InfomationCar = ({
                     <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                         Tài sản thế chấp
                     </div>
-                    <ActionTooltip
-                        side="bottom"
-                        align="center"
-                        label={(
-                            <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
-                                {/* <div className=''>
-                                    Chủ xe hỗ trợ chính sách  <span className='font-semibold'>miễn thế chấp</span>. Khách hàng không cần để lại tài sản (xe máy hoặc 15tr tiền mặt) khi thuê xe của chủ xe.
-                                    Các phụ phí phát sinh (nếu có) trong quá trình thuê xe, khách hàng vui lòng thanh toán trực tiếp cho chủ xe khi làm thủ tục trả xe.
-                                </div> */}
-                                <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_collateral_policy ? isState?.dataDetailCar?.policy?.car_collateral_policy : ''}` }} />
+                    {
+                        isVisibleTablet ?
+                            <div onClick={() => setOpenDialogAnswerPolicy(true, "car_collateral_policy")}>
+                                <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                             </div>
-                        )}
-                    >
-                        <div>
-                            <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
-                        </div>
-                    </ActionTooltip>
+                            :
+                            <ActionTooltip
+                                side="bottom"
+                                align="center"
+                                label={(
+                                    <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
+                                        <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_collateral_policy ? isState?.dataDetailCar?.policy?.car_collateral_policy : ''}` }} />
+                                    </div>
+                                )}
+                            >
+                                <div>
+                                    <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
+                                </div>
+                            </ActionTooltip>
+                    }
                 </div>
                 <div className='3xl:text-base text-sm text-[#585F71]'>
                     {isState?.dataDetailCar?.collateral_car?.note_mortgage ? isState?.dataDetailCar?.collateral_car?.note_mortgage : ""}
@@ -730,27 +763,9 @@ const InfomationCar = ({
                     Phụ phí có thể phát sinh
                 </div>
                 <div className='flex flex-col gap-4'>
-                    {/* {
-                        listSurcharge && listSurcharge.map((item) => (
-                            <div key={item.id} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
-                                <div className='md:w-[90%] md:max-w-[90%] w-[85%] max-w-[85%] flex flex-col gap-1'>
-                                    <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
-                                        {item.title ? item.title : ""}
-                                    </div>
-                                    <div className='3xl:text-base text-sm text-[#585F71]'>
-                                        {item.description ? item.description : ""}
-                                    </div>
-                                </div>
-                                <div className='3xl:text-base text-sm w-[10%] max-w-[10%] flex justify-end text-[#FA3434] font-medium'>
-                                    {item.money ? item.money : ""}
-                                </div>
-                            </div>
-                        ))
-                    } */}
-
                     {
                         isState?.dataDetailCar?.surcharge_car && isState?.dataDetailCar?.surcharge_car?.map((item) => (
-                            <div key={item.id} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
+                            <div key={`id-${item.id}`} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
                                 <div className='w-[70%] max-w-[70%] flex flex-col gap-1'>
                                     <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
                                         {item.name ? item.name : ""}
@@ -766,9 +781,6 @@ const InfomationCar = ({
                         ))
                     }
                 </div>
-                <div className='mt-2 3xl:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out w-fit'>
-                    Xem thêm
-                </div>
             </div>
 
             <div className='flex flex-col 3xl:gap-4 gap-2'>
@@ -776,14 +788,100 @@ const InfomationCar = ({
                     Chính sách huỷ chuyến
                 </div>
                 <div className='3xl:text-base text-sm text-[#585F71]'>
-                    {/* An tâm thuê xe, không lo bị hủy chuyến với chính sách hủy chuyến của KANOW */}
                     {isState?.dataDetailCar?.cancel_trip?.title_cancel_trip ? isState?.dataDetailCar?.cancel_trip?.title_cancel_trip : ""}
                 </div>
-                <div className='3xl:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out w-fit'>
-                    Xem thêm
+
+                {
+                    isState?.dataDetailCar?.cancel_trip?.policy_cancel_trip?.length > 0 ?
+                        <div className='grid grid-rows-1'>
+                            <div className='row-span-1 grid grid-cols-3'>
+                                <div className="col-span-1 p-5 border border-b-0 border-r-0 rounded-tl-xl">
+                                    <div className='3xl:text-lg text-base font-semibold'>
+                                        Thời điểm huỷ chuyến
+                                    </div>
+                                </div>
+                                <div className="col-span-1 p-5 border border-b-0 border-r-0 text-center">
+                                    <div className='3xl:text-lg text-base font-semibold'>
+                                        Khách thuê huỷ chuyến
+                                    </div>
+                                </div>
+                                <div className="col-span-1 p-5 border border-b-0 rounded-tr-xl text-center">
+                                    <div className='3xl:text-lg text-base font-semibold'>
+                                        Chủ xe huỷ chuyến
+                                    </div>
+                                </div>
+                            </div>
+
+                            {
+                                isState?.dataDetailCar?.cancel_trip?.policy_cancel_trip && isState?.dataDetailCar?.cancel_trip?.policy_cancel_trip?.map((item, index) => (
+                                    <div key={`cancel-${item.id}`} className={`${isState?.dataDetailCar?.cancel_trip?.policy_cancel_trip.length - 1 == index ? "border-b" : ""} row-span-1 grid grid-cols-3`}>
+                                        <div className="col-span-1 p-4 border border-b-0 border-r-0">
+                                            <div className='3xl:text-base text-sm font-medium'>
+                                                {item?.name ? item?.name : ""}
+                                            </div>
+                                        </div>
+                                        <div className="col-span-1 p-4 border border-b-0 border-r-0 text-center">
+                                            <div className='3xl:text-sm text-[13px]'>
+                                                {item?.guest_cancel ? item?.guest_cancel : ""}
+                                            </div>
+                                        </div>
+                                        <div className="col-span-1 p-4 border border-b-0 text-center">
+                                            <div className='3xl:text-sm text-[13px]'>
+                                                {item?.owen_cancel ? item?.owen_cancel : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        :
+                        null
+                }
+
+                <div className='text-sm text-[#585F71] group-hover:text-[#585F71]/80 duration-500 transition ease-in-out'>
+                    <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.cancel_trip?.note_cancel_trip ? isState?.dataDetailCar?.cancel_trip?.note_cancel_trip : ''}` }} />
                 </div>
+
+
+
+                <div className="flex items-end gap-2">
+                    <div className='3xl:text-base text-sm text-[#585F71] group-hover:text-[#585F71]/80 duration-500 transition ease-in-out'>
+                        <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.cancel_trip?.compensation_refund ? isState?.dataDetailCar?.cancel_trip?.compensation_refund : ''}` }} />
+                    </div>
+                    {
+                        isState?.dataDetailCar?.cancel_trip?.compensation_refund ?
+
+                            isVisibleTablet ?
+                                (
+                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "cancellation_policy")}>
+                                        <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
+                                    </div>
+                                )
+                                :
+                                (
+                                    <ActionTooltip
+                                        side="bottom"
+                                        align="center"
+                                        label={(
+                                            <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
+                                                <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.cancel_trip?.compensation_refund ? isState?.dataDetailCar?.cancel_trip?.compensation_refund : ''}` }} />
+                                            </div>
+                                        )}
+                                    >
+                                        <div>
+                                            <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
+                                        </div>
+                                    </ActionTooltip>
+                                )
+                            :
+                            null
+                    }
+                </div>
+                {/* <div className='3xl:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out w-fit'>
+                    Xem thêm
+                </div> */}
             </div>
-        </div>
+        </div >
     )
 }
 

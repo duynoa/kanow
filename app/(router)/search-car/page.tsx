@@ -268,7 +268,7 @@ const SearchCars = (props: Props) => {
                                 });
                             }
                         };
-                        setTimeout(() => fetchDataListCar(), 1500);
+                        setTimeout(() => fetchDataListCar(), 500);
                     } else {
                         console.log("check next false");
                     }

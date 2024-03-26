@@ -46,4 +46,15 @@ const getDataDetailCar = (id: string | number) => {
     return axios.get(`/car/getDetail/${id}`);
 };
 
-export { getListCars, getListAutomaker, getListTypeCars, getDataDetailCar };
+// post update favorite heart car
+const postUpdateFavoriteHeartCar = (data: any) => {
+    return axios.post(`/car/changeFavouriteCar`, data);
+};
+
+export {
+    getListCars,
+    getListAutomaker,
+    getListTypeCars,
+    getDataDetailCar,
+    postUpdateFavoriteHeartCar,
+};

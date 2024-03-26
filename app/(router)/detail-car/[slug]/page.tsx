@@ -28,6 +28,8 @@ import PaymentCar from './components/PaymentCar'
 import InfomationCar from './components/InfomationCar';
 import { getDataDetailCar } from '@/services/cars/cars.services'
 import { CustomDataDetailCar } from '@/custom/CustomData'
+import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy'
+import { IInitialStateDetailCar } from '@/types/Cars/ICars'
 
 type Props = {
     params: {
@@ -42,14 +44,80 @@ const DetailCar = ({ params }: Props) => {
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
     const [showSecondHeader, setShowSecondHeader] = useState(false);
 
-    const initialState: any = {
-        dataDetailCar: {},
+    const initialState: IInitialStateDetailCar = {
+        dataDetailCar: {
+            id: "",
+            address: "",
+            image_car: [],
+            car_owner: {
+                avatar: "",
+                fullname: "",
+                id: "",
+            },
+            type: {
+                delivery_car: false,
+                book_car_flash: false,
+                mortgage: false,
+                transmission_search: "",
+            },
+            favourite_car: false,
+            name_car: "",
+            point_star: 0,
+            total_trip: 0,
+            price: {
+                price_before_promotion: 0,
+                price_after_promotion: 0,
+
+                percent_deposit: "",
+                percent_insurance: "",
+                percent_service: "",
+                number_deposit_car: "",
+
+                rent_cost: 0,
+                rent_cost_day: 0,
+                price_insurance_day: 0,
+                temp_total_amount: 0,
+                total_amount: 0,
+            },
+            promotion: [],
+            trait_car: {
+                number_seat: 0,
+                number_car: "",
+                type_fuel: "",
+                year_manu: "",
+            },
+            describe_car: "",
+            other_amenities_car: [],
+            info_review_car: {
+                review_car: [],
+                star: 0,
+                total_review_car: 0,
+            },
+            collateral_car: {
+                mortgage: 0,
+                mortgage_policy_car: "",
+                note_mortgage: "",
+            },
+            surcharge_car: [],
+            cancel_trip: {
+                title_cancel_trip: "",
+                compensation_refund: "",
+                note_cancel_trip: "",
+                policy_cancel_trip: [],
+            },
+            policy: {
+                car_rental_policy: "",
+                car_collateral_policy: "",
+                car_insurance_policy: "",
+                car_price_policy: "",
+            },
+        },
         onSuccess: {
             onSuccessPage: false
         }
     };
 
-    const [isState, setIsState] = useState<any>(initialState)
+    const [isState, setIsState] = useState<IInitialStateDetailCar>(initialState)
     const queryKeyIsState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
     useEffect(() => {
@@ -388,6 +456,7 @@ const DetailCar = ({ params }: Props) => {
                 <InfomationCar
                     isState={isState}
                     queryKeyIsState={queryKeyIsState}
+                    params={params}
                 />
 
                 <PaymentCar
@@ -674,6 +743,10 @@ const DetailCar = ({ params }: Props) => {
             <DialogReviewImage />
             <DialogPromotion />
             <DialogCalendar />
+            <DialogAnswerPolicy
+                isState={isState}
+                queryKeyIsState={queryKeyIsState}
+            />
         </div>
     )
 }

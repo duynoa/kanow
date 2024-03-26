@@ -5,6 +5,7 @@ import {
     DialogClose,
     DialogContent,
     DialogOverlay,
+    DialogPortal,
 } from "@/components/ui/dialog"
 
 import { X } from "lucide-react"
@@ -49,38 +50,37 @@ export function DialogReviewImage({ }: Props) {
                     <X className="size-8 text-white" />
                     <span className="sr-only">Close</span>
                 </DialogClose>
+                    <Carousel className="w-full max-w-full h-full ">
+                        {/* <Carousel className="w-full 3xl:max-w-[760px] 2xl:max-w-[520px] max-w-[520px] p-2 "> */}
+                        <CarouselContent>
+                            {
+                                sortedDataImage?.length > 0 &&
+                                sortedDataImage?.map((image: any, index: any) => {
+                                    const imageUrl = image?.name ? image?.name : URL.createObjectURL(image?.name);
 
-                <Carousel className="w-full max-w-full h-full ">
-                    {/* <Carousel className="w-full 3xl:max-w-[760px] 2xl:max-w-[520px] max-w-[520px] p-2 "> */}
-                    <CarouselContent>
-                        {
-                            sortedDataImage?.length > 0 &&
-                            sortedDataImage?.map((image: any, index: any) => {
-                                const imageUrl = image?.name ? image?.name : URL.createObjectURL(image?.name);
-
-                                return (
-                                    <CarouselItem
-                                        key={`index-${index}`}
-                                        className='w-auto'
-                                    >
-                                        <div className="w-full max-w-full h-full 3xl:max-h-[800px] max-h-[600px]">
-                                            <Image
-                                                width={1536}
-                                                height={900}
-                                                alt="image"
-                                                src={imageUrl}
-                                                className="w-full h-full aspect-video lg:object-contain object-cover object-center"
-                                                priority
-                                            />
-                                        </div>
-                                    </CarouselItem>
-                                );
-                            })
-                        }
-                    </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
-                </Carousel>
+                                    return (
+                                        <CarouselItem
+                                            key={`index-${index}`}
+                                            className='w-auto'
+                                        >
+                                            <div className="w-full max-w-full h-full 3xl:max-h-[800px] max-h-[600px]">
+                                                <Image
+                                                    width={1536}
+                                                    height={900}
+                                                    alt="image"
+                                                    src={imageUrl}
+                                                    className="w-full h-full aspect-video lg:object-contain object-cover object-center"
+                                                    priority
+                                                />
+                                            </div>
+                                        </CarouselItem>
+                                    );
+                                })
+                            }
+                        </CarouselContent>
+                        <CarouselPrevious />
+                        <CarouselNext />
+                    </Carousel>
             </DialogContent>
         </Dialog>
     )

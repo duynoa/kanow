@@ -10,7 +10,7 @@ import { TiArrowSortedUp } from 'react-icons/ti'
 import { PiShieldCheckFill } from "react-icons/pi";
 import { FaCalendarAlt, FaRegQuestionCircle } from 'react-icons/fa'
 
-import { useDialogCalendar, useDialogPromotion } from '@/hooks/useOpenDialog'
+import { useDialogAnswerPolicy, useDialogCalendar, useDialogPromotion } from '@/hooks/useOpenDialog'
 
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -19,6 +19,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { FormatNumberDot, FormatNumberToThousands } from '@/components/format/FormatNumber'
 import { IInitialStateDetailCar } from '@/types/Cars/ICars'
 import { ActionTooltip } from '@/components/tooltip/ActionTooltip'
+import { useResize } from '@/hooks/useResize'
 
 
 type Props = {
@@ -32,6 +33,8 @@ const PaymentCar = ({
 }: Props) => {
     const { setOpenDialogPromotion, setDataPromotion } = useDialogPromotion()
     const { date, setOpenDialogCalendar } = useDialogCalendar()
+    const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
+    const { isVisibleTablet } = useResize()
 
     const dataPromotion = [
         {
@@ -207,22 +210,30 @@ const PaymentCar = ({
                                 <div className='3xl:text-base text-sm text-[#3E424E]'>
                                     Đơn giá thuê
                                 </div>
-                                <ActionTooltip
-                                    side="bottom"
-                                    align="center"
-                                    label={(
-                                        <div className='flex flex-col gap-1 text-center justify-center xxl:max-w-[560px] max-w-[420px]'>
-                                            <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_price_policy ? isState?.dataDetailCar?.policy?.car_price_policy : ''}` }} />
+                                {
+                                    isVisibleTablet ?
+                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                            <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                         </div>
-                                    )}
-                                >
-                                    <div>
-                                        <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
-                                    </div>
-                                </ActionTooltip>
+                                        :
+                                        <ActionTooltip
+                                            side="bottom"
+                                            align="center"
+                                            label={(
+                                                <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
+                                                    <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_price_policy ? isState?.dataDetailCar?.policy?.car_price_policy : ''}` }} />
+                                                </div>
+                                            )}
+                                        >
+                                            <div>
+                                                <FaRegQuestionCircle className='text-[#FF9900] lg:text-xl text-lg cursor-pointer' />
+                                            </div>
+                                        </ActionTooltip>
+                                }
                             </div>
+
                             <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                                {FormatNumberDot(292000)}<span>đ/ngày</span>
+                                {FormatNumberDot(isState?.dataDetailCar?.price?.rent_cost_day ? isState?.dataDetailCar?.price?.rent_cost_day : 0)}<span>đ/ngày</span>
                             </div>
                         </div>
 
@@ -231,22 +242,29 @@ const PaymentCar = ({
                                 <div className='3xl:text-base text-sm text-[#3E424E]'>
                                     Bảo hiểm thuê xe
                                 </div>
-                                <ActionTooltip
-                                    side="bottom"
-                                    align="center"
-                                    label={(
-                                        <div className='flex flex-col gap-1 text-center justify-center xxl:max-w-[560px] max-w-[420px]'>
-                                            <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_insurance_policy ? isState?.dataDetailCar?.policy?.car_insurance_policy : ''}` }} />
+                                {
+                                    isVisibleTablet ?
+                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_insurance_policy")}>
+                                            <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                         </div>
-                                    )}
-                                >
-                                    <div>
-                                        <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
-                                    </div>
-                                </ActionTooltip>
+                                        :
+                                        <ActionTooltip
+                                            side="bottom"
+                                            align="center"
+                                            label={(
+                                                <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
+                                                    <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_insurance_policy ? isState?.dataDetailCar?.policy?.car_insurance_policy : ''}` }} />
+                                                </div>
+                                            )}
+                                        >
+                                            <div>
+                                                <FaRegQuestionCircle className='text-[#FF9900] lg:text-xl text-lg cursor-pointer' />
+                                            </div>
+                                        </ActionTooltip>
+                                }
                             </div>
                             <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                                {FormatNumberDot(52000)}<span>đ/ngày</span>
+                                {FormatNumberDot(isState?.dataDetailCar?.price?.price_insurance_day ? isState?.dataDetailCar?.price?.price_insurance_day : 0)}<span>đ/ngày</span>
                             </div>
                         </div>
                     </div>
@@ -270,7 +288,7 @@ const PaymentCar = ({
                         <RadioGroup defaultValue="comfortable" className='flex flex-col gap-3'>
                             <div className="flex items-center space-x-2 caret-transparent">
                                 <RadioGroupItem value="default" id="r1" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
-                                <Label htmlFor="r1" className='flex flex-row items-center justify-between gap-2 w-full'>
+                                <Label htmlFor="r1" className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
                                     <div className='flex flex-col'>
                                         <div className='flex items-center gap-1'>
                                             <Image

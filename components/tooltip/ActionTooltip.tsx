@@ -24,7 +24,7 @@ export const ActionTooltip = ({
 }: ActionTooltipProps) => {
     const StyledArrow = TooltipPrimitive.Arrow
     return (
-        <TooltipProvider>
+        <TooltipProvider >
             <Tooltip delayDuration={50}>
                 <TooltipTrigger asChild>
                     {children}
