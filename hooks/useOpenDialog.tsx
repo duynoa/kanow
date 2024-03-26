@@ -38,19 +38,27 @@ export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     setDate: (date: DateRange | undefined) => set((state) => ({ ...state, date })),
 }))
 
-// dialog type cars
+// dialog filter list car
 interface IOpenDialogFilterListCars {
     openDialogFilterListCars: boolean;
     setOpenDialogFilterListCars: (key: any, type?: string) => void;
     type?: string;
-    dataFilterListCars: any[];
-    setDataFilterListCars: (dataFilterListCars: any) => void
 }
 
+// dialog question policy (onClick icon ?)
 export const useDialogFilterListCars = create<IOpenDialogFilterListCars>((set) => ({
     openDialogFilterListCars: false,
     type: "",
-    dataFilterListCars: [],
     setOpenDialogFilterListCars: (key: any, type?: string) => set((state) => ({ openDialogFilterListCars: key, type: type })),
-    setDataFilterListCars: (key: any) => set((state) => ({ dataFilterListCars: key })),
+}));
+interface IOpenDialogAnswerPolicy {
+    openDialogAnswerPolicy: boolean;
+    setOpenDialogAnswerPolicy: (key: any, type?: string) => void;
+    type?: string;
+}
+
+export const useDialogAnswerPolicy = create<IOpenDialogAnswerPolicy>((set) => ({
+    openDialogAnswerPolicy: false,
+    type: "",
+    setOpenDialogAnswerPolicy: (key: any, type?: string) => set((state) => ({ openDialogAnswerPolicy: key, type: type })),
 }));

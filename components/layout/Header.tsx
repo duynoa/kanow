@@ -3,26 +3,22 @@ import React, { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 import {
     NavigationMenu,
 } from "@/components/ui/navigation-menu"
-// import { Input } from '@/components/ui/input';
 import { useResize } from '@/hooks/useResize';
 
 import { ActionTooltip } from '../tooltip/ActionTooltip';
-// import ConvertToSlug from '../convertSlug/ConvertToSlug';
 
-import { IoCloseSharp, IoSearch } from "react-icons/io5";
-import { Menu, XSquare } from 'lucide-react';
+import { IoCloseSharp } from "react-icons/io5";
+import { Menu } from 'lucide-react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { Button } from '../ui/button';
 // import { getCategoryServices } from '@/services/service.services';
 // import { ICategoryServices } from '@/types/IServices';
 // import { DialogModal } from '../dialog/DialogModal';
-import { cn } from '@/lib/utils';
-import ConvertToSlug from '../convertSlug/ConvertToSlug';
 import { DialogLogin } from '../modals/DialogLogin';
 import { Separator } from '../ui/separator';
 
@@ -262,7 +258,7 @@ const Header = () => {
                         </div>
                         :
                         // màn hình laptop
-                        <div className="custom-container 3xl:h-[120px] h-[80px] grid 3xl:grid-cols-12 grid-cols-11 items-center justify-center">
+                        <div className="custom-container 3xl:h-[120px] h-[80px] grid grid-cols-12 items-center justify-center">
                             <Link
                                 href="/"
                                 className='col-span-2 w-full h-auto'
@@ -276,8 +272,8 @@ const Header = () => {
                                     className='w-full h-auto object-cover'
                                 />
                             </Link>
-                            <div className='3xl:col-span-2 col-span-1   ' />
-                            <NavigationMenu className='2xl:col-span-6 col-span-6 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
+
+                            <div className='xxl:col-span-8 col-span-7 flex items-center justify-center 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
                                 {
                                     dataHeader && dataHeader.map((data, i) => (
                                         <div key={data.id} className='p-2'>
@@ -302,16 +298,6 @@ const Header = () => {
                                                                                 {item?.title ? item?.title : ''}
                                                                             </div>
                                                                         </Link>
-                                                                        // <Link
-                                                                        //     key={item.id}
-                                                                        //     href={`/partner/${item.link}`}
-                                                                        //     className={`${pathname.includes(`/partner/${item.link}`) ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
-                                                                        // >
-
-                                                                        //     <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-300 ease-in-out line-clamp-2`}>
-                                                                        //         {item?.title ? item?.title : ''}
-                                                                        //     </div>
-                                                                        // </Link>
                                                                     ))
                                                                 }
                                                             </div>
@@ -343,8 +329,67 @@ const Header = () => {
                                         </div>
                                     ))
                                 }
-                            </NavigationMenu>
-                            <div className='col-span-2 flex justify-end 3xl:gap-4 gap-2'>
+                            </div>
+
+                            {/* <NavigationMenu className=' flex justify-center 3xl:space-x-10 2xl:space-x-6 xl:space-x-4'>
+                                    {
+                                        dataHeader && dataHeader.map((data, i) => (
+                                            <div key={data.id} className='p-2'>
+                                                {
+                                                    data.children ?
+                                                        <ActionTooltip
+                                                            side="bottom"
+                                                            align="end"
+                                                            label={(
+                                                                <div className='flex flex-col gap-2'>
+                                                                    {
+                                                                        dataPartnerKanow && dataPartnerKanow?.map((item) => (
+                                                                            <Link
+                                                                                key={item.id}
+                                                                                href={`/partner/${item.link}`}
+                                                                                className={`${(item.link === '/' && pathname === '/') || (pathname.includes(item.link) && item.link !== '/') ? 'bg-[#C2F9F9]' : ''} focus:scale-105 flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
+                                                                                style={zoomedStyle}
+                                                                                onClick={handleClickToZoom}
+                                                                            >
+
+                                                                                <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-300 ease-in-out line-clamp-2`}>
+                                                                                    {item?.title ? item?.title : ''}
+                                                                                </div>
+                                                                            </Link>
+                                                                        ))
+                                                                    }
+                                                                </div>
+                                                            )}
+                                                        >
+                                                            <div
+                                                                className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ?
+                                                                    'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' :
+                                                                    'text-[#0E0E0E]/80'}
+                                                            flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                                            >
+                                                                <span>{data.name}</span>
+                                                                <IoIosArrowDown className='2xl:text-2xl text-xl text-[#2FB9BD]' />
+                                                            </div>
+                                                        </ActionTooltip>
+                                                        :
+                                                        (
+                                                            data.visible ?
+                                                                <Link
+                                                                    href={data.link}
+                                                                    className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                                                >
+                                                                    {data.name}
+                                                                </Link>
+                                                                :
+                                                                null
+                                                        )
+                                                }
+                                            </div>
+                                        ))
+                                    }
+                                </NavigationMenu> */}
+
+                            <div className='xxl:col-span-2 col-span-3 flex justify-end 3xl:gap-4 gap-2'>
                                 <DialogLogin
                                     openModal={openModalLogin}
                                     statusModal={statusModal}
@@ -353,12 +398,12 @@ const Header = () => {
                                 >
                                     <Button
                                         type="button"
-                                        className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
+                                        className='3xl:text-base text-sm 3xl:py-4 3xl:px-4 p-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
                                     >
                                         Đăng Ký
                                     </Button>
                                 </DialogLogin>
-                                <Separator orientation="vertical" className='bg-[#B4B8C5] h-auto my-1' />
+                                <Separator orientation="vertical" className='bg-[#B4B8C5] h-auto my-2' />
                                 <DialogLogin
                                     openModal={openModalLogin}
                                     statusModal={statusModal}
@@ -367,7 +412,7 @@ const Header = () => {
                                 >
                                     <Button
                                         type="button"
-                                        className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'
+                                        className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-6 py-3 w-fit 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'
                                     >
                                         Đăng nhập
                                     </Button>

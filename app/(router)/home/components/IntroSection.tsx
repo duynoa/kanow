@@ -16,15 +16,21 @@ const IntroSection = () => {
     const tabSearch = [
         {
             id: "232",
-            name: "Xe tự lái"
+            name: "Xe tự lái",
+            icon_active: "/icon/home/icon_car_active_1.png",
+            icon_no_active: "/icon/home/icon_car_no_active_1.png",
         },
         {
             id: "4343",
-            name: "Xe có tài xế"
+            name: "Xe có tài xế",
+            icon_active: "/icon/home/icon_car_active_2.png",
+            icon_no_active: "/icon/home/icon_car_no_active_2.png",
         },
         {
             id: "5454",
-            name: "Tìm tài xế"
+            name: "Tìm tài xế",
+            icon_active: "/icon/home/icon_car_active_3.png",
+            icon_no_active: "/icon/home/icon_car_no_active_3.png",
         },
     ]
 
@@ -107,10 +113,29 @@ const IntroSection = () => {
                                 tabSearch && tabSearch.map((tab) => (
                                     <div
                                         key={tab.id}
-                                        className={`${tab.id == tabId ? "bg-white underline underline-offset-[6px] decoration-[3px] decoration-[#2FB9BD]" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} xl:px-6 xl:py-3 px-4 py-2 text-sm text-[#585F71] font-medium rounded-t-xl cursor-pointer`}
+                                        className={`${tab.id == tabId ? "bg-white" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} caret-transparent flex items-center gap-2 xl:px-6 xl:py-3 px-4 py-2 rounded-t-xl cursor-pointer`}
+                                        // className={`${tab.id == tabId ? "bg-white underline underline-offset-[6px] decoration-[3px] decoration-[#2FB9BD]" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} flex items-center gap-2 xl:px-6 xl:py-3 px-4 py-2 rounded-t-xl cursor-pointer`}
                                         onClick={() => handleTabChange(tab.id)}
                                     >
-                                        {tab.name ? tab.name : ""}
+                                        <div className='relative flex gap-1 items-center w-fit'>
+                                            <div className='w-5 h-full'>
+                                                <Image
+                                                    alt="icon_active"
+                                                    src={tab.id == tabId ? (tab.icon_active ? tab.icon_active : "/default/default.png") : (tab.icon_no_active ? tab.icon_no_active : "/default/default.png")}
+                                                    width={80}
+                                                    height={80}
+                                                    className="w-full h-full object-contain"
+                                                />
+                                            </div>
+
+                                            <div className='text-sm text-[#585F71] font-medium'>
+                                                {tab.name ? tab.name : ""}
+                                            </div>
+
+                                            {tab.id == tabId && (
+                                                <div className="absolute -bottom-2 left-0 right-0 h-[3px] w-full bg-[#2FB9BD]"></div>
+                                            )}
+                                        </div>
                                     </div>
                                 ))
                             }
