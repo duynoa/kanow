@@ -72,9 +72,11 @@ const Header = () => {
 
             if (information?.result) {
                 setInformationUser(information?.info);
-
-                setIsLoading(false)
+            } else {
+                setInformationUser('')
+                setDataHeader(CustomDataHeader);
             }
+            setIsLoading(false)
         }
         if (getCookie) {
             getCookie && getInfoUser()
