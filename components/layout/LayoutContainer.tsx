@@ -20,6 +20,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import ButtonToTop from '../button/ButtonToTop';
 import { usePathname } from 'next/navigation';
+import useAuthenticationAPI from '@/services/auth/auth.services';
+import { useAuth } from '@/hooks/useAuth';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -32,13 +34,11 @@ const LayoutContainer = ({
 }: {
     children: React.ReactNode
 }) => {
-    const { isVisibleMobile, onResizeMobile, onCloseResizeMobile, isVisibleTablet, onResizeTablet, onCloseResizeTablet } = useResize()
     const pathname = usePathname()
-    const [isHeaderVisible, setIsHeaderVisible] = useState<boolean>(true);
-    const [prevScrollY, setPrevScrollY] = useState<number>(0);
-    const [isHidingHeader, setIsHidingHeader] = useState<boolean>(false);
 
-    console.log('pathname', pathname);
+
+
+    const { isVisibleMobile, onResizeMobile, onCloseResizeMobile, isVisibleTablet, onResizeTablet, onCloseResizeTablet } = useResize()
 
 
     useEffect(() => {
@@ -54,36 +54,6 @@ const LayoutContainer = ({
             once: true
         });
     }, []);
-
-    // useEffect(() => {
-    //     const handleScroll = () => {
-    //         const topOffset = window.scrollY || document.documentElement.scrollTop;
-
-    //         console.log('topOffset', topOffset);
-
-
-    //         if (isHidingHeader) {
-    //             // Nếu đang ẩn header, không cập nhật prevScrollY
-    //             setIsHidingHeader(false);
-    //         } else {
-    //             if (topOffset > prevScrollY && topOffset > 60) {
-    //                 setIsHeaderVisible(false);
-    //                 setIsHidingHeader(true);
-    //             } else if (topOffset < prevScrollY || topOffset <= 60) {
-    //                 setIsHeaderVisible(true);
-    //             }
-
-    //             setPrevScrollY(topOffset);
-    //         }
-    //     };
-
-    //     window.addEventListener('scroll', handleScroll);
-
-    //     return () => {
-    //         window.removeEventListener('scroll', handleScroll);
-    //     };
-    // }, [prevScrollY, isHidingHeader]);
-
     // ẩn/hiện khi chuyển qua màn hình nhỏ khi không dùng chung div để tránh xung đột 
     useEffect(() => {
         // Kiểm tra kích thước màn hình và cập nhật trạng thái isVisible

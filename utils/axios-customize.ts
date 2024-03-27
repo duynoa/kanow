@@ -1,8 +1,8 @@
 import axios from "axios";
 import Cookie from "js-cookie";
 
-// const baseUrl = "http://192.168.1.178:8080/api/";
-const baseUrl = "https://system.kanow.vn/api/";
+const baseUrl = process.env.NEXT_PUBLIC_URL_API;
+// const baseUrl = "https://system.kanow.vn/api/";
 
 const instance = axios.create({
     baseURL: baseUrl,
@@ -11,9 +11,7 @@ const instance = axios.create({
 });
 
 instance.defaults.headers.common = {
-    Authorization: `Bearer ${
-        Cookie.get("myCookie") === undefined ? "kanow" : Cookie.get("myCookie")
-    }`,
+    Authorization: `Bearer ${Cookie.get("myCookie") === undefined ? "kanow" : Cookie.get("myCookie")}`,
 };
 
 // Add a request interceptor
