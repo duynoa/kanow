@@ -1,4 +1,4 @@
-import { IDataPromotion } from "@/types/IPromotion";
+import { IInfoPromotion } from "@/types/Cars/IPromotions";
 import { addDays, setHours, setMinutes } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { create } from "zustand";
@@ -7,15 +7,15 @@ import { create } from "zustand";
 interface IOpenDialogPromotion {
     openDialogPromotion: boolean;
     setOpenDialogPromotion: (key: any) => void;
-    dataPromotion: IDataPromotion[];
-    setDataPromotion: (dataPromotion: any) => void
+    dataPromotions: IInfoPromotion[];
+    setDataPromotions: (dataPromotions: any[]) => void
 }
 
 export const useDialogPromotion = create<IOpenDialogPromotion>((set) => ({
     openDialogPromotion: false,
-    dataPromotion: [],
+    dataPromotions: [],
     setOpenDialogPromotion: (key: any) => set((state) => ({ openDialogPromotion: key })),
-    setDataPromotion: (key: any) => set((state) => ({ dataPromotion: key })),
+    setDataPromotions: (key: any[]) => set((state) => ({ dataPromotions: key })),
 }));
 
 // dialog calendar

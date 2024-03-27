@@ -1,3 +1,5 @@
+import { IInfoPromotion } from "./IPromotions";
+
 interface IDataCardCar {
     id: string;
     address: string;
@@ -100,19 +102,13 @@ interface IDataDetailCar {
     price: {
         price_before_promotion: number;
         price_after_promotion: number;
-
-        percent_deposit: string;
-        percent_insurance: string;
-        percent_service: string;
-        number_deposit_car: string;
-
-        rent_cost: number;
+        
         rent_cost_day: number;
         price_insurance_day: number;
-        
-        // tổng tạm tính (chưa tính % khuyến mãi) 
-        temp_total_amount:number;
-        total_amount:number
+
+        // tổng tạm tính (chưa tính % khuyến mãi)
+        temp_total_amount: number;
+        total_amount: number;
     };
     promotion: {
         id: number;
@@ -188,6 +184,7 @@ interface IDataDetailCar {
 
 interface IInitialStateDetailCar {
     dataDetailCar: IDataDetailCar;
+    listPromotions: IInfoPromotion[];
     onSuccess: {
         onSuccessPage: boolean;
     };

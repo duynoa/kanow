@@ -20,6 +20,7 @@ import { FormatNumberDot, FormatNumberToThousands } from '@/components/format/Fo
 import { IInitialStateDetailCar } from '@/types/Cars/ICars'
 import { ActionTooltip } from '@/components/tooltip/ActionTooltip'
 import { useResize } from '@/hooks/useResize'
+import { getListPromotions } from '@/services/cars/promotion.services'
 
 
 type Props = {
@@ -31,12 +32,12 @@ const PaymentCar = ({
     isState,
     queryKeyIsState
 }: Props) => {
-    const { setOpenDialogPromotion, setDataPromotion } = useDialogPromotion()
+    const { dataPromotions, setOpenDialogPromotion, setDataPromotions } = useDialogPromotion()
     const { date, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isVisibleTablet } = useResize()
 
-    const dataPromotion = [
+    const dataPromotionádasd = [
         {
             id: uuidv4(),
             code: 'BANMOI',
@@ -67,14 +68,25 @@ const PaymentCar = ({
         },
     ]
 
-    const handleOpenDialog = (type: string) => {
+    const handleOpenDialog = async (type: string) => {
         if (type === 'promotion') {
             setOpenDialogPromotion(true)
-            setDataPromotion(dataPromotion)
+            if (dataPromotions.length === 0) {
+                const dataSearch = {
+                    code: ""
+                }
+                const { data } = await getListPromotions(dataSearch)
+                console.log('data :', data);
+                setDataPromotions(data?.data)
+            }
+
         } else if (type === 'calendar') {
             setOpenDialogCalendar(true)
         }
     }
+
+    console.log('dataPromotions', dataPromotions);
+
 
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
@@ -274,7 +286,7 @@ const PaymentCar = ({
                             Tổng tạm tính
                         </div>
                         <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                            {FormatNumberDot(692000)}<span>đ/2 ngày</span>
+                            {FormatNumberDot(isState?.dataDetailCar?.price?.temp_total_amount)}<span>đ/ngày</span>
                         </div>
                     </div>
                 </div>
@@ -285,9 +297,13 @@ const PaymentCar = ({
                             Khuyến mãi
                         </div>
 
-                        <RadioGroup defaultValue="comfortable" className='flex flex-col gap-3'>
+                        <RadioGroup defaultValue="default" className='flex flex-col gap-3'>
                             <div className="flex items-center space-x-2 caret-transparent">
-                                <RadioGroupItem value="default" id="r1" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
+                                <RadioGroupItem
+                                    value="default"
+                                    id="r1"
+                                    className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD]'
+                                />
                                 <Label htmlFor="r1" className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
                                     <div className='flex flex-col'>
                                         <div className='flex items-center gap-1'>
@@ -303,17 +319,22 @@ const PaymentCar = ({
                                             </div>
                                         </div>
                                         <div className='text-[#6F7689] 3xl:text-base xl:text-sm text-xs'>
-                                            Giảm 160k trên đơn giá
+                                            Giảm {FormatNumberDot(isState?.dataDetailCar?.promotion[0]?.price_promotion ? isState?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ trên đơn giá
                                         </div>
                                     </div>
                                     <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
-                                        -{FormatNumberToThousands(160000)}
+                                        -{FormatNumberDot(isState?.dataDetailCar?.promotion[0]?.price_promotion ? isState?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ
                                     </div>
                                 </Label>
                             </div>
                             <div className="flex items-center space-x-2 caret-transparent">
-                                <RadioGroupItem onClick={() => handleOpenDialog('promotion')} value="comfortable" id="r2" className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD] ' />
-                                <Label htmlFor="r2" className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
+                                <RadioGroupItem
+                                    id="promotion"
+                                    value="promotion"
+                                    onClick={() => handleOpenDialog('promotion')}
+                                    className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD]'
+                                />
+                                <Label htmlFor="promotion" className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
                                     <div className='flex flex-col'>
                                         <div className='flex items-center gap-1'>
                                             <Image
@@ -339,7 +360,7 @@ const PaymentCar = ({
                             Thành tiền
                         </div>
                         <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                            {FormatNumberDot(592000)}<span>đ/2 ngày</span>
+                            {FormatNumberDot(isState?.dataDetailCar?.price?.total_amount ? isState?.dataDetailCar?.price?.total_amount : 0)}<span>đ/ngày</span>
                         </div>
                     </div>
                 </div>
