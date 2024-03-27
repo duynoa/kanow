@@ -68,12 +68,6 @@ const DetailCar = ({ params }: Props) => {
                 price_before_promotion: 0,
                 price_after_promotion: 0,
 
-                percent_deposit: "",
-                percent_insurance: "",
-                percent_service: "",
-                number_deposit_car: "",
-
-                rent_cost: 0,
                 rent_cost_day: 0,
                 price_insurance_day: 0,
                 temp_total_amount: 0,
@@ -112,6 +106,7 @@ const DetailCar = ({ params }: Props) => {
                 car_price_policy: "",
             },
         },
+        listPromotions: [],
         onSuccess: {
             onSuccessPage: false
         }
@@ -741,7 +736,10 @@ const DetailCar = ({ params }: Props) => {
             </div>
 
             <DialogReviewImage />
-            <DialogPromotion />
+            <DialogPromotion
+                isState={isState}
+                queryKeyIsState={queryKeyIsState}
+            />
             <DialogCalendar />
             <DialogAnswerPolicy
                 isState={isState}

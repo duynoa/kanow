@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 
 import {
     Dialog,
@@ -21,19 +21,43 @@ import { Input } from "../ui/input";
 import { PiWarningCircleBold } from "react-icons/pi";
 import { FormatNumberToThousands } from "../format/FormatNumber";
 import { Button } from "../ui/button";
+import { IInitialStateDetailCar } from "@/types/Cars/ICars";
+import { getListPromotions } from "@/services/cars/promotion.services";
 
 type Props = {
+    isState: IInitialStateDetailCar,
+    queryKeyIsState: (key: any) => void
 }
 
-export function DialogPromotion({ }: Props) {
-    const { openDialogPromotion, setOpenDialogPromotion, dataPromotion, setDataPromotion } = useDialogPromotion()
+export function DialogPromotion({ isState, queryKeyIsState }: Props) {
+    const { openDialogPromotion, setOpenDialogPromotion, dataPromotions, setDataPromotions } = useDialogPromotion()
+
+    const memoizedDataPromotions = useMemo(() => dataPromotions, [dataPromotions])
 
     const handleOpenChangeModal = () => {
         setOpenDialogPromotion(!openDialogPromotion)
-        setTimeout(() => {
-            setDataPromotion([])
-        }, 200);
     }
+
+    // const fetchListPromotions = async () => {
+    //     try {
+    //         const data = {
+    //             code: ""
+    //         }
+    //         const res = await getListPromotions(data)
+
+    //         console.log('res : ', res);
+
+    //     } catch (err) {
+    //         throw err
+    //     }
+    // }
+
+    // useEffect(() => {
+
+    //     fetchListPromotions()
+    // }, [])
+
+
 
     return (
         <Dialog modal open={openDialogPromotion} onOpenChange={handleOpenChangeModal}>
@@ -61,63 +85,79 @@ export function DialogPromotion({ }: Props) {
                 </div>
                 <div className='flex flex-col gap-3 md:px-6 px-3'>
                     {
-                        dataPromotion && dataPromotion.map((item) => (
-                            <div key={item.id} className='flex items-center justify-between'>
-                                {
-                                    item.expireTime === 0 ?
-                                        <>
-                                            <div className='flex items-center gap-2 cursor-not-allowed'>
-                                                <TbDiscount2 className='text-6xl text-[#E0E0E0]' />
-                                                <div className='flex flex-col'>
-                                                    <div className='text-sm uppercase font-semibold text-[#E0E0E0]'>
-                                                        {item.code ? item.code : ''}
-                                                    </div>
-                                                    <div className='text-sm text-[#E0E0E0]'>
-                                                        {item.discountPercent === 0 ? `Giảm ${FormatNumberToThousands(item.discountMax)}` : `Giảm ${item.discountPercent} (tối đa ${FormatNumberToThousands(item.discountMax)})`}
-                                                    </div>
-                                                    <div className='flex items-center gap-1 text-[#E0E0E0] '>
-                                                        <PiWarningCircleBold className='size-4 min-w-[16px]' />
-                                                        <div className="text-xs">
-                                                            {item.expireTimeDescription ? item.expireTimeDescription : ''}
+                        dataPromotions && dataPromotions.map((item, index) => {
+                            // Lấy ngày hiện tại
+                            const currentDate = new Date();
+
+                            // Chuyển đổi chuỗi ngày bắt đầu và ngày kết thúc sang đối tượng Date
+                            const startDate = new Date(item.date_start);
+                            const endDate = new Date(item.date_end);
+
+                            // So sánh xem currentDate có nằm trong khoảng từ startDate đến endDate không
+                            const isCurrentDateWithinRange = item.date_start && item.date_start ? currentDate >= startDate && currentDate <= endDate : true
+                            console.log('isCurrentDateWithinRange', isCurrentDateWithinRange);
+                            console.log('index', index);
+
+
+                            return (
+                                <div key={item.id} className='flex items-center justify-between'>
+                                    {
+                                        item.indefinite == 1 || item.indefinite == 0 && isCurrentDateWithinRange ?
+                                            <>
+                                                <div className='flex items-center gap-3'>
+                                                    <TbDiscount2 className='text-6xl min-w-[60px] text-[#2FB9BD]' />
+                                                    <div className='flex flex-col'>
+                                                        <div className='text-sm uppercase font-semibold'>
+                                                            {item.code ? item.code : ''}
+                                                        </div>
+                                                        <div className='text-sm'>
+                                                            {item.type === 1 ? `Giảm ${FormatNumberToThousands(item.cash)}` : `Giảm ${item.percent} (tối đa ${FormatNumberToThousands(item.cash)})`}
+                                                        </div>
+                                                        <div className='flex items-center gap-1 text-[#FA3434] '>
+                                                            <PiWarningCircleBold className='size-4 min-w-[16px]' />
+                                                            <div className="text-xs">
+                                                                {item.detail ? item?.detail : ''}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div>
-                                                <Button
-                                                    disabled
-                                                    className='py-3 px-6 rounded-lg bg-[#E0E0E0] hover:bg-[#E0E0E0]/80 text-[#7698BP] caret-transparent'
-                                                >
-                                                    Áp dụng
-                                                </Button>
-                                            </div>
-                                        </>
-                                        :
-                                        <>
-                                            <div className='flex items-center gap-2'>
-                                                <TbDiscount2 className='text-6xl min-w-[60px] text-[#2FB9BD]' />
-                                                <div className='flex flex-col'>
-                                                    <div className='text-sm uppercase font-semibold'>
-                                                        {item.code ? item.code : ''}
-                                                    </div>
-                                                    <div className='text-sm'>
-                                                        {item.discountPercent === 0 ? `Giảm ${FormatNumberToThousands(item.discountMax)}` : `Giảm ${item.discountPercent} (tối đa ${FormatNumberToThousands(item.discountMax)})`}
-                                                    </div>
-                                                    <div className='flex items-center gap-1 text-[#FA3434] '>
-                                                        <PiWarningCircleBold className='size-4 min-w-[16px]' />
-                                                        <div className="text-xs">
-                                                            {item.expireTimeDescription ? item?.expireTimeDescription : ''}
+                                                <div>
+                                                    <Button className='py-3 px-6 rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80'>Áp dụng</Button>
+                                                </div>
+                                            </>
+                                            :
+                                            <>
+                                                <div className='flex items-center gap-3 cursor-not-allowed'>
+                                                    <TbDiscount2 className='text-6xl text-[#E0E0E0]' />
+                                                    <div className='flex flex-col'>
+                                                        <div className='text-sm uppercase font-semibold text-[#E0E0E0]'>
+                                                            {item.code ? item.code : ''}
+                                                        </div>
+                                                        <div className='text-sm text-[#E0E0E0]'>
+                                                            {item.type === 1 ? `Giảm ${FormatNumberToThousands(item.cash)}` : `Giảm ${item.percent}% (tối đa ${FormatNumberToThousands(item.cash)})`}
+                                                        </div>
+                                                        <div className='flex items-center gap-1 text-[#E0E0E0] '>
+                                                            <PiWarningCircleBold className='size-4 min-w-[16px]' />
+                                                            <div className="text-xs">
+                                                                {item.detail ? item.detail : ''}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div>
-                                                <Button className='py-3 px-6 rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80'>Áp dụng</Button>
-                                            </div>
-                                        </>
-                                }
-                            </div>
-                        ))
+                                                <div>
+                                                    <Button
+                                                        disabled
+                                                        className='py-3 px-6 rounded-lg bg-[#E0E0E0] hover:bg-[#E0E0E0]/80 text-[#7698BP] caret-transparent'
+                                                    >
+                                                        Áp dụng
+                                                    </Button>
+                                                </div>
+                                            </>
+
+                                    }
+                                </div>
+                            )
+                        })
                     }
                 </div>
             </DialogContent>
