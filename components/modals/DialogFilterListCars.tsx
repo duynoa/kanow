@@ -35,7 +35,7 @@ type Props = {
 }
 
 export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
-    const { openDialogFilterListCars, setOpenDialogFilterListCars, setDataFilterListCars, type } = useDialogFilterListCars()
+    const { openDialogFilterListCars, setOpenDialogFilterListCars, type } = useDialogFilterListCars()
 
     const handleOpenChangeModal = (type?: string) => {
         if (type === "type_car_search") {
