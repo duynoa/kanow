@@ -23,6 +23,7 @@ import useAuthenticationAPI from "@/services/auth/auth.services";
 import { useAuth } from "@/hooks/useAuth";
 import { toastCore } from "@/lib/toast";
 import { useCookie } from "@/hooks/useCookie";
+import { Label } from "../ui/label";
 
 type Props = {
     children: React.ReactNode;
@@ -244,7 +245,7 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                                     control={form.control}
                                     name="phoneNumber"
                                     rules={{
-                                        required: "Vui lòng nhập họ và tên",
+                                        required: "Vui lòng nhập số điện thoại!",
                                     }}
                                     render={({ field, fieldState }) => {
                                         return (
@@ -277,7 +278,7 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                                     control={form.control}
                                     name="fullName"
                                     rules={{
-                                        required: "Nhập họ và tên",
+                                        required: "Nhập họ và tên!",
                                     }}
                                     render={({ field, fieldState }) => {
                                         return (
@@ -428,17 +429,19 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
 
                                 <div className="flex items-center space-x-2">
                                     <Checkbox
-                                        id="check"
+                                        id="ok"
                                         className="size-4 text-white border-[#9EA1AE] data-[state=checked]:border-[#2FB9BD] data-[state=checked]:bg-[#2FB9BD] data-[state=checked]:text-white"
                                         checked={checkPolicy}
                                         onCheckedChange={(checked: boolean) => setCheckPolicy(checked)}
                                     />
-                                    <label
-                                        htmlFor="check"
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 caret-transparent"
+                                    <Label
+                                        htmlFor="ok"
+                                        onClick={() => setCheckPolicy(!checkPolicy)}
+                                        className="text-sm cursor-pointer font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 caret-transparent"
                                     >
                                         Tôi đồng ý với điều khoản và chính sách
-                                    </label>
+                                        <span className="text-[#F15A5A]">*</span>
+                                    </Label>
                                 </div>
                                 <div className="flex flex-col items-center gap-2">
                                     <Button
