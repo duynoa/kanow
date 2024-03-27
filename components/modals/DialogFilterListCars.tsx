@@ -135,7 +135,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                 const { data } = await getListCars(1, limit, query)
 
                 if (data && data.data && data.base) {
-                    // let customData: any[] = data?.data?.map((item: any) => ({
+                    // let customDataListCars: any[] = data?.data?.map((item: any) => ({
                     //     id: item?.id,
                     //     address: `${item?.district}, ${item?.province}`,
                     //     image_car: item?.image_car?.map((image: any) => ({
@@ -162,10 +162,10 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                     //     promotion: item?.promotion
                     // })) || []
 
-                    let { customData } = CustomDataListCars(data)
+                    let { customDataListCars } = CustomDataListCars(data)
 
                     queryKeyIsState({
-                        listCardCars: customData,
+                        listCardCars: customDataListCars,
                         page: 2,
                         next: data?.links?.next,
                         dataParams: {
@@ -215,7 +215,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                 const { data } = await getListCars(1, limit, query)
 
                 if (data && data.data && data.base) {
-                    // let customData: any[] = data?.data?.map((item: any) => ({
+                    // let customDataListCars: any[] = data?.data?.map((item: any) => ({
                     //     id: item?.id,
                     //     address: `${item?.district}, ${item?.province}`,
                     //     image_car: item?.image_car?.map((image: any) => ({
@@ -242,10 +242,10 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                     //     promotion: item?.promotion
                     // })) || []
 
-                    let { customData } = CustomDataListCars(data)
+                    let { customDataListCars } = CustomDataListCars(data)
 
                     queryKeyIsState({
-                        listCardCars: customData,
+                        listCardCars: customDataListCars,
                         page: 2,
                         next: data?.links?.next,
                         dataParams: {
@@ -296,10 +296,10 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
         const { data } = await getListCars(1, limit, query)
 
         if (data && data.data && data.base) {
-            let { customData } = CustomDataListCars(data)
+            let { customDataListCars } = CustomDataListCars(data)
 
             queryKeyIsState({
-                listCardCars: customData,
+                listCardCars: customDataListCars,
                 page: 2,
                 next: data?.links?.next
             })

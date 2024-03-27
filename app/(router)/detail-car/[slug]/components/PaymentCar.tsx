@@ -37,47 +37,21 @@ const PaymentCar = ({
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isVisibleTablet } = useResize()
 
-    const dataPromotionádasd = [
-        {
-            id: uuidv4(),
-            code: 'BANMOI',
-            discountMax: 80000,
-            discountPercent: 8,
-            title: 'banmoi',
-            expireTime: 1,
-            expireTimeDescription: "Hết hạn sau 1 ngày",
-
-        },
-        {
-            id: uuidv4(),
-            code: 'BANMOI',
-            discountMax: 120000,
-            discountPercent: 0,
-            title: 'banmoi',
-            expireTime: 1,
-            expireTimeDescription: "Hết hạn sau 1 ngày"
-        },
-        {
-            id: uuidv4(),
-            code: 'BANMOI',
-            discountMax: 100000,
-            discountPercent: 0,
-            title: 'banmoi',
-            expireTime: 0,
-            expireTimeDescription: "Mã khuyến mãi không khả dụng!"
-        },
-    ]
-
     const handleOpenDialog = async (type: string) => {
-        if (type === 'promotion') {
+        if (type === 'custom_promotion') {
             setOpenDialogPromotion(true)
             if (dataPromotions.length === 0) {
-                const dataSearch = {
-                    code: ""
+                try {
+                    const dataSearch = {
+                        code: ""
+                    }
+                    const { data } = await getListPromotions(dataSearch)
+                    if (data && data.data) {
+                        setDataPromotions(data?.data)
+                    }
+                } catch (err) {
+                    throw err
                 }
-                const { data } = await getListPromotions(dataSearch)
-                console.log('data :', data);
-                setDataPromotions(data?.data)
             }
 
         } else if (type === 'calendar') {
@@ -85,8 +59,22 @@ const PaymentCar = ({
         }
     }
 
-    console.log('dataPromotions', dataPromotions);
+    const handleChangePromotions = () => {
+        queryKeyIsState({
+            infoPromotion: {
+                selectPromotion: "0"
+            },
+            dataDetailCar: {
+                ...isState?.dataDetailCar,
+                price: {
+                    ...isState?.dataDetailCar?.price,
+                    total_amount: isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion
+                }
+            }
+        })
+    }
 
+    console.log("isState... : ", isState)
 
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
@@ -110,9 +98,14 @@ const PaymentCar = ({
 
             <div className='flex flex-col 3xl:gap-6 gap-4 xl:p-6 p-4 bg-white border rounded-2xl'>
                 <div className='flex items-center gap-1'>
-                    <div className='3xl:text-4xl md:text-3xl text-2xl text-[#D7D9E0] font-medium line-through'>
-                        {isState?.dataDetailCar?.price?.price_before_promotion ? FormatNumberToThousands(isState?.dataDetailCar?.price?.price_before_promotion) : ""}
-                    </div>
+                    {
+                        isState?.dataDetailCar?.promotion?.length > 0 ?
+                            <div className='3xl:text-4xl md:text-3xl text-2xl text-[#D7D9E0] font-medium line-through'>
+                                {isState?.dataDetailCar?.price?.price_before_promotion ? FormatNumberToThousands(isState?.dataDetailCar?.price?.price_before_promotion) : ""}
+                            </div>
+                            :
+                            null
+                    }
                     <div className='flex'>
                         <span className='3xl:text-4xl md:text-3xl text-2xl text-[#1AC5CA] font-bold'>
                             {isState?.dataDetailCar?.price?.price_after_promotion ? FormatNumberToThousands(isState?.dataDetailCar?.price?.price_after_promotion) : ""}
@@ -297,44 +290,55 @@ const PaymentCar = ({
                             Khuyến mãi
                         </div>
 
-                        <RadioGroup defaultValue="default" className='flex flex-col gap-3'>
-                            <div className="flex items-center space-x-2 caret-transparent">
-                                <RadioGroupItem
-                                    value="default"
-                                    id="r1"
-                                    className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD]'
-                                />
-                                <Label htmlFor="r1" className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
-                                    <div className='flex flex-col'>
-                                        <div className='flex items-center gap-1'>
-                                            <Image
-                                                src='/icon/icon_ticket_discount_red.svg'
-                                                alt="ticket"
-                                                width={80}
-                                                height={80}
-                                                className='3xl:w-6 3xl:max-w-6 3xl:h-6 w-5 max-w-5 h-5 object-contain'
-                                            />
-                                            <div className='w-[90%] max-w-[90%] 3xl:text-lg xl:text-base text-sm'>
-                                                Chương trình giảm giá
+                        <RadioGroup
+                            className='flex flex-col gap-3'
+                            value={isState?.infoPromotion?.selectPromotion}
+                        >
+                            {
+                                isState?.dataDetailCar?.promotion?.length > 0 ?
+                                    <div className="flex items-center space-x-2 caret-transparent">
+                                        <RadioGroupItem
+                                            id="0"
+                                            value={isState?.infoPromotion?.selectPromotion}
+                                            checked={isState?.infoPromotion?.selectPromotion === "0" ? true : false}
+                                            onClick={() => handleChangePromotions()}
+                                            className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD]'
+                                        />
+                                        <Label htmlFor="0" className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
+                                            <div className='flex flex-col'>
+                                                <div className='flex items-center gap-1'>
+                                                    <Image
+                                                        src='/icon/icon_ticket_discount_red.svg'
+                                                        alt="ticket"
+                                                        width={80}
+                                                        height={80}
+                                                        className='3xl:w-6 3xl:max-w-6 3xl:h-6 w-5 max-w-5 h-5 object-contain'
+                                                    />
+                                                    <div className='w-[90%] max-w-[90%] 3xl:text-lg xl:text-base text-sm'>
+                                                        Chương trình giảm giá
+                                                    </div>
+                                                </div>
+                                                <div className='text-[#6F7689] 3xl:text-base xl:text-sm text-xs'>
+                                                    Giảm {FormatNumberDot(isState?.dataDetailCar?.promotion[0]?.price_promotion ? isState?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ trên đơn giá
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className='text-[#6F7689] 3xl:text-base xl:text-sm text-xs'>
-                                            Giảm {FormatNumberDot(isState?.dataDetailCar?.promotion[0]?.price_promotion ? isState?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ trên đơn giá
-                                        </div>
+                                            <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
+                                                -{FormatNumberDot(isState?.dataDetailCar?.promotion[0]?.price_promotion ? isState?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ
+                                            </div>
+                                        </Label>
                                     </div>
-                                    <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
-                                        -{FormatNumberDot(isState?.dataDetailCar?.promotion[0]?.price_promotion ? isState?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ
-                                    </div>
-                                </Label>
-                            </div>
+                                    :
+                                    null
+                            }
                             <div className="flex items-center space-x-2 caret-transparent">
                                 <RadioGroupItem
-                                    id="promotion"
-                                    value="promotion"
-                                    onClick={() => handleOpenDialog('promotion')}
+                                    id="1"
+                                    value={isState?.infoPromotion?.selectPromotion}
+                                    checked={isState?.infoPromotion?.selectPromotion === "1" ? true : false}
+                                    onClick={() => handleOpenDialog('custom_promotion')}
                                     className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD]'
                                 />
-                                <Label htmlFor="promotion" className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
+                                <Label htmlFor="1" className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
                                     <div className='flex flex-col'>
                                         <div className='flex items-center gap-1'>
                                             <Image

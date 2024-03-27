@@ -165,10 +165,10 @@ const SearchCars = (props: Props) => {
                 const { data } = await getListCars(isState.page, isState.limit.limitAllCars)
 
                 if (data && data.data && data.base) {
-                    let { customData } = CustomDataListCars(data)
+                    let { customDataListCars } = CustomDataListCars(data)
 
                     queryKeyIsState({
-                        listCardCars: customData,
+                        listCardCars: customDataListCars,
                         page: isState.page + 1,
                         next: data?.links?.next,
                         onSuccess: {
@@ -234,10 +234,10 @@ const SearchCars = (props: Props) => {
                             const { data } = await getListCars(isState.page, isState.limit.limitAllCars, query);
 
                             if (data && data?.links && data?.data && data?.base) {
-                                let { customData } = CustomDataListCars(data)
+                                let { customDataListCars } = CustomDataListCars(data)
 
                                 queryKeyIsState({
-                                    listCardCars: [...(isState.listCardCars || []), ...customData],
+                                    listCardCars: [...(isState.listCardCars || []), ...customDataListCars],
                                     page: isState.page + 1,
                                     next: data?.links?.next
                                 });
@@ -337,10 +337,10 @@ const SearchCars = (props: Props) => {
         const { data } = await getListCars(1, isState.limit.limitAllCars, query)
 
         if (data && data.data && data.base) {
-            let { customData } = CustomDataListCars(data)
+            let { customDataListCars } = CustomDataListCars(data)
 
             queryKeyIsState({
-                listCardCars: customData,
+                listCardCars: customDataListCars,
                 page: 2,
                 next: data?.links?.next,
                 dataParams: {
@@ -395,10 +395,10 @@ const SearchCars = (props: Props) => {
             const { data } = await getListCars(1, limit, query)
 
             if (data && data.data && data.base) {
-                let { customData } = CustomDataListCars(data)
+                let { customDataListCars } = CustomDataListCars(data)
 
                 queryKeyIsState({
-                    listCardCars: customData,
+                    listCardCars: customDataListCars,
                     page: 2,
                     next: data?.links?.next,
                     dataParams: {
@@ -443,10 +443,10 @@ const SearchCars = (props: Props) => {
             const { data } = await getListCars(1, limit, query)
 
             if (data && data.data && data.base) {
-                let { customData } = CustomDataListCars(data)
+                let { customDataListCars } = CustomDataListCars(data)
 
                 queryKeyIsState({
-                    listCardCars: customData,
+                    listCardCars: customDataListCars,
                     page: 2,
                     next: data?.links?.next,
                     dataParams: {
@@ -491,10 +491,10 @@ const SearchCars = (props: Props) => {
             const { data } = await getListCars(1, limit, query)
 
             if (data && data.data && data.base) {
-                let { customData } = CustomDataListCars(data)
+                let { customDataListCars } = CustomDataListCars(data)
 
                 queryKeyIsState({
-                    listCardCars: customData,
+                    listCardCars: customDataListCars,
                     page: 2,
                     next: data?.links?.next,
                     dataParams: {
@@ -539,10 +539,10 @@ const SearchCars = (props: Props) => {
             const { data } = await getListCars(1, limit, query)
 
             if (data && data.data && data.base) {
-                let { customData } = CustomDataListCars(data)
+                let { customDataListCars } = CustomDataListCars(data)
 
                 queryKeyIsState({
-                    listCardCars: customData,
+                    listCardCars: customDataListCars,
                     page: 2,
                     next: data?.links?.next,
                     dataParams: {
@@ -587,10 +587,10 @@ const SearchCars = (props: Props) => {
             const { data } = await getListCars(1, limit, query)
 
             if (data && data.data && data.base) {
-                let { customData } = CustomDataListCars(data)
+                let { customDataListCars } = CustomDataListCars(data)
 
                 queryKeyIsState({
-                    listCardCars: customData,
+                    listCardCars: customDataListCars,
                     page: 2,
                     next: data?.links?.next,
                     dataParams: {
@@ -635,10 +635,10 @@ const SearchCars = (props: Props) => {
             const { data } = await getListCars(1, limit, query)
 
             if (data && data.data && data.base) {
-                let { customData } = CustomDataListCars(data)
+                let { customDataListCars } = CustomDataListCars(data)
 
                 queryKeyIsState({
-                    listCardCars: customData,
+                    listCardCars: customDataListCars,
                     page: 2,
                     next: data?.links?.next,
                     dataParams: {

@@ -1,10 +1,17 @@
+import { AxiosRequestConfig } from "axios";
+
 import axios from "../../utils/axios-customize";
 
 // post update favorite heart car
-const getListPromotions = (data: any) => {
+const getListPromotions = (param: any) => {
+    let config: AxiosRequestConfig = {
+        params: {
+            ...param, // Nối các tham số trong param object
+        },
+    };
     return axios.get(
         `/promotion/getListPromotion?current_page=1&per_page=10`,
-        data
+        config
     );
 };
 

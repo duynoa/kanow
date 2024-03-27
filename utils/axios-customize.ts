@@ -11,9 +11,8 @@ const instance = axios.create({
 });
 
 instance.defaults.headers.common = {
-    Authorization: `Bearer ${
-        Cookie.get("myCookie") === undefined ? "kanow" : Cookie.get("myCookie")
-    }`,
+    Authorization: `Bearer ${Cookie.get("myCookie") === undefined ? "kanow" : Cookie.get("myCookie")
+        }`,
 };
 
 // Add a request interceptor
