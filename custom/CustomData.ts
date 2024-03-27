@@ -2,7 +2,7 @@ import { IDataDetailCar } from "@/types/Cars/ICars";
 
 // custom in list cars
 export const CustomDataListCars = (data: any) => {
-    let customData = data?.data?.map((item: any) => ({
+    let customDataListCars = data?.data?.map((item: any) => ({
         id: item?.id,
         address: `${item?.district}, ${item?.province}`,
         image_car: item?.image_car?.map((image: any) => ({
@@ -32,7 +32,7 @@ export const CustomDataListCars = (data: any) => {
                 : 0,
         promotion: item?.promotion,
     }));
-    return { customData };
+    return { customDataListCars };
 };
 
 // data detail car

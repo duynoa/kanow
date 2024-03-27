@@ -18,18 +18,6 @@ const getListCars = (
 
     return axios.get(`/car/getList`, config);
 };
-// const getListCars = (
-//     page: string | number,
-//     limit: string | number,
-//     query?: string,
-
-// ) => {
-//     return axios.get(
-//         `/car/getList?current_page=${page}&per_page=${limit}${
-//             query ? `&${query}` : ""
-//         }`
-//     );
-// };
 
 // lấy danh sách hãng xe
 const getListAutomaker = () => {
@@ -51,10 +39,21 @@ const postUpdateFavoriteHeartCar = (data: any) => {
     return axios.post(`/car/changeFavouriteCar`, data);
 };
 
+// api related vehicle (Xe liên quan)
+const getListCarsRelated = (param?: any) => {
+    let config: AxiosRequestConfig = {
+        params: {
+            ...param, // Nối các tham số trong param object
+        },
+    };
+    return axios.get(`/car/getListCarRelated`, config)
+}
+
 export {
     getListCars,
     getListAutomaker,
     getListTypeCars,
     getDataDetailCar,
     postUpdateFavoriteHeartCar,
+    getListCarsRelated
 };

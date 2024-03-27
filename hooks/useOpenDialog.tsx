@@ -8,14 +8,14 @@ interface IOpenDialogPromotion {
     openDialogPromotion: boolean;
     setOpenDialogPromotion: (key: any) => void;
     dataPromotions: IInfoPromotion[];
-    setDataPromotions: (dataPromotions: any[]) => void
+    setDataPromotions: (dataPromotions: IInfoPromotion[]) => void
 }
 
 export const useDialogPromotion = create<IOpenDialogPromotion>((set) => ({
     openDialogPromotion: false,
     dataPromotions: [],
-    setOpenDialogPromotion: (key: any) => set((state) => ({ openDialogPromotion: key })),
-    setDataPromotions: (key: any[]) => set((state) => ({ dataPromotions: key })),
+    setOpenDialogPromotion: (key: boolean) => set((state) => ({ openDialogPromotion: key })),
+    setDataPromotions: (key: IInfoPromotion[]) => set((state) => ({ dataPromotions: key })),
 }));
 
 // dialog calendar

@@ -1,6 +1,11 @@
 import { IInfoPromotion } from "./IPromotions";
 
 interface IDataCardCar {
+    car_owner: {
+        avatar: string;
+        fullname: string;
+        id: string;
+    };
     id: string;
     address: string;
     image_car: {
@@ -28,7 +33,12 @@ interface IDataCardCar {
     total_trip: number;
     price_before_promotion: number;
     price_after_promotion: number;
-    promotion: [];
+    promotion: {
+        id: number;
+        name: string;
+        percent: number;
+        price_promotion: number;
+    }[];
 }
 
 interface ITypesCar {
@@ -102,7 +112,7 @@ interface IDataDetailCar {
     price: {
         price_before_promotion: number;
         price_after_promotion: number;
-        
+
         rent_cost_day: number;
         price_insurance_day: number;
 
@@ -184,7 +194,10 @@ interface IDataDetailCar {
 
 interface IInitialStateDetailCar {
     dataDetailCar: IDataDetailCar;
-    listPromotions: IInfoPromotion[];
+    infoPromotion: {
+        selectPromotion: string,
+    },
+    listCarsRelated: IDataCardCar[],
     onSuccess: {
         onSuccessPage: boolean;
     };

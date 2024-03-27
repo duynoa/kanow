@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react"
+import React, { useEffect, useState, useMemo } from "react"
 
 import {
     Dialog,
@@ -24,6 +24,9 @@ import { Button } from "../ui/button";
 import { IInitialStateDetailCar } from "@/types/Cars/ICars";
 import { getListPromotions } from "@/services/cars/promotion.services";
 
+import { debounce } from "lodash";
+import { IInfoPromotion } from "@/types/Cars/IPromotions";
+
 type Props = {
     isState: IInitialStateDetailCar,
     queryKeyIsState: (key: any) => void
@@ -38,24 +41,42 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
         setOpenDialogPromotion(!openDialogPromotion)
     }
 
-    // const fetchListPromotions = async () => {
-    //     try {
-    //         const data = {
-    //             code: ""
-    //         }
-    //         const res = await getListPromotions(data)
+    const handleClickSubmit = (item: IInfoPromotion) => {
+        console.log('item', item);
 
-    //         console.log('res : ', res);
+        queryKeyIsState({
+            infoPromotion: {
+                selectPromotion: "1"
+            },
+            dataDetailCar: {
+                ...isState?.dataDetailCar,
+                price: {
+                    ...isState?.dataDetailCar?.price,
+                    total_amount: isState?.dataDetailCar?.price?.temp_total_amount - item?.cash
+                }
+            }
+        })
 
-    //     } catch (err) {
-    //         throw err
-    //     }
-    // }
+        setOpenDialogPromotion(false)
+    }
 
-    // useEffect(() => {
+    const handleSearchPromotion = debounce(async (event: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            const dataSearch = {
+                code: event.target.value
+            }
+            const { data } = await getListPromotions(dataSearch)
+            console.log('data :', data);
+            if (data && data.data) {
+                setDataPromotions(data?.data)
+            }
+        } catch (err) {
+            throw err
+        }
 
-    //     fetchListPromotions()
-    // }, [])
+    }, 300)
+
+    console.log('dataPromotions', dataPromotions);
 
 
 
@@ -79,6 +100,7 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
 
                 <div className="px-6">
                     <Input
+                        onChange={(event) => handleSearchPromotion(event)}
                         placeholder="Nhập mã khuyến mãi"
                         className='py-3 rounded-lg focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0'
                     />
@@ -87,59 +109,80 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
                     {
                         dataPromotions && dataPromotions.map((item, index) => {
                             // Lấy ngày hiện tại
-                            const currentDate = new Date();
+                            const currentDate: Date | any = new Date();
 
                             // Chuyển đổi chuỗi ngày bắt đầu và ngày kết thúc sang đối tượng Date
-                            const startDate = new Date(item.date_start);
-                            const endDate = new Date(item.date_end);
+                            const startDate: Date | any = new Date(item.date_start);
+                            const endDate: Date | any = new Date(item.date_end);
 
                             // So sánh xem currentDate có nằm trong khoảng từ startDate đến endDate không
                             const isCurrentDateWithinRange = item.date_start && item.date_start ? currentDate >= startDate && currentDate <= endDate : true
-                            console.log('isCurrentDateWithinRange', isCurrentDateWithinRange);
-                            console.log('index', index);
 
+                            // Tính số ngày còn lại đến ngày hết hạn
+                            const daysUntilExpiration = item.date_end && item.date_start ? Math.ceil((endDate - currentDate) / (1000 * 60 * 60 * 24)) : null
+
+                            // Chuỗi thông báo hiển thị số ngày còn lại đến ngày hết hạn
+                            let expirationMessage = '';
+
+                            if (daysUntilExpiration && daysUntilExpiration === 0) {
+                                expirationMessage = 'Hết hạn hôm nay';
+                            } else if (daysUntilExpiration && daysUntilExpiration === 1) {
+                                expirationMessage = 'Hết hạn sau 1 ngày';
+                            } else if (daysUntilExpiration && daysUntilExpiration <= 30) {
+                                expirationMessage = `Hết hạn sau ${daysUntilExpiration} ngày`;
+                            }
 
                             return (
-                                <div key={item.id} className='flex items-center justify-between'>
+                                <React.Fragment key={item.id}>
                                     {
                                         item.indefinite == 1 || item.indefinite == 0 && isCurrentDateWithinRange ?
-                                            <>
+                                            <div className='flex items-center justify-between'>
                                                 <div className='flex items-center gap-3'>
-                                                    <TbDiscount2 className='text-6xl min-w-[60px] text-[#2FB9BD]' />
+                                                    <TbDiscount2 className='text-5xl min-w-[60px] text-[#2FB9BD]' />
                                                     <div className='flex flex-col'>
                                                         <div className='text-sm uppercase font-semibold'>
                                                             {item.code ? item.code : ''}
                                                         </div>
-                                                        <div className='text-sm'>
-                                                            {item.type === 1 ? `Giảm ${FormatNumberToThousands(item.cash)}` : `Giảm ${item.percent} (tối đa ${FormatNumberToThousands(item.cash)})`}
+                                                        <div className='text-xs mt-1'>
+                                                            {item.detail ? item?.detail : ''}
                                                         </div>
-                                                        <div className='flex items-center gap-1 text-[#FA3434] '>
-                                                            <PiWarningCircleBold className='size-4 min-w-[16px]' />
-                                                            <div className="text-xs">
-                                                                {item.detail ? item?.detail : ''}
-                                                            </div>
-                                                        </div>
+                                                        {
+                                                            daysUntilExpiration !== null && daysUntilExpiration <= 30 ?
+                                                                <div className='flex items-center gap-1 text-[#FA3434] '>
+                                                                    <PiWarningCircleBold className='size-4 min-w-[16px]' />
+                                                                    <div className="text-xs">
+                                                                        {expirationMessage}
+                                                                    </div>
+                                                                </div>
+                                                                :
+                                                                null
+                                                        }
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <Button className='py-3 px-6 rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80'>Áp dụng</Button>
+                                                    <Button
+                                                        onClick={() => handleClickSubmit(item)}
+                                                        className='py-3 px-6 rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 caret-transparent'
+                                                    >
+                                                        Áp dụng
+                                                    </Button>
                                                 </div>
-                                            </>
+                                            </div>
                                             :
-                                            <>
-                                                <div className='flex items-center gap-3 cursor-not-allowed'>
-                                                    <TbDiscount2 className='text-6xl text-[#E0E0E0]' />
+                                            <div className='flex items-center justify-between cursor-not-allowed'>
+                                                <div className='flex items-center gap-3'>
+                                                    <TbDiscount2 className='text-5xl min-w-[60px] text-[#E0E0E0]' />
                                                     <div className='flex flex-col'>
                                                         <div className='text-sm uppercase font-semibold text-[#E0E0E0]'>
                                                             {item.code ? item.code : ''}
                                                         </div>
-                                                        <div className='text-sm text-[#E0E0E0]'>
-                                                            {item.type === 1 ? `Giảm ${FormatNumberToThousands(item.cash)}` : `Giảm ${item.percent}% (tối đa ${FormatNumberToThousands(item.cash)})`}
+                                                        <div className='text-xs text-[#E0E0E0] mt-1'>
+                                                            {item.detail ? item.detail : ''}
                                                         </div>
                                                         <div className='flex items-center gap-1 text-[#E0E0E0] '>
                                                             <PiWarningCircleBold className='size-4 min-w-[16px]' />
                                                             <div className="text-xs">
-                                                                {item.detail ? item.detail : ''}
+                                                                Mã khuyến mãi không khả dụng
                                                             </div>
                                                         </div>
                                                     </div>
@@ -152,10 +195,10 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
                                                         Áp dụng
                                                     </Button>
                                                 </div>
-                                            </>
+                                            </div>
 
                                     }
-                                </div>
+                                </React.Fragment>
                             )
                         })
                     }
