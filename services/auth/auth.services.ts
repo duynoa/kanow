@@ -23,4 +23,5 @@ const useAuthenticationAPI = () => {
 
     return { apiLogin, apiInfoUser, apiLogout, apiSignup, apiOtpSignup };
 };
+
 export default useAuthenticationAPI;

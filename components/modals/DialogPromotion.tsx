@@ -19,13 +19,14 @@ import Image from "next/image";
 import { useDialogPromotion } from "@/hooks/useOpenDialog";
 import { Input } from "../ui/input";
 import { PiWarningCircleBold } from "react-icons/pi";
-import { FormatNumberToThousands } from "../format/FormatNumber";
+import { FormatNumberDot, FormatNumberToThousands } from "../format/FormatNumber";
 import { Button } from "../ui/button";
 import { IInitialStateDetailCar } from "@/types/Cars/ICars";
 import { getListPromotions } from "@/services/cars/promotion.services";
 
 import { debounce } from "lodash";
 import { IInfoPromotion } from "@/types/Cars/IPromotions";
+import moment from "moment";
 
 type Props = {
     isState: IInitialStateDetailCar,
@@ -35,29 +36,67 @@ type Props = {
 export function DialogPromotion({ isState, queryKeyIsState }: Props) {
     const { openDialogPromotion, setOpenDialogPromotion, dataPromotions, setDataPromotions } = useDialogPromotion()
 
-    const memoizedDataPromotions = useMemo(() => dataPromotions, [dataPromotions])
+    const [expandedDetailPromotion, setExpandedDetailPromotion] = useState<boolean[]>([]);
+
+    const handleToggleExpand = (id: number) => {
+        setExpandedDetailPromotion((prevExpandedDetailPromotion) => {
+            const newExpandedDetailPromotion = [...prevExpandedDetailPromotion];
+
+            newExpandedDetailPromotion[id] = !newExpandedDetailPromotion[id];
+            return newExpandedDetailPromotion;
+        });
+    };
 
     const handleOpenChangeModal = () => {
         setOpenDialogPromotion(!openDialogPromotion)
+        setTimeout(() => {
+            setExpandedDetailPromotion([])
+        }, 200);
     }
 
     const handleClickSubmit = (item: IInfoPromotion) => {
-        console.log('item', item);
+        if (item.percent !== 0) {
+            let maxMoneyDiscount = (isState?.dataDetailCar?.price?.temp_total_amount * (item?.percent / 100)) >= item?.money_max ? item?.money_max : (isState?.dataDetailCar?.price?.temp_total_amount * (item?.percent / 100))
 
-        queryKeyIsState({
-            infoPromotion: {
-                selectPromotion: "1"
-            },
-            dataDetailCar: {
-                ...isState?.dataDetailCar,
-                price: {
-                    ...isState?.dataDetailCar?.price,
-                    total_amount: isState?.dataDetailCar?.price?.temp_total_amount - item?.cash
+            queryKeyIsState({
+                infoPromotion: {
+                    selectPromotion: "1",
+                    activePromotion: item
+                },
+                dataDetailCar: {
+                    ...isState?.dataDetailCar,
+                    price: {
+                        ...isState?.dataDetailCar?.price,
+                        total_amount: isState?.dataDetailCar?.price?.temp_total_amount - maxMoneyDiscount,
+                        max_money_discount: maxMoneyDiscount
+                    }
                 }
-            }
-        })
+            })
 
-        setOpenDialogPromotion(false)
+            setOpenDialogPromotion(false)
+            setTimeout(() => {
+                setExpandedDetailPromotion([])
+            }, 200);
+        } else {
+            queryKeyIsState({
+                infoPromotion: {
+                    selectPromotion: "1",
+                    activePromotion: item
+                },
+                dataDetailCar: {
+                    ...isState?.dataDetailCar,
+                    price: {
+                        ...isState?.dataDetailCar?.price,
+                        total_amount: isState?.dataDetailCar?.price?.temp_total_amount - item?.cash
+                    }
+                }
+            })
+
+            setOpenDialogPromotion(false)
+            setTimeout(() => {
+                setExpandedDetailPromotion([])
+            }, 200);
+        }
     }
 
     const handleSearchPromotion = debounce(async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,13 +116,12 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
     }, 300)
 
     console.log('dataPromotions', dataPromotions);
-
-
+    console.log('expandedDetailPromotion', expandedDetailPromotion);
 
     return (
         <Dialog modal open={openDialogPromotion} onOpenChange={handleOpenChangeModal}>
             <DialogOverlay />
-            <DialogContent className="px-0 lg:max-w-[520px] md:max-w-[480px] w-full max-h-[90vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
+            <DialogContent className="px-0 lg:max-w-[520px] md:max-w-[480px] w-full overflow-auto max-h-[90vh] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
                 <DialogClose
                     onClick={handleOpenChangeModal}
                     className="3xl:size-10 size-8 border border-[#000000] flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-40"
@@ -115,6 +153,10 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
                             const startDate: Date | any = new Date(item.date_start);
                             const endDate: Date | any = new Date(item.date_end);
 
+                            endDate.setHours(24);
+                            endDate.setMinutes(0);
+                            endDate.setSeconds(0);
+
                             // So sánh xem currentDate có nằm trong khoảng từ startDate đến endDate không
                             const isCurrentDateWithinRange = item.date_start && item.date_start ? currentDate >= startDate && currentDate <= endDate : true
 
@@ -124,10 +166,10 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
                             // Chuỗi thông báo hiển thị số ngày còn lại đến ngày hết hạn
                             let expirationMessage = '';
 
-                            if (daysUntilExpiration && daysUntilExpiration === 0) {
-                                expirationMessage = 'Hết hạn hôm nay';
-                            } else if (daysUntilExpiration && daysUntilExpiration === 1) {
-                                expirationMessage = 'Hết hạn sau 1 ngày';
+                            if (daysUntilExpiration && daysUntilExpiration === 1) {
+                                expirationMessage = 'Hết hạn trong hôm nay';
+                            } else if (daysUntilExpiration && daysUntilExpiration === 2) {
+                                expirationMessage = 'Hết hạn sau 2 ngày';
                             } else if (daysUntilExpiration && daysUntilExpiration <= 30) {
                                 expirationMessage = `Hết hạn sau ${daysUntilExpiration} ngày`;
                             }
@@ -136,48 +178,112 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
                                 <React.Fragment key={item.id}>
                                     {
                                         item.indefinite == 1 || item.indefinite == 0 && isCurrentDateWithinRange ?
-                                            <div className='flex items-center justify-between'>
-                                                <div className='flex items-center gap-3'>
-                                                    <TbDiscount2 className='text-5xl min-w-[60px] text-[#2FB9BD]' />
-                                                    <div className='flex flex-col'>
-                                                        <div className='text-sm uppercase font-semibold'>
-                                                            {item.code ? item.code : ''}
-                                                        </div>
-                                                        <div className='text-xs mt-1'>
-                                                            {item.detail ? item?.detail : ''}
-                                                        </div>
-                                                        {
-                                                            daysUntilExpiration !== null && daysUntilExpiration <= 30 ?
-                                                                <div className='flex items-center gap-1 text-[#FA3434] '>
-                                                                    <PiWarningCircleBold className='size-4 min-w-[16px]' />
-                                                                    <div className="text-xs">
-                                                                        {expirationMessage}
+                                            <div className='flex flex-col gap-4'>
+                                                <div className='flex items-center justify-between w-full'>
+                                                    <div className='flex gap-3'>
+                                                        <TbDiscount2 className='text-5xl min-w-[52px] text-[#2FB9BD]' />
+                                                        <div className='flex flex-col'>
+                                                            <div className='text-sm uppercase font-semibold'>
+                                                                {item.code ? item.code : ''}
+                                                            </div>
+                                                            <div className='text-xs mt-1 space-x-1'>
+                                                                <span>{item.detail ? `${item?.detail}.` : ''}</span>
+                                                                {
+
+                                                                    expandedDetailPromotion[item.id] ?
+                                                                        <span
+                                                                            onClick={() => handleToggleExpand(item.id)}
+                                                                            className='font-normal underline underline-offset-[3px] decoration-solid cursor-pointer text-[#767676] hover:text-[#767676]/80 duration-300 transition caret-transparent'
+                                                                        >
+                                                                            Ẩn chi tiết
+                                                                        </span>
+                                                                        :
+                                                                        <span
+                                                                            onClick={() => handleToggleExpand(item.id)}
+                                                                            className='font-normal underline underline-offset-[3px] decoration-solid cursor-pointer text-[#767676] hover:text-[#767676]/80 duration-300 transition caret-transparent'
+                                                                        >
+                                                                            Chi tiết
+                                                                        </span>
+                                                                }
+                                                            </div>
+                                                            {
+                                                                daysUntilExpiration !== null && daysUntilExpiration <= 30 ?
+                                                                    <div className='flex items-center gap-1 text-[#FA3434] cursor-default'>
+                                                                        <PiWarningCircleBold className='size-4 min-w-[16px]' />
+                                                                        <div className="text-xs">
+                                                                            {expirationMessage}
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                                :
-                                                                null
-                                                        }
+                                                                    :
+                                                                    null
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <Button
+                                                            onClick={() => handleClickSubmit(item)}
+                                                            className='py-3 px-6 rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 caret-transparent'
+                                                        >
+                                                            Áp dụng
+                                                        </Button>
                                                     </div>
                                                 </div>
-                                                <div>
-                                                    <Button
-                                                        onClick={() => handleClickSubmit(item)}
-                                                        className='py-3 px-6 rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 caret-transparent'
-                                                    >
-                                                        Áp dụng
-                                                    </Button>
-                                                </div>
+
+                                                {
+
+                                                    expandedDetailPromotion[item.id] ?
+                                                        <div className='flex flex-col justify-center items-center gap-2 border rounded-xl p-6'>
+                                                            <div>
+                                                                <TbDiscount2 className='text-7xl min-w-[72px] text-[#2FB9BD]' />
+                                                            </div>
+
+                                                            <div className='text-base uppercase font-semibold text-center'>
+                                                                {item?.code}
+                                                            </div>
+                                                            <div className='space-y-1 text-center font-normal'>
+                                                                {
+                                                                    item?.date_start && item?.date_end ?
+                                                                        <div className='text-base font-normal'>
+                                                                            Áp dụng từ {moment(item?.date_start).format("DD/MM/YYYY")} đến {moment(item?.date_end).format("DD/MM/YYYY")}
+                                                                        </div>
+                                                                        :
+                                                                       null
+                                                                }
+                                                                {
+                                                                    item?.percent !== 0 ?
+                                                                        <div className='text-base text-[#2FB9BD] font-medium'>
+                                                                            Ưu đãi {item?.percent}% (tối đa {FormatNumberDot(item?.money_max)}đ)
+                                                                        </div>
+                                                                        :
+                                                                        <div className='text-base text-[#2FB9BD] font-medium'>
+                                                                            Ưu đãi {FormatNumberDot(item?.cash)}đ
+                                                                        </div>
+                                                                }
+                                                            </div>
+                                                            <div className='text-sm text-[#585F71] group-hover:text-[#585F71]/80 duration-500 transition ease-in-out'>
+                                                                <span dangerouslySetInnerHTML={{ __html: `${item?.note ? item?.note : ''}` }} />
+                                                            </div>
+                                                        </div>
+                                                        :
+                                                        null
+                                                }
                                             </div>
                                             :
                                             <div className='flex items-center justify-between cursor-not-allowed'>
-                                                <div className='flex items-center gap-3'>
-                                                    <TbDiscount2 className='text-5xl min-w-[60px] text-[#E0E0E0]' />
+                                                <div className='flex gap-3'>
+                                                    <TbDiscount2 className='text-5xl min-w-[52px] text-[#E0E0E0]' />
                                                     <div className='flex flex-col'>
                                                         <div className='text-sm uppercase font-semibold text-[#E0E0E0]'>
                                                             {item.code ? item.code : ''}
                                                         </div>
-                                                        <div className='text-xs text-[#E0E0E0] mt-1'>
-                                                            {item.detail ? item.detail : ''}
+                                                        <div className='text-xs text-[#E0E0E0] mt-1 space-x-1'>
+                                                            <span>{item.detail ? `${item.detail}.` : ''}</span>
+                                                            <span
+                                                                onClick={() => handleToggleExpand(item.id)}
+                                                                className='underline underline-offset-[3px] decoration-solid cursor-pointer hover:text-[#E0E0E0]/80 duration-300 transition caret-transparent'
+                                                            >
+                                                                Chi tiết
+                                                            </span>
                                                         </div>
                                                         <div className='flex items-center gap-1 text-[#E0E0E0] '>
                                                             <PiWarningCircleBold className='size-4 min-w-[16px]' />

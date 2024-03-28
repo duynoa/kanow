@@ -45,12 +45,13 @@ interface IOpenDialogFilterListCars {
     type?: string;
 }
 
-// dialog question policy (onClick icon ?)
 export const useDialogFilterListCars = create<IOpenDialogFilterListCars>((set) => ({
     openDialogFilterListCars: false,
     type: "",
     setOpenDialogFilterListCars: (key: any, type?: string) => set((state) => ({ openDialogFilterListCars: key, type: type })),
 }));
+
+// dialog question policy (onClick icon ?)
 interface IOpenDialogAnswerPolicy {
     openDialogAnswerPolicy: boolean;
     setOpenDialogAnswerPolicy: (key: any, type?: string) => void;

@@ -104,9 +104,6 @@ const Header = () => {
         },
     ]
 
-
-
-
     useEffect(() => {
         setIsMounted(true)
     }, [])
@@ -508,7 +505,8 @@ const Header = () => {
                                                         <span className='capitalize'>{informationUser?.fullname}</span>
                                                         <IoIosArrowDown className='2xl:text-2xl text-xl text-[#2FB9BD]' />
                                                     </Link>
-                                                </> :
+                                                </>
+                                                :
                                                 <>
                                                     <DialogLogin
                                                         openModal={openModalLogin}

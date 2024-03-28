@@ -119,6 +119,8 @@ interface IDataDetailCar {
         // tổng tạm tính (chưa tính % khuyến mãi)
         temp_total_amount: number;
         total_amount: number;
+
+        max_money_discount: number;
     };
     promotion: {
         id: number;
@@ -196,6 +198,7 @@ interface IInitialStateDetailCar {
     dataDetailCar: IDataDetailCar;
     infoPromotion: {
         selectPromotion: string,
+        activePromotion: IInfoPromotion | null,
     },
     listCarsRelated: IDataCardCar[],
     onSuccess: {

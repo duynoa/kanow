@@ -62,6 +62,7 @@ export const CustomDataDetailCar = (res: any) => {
         favourite_car: res?.data?.favourite_car,
 
         price: {
+
             price_before_promotion: res?.data?.price?.rent_cost_day,
 
             price_after_promotion:
@@ -90,6 +91,7 @@ export const CustomDataDetailCar = (res: any) => {
                     (res?.data?.price?.rent_cost_day - res?.data?.promotion[0]?.price_promotion) * 1 + res?.data?.price?.price_insurance_day
                     :
                     res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day,
+            max_money_discount: 0
         },
         promotion: res?.data?.promotion,
         trait_car: {
