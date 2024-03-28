@@ -299,6 +299,7 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                                 <div className="flex flex-col items-center gap-2">
                                     <Button
                                         type="submit"
+                                        disabled={isLoading}
                                         className="3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full 3xl:py-4 py-3 rounded-xl"
                                     >
                                         Đăng nhập
