@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
     Dialog,
@@ -24,6 +24,15 @@ import { useAuth } from "@/hooks/useAuth";
 import { toastCore } from "@/lib/toast";
 import { useCookie } from "@/hooks/useCookie";
 import { Label } from "../ui/label";
+import {
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSeparator,
+    InputOTPSlot,
+} from "@/components/ui/input-otp"
+import { formatPhoneNumber } from "../format/FormatNumber";
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 type Props = {
     children: React.ReactNode;
@@ -36,17 +45,25 @@ type Props = {
 export function DialogLogin({ children, openModal, statusModal, setStatusModal, handleOpenChangeModal }: Props) {
     const { setCookie } = useCookie()
 
+    const [timeOtp, setTimeOtp] = useState(0)
+
     const { setInformationUser } = useAuth()
 
-    const { apiLogin, apiInfoUser } = useAuthenticationAPI();
+    const { apiLogin, apiInfoUser, apiSignup, apiOtpSignup } = useAuthenticationAPI();
 
-    const [checkPolicy, setCheckPolicy] = useState<boolean>(false);
+    const [checkPolicy, setCheckPolicy] = useState<boolean>(true);
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     const [showPasswordConfirm, setShowPasswordConfirm] = useState<boolean>(false);
 
+    const FormSchema = z.object({
+        promoCode: z.string().min(4, {
+            // message: "Your one-time password must be 6 characters.",
+        }),
+    })
     const form = useForm({
+        // resolver: zodResolver(FormSchema),
         defaultValues: {
             phoneNumber: "",
             fullName: "",
@@ -56,40 +73,75 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
         },
     });
 
+
     const password = form.watch("password", "");
 
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async (values: any, type: any) => {
-        let form = new FormData();
+        let formData = new FormData();
         if (type == 'login') {
-            form.append("phone", values.phoneNumber);
-
-            form.append("password", values.password);
-
-            const { data } = await apiLogin(form);
-
-            if (data?.result) {
-
+            formData.append("phone", values.phoneNumber);
+            formData.append("password", values.password);
+            const { data } = await apiLogin(formData);
+            if (data?.token) {
                 setCookie("myCookie", data?.token, { expires: 7 });
-
                 toastCore.success(data?.message);
-
                 const { data: information } = await apiInfoUser();
 
                 if (information?.result) {
                     setInformationUser(information?.info);
                 }
-
                 handleOpenChangeModal()
             } else {
                 toastCore.error(data?.message);
             }
-        } else {
-            console.log("values", values, type);
+        } else if (type == 'signup') {
+            formData.append("phone", values.phoneNumber);
+            const { data } = await apiOtpSignup(formData)
+            if (data?.result) {
+                setStatusModal('otp')
+                setTimeOtp(data?.time)
+            } else {
+                toastCore.error(data?.message);
+            }
+        } else if (type == 'otp') {
+            formData.append("phone", values.phoneNumber);
+            formData.append("fullname", values.fullName);
+            formData.append("password", values.password);
+            formData.append("key_code", values.promoCode);
+            const { data: dataSigup } = await apiSignup(formData);
+            if (dataSigup?.token) {
+                setCookie("myCookie", dataSigup?.token, { expires: 7 });
+                toastCore.success(dataSigup?.message);
+                handleOpenChangeModal()
+            } else {
+                toastCore.error(dataSigup?.message);
+            }
         }
 
+
     };
+
+    const handleForgotOtp = async () => {
+        let formData = new FormData();
+        formData.append("phone", form.getValues("phoneNumber"));
+        if (timeOtp == 0) {
+            const { data } = await apiOtpSignup(formData)
+            if (data?.result) {
+                setTimeOtp(data?.time)
+                toastCore.error(data?.message);
+            } else {
+                toastCore.error(data?.message);
+            }
+        } else {
+            toastCore.error("Vui lòng chờ sau" + " " + timeOtp + " " + "giây để gửi lại OTP");
+        }
+    }
+
+    useEffect(() => {
+        form.reset()
+    }, [openModal])
 
     const handleShowPassword = (type: string) => {
         if (type === "password") {
@@ -113,11 +165,24 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
         }
     };
 
+    useEffect(() => {
+        // Nếu thời gian còn lại là 0 hoặc nhỏ hơn 0, không cập nhật thêm
+        if (timeOtp <= 0) return;
+
+        // Tạo một interval để giảm thời gian mỗi giây
+        const timer = setInterval(() => {
+            setTimeOtp((prevTime) => prevTime - 1);
+        }, 1000);
+
+        // Xóa interval khi component bị unmount
+        return () => clearInterval(timer);
+    }, [timeOtp]); // Đảm bảo useEffect chỉ chạy khi timeLeft thay đổi
+
     return (
         <Dialog modal open={openModal} onOpenChange={handleOpenChangeModal}>
             <DialogTrigger asChild>{children}</DialogTrigger>
             <DialogOverlay />
-            <DialogContent className="lg:max-w-[520px] max-w-[95%] max-h-[90vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
+            <DialogContent className={`${statusModal == 'otp' ? 'lg:max-w-[400px] max-w-[45%]' : "lg:max-w-[520px] max-w-[95%]"}   max-h-[90vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
                 <DialogClose
                     onClick={handleOpenChangeModal}
                     className="size-8 border flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
@@ -126,13 +191,15 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                     <span className="sr-only">Close</span>
                 </DialogClose>
                 <DialogHeader className="flex items-center justify-center w-full 3xl:mt-6 mt-3">
-                    <DialogTitle className="text-2xl capitalize">
-                        {statusModal === "login" ? "Đăng nhập" : "Đăng ký"}
+                    <DialogTitle className={`${statusModal === "otp" ? "" : "capitalize"} text-2xl`}>
+                        {statusModal === "login" && "Đăng nhập"}
+                        {statusModal === "signup" && "Đăng ký"}
+                        {statusModal === "otp" && "Nhập mã OTP"}
                     </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form
-                        onSubmit={form.handleSubmit((values: any) => onSubmit(values, "login"))}
+                        onSubmit={form.handleSubmit((values: any) => onSubmit(values, statusModal))}
                         className="space-y-4"
                     >
                         {statusModal === "login" && (
@@ -142,6 +209,14 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                                     name="phoneNumber"
                                     rules={{
                                         required: "Vui lòng nhập số điện thoại!",
+                                        minLength: {
+                                            value: 10,
+                                            message: "Số điện thoại phải có ít nhất 10 số!"
+                                        },
+                                        maxLength: {
+                                            value: 10,
+                                            message: "Số điện thoại không được dài hơn 10 số!"
+                                        }
                                     }}
                                     render={({ field, fieldState }) => {
                                         return (
@@ -151,6 +226,7 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input
+                                                        type="number"
                                                         disabled={isLoading}
                                                         className={`${fieldState?.invalid && fieldState?.error
                                                             ? "border rounded-lg border-[#F15A5A]"
@@ -175,8 +251,8 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                                     rules={{
                                         required: "Vui lòng nhập password!",
                                         minLength: {
-                                            value: 6,
-                                            message: "Mật khẩu phải có ít nhất 6 ký tự!",
+                                            value: 8,
+                                            message: "Mật khẩu phải có ít nhất 8 ký tự!",
                                         },
                                     }}
                                     render={({ field, fieldState }) => (
@@ -246,6 +322,14 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                                     name="phoneNumber"
                                     rules={{
                                         required: "Vui lòng nhập số điện thoại!",
+                                        minLength: {
+                                            value: 10,
+                                            message: "Số điện thoại phải có ít nhất 10 số!"
+                                        },
+                                        maxLength: {
+                                            value: 10,
+                                            message: "Số điện thoại không được dài hơn 10 số!"
+                                        }
                                     }}
                                     render={({ field, fieldState }) => {
                                         return (
@@ -256,6 +340,7 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input
+                                                        type="number"
                                                         disabled={isLoading}
                                                         className={`${fieldState?.invalid && fieldState?.error
                                                             ? "border rounded-lg border-[#F15A5A]"
@@ -313,8 +398,8 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                                     rules={{
                                         required: "Vui lòng nhập password!",
                                         minLength: {
-                                            value: 6,
-                                            message: "Mật khẩu phải có ít nhất 6 ký tự!",
+                                            value: 8,
+                                            message: "Mật khẩu phải có ít nhất 8 ký tự!",
                                         },
                                     }}
                                     render={({ field, fieldState }) => (
@@ -360,8 +445,8 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                                     rules={{
                                         required: "Vui lòng nhập mật khẩu xác nhận!",
                                         minLength: {
-                                            value: 6,
-                                            message: "Mật khẩu phải có ít nhất 6 ký tự!",
+                                            value: 8,
+                                            message: "Mật khẩu phải có ít nhất 8 ký tự!",
                                         },
                                         validate: (value) => value === password || "Mật khẩu không khớp!",
                                     }}
@@ -462,6 +547,60 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                                     </div>
                                 </div>
                             </>
+                        )}
+                        {statusModal == 'otp' && (
+                            <>
+                                <FormField
+                                    control={form.control}
+                                    name="promoCode"
+                                    rules={{
+                                        minLength: 4,
+                                        required: true
+                                    }}
+                                    render={({ field, fieldState }) => {
+                                        const num = form.getValues("phoneNumber");
+                                        return (
+                                            <FormItem>
+                                                <div className="flex-col gap-2">
+                                                    <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
+                                                        Vui lòng nhập mã OTP gồm 4 số được gửi tới số điện thoại: <span className="text-[#2FB9BD]">{formatPhoneNumber(num)}</span>
+                                                    </FormLabel>
+                                                    <div className="text-[#2FB9BD] text-center py-2">{timeOtp}</div>
+                                                </div>
+                                                <FormControl className="">
+                                                    <InputOTP maxLength={4} className="w-full" {...field}>
+                                                        <InputOTPGroup className="mx-auto gap-2 w-fit">
+                                                            <InputOTPSlot className="border ring-[#2FB9BD]" index={0} />
+                                                            <InputOTPSlot className="border ring-[#2FB9BD]" index={1} />
+                                                            <InputOTPSlot className="border ring-[#2FB9BD]" index={2} />
+                                                            <InputOTPSlot className="border ring-[#2FB9BD]" index={3} />
+                                                        </InputOTPGroup>
+
+                                                    </InputOTP>
+                                                </FormControl>
+
+                                                {fieldState?.invalid && fieldState?.error && (
+                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                )}
+                                            </FormItem>
+                                        );
+                                    }}
+                                />
+                                <button
+                                    onClick={handleForgotOtp}
+                                    type="button"
+                                    className="text-base text-red-500 hover:bg-transparent bg-white w-full py-2 rounded-base"
+                                >
+                                    Gửi lại mã OTP
+                                </button>
+                                <Button
+                                    type="submit"
+                                    className="3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full 3xl:py-3 py-2 rounded-xl"
+                                >
+                                    Xác nhận
+                                </Button>
+                            </>
+
                         )}
                     </form>
                 </Form>

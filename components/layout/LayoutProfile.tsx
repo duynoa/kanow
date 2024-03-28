@@ -30,16 +30,21 @@ import { Button } from "@/components/ui/button"
 import { X } from 'lucide-react'
 import { useCookie } from '@/hooks/useCookie'
 import { useRouter } from 'next/navigation'
+import useAuthenticationAPI from '@/services/auth/auth.services'
+import { toastCore } from '@/lib/toast'
 const LayoutProfile = ({
     children
 }: {
     children: React.ReactNode
 }) => {
-    const { informationUser, setInformationUser } = useAuth()
+
+    const router = useRouter()
 
     const { removeCookie } = useCookie()
 
-    const router = useRouter()
+    const { apiLogout } = useAuthenticationAPI()
+
+    const { informationUser, setInformationUser } = useAuth()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
 
@@ -83,6 +88,18 @@ const LayoutProfile = ({
         setIsMounted(true)
     }, [])
 
+    const handleLogout = async () => {
+        const { data } = await apiLogout()
+        if (data?.result) {
+            router.push('/')
+            setInformationUser("")
+            removeCookie("myCookie")
+            toastCore.success(data?.message)
+        } else {
+            toastCore.error(data?.message)
+        }
+    }
+
     if (!isMounted) {
         return null;
     }
@@ -117,11 +134,7 @@ const LayoutProfile = ({
                                                     Hủy
                                                 </AlertDialogCancel>
                                                 <AlertDialogAction
-                                                    onClick={() => {
-                                                        router.push('/')
-                                                        setInformationUser("")
-                                                        removeCookie("myCookie")
-                                                    }}
+                                                    onClick={handleLogout}
                                                     type="button"
                                                     className='3xl:text-base text-sm  w-fit py-2 px-4 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'
                                                 >
