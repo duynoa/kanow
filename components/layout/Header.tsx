@@ -21,6 +21,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import useAuthenticationAPI from '@/services/auth/auth.services';
 import { useCookie } from '@/hooks/useCookie';
 import { Skeleton } from '../ui/skeleton';
+import { TooltipHeader } from '../tooltip/TooltipHeader';
 
 
 
@@ -40,10 +41,55 @@ const Header = () => {
     const [activeService, setActiveService] = useState<boolean>(false)
     const [openModalLogin, setOpenModalLogin] = useState<boolean>(false)
     const [statusModal, setStatusModal] = useState<string>("login")
-
-    const [dataHeader, setDataHeader] = useState<any[]>(CustomDataHeader)
+    // const [dataHeader, setDataHeader] = useState<any[]>([
+    //     {
+    //         id: uuidv4(),
+    //         name: 'Về chúng tôi',
+    //         link: '/about-us',
+    //         children: false,
+    //         visible: true,
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         name: 'Trở thành đối tác của Kanow',
+    //         link: '/partner',
+    //         children: true,
+    //         visible: true,
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         name: 'Chuyến của tôi',
+    //         link: '/search-car',
+    //         children: false,
+    //         visible: false,
+    //     }
+    // ])
+    const dataHeader = [
+        {
+            id: uuidv4(),
+            name: 'Về chúng tôi',
+            link: '/about-us',
+            children: false,
+            visible: true,
+        },
+        {
+            id: uuidv4(),
+            name: 'Trở thành đối tác của Kanow',
+            link: '/partner',
+            children: true,
+            visible: true,
+        },
+        // {
+        //     id: uuidv4(),
+        //     name: 'Chuyến của tôi',
+        //     link: '/search-car',
+        //     children: false,
+        //     visible: false,
+        // }
+    ]
 
     const pathname = usePathname()
+
 
     const dataPartnerKanow = [
         {
@@ -71,27 +117,16 @@ const Header = () => {
                 setInformationUser(information?.info);
             } else {
                 setInformationUser('')
-                setDataHeader(CustomDataHeader);
             }
             setIsLoading(false)
         }
         if (getCookie) {
             getCookie && getInfoUser()
             setIsLoading(true)
-            const newDb = dataHeader.map((item) => {
 
-                return {
-                    ...item,
-                    visible: true
-                }
-            })
-            setDataHeader(newDb);
-        } else {
-            setDataHeader(CustomDataHeader);
         }
 
     }, [getCookie])
-    console.log("getCookie", getCookie);
 
 
     const handleClickToZoom = () => {
@@ -324,6 +359,15 @@ const Header = () => {
                                                             </Link>
                                                     ))
                                                 }
+                                                {getCookie && informationUser &&
+                                                    <Link
+                                                        href={'/search-car'}
+                                                        className={`${(pathname === '/search-car') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#9D9FA6]'} mb-6 text-base w-fit duration-300 transition ease-in-out flex items-center`}
+                                                        onClick={_ToogleIsOff}
+                                                    >
+                                                        Chuyến của tôi
+                                                    </Link>
+                                                }
                                             </div>
                                         </div>
                                     )
@@ -374,6 +418,16 @@ const Header = () => {
                                                                                 {item?.title ? item?.title : ''}
                                                                             </div>
                                                                         </Link>
+                                                                        // <Link
+                                                                        //     key={item.id}
+                                                                        //     href={`/partner/${item.link}`}
+                                                                        //     className={`${pathname.includes(`/partner/${item.link}`) ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
+                                                                        // >
+
+                                                                        //     <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-300 ease-in-out line-clamp-2`}>
+                                                                        //         {item?.title ? item?.title : ''}
+                                                                        //     </div>
+                                                                        // </Link>
                                                                     ))
                                                                 }
                                                             </div>
@@ -398,12 +452,21 @@ const Header = () => {
                                                             >
                                                                 {data.name}
                                                             </Link>
+
                                                             :
                                                             null
                                                     )
                                             }
                                         </div>
                                     ))
+                                }
+                                {getCookie && informationUser &&
+                                    <Link
+                                        href={'/search-car'}
+                                        className={`${(pathname.includes('/search-car')) ? ' text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : ' text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                    >
+                                        Chuyến của tôi
+                                    </Link>
                                 }
                             </div>
 
