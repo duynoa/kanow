@@ -31,8 +31,6 @@ import {
     InputOTPSlot,
 } from "@/components/ui/input-otp"
 import { formatPhoneNumber } from "../format/FormatNumber";
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
 
 type Props = {
     children: React.ReactNode;
@@ -43,7 +41,7 @@ type Props = {
 };
 
 export function DialogLogin({ children, openModal, statusModal, setStatusModal, handleOpenChangeModal }: Props) {
-    const { setCookie } = useCookie()
+    const { setCookie, removeCookie } = useCookie()
 
     const [timeOtp, setTimeOtp] = useState(0)
 
@@ -57,13 +55,7 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
 
     const [showPasswordConfirm, setShowPasswordConfirm] = useState<boolean>(false);
 
-    const FormSchema = z.object({
-        promoCode: z.string().min(4, {
-            // message: "Your one-time password must be 6 characters.",
-        }),
-    })
     const form = useForm({
-        // resolver: zodResolver(FormSchema),
         defaultValues: {
             phoneNumber: "",
             fullName: "",
@@ -85,7 +77,7 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
             formData.append("password", values.password);
             const { data } = await apiLogin(formData);
             if (data?.token) {
-                setCookie("myCookie", data?.token, { expires: 7 });
+                setCookie("token_kanow", data?.token, { expires: 7 });
                 toastCore.success(data?.message);
                 const { data: information } = await apiInfoUser();
 
@@ -94,6 +86,7 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                 }
                 handleOpenChangeModal()
             } else {
+                removeCookie("token_kanow")
                 toastCore.error(data?.message);
             }
         } else if (type == 'signup') {
@@ -112,10 +105,11 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
             formData.append("key_code", values.promoCode);
             const { data: dataSigup } = await apiSignup(formData);
             if (dataSigup?.token) {
-                setCookie("myCookie", dataSigup?.token, { expires: 7 });
+                setCookie("token_kanow", dataSigup?.token, { expires: 7 });
                 toastCore.success(dataSigup?.message);
                 handleOpenChangeModal()
             } else {
+                removeCookie("token_kanow")
                 toastCore.error(dataSigup?.message);
             }
         }

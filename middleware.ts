@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
     const { pathname, origin } = request.nextUrl;
-    const token = request.cookies.get("myCookie");
+    const token = request.cookies.get("token_kanow");
 
     if (pathname.startsWith("/account")) {
         if (!token) {

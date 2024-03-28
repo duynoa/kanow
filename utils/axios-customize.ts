@@ -11,14 +11,14 @@ const instance = axios.create({
 });
 
 instance.defaults.headers.common = {
-    Authorization: `Bearer ${Cookie.get("myCookie") === undefined ? "kanow" : Cookie.get("myCookie")}`,
+    Authorization: `Bearer ${Cookie.get("token_kanow") === undefined ? "kanow" : Cookie.get("token_kanow")}`,
 };
 
 // Add a request interceptor
 instance.interceptors.request.use(
     function (config) {
         // Attach the token from the cookie to the request headers
-        const myCookie = Cookie.get("myCookie");
+        const myCookie = Cookie.get("token_kanow");
         if (myCookie) {
             config.headers.Authorization = `Bearer ${myCookie}`;
         }

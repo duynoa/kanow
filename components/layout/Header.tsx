@@ -41,29 +41,7 @@ const Header = () => {
     const [activeService, setActiveService] = useState<boolean>(false)
     const [openModalLogin, setOpenModalLogin] = useState<boolean>(false)
     const [statusModal, setStatusModal] = useState<string>("login")
-    // const [dataHeader, setDataHeader] = useState<any[]>([
-    //     {
-    //         id: uuidv4(),
-    //         name: 'Về chúng tôi',
-    //         link: '/about-us',
-    //         children: false,
-    //         visible: true,
-    //     },
-    //     {
-    //         id: uuidv4(),
-    //         name: 'Trở thành đối tác của Kanow',
-    //         link: '/partner',
-    //         children: true,
-    //         visible: true,
-    //     },
-    //     {
-    //         id: uuidv4(),
-    //         name: 'Chuyến của tôi',
-    //         link: '/search-car',
-    //         children: false,
-    //         visible: false,
-    //     }
-    // ])
+
     const dataHeader = [
         {
             id: uuidv4(),
@@ -79,13 +57,7 @@ const Header = () => {
             children: true,
             visible: true,
         },
-        // {
-        //     id: uuidv4(),
-        //     name: 'Chuyến của tôi',
-        //     link: '/search-car',
-        //     children: false,
-        //     visible: false,
-        // }
+
     ]
 
     const pathname = usePathname()
