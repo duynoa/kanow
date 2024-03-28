@@ -33,7 +33,7 @@ export const ActionTooltip = ({
                     side={side}
                     align={align}
                     sideOffset={2}
-                    className='w-fit py-4 px-4 rounded-2xl '
+                    className='w-fit py-4 px-4 rounded-2xl'
                 >
                     {label}
                     <TooltipPrimitive.Arrow

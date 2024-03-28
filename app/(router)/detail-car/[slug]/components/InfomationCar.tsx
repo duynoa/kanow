@@ -181,13 +181,17 @@ const InfomationCar = ({
         e.preventDefault();
 
         try {
-            const data = {
+            const dataParams = {
                 car_id: params.slug,
                 status: 1
             }
 
-            const res = await postUpdateFavoriteHeartCar(data)
-            console.log('res :', res);
+            const { data } = await postUpdateFavoriteHeartCar(dataParams)
+            if (data.result) {
+
+            } else {
+
+            }
 
         } catch (err) {
             throw err
@@ -841,8 +845,6 @@ const InfomationCar = ({
                 <div className='text-sm text-[#585F71] group-hover:text-[#585F71]/80 duration-500 transition ease-in-out'>
                     <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.cancel_trip?.note_cancel_trip ? isState?.dataDetailCar?.cancel_trip?.note_cancel_trip : ''}` }} />
                 </div>
-
-
 
                 <div className="flex items-end gap-2">
                     <div className='3xl:text-base text-sm text-[#585F71] group-hover:text-[#585F71]/80 duration-500 transition ease-in-out'>

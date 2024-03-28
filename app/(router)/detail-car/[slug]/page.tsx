@@ -30,6 +30,8 @@ import { getDataDetailCar, getListCarsRelated } from '@/services/cars/cars.servi
 import { CustomDataDetailCar, CustomDataListCars } from '@/custom/CustomData'
 import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy'
 import { IInitialStateDetailCar } from '@/types/Cars/ICars'
+import { getListPromotions } from '@/services/cars/promotion.services'
+import { useDialogPromotion } from '@/hooks/useOpenDialog'
 
 type Props = {
     params: {
@@ -38,6 +40,7 @@ type Props = {
 }
 
 const DetailCar = ({ params }: Props) => {
+    const { dataPromotions, setDataPromotions } = useDialogPromotion()
     const { isVisibleMobile, isVisibleTablet } = useResize()
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
     const [isMounted, setIsMounted] = useState<boolean>(false)
@@ -72,6 +75,8 @@ const DetailCar = ({ params }: Props) => {
                 price_insurance_day: 0,
                 temp_total_amount: 0,
                 total_amount: 0,
+
+                max_money_discount: 0,
             },
             promotion: [],
             trait_car: {
@@ -108,6 +113,7 @@ const DetailCar = ({ params }: Props) => {
         },
         infoPromotion: {
             selectPromotion: "0",
+            activePromotion: null,
         },
         listCarsRelated: [],
         onSuccess: {
@@ -172,8 +178,25 @@ const DetailCar = ({ params }: Props) => {
             }
         }
 
+        const fetchListPromotions = async () => {
+            if (dataPromotions.length === 0) {
+                try {
+                    const dataSearch = {
+                        code: ""
+                    }
+                    const { data } = await getListPromotions(dataSearch)
+                    if (data && data.data) {
+                        setDataPromotions(data?.data)
+                    }
+                } catch (err) {
+                    throw err
+                }
+            }
+        }
+
         fetchDataDetailCar()
         fetchDataListCarsRelated()
+        fetchListPromotions()
     }, [])
 
     const dataListCardCars = [
@@ -717,7 +740,6 @@ const DetailCar = ({ params }: Props) => {
                                                             :
                                                             null
                                                     }
-
                                                     {
                                                         card.total_trip ?
                                                             <div className='flex items-center gap-1'>

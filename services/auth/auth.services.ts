@@ -11,4 +11,5 @@ const useAuthenticationAPI = () => {
 
     return { apiLogin, apiInfoUser };
 };
+
 export default useAuthenticationAPI;

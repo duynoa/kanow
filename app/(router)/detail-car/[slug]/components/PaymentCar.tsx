@@ -21,7 +21,7 @@ import { IInitialStateDetailCar } from '@/types/Cars/ICars'
 import { ActionTooltip } from '@/components/tooltip/ActionTooltip'
 import { useResize } from '@/hooks/useResize'
 import { getListPromotions } from '@/services/cars/promotion.services'
-
+import { FaDeleteLeft } from 'react-icons/fa6'
 
 type Props = {
     isState: IInitialStateDetailCar,
@@ -32,7 +32,7 @@ const PaymentCar = ({
     isState,
     queryKeyIsState
 }: Props) => {
-    const { dataPromotions, setOpenDialogPromotion, setDataPromotions } = useDialogPromotion()
+    const { setOpenDialogPromotion } = useDialogPromotion()
     const { date, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isVisibleTablet } = useResize()
@@ -40,20 +40,6 @@ const PaymentCar = ({
     const handleOpenDialog = async (type: string) => {
         if (type === 'custom_promotion') {
             setOpenDialogPromotion(true)
-            if (dataPromotions.length === 0) {
-                try {
-                    const dataSearch = {
-                        code: ""
-                    }
-                    const { data } = await getListPromotions(dataSearch)
-                    if (data && data.data) {
-                        setDataPromotions(data?.data)
-                    }
-                } catch (err) {
-                    throw err
-                }
-            }
-
         } else if (type === 'calendar') {
             setOpenDialogCalendar(true)
         }
@@ -70,6 +56,24 @@ const PaymentCar = ({
                     ...isState?.dataDetailCar?.price,
                     total_amount: isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion
                 }
+            }
+        })
+    }
+
+    const handleRemoveDiscount = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        event?.preventDefault()
+
+        queryKeyIsState({
+            dataDetailCar: {
+                ...isState?.dataDetailCar,
+                price: {
+                    ...isState?.dataDetailCar?.price,
+                    total_amount: isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion,
+                }
+            },
+            infoPromotion: {
+                selectPromotion: "0",
+                activePromotion: null
             }
         })
     }
@@ -322,39 +326,88 @@ const PaymentCar = ({
                                                     Giảm {FormatNumberDot(isState?.dataDetailCar?.promotion[0]?.price_promotion ? isState?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ trên đơn giá
                                                 </div>
                                             </div>
-                                            <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
-                                                -{FormatNumberDot(isState?.dataDetailCar?.promotion[0]?.price_promotion ? isState?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ
-                                            </div>
+                                            {
+                                                isState?.infoPromotion?.selectPromotion === "0" ?
+                                                    <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
+                                                        -{FormatNumberDot(isState?.dataDetailCar?.promotion[0]?.price_promotion ? isState?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ
+                                                    </div>
+                                                    :
+                                                    null
+                                            }
                                         </Label>
                                     </div>
                                     :
                                     null
                             }
                             <div className="flex items-center space-x-2 caret-transparent">
-                                <RadioGroupItem
-                                    id="1"
-                                    value={isState?.infoPromotion?.selectPromotion}
-                                    checked={isState?.infoPromotion?.selectPromotion === "1" ? true : false}
-                                    onClick={() => handleOpenDialog('custom_promotion')}
-                                    className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD]'
-                                />
-                                <Label htmlFor="1" className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
-                                    <div className='flex flex-col'>
-                                        <div className='flex items-center gap-1'>
-                                            <Image
-                                                src='/icon/icon_ticket_discount_green.svg'
-                                                alt="ticket"
-                                                width={80}
-                                                height={80}
-                                                className='3xl:w-6 3xl:max-w-6 3xl:h-6 w-5 max-w-5 h-5 object-contain fill-[#2FB9BD]'
+                                {
+                                    isState?.infoPromotion?.activePromotion ?
+                                        <>
+                                            <RadioGroupItem
+                                                value={isState?.infoPromotion?.selectPromotion}
+                                                checked={isState?.infoPromotion?.selectPromotion === "1" ? true : false}
+                                                className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD]'
                                             />
-                                            <div className='w-[90%] max-w-[90%] 3xl:text-lg xl:text-base text-sm '>
-                                                Chương trình giảm giá
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <TiArrowSortedUp className='3xl:text-2xl text-xl text-[#16171B] rotate-90' />
-                                </Label>
+                                            <Label className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
+                                                <div className='flex flex-col'>
+                                                    <div className='flex items-center gap-1'>
+                                                        <Image
+                                                            src='/icon/icon_ticket_discount_green.svg'
+                                                            alt="ticket"
+                                                            width={80}
+                                                            height={80}
+                                                            className='3xl:w-6 3xl:max-w-6 3xl:h-6 w-5 max-w-5 h-5 object-contain fill-[#2FB9BD]'
+                                                        />
+                                                        <div className='w-[90%] max-w-[90%] flex items-center gap-2'>
+                                                            <div className='xl:text-base text-sm'>
+                                                                <span className='font-normal'>Mã</span> <span className='font-semibold uppercase'>{isState?.infoPromotion?.activePromotion?.code}</span>
+                                                            </div>
+                                                            <div onClick={(event) => handleRemoveDiscount(event)}>
+                                                                <FaDeleteLeft className="size-5 text-rose-500" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {
+                                                    isState?.infoPromotion?.activePromotion?.percent !== 0 ?
+                                                        <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
+                                                            -{FormatNumberDot(isState?.dataDetailCar?.price?.max_money_discount ? isState?.dataDetailCar?.price?.max_money_discount : 0)}đ
+                                                        </div>
+                                                        :
+                                                        <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
+                                                            -{FormatNumberDot(isState?.infoPromotion?.activePromotion?.cash ? isState?.infoPromotion?.activePromotion?.cash : 0)}đ
+                                                        </div>
+                                                }
+                                            </Label>
+                                        </>
+                                        :
+                                        <>
+                                            <RadioGroupItem
+                                                id="1"
+                                                value={isState?.infoPromotion?.selectPromotion}
+                                                checked={isState?.infoPromotion?.selectPromotion === "1" ? true : false}
+                                                onClick={() => handleOpenDialog('custom_promotion')}
+                                                className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD]'
+                                            />
+                                            <Label htmlFor="1" className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
+                                                <div className='flex flex-col'>
+                                                    <div className='flex items-center gap-1'>
+                                                        <Image
+                                                            src='/icon/icon_ticket_discount_green.svg'
+                                                            alt="ticket"
+                                                            width={80}
+                                                            height={80}
+                                                            className='3xl:w-6 3xl:max-w-6 3xl:h-6 w-5 max-w-5 h-5 object-contain fill-[#2FB9BD]'
+                                                        />
+                                                        <div className='w-[90%] max-w-[90%] 3xl:text-lg xl:text-base text-sm '>
+                                                            Chương trình giảm giá
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <TiArrowSortedUp className='3xl:text-2xl text-xl text-[#16171B] rotate-90' />
+                                            </Label>
+                                        </>
+                                }
                             </div>
                         </RadioGroup>
                     </div>
