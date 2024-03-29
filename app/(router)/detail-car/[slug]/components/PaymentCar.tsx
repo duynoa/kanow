@@ -10,7 +10,7 @@ import { TiArrowSortedUp } from 'react-icons/ti'
 import { PiShieldCheckFill } from "react-icons/pi";
 import { FaCalendarAlt, FaRegQuestionCircle } from 'react-icons/fa'
 
-import { useDialogAnswerPolicy, useDialogCalendar, useDialogPromotion } from '@/hooks/useOpenDialog'
+import { useDialogAnswerPolicy, useDialogCalendar, useDialogLogin, useDialogPromotion, useDialogReportCar } from '@/hooks/useOpenDialog'
 
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -22,6 +22,7 @@ import { ActionTooltip } from '@/components/tooltip/ActionTooltip'
 import { useResize } from '@/hooks/useResize'
 import { getListPromotions } from '@/services/cars/promotion.services'
 import { FaDeleteLeft } from 'react-icons/fa6'
+import { useCookie } from '@/hooks/useCookie'
 
 type Props = {
     isState: IInitialStateDetailCar,
@@ -32,10 +33,13 @@ const PaymentCar = ({
     isState,
     queryKeyIsState
 }: Props) => {
-    const { setOpenDialogPromotion } = useDialogPromotion()
     const { date, setOpenDialogCalendar } = useDialogCalendar()
+    const { setOpenDialogPromotion } = useDialogPromotion()
+    const { setOpenDialogReportCar } = useDialogReportCar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isVisibleTablet } = useResize()
+    const { getCookie } = useCookie()
+    const { setOpenDialogLogin } = useDialogLogin()
 
     const handleOpenDialog = async (type: string) => {
         if (type === 'custom_promotion') {
@@ -95,7 +99,7 @@ const PaymentCar = ({
         }
     }
 
-    console.log("isState... : ", isState)
+    console.log("getCookie... : ", getCookie)
 
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
@@ -170,7 +174,6 @@ const PaymentCar = ({
                             )}
                         </Button>
                     </div>
-                    {/* <DatePickerWithRangeAndTime className='w-full' classNameButton='px-4 py-3' /> */}
 
                     <div className='flex w-full justify-end text-[#3561FF] 3xl:text-base text-sm font-medium'>
                         Thuê tháng giảm 8%
@@ -446,9 +449,16 @@ const PaymentCar = ({
             </div>
 
             <div className='flex w-full items-center justify-center'>
-                <div className='3xl:text-base text-sm text-[#FA3434] hover:text-[#FA3434]/80 duration-300 transition-all font-semibold cursor-pointer w-fit text-center caret-transparent'>
-                    Báo cáo xe này
-                </div>
+                {
+                    getCookie !== "kanow" && getCookie !== "" ?
+                        <div onClick={() => setOpenDialogReportCar(true)} className='3xl:text-base text-sm text-[#FA3434] hover:text-[#FA3434]/80 duration-300 transition-all font-semibold cursor-pointer w-fit text-center caret-transparent'>
+                            Báo cáo xe này
+                        </div>
+                        :
+                        <div onClick={() => setOpenDialogLogin(true)} className='3xl:text-base text-sm text-[#FA3434] hover:text-[#FA3434]/80 duration-300 transition-all font-semibold cursor-pointer w-fit text-center caret-transparent'>
+                            Báo cáo xe này
+                        </div>
+                }
             </div>
         </div>
     )

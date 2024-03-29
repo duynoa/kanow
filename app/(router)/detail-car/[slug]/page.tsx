@@ -31,9 +31,11 @@ import { CustomDataDetailCar, CustomDataListCars } from '@/custom/CustomData'
 import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy'
 import { IInitialStateDetailCar } from '@/types/Cars/ICars'
 import { getListPromotions } from '@/services/cars/promotion.services'
-import { useDialogLogin, useDialogPromotion } from '@/hooks/useOpenDialog'
+import { useDialogLogin, useDialogPromotion, useDialogReportCar } from '@/hooks/useOpenDialog'
 import { useCookie } from '@/hooks/useCookie'
 import { DialogLogin } from '@/components/modals/DialogLogin'
+import { DialogReportCar } from '@/components/modals/DialogReportCar'
+import { getListReportCar } from '@/services/cars/report.services'
 
 type Props = {
     params: {
@@ -42,8 +44,9 @@ type Props = {
 }
 
 const DetailCar = ({ params }: Props) => {
-    const { openDialogLogin, setOpenDialogLogin } = useDialogLogin()
+    const { setOpenDialogLogin } = useDialogLogin()
     const { dataPromotions, setDataPromotions } = useDialogPromotion()
+    const { dataListReportCar, setDataListReportCar } = useDialogReportCar()
     const { getCookie } = useCookie()
     const { isVisibleMobile, isVisibleTablet } = useResize()
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
@@ -121,6 +124,11 @@ const DetailCar = ({ params }: Props) => {
             activePromotion: null,
         },
         listCarsRelated: [],
+        reportCar: {
+            listReportCar: [],
+            selectReportCar: "",
+            contentReportCar: ""
+        },
         onSuccess: {
             onSuccessPage: false
         }
@@ -142,10 +150,8 @@ const DetailCar = ({ params }: Props) => {
             })
             const { data } = await getDataDetailCar(params.slug)
 
-            console.log("data", data);
             if (data && data.data && data.base.base) {
                 let { customDataDetailCar } = CustomDataDetailCar(data)
-                console.log('customDataDetailCar :', customDataDetailCar);
 
                 queryKeyIsState({
                     ...isState,
@@ -170,7 +176,6 @@ const DetailCar = ({ params }: Props) => {
 
             if (data && data.data && data.base.base) {
                 let { customDataListCars } = CustomDataListCars(data)
-                console.log('customDataDetailCar :', customDataListCars);
 
                 queryKeyIsState({
                     listCarsRelated: customDataListCars,
@@ -195,12 +200,32 @@ const DetailCar = ({ params }: Props) => {
             }
         }
     }
+    const fetchListReportCar = async () => {
+        if (dataListReportCar.length === 0) {
+            try {
+                const { data } = await getListReportCar();
+                console.log('data', data);
+                if (data && data.data) {
+                    queryKeyIsState({
+                        reportCar: {
+                            ...isState?.reportCar,
+                            listReportCar: data.data
+                        }
+                    })
+                }
+
+            } catch (err) {
+                throw err
+            }
+        }
+    }
 
     useEffect(() => {
 
         fetchDataDetailCar()
         fetchDataListCarsRelated()
         fetchListPromotions()
+        fetchListReportCar()
     }, [params.slug, getCookie])
 
     const dataListCardCars = [
@@ -281,7 +306,6 @@ const DetailCar = ({ params }: Props) => {
             quantityTrips: 30
         },
     ]
-    console.log('getCookie', getCookie);
 
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {
         e.stopPropagation()
@@ -297,7 +321,7 @@ const DetailCar = ({ params }: Props) => {
 
                 const { data } = await postUpdateFavoriteHeartCar(dataParams)
 
-                if (data.result && getCookie) {
+                if (data.result && getCookie !== "kanow" && getCookie !== "") {
                     fetchDataListCarsRelated()
                 } else {
                     setOpenDialogLogin(true)
@@ -315,7 +339,7 @@ const DetailCar = ({ params }: Props) => {
                 }
 
                 const { data } = await postUpdateFavoriteHeartCar(dataParams)
-                if (data.result && getCookie) {
+                if (data.result && getCookie !== "kanow" && getCookie !== "") {
                     fetchDataDetailCar()
                 } else {
                     setOpenDialogLogin(true)
@@ -890,6 +914,10 @@ const DetailCar = ({ params }: Props) => {
             />
             <DialogCalendar />
             <DialogAnswerPolicy
+                isState={isState}
+                queryKeyIsState={queryKeyIsState}
+            />
+            <DialogReportCar
                 isState={isState}
                 queryKeyIsState={queryKeyIsState}
             />

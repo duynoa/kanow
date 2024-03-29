@@ -115,9 +115,6 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
 
     }, 300)
 
-    console.log('dataPromotions', dataPromotions);
-    console.log('expandedDetailPromotion', expandedDetailPromotion);
-
     return (
         <Dialog modal open={openDialogPromotion} onOpenChange={handleOpenChangeModal}>
             <DialogOverlay />

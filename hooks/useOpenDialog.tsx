@@ -74,3 +74,20 @@ export const useDialogAnswerPolicy = create<IOpenDialogAnswerPolicy>((set) => ({
     type: "",
     setOpenDialogAnswerPolicy: (key: any, type?: string) => set((state) => ({ openDialogAnswerPolicy: key, type: type })),
 }));
+
+// dialog report (báo cáo xe)
+interface IOpenDialogReportCar {
+    openDialogReportCar: boolean;
+    type?: string;
+    dataListReportCar: any[];
+    setOpenDialogReportCar: (key: any, type?: string) => void;
+    setDataListReportCar: (dataListReportCar: any[]) => void
+}
+
+export const useDialogReportCar = create<IOpenDialogReportCar>((set) => ({
+    openDialogReportCar: false,
+    type: "",
+    dataListReportCar: [],
+    setOpenDialogReportCar: (key: any, type?: string) => set((state) => ({ openDialogReportCar: key, type: type })),
+    setDataListReportCar: (key: any[]) => set((state) => ({ dataListReportCar: key })),
+}));

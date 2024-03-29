@@ -1,4 +1,5 @@
 import { IInfoPromotion } from "./IPromotions";
+import { IReportCar } from "./IReportCar";
 
 interface IDataCardCar {
     car_owner: {
@@ -201,6 +202,11 @@ interface IInitialStateDetailCar {
         activePromotion: IInfoPromotion | null,
     },
     listCarsRelated: IDataCardCar[],
+    reportCar: {
+        listReportCar: IReportCar[],
+        selectReportCar: string,
+        contentReportCar: string,
+    }
     onSuccess: {
         onSuccessPage: boolean;
     };

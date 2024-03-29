@@ -166,7 +166,6 @@ const SearchCars = (props: Props) => {
                     }
                 })
                 const { data } = await getListCars(isState?.page, isState.limit.limitAllCars)
-                console.log('data first', data);
 
                 if (data && data.data && data.base) {
                     let { customDataListCars } = CustomDataListCars(data)
@@ -187,9 +186,6 @@ const SearchCars = (props: Props) => {
         }
         handleFetchListCars()
     }, [])
-    console.log('getCookie', getCookie);
-    console.log('isState page :', isState.page);
-
 
     // LĂN CHUỘT XUỐNG NẾU VƯỢT 60PX THÌ SẼ HIỆN FIXED BỘ LỌC
     useEffect(() => {
@@ -240,9 +236,6 @@ const SearchCars = (props: Props) => {
 
                             const { data } = await getListCars(isState.page, isState.limit.limitAllCars, query);
 
-                            console.log('data', data);
-
-
                             if (data && data?.links && data?.data && data?.base) {
                                 let { customDataListCars } = CustomDataListCars(data)
 
@@ -282,7 +275,6 @@ const SearchCars = (props: Props) => {
                     } else {
                         console.log("check next false");
                     }
-                    console.log('check scroll cuối');
 
                     isAtBottomRef.current = true;
                 } else if (currentScroll < lastRefBottom && isAtBottomRef.current) {
@@ -355,13 +347,13 @@ const SearchCars = (props: Props) => {
                 throw err
             }
         }
-    }
+    };
 
     // open dialog login
     const handleOpenChangeModal = () => {
         setOpenDialogLogin(false)
         setStatusModal("login")
-    }
+    };
 
     const handleOpenDialog = (type: string) => {
         if (type === 'calendar') {
@@ -369,7 +361,7 @@ const SearchCars = (props: Props) => {
         } else if (type === 'type_car_search' || type === 'company_car_search' || type === "transmission_search") {
             setOpenDialogFilterListCars(true, type)
         }
-    }
+    };
 
     const handleResetFilter = async () => {
         const query = {
@@ -406,7 +398,7 @@ const SearchCars = (props: Props) => {
                 }
             })
         }
-    }
+    };
 
     const handleFilterClick = async (item: any) => {
         if (item.type === "star_search") {
@@ -698,7 +690,7 @@ const SearchCars = (props: Props) => {
                 })
             }
         }
-    }
+    };
 
     if (!isMounted) {
         return null;
