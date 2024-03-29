@@ -30,7 +30,7 @@ import {
     InputOTPSeparator,
     InputOTPSlot,
 } from "@/components/ui/input-otp"
-import { formatPhoneNumber } from "../format/FormatNumber";
+import { FormatPhoneNumber } from "../format/FormatNumber";
 import { useDialogLogin } from "@/hooks/useOpenDialog";
 import { useResize } from "@/hooks/useResize";
 import { usePathname } from "next/navigation";
@@ -573,7 +573,7 @@ export function DialogLogin({ children, statusModal, setStatusModal, handleOpenC
                                             <FormItem>
                                                 <div className="flex-col gap-2">
                                                     <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
-                                                        Vui lòng nhập mã OTP gồm 4 số được gửi tới số điện thoại: <span className="text-[#2FB9BD]">{formatPhoneNumber(num)}</span>
+                                                        Vui lòng nhập mã OTP gồm 4 số được gửi tới số điện thoại: <span className="text-[#2FB9BD]">{FormatPhoneNumber(num)}</span>
                                                     </FormLabel>
                                                     <div className="text-[#2FB9BD] text-center py-2">{timeOtp}</div>
                                                 </div>

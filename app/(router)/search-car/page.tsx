@@ -342,7 +342,6 @@ const SearchCars = (props: Props) => {
                 } else {
                     setOpenDialogLogin(true)
                 }
-
             } catch (err) {
                 throw err
             }

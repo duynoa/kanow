@@ -26,10 +26,10 @@ export const FormatNumberHundred = (number: number, max_number: number): string 
         return number?.toString()
     }
 }
-// export const formatPhoneNumber = (phoneNumber: string): string => {
+// export const FormatPhoneNumber = (phoneNumber: string): string => {
 //     return phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
 // };
-export const formatPhoneNumber = (number: number | string, decimalPlaces?: number): string => {
+export const FormatPhoneNumber = (number: number | string, decimalPlaces?: number): string => {
     // Chuyển đổi số điện thoại thành chuỗi và loại bỏ tất cả các ký tự không phải là số
     const numberString = number.toString().replace(/\D/g, '');
 

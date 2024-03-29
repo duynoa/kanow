@@ -20,10 +20,10 @@ const FormInfo = ({ form, isState }: Props) => {
             <div className="space-y-4" >
                 <div className='flex flex-col 2xl:gap-6 lg:gap-4 gap-6 bg-white'>
                     <div className="">
-                        <h1 className="2xl:text-[18px] lg:text-sm font-semibold text-[#16171B] mb-3">
+                        <h1 className="2xl:text-[18px] lg:text-sm font-semibold text-[#16171B] mb-3 md:order-none order-2">
                             Tên của bạn
                         </h1>
-                        <div className='flex border-2 border-[#E6E8EC] rounded-2xl'>
+                        <div className='flex border-2 border-[#E6E8EC] rounded-2xl md:order-none order-1'>
                             <div className="w-1/2">
                                 <FormField
                                     control={form.control}
