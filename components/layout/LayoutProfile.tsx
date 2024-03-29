@@ -40,7 +40,7 @@ const LayoutProfile = ({
 
     const router = useRouter()
 
-    const { removeCookie } = useCookie()
+    const { removeCookie, getCookie, setCookie } = useCookie()
 
     const { apiLogout } = useAuthenticationAPI()
 
@@ -93,7 +93,11 @@ const LayoutProfile = ({
         if (data?.result) {
             router.push('/')
             setInformationUser("")
-            removeCookie("token_kanow")
+            if (getCookie == 'kanow') {
+                removeCookie("token_kanow")
+            } else {
+                setCookie("token_kanow", "kanow", { expires: 7 })
+            }
             toastCore.success(data?.message)
         } else {
             toastCore.error(data?.message)
@@ -103,6 +107,7 @@ const LayoutProfile = ({
     if (!isMounted) {
         return null;
     }
+    
     return (
         <div className='flex flex-col custom-container'>
             <div className='py-6 xl:w-[30%] xl:max-w-[30%] lg:w-[25%] lg:max-w-[25%] w-full max-w-full lg:text-start text-center text-2xl font-bold text-[#101010]'>

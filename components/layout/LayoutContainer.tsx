@@ -36,8 +36,6 @@ const LayoutContainer = ({
 }) => {
     const pathname = usePathname()
 
-
-
     const { isVisibleMobile, onResizeMobile, onCloseResizeMobile, isVisibleTablet, onResizeTablet, onCloseResizeTablet } = useResize()
 
 
@@ -87,7 +85,7 @@ const LayoutContainer = ({
         <html lang="en">
             <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
                 <Header />
-                <main className='overflow-hidden w-full'>
+                <main className='overflow-hidden w-full h-full'>
                     {children}
                     <ButtonToTop />
                 </main>

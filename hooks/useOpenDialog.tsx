@@ -3,6 +3,17 @@ import { addDays, setHours, setMinutes } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { create } from "zustand";
 
+// dialog login
+interface IOpenDialogLogin {
+    openDialogLogin: boolean;
+    setOpenDialogLogin: (key: any) => void;
+}
+
+export const useDialogLogin = create<IOpenDialogLogin>((set) => ({
+    openDialogLogin: false,
+    setOpenDialogLogin: (key: boolean) => set((state) => ({ openDialogLogin: key })),
+}));
+
 // dialog promotion
 interface IOpenDialogPromotion {
     openDialogPromotion: boolean;

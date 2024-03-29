@@ -22,23 +22,28 @@ import { format, formatDistanceToNow, isYesterday, parseISO } from 'date-fns';
 import "moment/locale/vi";
 import { vi } from 'date-fns/locale';
 import { ActionTooltip } from '@/components/tooltip/ActionTooltip';
-import { useDialogAnswerPolicy } from '@/hooks/useOpenDialog';
-import { postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
+import { useDialogAnswerPolicy, useDialogLogin } from '@/hooks/useOpenDialog';
+import { getDataDetailCar, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
+import { toastCore } from '@/lib/toast';
+import { CustomDataDetailCar } from '@/custom/CustomData';
 
 type Props = {
     isState: IInitialStateDetailCar,
     queryKeyIsState: (key: any) => void,
     params: {
         slug: string
-    }
+    },
+    handleClickFavorite: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
 const InfomationCar = ({
     isState,
     queryKeyIsState,
-    params
+    params,
+    handleClickFavorite
 }: Props) => {
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
+    const { openDialogLogin, setOpenDialogLogin } = useDialogLogin()
     const [expandedItems, setExpandedItems] = useState<boolean>(false);
 
     const handleToggleExpand = () => {
@@ -176,28 +181,6 @@ const InfomationCar = ({
         google_map_link: ""
     }
 
-    const handleClickFavorite = async (e: any) => {
-        e.stopPropagation()
-        e.preventDefault();
-
-        try {
-            const dataParams = {
-                car_id: params.slug,
-                status: 1
-            }
-
-            const { data } = await postUpdateFavoriteHeartCar(dataParams)
-            if (data.result) {
-
-            } else {
-
-            }
-
-        } catch (err) {
-            throw err
-        }
-    }
-
     // function formatDate(item: string) {
     //     if (!item) {
     //         return '';
@@ -288,7 +271,7 @@ const InfomationCar = ({
                     onClick={(event) => handleClickFavorite(event)}
                     className='bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out'
                 >
-                    <TiHeartFullOutline className={`${isState?.dataDetailCar?.favourite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
+                    <TiHeartFullOutline className={`${isState?.dataDetailCar?.favorite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
                 </div>
             </div>
 

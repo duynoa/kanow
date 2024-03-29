@@ -31,23 +31,29 @@ import {
     InputOTPSlot,
 } from "@/components/ui/input-otp"
 import { formatPhoneNumber } from "../format/FormatNumber";
+import { useDialogLogin } from "@/hooks/useOpenDialog";
+import { useResize } from "@/hooks/useResize";
+import { usePathname } from "next/navigation";
 
 type Props = {
-    children: React.ReactNode;
-    openModal: boolean;
+    children?: React.ReactNode;
     statusModal: string;
-    setStatusModal: any;
+    setStatusModal?: any;
     handleOpenChangeModal: () => void;
+    asChild: boolean;
+    different?: string
 };
 
-export function DialogLogin({ children, openModal, statusModal, setStatusModal, handleOpenChangeModal }: Props) {
+export function DialogLogin({ children, statusModal, setStatusModal, handleOpenChangeModal, asChild, different }: Props) {
     const { setCookie, removeCookie } = useCookie()
+    const { openDialogLogin, setOpenDialogLogin } = useDialogLogin()
+    const { apiLogin, apiInfoUser, apiSignup, apiOtpSignup } = useAuthenticationAPI();
+    const { setInformationUser } = useAuth()
+    const { isVisibleTablet } = useResize()
 
     const [timeOtp, setTimeOtp] = useState(0)
 
-    const { setInformationUser } = useAuth()
-
-    const { apiLogin, apiInfoUser, apiSignup, apiOtpSignup } = useAuthenticationAPI();
+    const pathname = usePathname()
 
     const [checkPolicy, setCheckPolicy] = useState<boolean>(true);
 
@@ -76,9 +82,16 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
             formData.append("phone", values.phoneNumber);
             formData.append("password", values.password);
             const { data } = await apiLogin(formData);
+
             if (data?.token) {
+                if (pathname === "/search-car") {
+                    window.location.reload()
+                } else {
+                    toastCore.success(data?.message);
+                }
+
                 setCookie("token_kanow", data?.token, { expires: 7 });
-                toastCore.success(data?.message);
+
                 const { data: information } = await apiInfoUser();
 
                 if (information?.result) {
@@ -135,7 +148,7 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
 
     useEffect(() => {
         form.reset()
-    }, [openModal])
+    }, [openDialogLogin])
 
     const handleShowPassword = (type: string) => {
         if (type === "password") {
@@ -173,9 +186,9 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
     }, [timeOtp]); // Đảm bảo useEffect chỉ chạy khi timeLeft thay đổi
 
     return (
-        <Dialog modal open={openModal} onOpenChange={handleOpenChangeModal}>
-            <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogOverlay />
+        <Dialog modal open={openDialogLogin} onOpenChange={handleOpenChangeModal}>
+            <DialogTrigger asChild={asChild}>{asChild ? children : null}</DialogTrigger>
+            {different && !isVisibleTablet ? null : <DialogOverlay />}
             <DialogContent className={`${statusModal == 'otp' ? 'lg:max-w-[400px] max-w-[45%]' : "lg:max-w-[520px] max-w-[95%]"}   max-h-[90vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
                 <DialogClose
                     onClick={handleOpenChangeModal}

@@ -63,19 +63,36 @@ const PaymentCar = ({
     const handleRemoveDiscount = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event?.preventDefault()
 
-        queryKeyIsState({
-            dataDetailCar: {
-                ...isState?.dataDetailCar,
-                price: {
-                    ...isState?.dataDetailCar?.price,
-                    total_amount: isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion,
+        if (isState?.dataDetailCar?.promotion?.length > 0) {
+            queryKeyIsState({
+                dataDetailCar: {
+                    ...isState?.dataDetailCar,
+                    price: {
+                        ...isState?.dataDetailCar?.price,
+                        total_amount: isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion,
+                    }
+                },
+                infoPromotion: {
+                    selectPromotion: "0",
+                    activePromotion: null
                 }
-            },
-            infoPromotion: {
-                selectPromotion: "0",
-                activePromotion: null
-            }
-        })
+            })
+        } else {
+            queryKeyIsState({
+                dataDetailCar: {
+                    ...isState?.dataDetailCar,
+                    price: {
+                        ...isState?.dataDetailCar?.price,
+                        total_amount: isState?.dataDetailCar?.price?.temp_total_amount,
+                    }
+                },
+                infoPromotion: {
+                    selectPromotion: "0",
+                    activePromotion: null
+                }
+            })
+
+        }
     }
 
     console.log("isState... : ", isState)
