@@ -29,7 +29,7 @@ import { useDialogLogin } from '@/hooks/useOpenDialog';
 
 const Header = () => {
     // lấy thông tin user
-    const { getCookie } = useCookie()
+    const { getCookie, setCookie } = useCookie()
     const { isVisibleTablet } = useResize()
     const { apiInfoUser } = useAuthenticationAPI()
     const [isLoading, setIsLoading] = useState(false)
@@ -92,6 +92,7 @@ const Header = () => {
             if (information?.result) {
                 setInformationUser(information?.info);
             } else {
+                setCookie("token_kanow", "kanow", { expires: 7 });
                 setInformationUser('')
             }
             setIsLoading(false)
