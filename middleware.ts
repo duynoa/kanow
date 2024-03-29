@@ -4,10 +4,10 @@ import { NextResponse } from "next/server";
 import axios from "./utils/axios-customize";
 export async function middleware(request: NextRequest) {
     const { pathname, origin } = request.nextUrl;
-    const token = request.cookies.get("token_kanow");
+    const token: any = request.cookies.get("token_kanow");
 
     if (pathname.startsWith("/account")) {
-        if (!token) {
+        if (!token || token == "kanow") {
             return NextResponse.redirect(process.env.NEXT_PUBLIC_URL_WEBSITE as string);
         }
         return NextResponse.next();
