@@ -324,7 +324,7 @@ const SearchCars = (props: Props) => {
 
                 const { data } = await postUpdateFavoriteHeartCar(dataParams)
 
-                if (data.result && getCookie) {
+                if (data.result && getCookie !== "kanow" && getCookie !== undefined) {
                     let newDataTest = isState?.listCardCars.map((item: any) => {
                         if (item.id === car_id) {
                             return {

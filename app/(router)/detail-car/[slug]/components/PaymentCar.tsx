@@ -450,7 +450,7 @@ const PaymentCar = ({
 
             <div className='flex w-full items-center justify-center'>
                 {
-                    getCookie !== "kanow" && getCookie !== "" ?
+                    getCookie !== "kanow" && getCookie !== undefined ?
                         <div onClick={() => setOpenDialogReportCar(true)} className='3xl:text-base text-sm text-[#FA3434] hover:text-[#FA3434]/80 duration-300 transition-all font-semibold cursor-pointer w-fit text-center caret-transparent'>
                             Báo cáo xe này
                         </div>

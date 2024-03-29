@@ -321,7 +321,7 @@ const DetailCar = ({ params }: Props) => {
 
                 const { data } = await postUpdateFavoriteHeartCar(dataParams)
 
-                if (data.result && getCookie !== "kanow" && getCookie !== "") {
+                if (data.result && getCookie !== "kanow" && getCookie !== undefined) {
                     fetchDataListCarsRelated()
                 } else {
                     setOpenDialogLogin(true)
@@ -339,7 +339,7 @@ const DetailCar = ({ params }: Props) => {
                 }
 
                 const { data } = await postUpdateFavoriteHeartCar(dataParams)
-                if (data.result && getCookie !== "kanow" && getCookie !== "") {
+                if (data.result && getCookie !== "kanow" && getCookie !== undefined) {
                     fetchDataDetailCar()
                 } else {
                     setOpenDialogLogin(true)
