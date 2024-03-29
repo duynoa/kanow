@@ -20,7 +20,7 @@ instance.interceptors.request.use(
         // Attach the token from the cookie to the request headers
         const myCookie = Cookie.get("token_kanow");
         if (myCookie) {
-            config.headers.Authorization = `Bearer ${myCookie}`;
+            config.headers.Authorization = `Bearer ${myCookie ? myCookie : "kanow"}`;
         }
         return config;
     },

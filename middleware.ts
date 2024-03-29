@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-
+import axios from "./utils/axios-customize";
 export async function middleware(request: NextRequest) {
     const { pathname, origin } = request.nextUrl;
     const token = request.cookies.get("token_kanow");
@@ -12,6 +12,7 @@ export async function middleware(request: NextRequest) {
         }
         return NextResponse.next();
     }
+
     return NextResponse.next();
 }
 

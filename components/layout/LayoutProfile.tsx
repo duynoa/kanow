@@ -40,7 +40,7 @@ const LayoutProfile = ({
 
     const router = useRouter()
 
-    const { removeCookie } = useCookie()
+    const { removeCookie, getCookie, setCookie } = useCookie()
 
     const { apiLogout } = useAuthenticationAPI()
 
@@ -93,7 +93,11 @@ const LayoutProfile = ({
         if (data?.result) {
             router.push('/')
             setInformationUser("")
-            removeCookie("token_kanow")
+            if (getCookie == 'kanow') {
+                removeCookie("token_kanow")
+            } else {
+                setCookie("token_kanow", "kanow", { expires: 7 })
+            }
             toastCore.success(data?.message)
         } else {
             toastCore.error(data?.message)
@@ -104,12 +108,12 @@ const LayoutProfile = ({
         return null;
     }
     return (
-        <div className='flex flex-col custom-container'>
+        <div className='flex flex-col custom-container '>
             <div className='py-6 xl:w-[30%] xl:max-w-[30%] lg:w-[25%] lg:max-w-[25%] w-full max-w-full lg:text-start text-center text-2xl font-bold text-[#101010]'>
                 Xin chào <span className='capitalize text-[#2FB9BD]'>{informationUser?.fullname}</span>
             </div>
             <div className='grid grid-cols-12 gap-2'>
-                <div className='col-span-4'>
+                <div className='2xl:col-span-3 lg:col-span-3 col-span-12'>
                     {listTab.map((e: any, index: number) => {
                         return (
                             <div key={e.id} onClick={() => queryState({ tab: e.id })} className='w-full group hover:bg-gray-50 transition-all duration-200 ease-linear'>
@@ -154,7 +158,7 @@ const LayoutProfile = ({
                         )
                     })}
                 </div>
-                <div className='col-span-8 w-full h=full'>
+                <div className='2xl:col-span-9 lg:col-span-9 col-span-12 w-full h=full'>
                     {children}
                 </div>
             </div>
