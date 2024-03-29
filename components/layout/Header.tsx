@@ -92,8 +92,8 @@ const Header = () => {
             }
             setIsLoading(false)
         }
-        if (getCookie) {
-            getCookie && getInfoUser()
+        if (getCookie && !informationUser) {
+            getInfoUser()
             setIsLoading(true)
 
         }

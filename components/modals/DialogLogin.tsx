@@ -73,12 +73,14 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
     const onSubmit = async (values: any, type: any) => {
         let formData = new FormData();
         if (type == 'login') {
+            //api đăng nhập
             formData.append("phone", values.phoneNumber);
             formData.append("password", values.password);
             const { data } = await apiLogin(formData);
             if (data?.token) {
                 setCookie("token_kanow", data?.token, { expires: 7 });
                 toastCore.success(data?.message);
+                //api lấy thông tin người dùng
                 const { data: information } = await apiInfoUser();
 
                 if (information?.result) {
@@ -90,6 +92,7 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                 toastCore.error(data?.message);
             }
         } else if (type == 'signup') {
+            //api đăng ký thì sẽ gửi otp
             formData.append("phone", values.phoneNumber);
             const { data } = await apiOtpSignup(formData)
             if (data?.result) {
@@ -99,6 +102,7 @@ export function DialogLogin({ children, openModal, statusModal, setStatusModal, 
                 toastCore.error(data?.message);
             }
         } else if (type == 'otp') {
+            //api nhập mã otp xong thì đăng ký
             formData.append("phone", values.phoneNumber);
             formData.append("fullname", values.fullName);
             formData.append("password", values.password);
