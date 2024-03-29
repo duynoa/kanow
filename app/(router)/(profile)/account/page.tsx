@@ -5,11 +5,11 @@ import React, { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { useForm } from 'react-hook-form'
 import { FaRegQuestionCircle } from 'react-icons/fa'
-import FormInfo from './components/formInfo'
-import FormPapers from './components/formPapers'
 import Image from 'next/image'
 import { uuidv4 } from '@/lib/uuid'
 import SessionStarRating from './components/SessionStarRating'
+import FormPapers from './components/formPapers'
+import FormInfo from './components/formInfo'
 type Props = {}
 
 type Rating = {
@@ -86,11 +86,11 @@ const Account = (props: Props) => {
     }
 
     return (
-        <div className="flex flex-col gap-8 mb-12">
+        <div className="flex flex-col gap-8">
             {/* helo */}
             <div className="rounded-2xl bg-white">
                 <div className="p-8">
-                    <div className="3xl:flex xxl:flex 2xl:flex xl:flex lg:flex md:flex sm:flex  justify-between">
+                    <div className="flex md:flex-row flex-col  justify-between">
                         <h1 className='text-[#3E424E] 2xl:text-2xl lg:text-xl md:text-base sm:text-sm text-sm  font-semibold'>Thông tin tài khoản</h1>
                         <div className='flex items-center gap-5'>
                             <Button onClick={() => {
@@ -101,13 +101,13 @@ const Account = (props: Props) => {
                                 }
                             }
                             }
-                                className={`${isState.editInfo ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full 3xl:text-lg 2xl:text-base lg:text-md md:text-xs sm:text-[11px] lg:px-8 px-5 2xl:py-3 xl:py-2 py-2 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
+                                className={`${isState.editInfo ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full 3xl:text-base 2xl:text-sm lg:text-sm md:text-sm text-sm lg:px-8 px-5 2xl:py-3 xl:py-2 py-2 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
                                 {isState.editInfo ? 'Cập nhật' : "Chỉnh sửa"}
                             </Button>
                             {isState.editInfo &&
                                 <Button
                                     type='button'
-                                    onClick={() => handleClickButtonEdit('editInfo')} className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full 3xl:text-lg 2xl:text-base lg:text-md md:text-xs sm:text-[11px] lg:px-8 px-5 2xl:py-3 xl:py-2 py-2 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
+                                    onClick={() => handleClickButtonEdit('editInfo')} className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full 3xl:text-base 2xl:text-sm lg:text-sm md:text-sm text-sm lg:px-8 px-5 2xl:py-3 xl:py-2 py-2 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
                                     Hủy
                                 </Button>
                             }
@@ -140,13 +140,13 @@ const Account = (props: Props) => {
                                 }
                             }
                             }
-                                className={`${isState.editPapers ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full 3xl:text-lg 2xl:text-base lg:text-md md:text-xs sm:text-[11px] lg:px-8 px-5 xl:py-3 py-2 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
+                                className={`${isState.editPapers ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full 3xl:text-base 2xl:text-sm lg:text-sm md:text-sm text-sm lg:px-8 px-5 xl:py-3 py-2 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
                                 {isState.editPapers ? 'Cập nhật' : "Chỉnh sửa"}
                             </Button>
                             {isState.editPapers &&
                                 <Button
                                     type='button'
-                                    onClick={() => handleClickButtonEdit('editPapers')} className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full 3xl:text-lg 2xl:text-base lg:text-md md:text-xs sm:text-[11px] lg:px-8 px-5 xl:py-3 py-2 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
+                                    onClick={() => handleClickButtonEdit('editPapers')} className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full 3xl:text-base 2xl:text-sm lg:text-sm md:text-sm text-sm lg:px-8 px-5 xl:py-3 py-2 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
                                     Hủy
                                 </Button>
                             }
