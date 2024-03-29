@@ -93,7 +93,7 @@ const LayoutProfile = ({
         if (data?.result) {
             router.push('/')
             setInformationUser("")
-            removeCookie("myCookie")
+            removeCookie("token_kanow")
             toastCore.success(data?.message)
         } else {
             toastCore.error(data?.message)

@@ -1,7 +1,7 @@
 import { CookieCore } from "@/lib/cookie"
 
 export const useCookie = () => {
-    const getCookie = CookieCore.get('myCookie');
+    const getCookie = CookieCore.get('token_kanow');
     const setCookie = (name: any, token: any, date: any) => {
         return CookieCore.set(name, token, date);
     }
