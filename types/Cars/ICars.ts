@@ -1,4 +1,5 @@
 import { IInfoPromotion } from "./IPromotions";
+import { IReportCar } from "./IReportCar";
 
 interface IDataCardCar {
     car_owner: {
@@ -27,7 +28,7 @@ interface IDataCardCar {
         mortgage: boolean;
         transmission_search: string;
     };
-    favourite_car: boolean;
+    favorite_car: boolean;
     name_car: string;
     point_star: number;
     total_trip: number;
@@ -105,7 +106,7 @@ interface IDataDetailCar {
         mortgage: boolean;
         transmission_search: string;
     };
-    favourite_car: boolean;
+    favorite_car: boolean;
     name_car: string;
     point_star: number;
     total_trip: number;
@@ -201,6 +202,11 @@ interface IInitialStateDetailCar {
         activePromotion: IInfoPromotion | null,
     },
     listCarsRelated: IDataCardCar[],
+    reportCar: {
+        listReportCar: IReportCar[],
+        selectReportCar: string,
+        contentReportCar: string,
+    }
     onSuccess: {
         onSuccessPage: boolean;
     };

@@ -8,8 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
-import BlurImage from '@/components/image/BlurImage';
-import { DatePickerWithRange } from '@/components/datePicker/DatePickerWithRange';
 import { FormatNumberHundred, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber';
 
 import { FaCalendarAlt, FaStar } from 'react-icons/fa';
@@ -20,20 +18,22 @@ import { TiHeartFullOutline, TiLocation } from 'react-icons/ti';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { A11y } from 'swiper/modules';
+
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
 import { useResize } from '@/hooks/useResize';
-import { DatePickerWithRangeAndTime } from '@/components/datePicker/DatePickerWithRangeAndTime';
-import { useDialogCalendar, useDialogFilterListCars } from '@/hooks/useOpenDialog';
+
+import { useDialogCalendar, useDialogFilterListCars, useDialogLogin } from '@/hooks/useOpenDialog';
 import { DialogCalendar } from '@/components/modals/DialogCalendar';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import Image from 'next/image';
-import { IInitialStateSearchCar, IDataCardCar } from '@/types/Cars/ICars';
-import { getListCars } from '@/services/cars/cars.services';
-import { HiOutlineRefresh } from 'react-icons/hi';
+import { IInitialStateSearchCar } from '@/types/Cars/ICars';
+import { getListCars, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
+
 import { DialogFilterListCars } from '@/components/modals/DialogFilterListCars';
 import { CustomDataListCars } from '@/custom/CustomData';
+import { useCookie } from '@/hooks/useCookie';
+import { DialogLogin } from '@/components/modals/DialogLogin';
 
 type Props = {}
 
@@ -41,8 +41,10 @@ const SearchCars = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
     // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
-    const { date, setDate, setOpenDialogCalendar } = useDialogCalendar()
+    const { openDialogLogin, setOpenDialogLogin } = useDialogLogin()
+    const { date, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogFilterListCars } = useDialogFilterListCars()
+    const { getCookie } = useCookie()
 
     // THÊM MỘT HẰNG SỐ ĐỂ ĐỊNH NGHĨA KHOẢNG ĐỘ CHO PHÉP
     const ALLOWED_OFFSET = 600;
@@ -56,6 +58,7 @@ const SearchCars = (props: Props) => {
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
     const [isFilterFixed, setIsFilterFixed] = useState<boolean>(false);
+    const [statusModal, setStatusModal] = useState<string>("login")
 
     // DATA BỘ LỌC FILTER
     const listFilter = [
@@ -162,7 +165,7 @@ const SearchCars = (props: Props) => {
                         onSuccessPage: true
                     }
                 })
-                const { data } = await getListCars(isState.page, isState.limit.limitAllCars)
+                const { data } = await getListCars(isState?.page, isState.limit.limitAllCars)
 
                 if (data && data.data && data.base) {
                     let { customDataListCars } = CustomDataListCars(data)
@@ -272,7 +275,6 @@ const SearchCars = (props: Props) => {
                     } else {
                         console.log("check next false");
                     }
-                    console.log('check scroll cuối');
 
                     isAtBottomRef.current = true;
                 } else if (currentScroll < lastRefBottom && isAtBottomRef.current) {
@@ -308,10 +310,50 @@ const SearchCars = (props: Props) => {
         }
     };
 
-    const handleClickFavorite = (e: any) => {
+    const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {
         e.stopPropagation()
         e.preventDefault();
-    }
+
+        if (car_id && index !== undefined) {
+            // xử lí sự kiện thả tim trong mảng
+            try {
+                const dataParams = {
+                    car_id: car_id,
+                    status: isState?.listCardCars[index]?.favorite_car ? 0 : 1
+                }
+
+                const { data } = await postUpdateFavoriteHeartCar(dataParams)
+
+                if (data.result && getCookie !== "kanow" && getCookie !== undefined) {
+                    let newDataTest = isState?.listCardCars.map((item: any) => {
+                        if (item.id === car_id) {
+                            return {
+                                ...item,
+                                favorite_car: !item.favorite_car
+                            }
+                        } else {
+                            return item
+                        }
+                    })
+
+                    queryKeyIsState({
+                        listCardCars: newDataTest
+                    })
+                } else {
+                    setOpenDialogLogin(true)
+                }
+
+            } catch (err) {
+                throw err
+            }
+        }
+    };
+
+    // open dialog login
+    const handleOpenChangeModal = () => {
+        setOpenDialogLogin(false)
+        setStatusModal("login")
+    };
 
     const handleOpenDialog = (type: string) => {
         if (type === 'calendar') {
@@ -319,7 +361,7 @@ const SearchCars = (props: Props) => {
         } else if (type === 'type_car_search' || type === 'company_car_search' || type === "transmission_search") {
             setOpenDialogFilterListCars(true, type)
         }
-    }
+    };
 
     const handleResetFilter = async () => {
         const query = {
@@ -356,7 +398,7 @@ const SearchCars = (props: Props) => {
                 }
             })
         }
-    }
+    };
 
     const handleFilterClick = async (item: any) => {
         if (item.type === "star_search") {
@@ -648,12 +690,7 @@ const SearchCars = (props: Props) => {
                 })
             }
         }
-    }
-
-
-
-    console.log('is Statte : ', isState);
-
+    };
 
     if (!isMounted) {
         return null;
@@ -661,7 +698,7 @@ const SearchCars = (props: Props) => {
 
     return (
         < >
-            <div className={`${isFilterFixed ? "fixed bg-[#FCFDFD] z-50 w-full top-0" : "w-full"}`}>
+            <div className={`${isFilterFixed ? "fixed bg-[#FCFDFD] z-30 w-full top-0" : "w-full"}`}>
                 <div className='custom-container flex lg:flex-row flex-col lg:gap-16 gap-6 md:items-center lg:justify-start justify-center py-6'>
                     <div className='xl:w-[30%] xl:max-w-[30%] lg:w-[25%] lg:max-w-[25%] w-full max-w-full lg:text-start text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
                         Thuê xe tự lái
@@ -717,7 +754,6 @@ const SearchCars = (props: Props) => {
                                     />
                                 </div>
 
-                                {/* <DatePickerWithRangeAndTime className='w-full' classNameButton="px-4 py-3" /> */}
                                 <div className='col-span-5'>
                                     <Button
                                         id="date"
@@ -803,7 +839,7 @@ const SearchCars = (props: Props) => {
                         isState.onSuccess.onSuccessPage ?
                             <div>loading....</div>
                             :
-                            isState?.listCardCars && isState?.listCardCars?.map((card: any) => (
+                            isState?.listCardCars && isState?.listCardCars?.map((card: any, index: number) => (
                                 <Link
                                     key={card.id}
                                     id={`card-${card.id}`}
@@ -827,10 +863,10 @@ const SearchCars = (props: Props) => {
                                             className='w-full h-full object-cover rounded-xl'
                                         />
                                         <div
-                                            onClick={handleClickFavorite}
+                                            onClick={(event) => handleClickFavorite(event, card.id, index)}
                                             className='absolute right-2 top-2 bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out z-20'
                                         >
-                                            <TiHeartFullOutline className={`${card.favourite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
+                                            <TiHeartFullOutline className={`${card.favorite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
                                         </div>
                                         <div className='flex gap-2 absolute bottom-[10px] left-[10px]'>
                                             {
@@ -971,6 +1007,13 @@ const SearchCars = (props: Props) => {
 
             <DialogCalendar />
             <DialogFilterListCars isState={isState} queryKeyIsState={queryKeyIsState} />
+            <DialogLogin
+                asChild={true}
+                different={"different"}
+                statusModal={statusModal}
+                setStatusModal={setStatusModal}
+                handleOpenChangeModal={handleOpenChangeModal}
+            />
         </>
     )
 }

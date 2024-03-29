@@ -21,7 +21,7 @@ export const CustomDataListCars = (data: any) => {
             mortgage: item?.mortgage === 0,
             transmission_search: item?.transmission,
         },
-        favorite: item?.favourite_car,
+        favorite_car: item?.favourite_car,
         name_car: item?.name,
         point_star: item?.star,
         total_trip: item?.total_trip,
@@ -59,7 +59,7 @@ export const CustomDataDetailCar = (res: any) => {
         name_car: res?.data?.name,
         point_star: res?.data?.star,
         total_trip: res?.data?.total_trip,
-        favourite_car: res?.data?.favourite_car,
+        favorite_car: res?.data?.favourite_car,
 
         price: {
 

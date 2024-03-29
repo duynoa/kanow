@@ -26,12 +26,16 @@ import { DialogCalendar } from '@/components/modals/DialogCalendar'
 
 import PaymentCar from './components/PaymentCar'
 import InfomationCar from './components/InfomationCar';
-import { getDataDetailCar, getListCarsRelated } from '@/services/cars/cars.services'
+import { getDataDetailCar, getListCarsRelated, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services'
 import { CustomDataDetailCar, CustomDataListCars } from '@/custom/CustomData'
 import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy'
 import { IInitialStateDetailCar } from '@/types/Cars/ICars'
 import { getListPromotions } from '@/services/cars/promotion.services'
-import { useDialogPromotion } from '@/hooks/useOpenDialog'
+import { useDialogLogin, useDialogPromotion, useDialogReportCar } from '@/hooks/useOpenDialog'
+import { useCookie } from '@/hooks/useCookie'
+import { DialogLogin } from '@/components/modals/DialogLogin'
+import { DialogReportCar } from '@/components/modals/DialogReportCar'
+import { getListReportCar } from '@/services/cars/report.services'
 
 type Props = {
     params: {
@@ -40,10 +44,14 @@ type Props = {
 }
 
 const DetailCar = ({ params }: Props) => {
+    const { setOpenDialogLogin } = useDialogLogin()
     const { dataPromotions, setDataPromotions } = useDialogPromotion()
+    const { dataListReportCar, setDataListReportCar } = useDialogReportCar()
+    const { getCookie } = useCookie()
     const { isVisibleMobile, isVisibleTablet } = useResize()
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
     const [isMounted, setIsMounted] = useState<boolean>(false)
+    const [statusModal, setStatusModal] = useState<string>("login")
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
     const [showSecondHeader, setShowSecondHeader] = useState(false);
 
@@ -63,7 +71,7 @@ const DetailCar = ({ params }: Props) => {
                 mortgage: false,
                 transmission_search: "",
             },
-            favourite_car: false,
+            favorite_car: false,
             name_car: "",
             point_star: 0,
             total_trip: 0,
@@ -116,6 +124,11 @@ const DetailCar = ({ params }: Props) => {
             activePromotion: null,
         },
         listCarsRelated: [],
+        reportCar: {
+            listReportCar: [],
+            selectReportCar: "",
+            contentReportCar: ""
+        },
         onSuccess: {
             onSuccessPage: false
         }
@@ -128,76 +141,92 @@ const DetailCar = ({ params }: Props) => {
         setIsMounted(true)
     }, [])
 
-    useEffect(() => {
-        const fetchDataDetailCar = async () => {
-            try {
+    const fetchDataDetailCar = async () => {
+        try {
+            queryKeyIsState({
+                onSuccess: {
+                    onSuccessPage: true
+                }
+            })
+            const { data } = await getDataDetailCar(params.slug)
+
+            if (data && data.data && data.base.base) {
+                let { customDataDetailCar } = CustomDataDetailCar(data)
+
                 queryKeyIsState({
+                    ...isState,
+                    dataDetailCar: customDataDetailCar,
                     onSuccess: {
-                        onSuccessPage: true
+                        onSuccessPage: false
                     }
                 })
-                const { data } = await getDataDetailCar(params.slug)
+            }
+        } catch (err) {
+            throw err
+        }
 
-                console.log("data", data);
-                if (data && data.data && data.base.base) {
-                    let { customDataDetailCar } = CustomDataDetailCar(data)
-                    console.log('customDataDetailCar :', customDataDetailCar);
+    }
+    const fetchDataListCarsRelated = async () => {
+        try {
+            const dataListCar = {
+                car_id: params.slug
+            }
 
+            const { data } = await getListCarsRelated(dataListCar)
+
+            if (data && data.data && data.base.base) {
+                let { customDataListCars } = CustomDataListCars(data)
+
+                queryKeyIsState({
+                    listCarsRelated: customDataListCars,
+                })
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+    const fetchListPromotions = async () => {
+        if (dataPromotions.length === 0) {
+            try {
+                const dataSearch = {
+                    code: ""
+                }
+                const { data } = await getListPromotions(dataSearch)
+                if (data && data.data) {
+                    setDataPromotions(data?.data)
+                }
+            } catch (err) {
+                throw err
+            }
+        }
+    }
+    const fetchListReportCar = async () => {
+        if (dataListReportCar.length === 0) {
+            try {
+                const { data } = await getListReportCar();
+                console.log('data', data);
+                if (data && data.data) {
                     queryKeyIsState({
-                        dataDetailCar: customDataDetailCar,
-                        onSuccess: {
-                            onSuccessPage: false
+                        reportCar: {
+                            ...isState?.reportCar,
+                            listReportCar: data.data
                         }
                     })
                 }
-            } catch (err) {
-                throw err
-            }
 
-        }
-
-        const fetchDataListCarsRelated = async () => {
-            try {
-                const dataListCar = {
-                    car_id: params.slug
-                }
-
-                const { data } = await getListCarsRelated(dataListCar)
-
-                console.log("data đâsdsa ", data);
-                if (data && data.data && data.base.base) {
-                    let { customDataListCars } = CustomDataListCars(data)
-                    console.log('customDataDetailCar :', customDataListCars);
-
-                    queryKeyIsState({
-                        listCarsRelated: customDataListCars,
-                    })
-                }
             } catch (err) {
                 throw err
             }
         }
+    }
 
-        const fetchListPromotions = async () => {
-            if (dataPromotions.length === 0) {
-                try {
-                    const dataSearch = {
-                        code: ""
-                    }
-                    const { data } = await getListPromotions(dataSearch)
-                    if (data && data.data) {
-                        setDataPromotions(data?.data)
-                    }
-                } catch (err) {
-                    throw err
-                }
-            }
-        }
+    useEffect(() => {
 
         fetchDataDetailCar()
         fetchDataListCarsRelated()
         fetchListPromotions()
-    }, [])
+        fetchListReportCar()
+    }, [params.slug, getCookie])
 
     const dataListCardCars = [
         {
@@ -278,9 +307,49 @@ const DetailCar = ({ params }: Props) => {
         },
     ]
 
-    const handleClickFavorite = (e: any) => {
+    const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {
         e.stopPropagation()
         e.preventDefault();
+
+        if (car_id && index !== undefined) {
+            // xử lí sự kiện thả tim trong mảng
+            try {
+                const dataParams = {
+                    car_id: car_id,
+                    status: isState?.listCarsRelated[index]?.favorite_car ? 0 : 1
+                }
+
+                const { data } = await postUpdateFavoriteHeartCar(dataParams)
+
+                if (data.result && getCookie !== "kanow" && getCookie !== undefined) {
+                    fetchDataListCarsRelated()
+                } else {
+                    setOpenDialogLogin(true)
+                }
+
+            } catch (err) {
+                throw err
+            }
+        } else {
+            // xử lí sự kiện thả tim trong detail
+            try {
+                const dataParams = {
+                    car_id: params.slug,
+                    status: isState?.dataDetailCar?.favorite_car ? 0 : 1
+                }
+
+                const { data } = await postUpdateFavoriteHeartCar(dataParams)
+                if (data.result && getCookie !== "kanow" && getCookie !== undefined) {
+                    fetchDataDetailCar()
+                } else {
+                    setOpenDialogLogin(true)
+                }
+
+            } catch (err) {
+                throw err
+            }
+
+        }
     }
 
     // Định nghĩa một hàm xử lý sự kiện cuộn trang
@@ -337,14 +406,19 @@ const DetailCar = ({ params }: Props) => {
         setDataImage(isState?.dataDetailCar?.image_car)
     }
 
+    const handleOpenChangeModal = () => {
+        setOpenDialogLogin(false)
+        setStatusModal("login")
+    }
+
     if (!isMounted) {
         return null
     }
 
     return (
-        <div className='relative'>
+        <>
             <div
-                className={`${showSecondHeader ? "block" : "hidden"} 3xl:h-[120px] w-full h-[80px] z-40 fixed top-0 bg-white`}
+                className={`${showSecondHeader ? "block" : "hidden"} 3xl:h-[120px] w-full h-[80px] z-30 fixed top-0 bg-white`}
             // style={{ background: "linear-gradient(180deg, rgba(194, 249, 249, 0.60) 0%, rgba(194, 249, 249, 0.00) 100%)" }}
             >
                 <div className='custom-container h-full flex flex-row items-center gap-10'>
@@ -405,7 +479,7 @@ const DetailCar = ({ params }: Props) => {
                     >
                         {
                             isState?.dataDetailCar && isState?.dataDetailCar?.image_car && isState?.dataDetailCar?.image_car.map((carDetail: any, index: number) => (
-                                <SwiperSlide key={carDetail.car_id} onClick={() => handleOpenReviewImage(carDetail.car_id, index)}>
+                                <SwiperSlide key={`carDetail-${carDetail.id}`} onClick={() => handleOpenReviewImage(carDetail.id, index)}>
                                     <div className='w-full md:h-[380px] h-[240px] cursor-pointer'>
                                         <Image
                                             src={carDetail.name ? carDetail.name : '/default/default.png'}
@@ -452,7 +526,7 @@ const DetailCar = ({ params }: Props) => {
                         >
                             {
                                 isState?.dataDetailCar && isState?.dataDetailCar?.image_car && isState?.dataDetailCar?.image_car.map((carDetail: any, index: number) => (
-                                    <SwiperSlide key={carDetail.car_id} onClick={() => handleOpenReviewImage(carDetail.car_id, index)}>
+                                    <SwiperSlide key={`carDetail-${carDetail.id}`} onClick={() => handleOpenReviewImage(carDetail.id, index)}>
                                         <div className='w-full 3xl:h-[300px] xl:h-[240px] lg:h-[200px] md:h-[380px] h-[240px] cursor-pointer'>
                                             <Image
                                                 src={carDetail.name ? carDetail.name : '/default/default.png'}
@@ -474,6 +548,7 @@ const DetailCar = ({ params }: Props) => {
                     isState={isState}
                     queryKeyIsState={queryKeyIsState}
                     params={params}
+                    handleClickFavorite={handleClickFavorite}
                 />
 
                 <PaymentCar
@@ -512,33 +587,39 @@ const DetailCar = ({ params }: Props) => {
                                 className='custom-swiper-intro w-full h-[420px]'
                             >
                                 {
-                                    dataListCardCars && dataListCardCars.map((carDetail, index) => (
-                                        <SwiperSlide key={carDetail.id}>
+                                    isState?.listCarsRelated && isState?.listCarsRelated.map((card, index) => (
+                                        <SwiperSlide key={`carDetail-${card.id}`}>
                                             <Link
-                                                key={carDetail.id}
-                                                className='col-span-1 bg-white border w-full 3xl:p-4 p-3 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
-                                                href={`/detail-car/${carDetail.id}?${ConvertToSlug(carDetail?.title)}`}
+                                                key={card.id}
+                                                id={`card-${card.id}`}
+                                                className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0'
+                                                href={`/detail-car/${card.id}?${ConvertToSlug(card?.name_car)}`}
                                             >
-                                                <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
-                                                    - {carDetail.promotion}
-                                                </div>
-                                                <div className='w-full 3xl:h-[230px] xxl:h-[200px] xl:h-[200px] h-[200px] relative'>
+                                                {
+                                                    card?.promotion?.length > 0 ?
+                                                        <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
+                                                            Giảm {card?.promotion[0]?.percent}% - {card?.promotion[0]?.name ? card?.promotion[0]?.name : ""}
+                                                        </div>
+                                                        :
+                                                        null
+                                                }
+                                                <div className='w-full 3xl:h-[230px] xxl:h-auto xl:h-[180px] h-[180px] relative'>
                                                     <Image
                                                         width={600}
                                                         height={600}
                                                         alt="image_card"
-                                                        src={carDetail.image ? carDetail.image : '/default/default.png'}
+                                                        src={card?.image_car?.length > 0 ? card?.image_car[0]?.name : '/default/default.png'}
                                                         className='w-full h-full object-cover rounded-xl'
                                                     />
                                                     <div
-                                                        onClick={handleClickFavorite}
+                                                        onClick={(event) => handleClickFavorite(event, card.id, index)}
                                                         className='absolute right-2 top-2 bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out z-20'
                                                     >
-                                                        <TiHeartFullOutline className={`${carDetail.favorite ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
+                                                        <TiHeartFullOutline className={`${card.favorite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
                                                     </div>
                                                     <div className='flex gap-2 absolute bottom-[10px] left-[10px]'>
                                                         {
-                                                            carDetail.type.mortgageFree ?
+                                                            card?.type?.mortgage ?
                                                                 <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
                                                                     Miễn thế chấp
                                                                 </Badge>
@@ -546,7 +627,7 @@ const DetailCar = ({ params }: Props) => {
                                                                 null
                                                         }
                                                         {
-                                                            carDetail.type.orderFastCar ?
+                                                            card?.type?.book_car_flash ?
                                                                 <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
                                                                     Đặt xe nhanh
                                                                 </Badge>
@@ -556,16 +637,11 @@ const DetailCar = ({ params }: Props) => {
                                                     </div>
                                                 </div>
                                                 <div className='flex items-center gap-2 mt-2'>
+                                                    <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default caret-transparent'>
+                                                        {card?.type?.transmission_search ? card?.type?.transmission_search : ""}
+                                                    </Badge>
                                                     {
-                                                        carDetail.type.automaticNumber ?
-                                                            <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default'>
-                                                                Số tự động
-                                                            </Badge>
-                                                            :
-                                                            null
-                                                    }
-                                                    {
-                                                        carDetail.type.doorstepDelivery ?
+                                                        card?.type?.delivery_car ?
                                                             <Badge className='bg-[#F9ECC9]/35 hover:bg-[#F9ECC9]/50 text-[#FF9900] 3xl:text-sm text-xs font-medium cursor-default'>
                                                                 Giao tận nơi
                                                             </Badge>
@@ -577,54 +653,87 @@ const DetailCar = ({ params }: Props) => {
                                                     <div className='3xl:w-12 3xl:max-w-12 3xl:h-12 w-10 max-w-10 h-10 '>
                                                         <Avatar className='w-full h-full shadow'>
                                                             <AvatarImage
-                                                                src={carDetail.avatar ? carDetail.avatar : '/default/default.png'}
+                                                                src={card?.car_owner?.avatar ? card?.car_owner?.avatar : '/avatar/avatar_default.png'}
                                                                 alt="@kanow"
                                                             />
                                                             <AvatarFallback >
-                                                                KN
+                                                                <Image
+                                                                    width={100}
+                                                                    height={100}
+                                                                    src='/avatar/avatar_default.png'
+                                                                    alt="@kanow"
+                                                                    className='w-full h-full'
+                                                                />
                                                             </AvatarFallback>
                                                         </Avatar>
                                                     </div>
                                                     <div className='flex flex-col gap-1 w-[80%] max-w-[80%]'>
                                                         <div className='3xl:text-lg text-base text-[#1D1D1D] font-bold uppercase line-clamp-1'>
-                                                            {carDetail.title ? carDetail.title : ''}
+                                                            {card.name_car ? card.name_car : ''}
                                                         </div>
                                                         <div className='flex gap-1 items-center'>
-                                                            <TiLocation className='text-base text-[#FA3434] w-[16px] min-w-[16px]' />
+                                                            <TiLocation className='text-base text-[#FA3434] w-[16px] max-w-[16px]' />
                                                             <div className='3xl:text-sm text-xs text-[#8C93A3] font-medium w-[90%] max-w-[90%] line-clamp-1'>
-                                                                {carDetail.address ? carDetail.address : ''}
+                                                                {card.address ? card.address : ''}
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div className='border-b border-[#D7D9E0]/50' />
-                                                <div className='flex items-center 3xl:gap-4 xxl:gap-2 xl:gap-4 lg:gap-1 gap-2 bg-[#F2FCF7] p-2 rounded-lg'>
-                                                    <div className='flex items-center gap-1'>
-                                                        <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#FFC118]' />
-                                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
-                                                            {carDetail.point ? carDetail.point : ''}
-                                                        </div>
+                                                <div className='flex items-center justify-between 3xl:gap-4 xxl:gap-2 xl:gap-4 lg:gap-1 gap-2 bg-[#F2FCF7] p-2 rounded-lg'>
+                                                    <div className='flex items-center 3xl:gap-4 xxl:gap-2 xl:gap-4 lg:gap-1 gap-2'>
+                                                        {
+                                                            card.point_star ?
+                                                                <div className='flex items-center gap-1'>
+                                                                    <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#FFC118]' />
+                                                                    <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
+                                                                        {card.point_star ? (FormatNumberToDecimal(card.point_star, 1)) : 0}
+                                                                    </div>
+                                                                </div>
+                                                                :
+                                                                null
+                                                        }
+                                                        {
+                                                            card.total_trip ?
+                                                                <div className='flex items-center gap-1'>
+                                                                    <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#3AC996]' />
+                                                                    <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
+                                                                        {card.total_trip ? FormatNumberHundred(card.total_trip, 100) : 0} Chuyến
+                                                                    </div>
+                                                                </div>
+                                                                :
+                                                                <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                                                    Chưa có chuyến
+                                                                </div>
+                                                        }
                                                     </div>
 
                                                     <div className='flex items-center gap-1'>
-                                                        <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
-                                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
-                                                            {carDetail.quantityTrips ? FormatNumberHundred(carDetail.quantityTrips, 100) : 0} Chuyến
-                                                        </div>
-                                                    </div>
-
-                                                    <div className='flex items-center gap-1'>
-                                                        <div className='3xl:text-lg 2xl:text-base xxl:text-sm text-[15px] text-[#D7D9E0] font-medium line-through'>
-                                                            {carDetail.priceBeforePromotion ? FormatNumberToThousands(carDetail.priceBeforePromotion) : 0}
-                                                        </div>
-                                                        <div className='flex'>
-                                                            <span className='3xl:text-lg 2xl:text-base xxl:text-sm text-[15px] text-[#1AC5CA] font-medium'>
-                                                                {carDetail.priceAfterPromotion ? FormatNumberToThousands(carDetail.priceAfterPromotion) : 0}
-                                                            </span>
-                                                            <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
-                                                                /ngày
-                                                            </span>
-                                                        </div>
+                                                        {
+                                                            card?.promotion?.length > 0 ?
+                                                                <>
+                                                                    <div className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#D7D9E0] font-medium line-through'>
+                                                                        {card.price_before_promotion ? FormatNumberToThousands(card.price_before_promotion) : 0}
+                                                                    </div>
+                                                                    <div className='flex'>
+                                                                        <span className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#1AC5CA] font-medium'>
+                                                                            {card.price_after_promotion ? FormatNumberToThousands(card.price_after_promotion) : 0}
+                                                                        </span>
+                                                                        <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
+                                                                            /ngày
+                                                                        </span>
+                                                                    </div>
+                                                                </>
+                                                                :
+                                                                <div className='flex'>
+                                                                    <span className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#1AC5CA] font-medium'>
+                                                                        {card.price_before_promotion ? FormatNumberToThousands(card.price_before_promotion) : 0}
+                                                                    </span>
+                                                                    <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
+                                                                        /ngày
+                                                                    </span>
+                                                                </div>
+                                                        }
                                                     </div>
                                                 </div>
                                             </Link>
@@ -635,7 +744,7 @@ const DetailCar = ({ params }: Props) => {
                             :
                             <div className='grid xxl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-8 gap-6 justify-start w-full h-full'>
                                 {
-                                    isState?.listCarsRelated && isState?.listCarsRelated?.map((card) => (
+                                    isState?.listCarsRelated && isState?.listCarsRelated?.map((card, index) => (
                                         <Link
                                             key={card.id}
                                             id={`card-${card.id}`}
@@ -659,10 +768,10 @@ const DetailCar = ({ params }: Props) => {
                                                     className='w-full h-full object-cover rounded-xl'
                                                 />
                                                 <div
-                                                    onClick={handleClickFavorite}
+                                                    onClick={(event) => handleClickFavorite(event, card.id, index)}
                                                     className='absolute right-2 top-2 bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out z-20'
                                                 >
-                                                    <TiHeartFullOutline className={`${card.favourite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
+                                                    <TiHeartFullOutline className={`${card.favorite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
                                                 </div>
                                                 <div className='flex gap-2 absolute bottom-[10px] left-[10px]'>
                                                     {
@@ -791,6 +900,13 @@ const DetailCar = ({ params }: Props) => {
                 </div>
             </div>
 
+            <DialogLogin
+                asChild={true}
+                different={"different"}
+                statusModal={statusModal}
+                setStatusModal={setStatusModal}
+                handleOpenChangeModal={handleOpenChangeModal}
+            />
             <DialogReviewImage />
             <DialogPromotion
                 isState={isState}
@@ -801,7 +917,11 @@ const DetailCar = ({ params }: Props) => {
                 isState={isState}
                 queryKeyIsState={queryKeyIsState}
             />
-        </div>
+            <DialogReportCar
+                isState={isState}
+                queryKeyIsState={queryKeyIsState}
+            />
+        </>
     )
 }
 

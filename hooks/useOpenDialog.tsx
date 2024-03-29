@@ -3,6 +3,17 @@ import { addDays, setHours, setMinutes } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { create } from "zustand";
 
+// dialog login
+interface IOpenDialogLogin {
+    openDialogLogin: boolean;
+    setOpenDialogLogin: (key: any) => void;
+}
+
+export const useDialogLogin = create<IOpenDialogLogin>((set) => ({
+    openDialogLogin: false,
+    setOpenDialogLogin: (key: boolean) => set((state) => ({ openDialogLogin: key })),
+}));
+
 // dialog promotion
 interface IOpenDialogPromotion {
     openDialogPromotion: boolean;
@@ -62,4 +73,21 @@ export const useDialogAnswerPolicy = create<IOpenDialogAnswerPolicy>((set) => ({
     openDialogAnswerPolicy: false,
     type: "",
     setOpenDialogAnswerPolicy: (key: any, type?: string) => set((state) => ({ openDialogAnswerPolicy: key, type: type })),
+}));
+
+// dialog report (báo cáo xe)
+interface IOpenDialogReportCar {
+    openDialogReportCar: boolean;
+    type?: string;
+    dataListReportCar: any[];
+    setOpenDialogReportCar: (key: any, type?: string) => void;
+    setDataListReportCar: (dataListReportCar: any[]) => void
+}
+
+export const useDialogReportCar = create<IOpenDialogReportCar>((set) => ({
+    openDialogReportCar: false,
+    type: "",
+    dataListReportCar: [],
+    setOpenDialogReportCar: (key: any, type?: string) => set((state) => ({ openDialogReportCar: key, type: type })),
+    setDataListReportCar: (key: any[]) => set((state) => ({ dataListReportCar: key })),
 }));

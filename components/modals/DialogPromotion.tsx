@@ -115,9 +115,6 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
 
     }, 300)
 
-    console.log('dataPromotions', dataPromotions);
-    console.log('expandedDetailPromotion', expandedDetailPromotion);
-
     return (
         <Dialog modal open={openDialogPromotion} onOpenChange={handleOpenChangeModal}>
             <DialogOverlay />
@@ -175,7 +172,7 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
                             }
 
                             return (
-                                <React.Fragment key={item.id}>
+                                <React.Fragment key={`promotion-${index}`}>
                                     {
                                         item.indefinite == 1 || item.indefinite == 0 && isCurrentDateWithinRange ?
                                             <div className='flex flex-col gap-4'>
@@ -247,7 +244,7 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
                                                                             Áp dụng từ {moment(item?.date_start).format("DD/MM/YYYY")} đến {moment(item?.date_end).format("DD/MM/YYYY")}
                                                                         </div>
                                                                         :
-                                                                       null
+                                                                        null
                                                                 }
                                                                 {
                                                                     item?.percent !== 0 ?
@@ -269,40 +266,72 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
                                                 }
                                             </div>
                                             :
-                                            <div className='flex items-center justify-between cursor-not-allowed'>
-                                                <div className='flex gap-3'>
-                                                    <TbDiscount2 className='text-5xl min-w-[52px] text-[#E0E0E0]' />
-                                                    <div className='flex flex-col'>
-                                                        <div className='text-sm uppercase font-semibold text-[#E0E0E0]'>
-                                                            {item.code ? item.code : ''}
-                                                        </div>
-                                                        <div className='text-xs text-[#E0E0E0] mt-1 space-x-1'>
-                                                            <span>{item.detail ? `${item.detail}.` : ''}</span>
-                                                            <span
-                                                                onClick={() => handleToggleExpand(item.id)}
-                                                                className='underline underline-offset-[3px] decoration-solid cursor-pointer hover:text-[#E0E0E0]/80 duration-300 transition caret-transparent'
-                                                            >
-                                                                Chi tiết
-                                                            </span>
-                                                        </div>
-                                                        <div className='flex items-center gap-1 text-[#E0E0E0] '>
-                                                            <PiWarningCircleBold className='size-4 min-w-[16px]' />
-                                                            <div className="text-xs">
-                                                                Mã khuyến mãi không khả dụng
+                                            <div className='flex flex-col gap-4 w-full'>
+                                                <div className='flex items-center justify-between cursor-not-allowed'>
+                                                    <div className='flex gap-3'>
+                                                        <TbDiscount2 className='text-5xl min-w-[52px] text-[#E0E0E0]' />
+                                                        <div className='flex flex-col'>
+                                                            <div className='text-sm uppercase font-semibold text-[#E0E0E0]'>
+                                                                {item.code ? item.code : ''}
+                                                            </div>
+                                                            <div className='text-xs text-[#E0E0E0] mt-1 space-x-1'>
+                                                                <span>{item.detail ? `${item.detail}.` : ''}</span>
+                                                                <span
+                                                                    onClick={() => handleToggleExpand(item.id)}
+                                                                    className='underline underline-offset-[3px] decoration-solid cursor-pointer hover:text-[#E0E0E0]/80 duration-300 transition caret-transparent'
+                                                                >
+                                                                    Chi tiết
+                                                                </span>
+                                                            </div>
+                                                            <div className='flex items-center gap-1 text-[#E0E0E0] '>
+                                                                <PiWarningCircleBold className='size-4 min-w-[16px]' />
+                                                                <div className="text-xs">
+                                                                    Mã khuyến mãi không khả dụng
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div>
+                                                        <Button
+                                                            disabled
+                                                            className='py-3 px-6 rounded-lg bg-[#E0E0E0] hover:bg-[#E0E0E0]/80 text-[#7698BP] caret-transparent'
+                                                        >
+                                                            Áp dụng
+                                                        </Button>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <Button
-                                                        disabled
-                                                        className='py-3 px-6 rounded-lg bg-[#E0E0E0] hover:bg-[#E0E0E0]/80 text-[#7698BP] caret-transparent'
-                                                    >
-                                                        Áp dụng
-                                                    </Button>
-                                                </div>
-                                            </div>
 
+                                                {
+                                                    expandedDetailPromotion[item.id] ?
+                                                        <div className='flex flex-col justify-center items-center gap-2 border rounded-xl p-6'>
+                                                            <div>
+                                                                <TbDiscount2 className='text-7xl min-w-[72px] text-[#2FB9BD]' />
+                                                            </div>
+
+                                                            <div className='text-base uppercase font-semibold text-center'>
+                                                                {item?.code ? item?.code : ""}
+                                                            </div>
+                                                            <div className='space-y-1 text-center font-normal'>
+                                                                {
+                                                                    item?.date_start && item?.date_end ?
+                                                                        <div className='text-base font-normal'>
+                                                                            Áp dụng từ {moment(item?.date_start).format("DD/MM/YYYY")} đến {moment(item?.date_end).format("DD/MM/YYYY")}
+                                                                        </div>
+                                                                        :
+                                                                        null
+                                                                }
+                                                                <div className='text-base text-[#2FB9BD] font-medium'>
+                                                                    {item?.detail ? item?.detail : ""}
+                                                                </div>
+                                                            </div>
+                                                            <div className='text-sm text-[#585F71] group-hover:text-[#585F71]/80 duration-500 transition ease-in-out'>
+                                                                <span dangerouslySetInnerHTML={{ __html: `${item?.note ? item?.note : ''}` }} />
+                                                            </div>
+                                                        </div>
+                                                        :
+                                                        null
+                                                }
+                                            </div>
                                     }
                                 </React.Fragment>
                             )

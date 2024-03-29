@@ -107,6 +107,7 @@ const LayoutProfile = ({
     if (!isMounted) {
         return null;
     }
+    
     return (
         <div className='flex flex-col custom-container '>
             <div className='py-6 xl:w-[30%] xl:max-w-[30%] lg:w-[25%] lg:max-w-[25%] w-full max-w-full lg:text-start text-center text-2xl font-bold text-[#101010]'>

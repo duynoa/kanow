@@ -1,28 +1,23 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 import {
     Dialog,
     DialogClose,
     DialogContent,
-    DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogOverlay,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
-import { TbDiscount2 } from "react-icons/tb";
 
 import { X } from "lucide-react"
 
 import Image from "next/image";
-import { useDialogFilterListCars, useDialogPromotion } from "@/hooks/useOpenDialog";
-import { Input } from "../ui/input";
-import { PiWarningCircleBold } from "react-icons/pi";
-import { FormatNumberHundred, FormatNumberToThousands } from "../format/FormatNumber";
+import { useDialogFilterListCars } from "@/hooks/useOpenDialog";
+
+import { FormatNumberHundred } from "../format/FormatNumber";
 import { Button } from "../ui/button";
 import { getListAutomaker, getListCars, getListTypeCars } from "@/services/cars/cars.services";
-import { IInitialStateSearchCar, ITypesCar } from "@/types/Cars/ICars";
+import { IInitialStateSearchCar } from "@/types/Cars/ICars";
 import { ScrollArea } from "../ui/scroll-area";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";

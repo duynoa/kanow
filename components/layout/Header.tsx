@@ -22,6 +22,7 @@ import useAuthenticationAPI from '@/services/auth/auth.services';
 import { useCookie } from '@/hooks/useCookie';
 import { Skeleton } from '../ui/skeleton';
 import { TooltipHeader } from '../tooltip/TooltipHeader';
+import { useDialogLogin } from '@/hooks/useOpenDialog';
 
 
 
@@ -40,6 +41,9 @@ const Header = () => {
     const [showActive, setShowActive] = useState<boolean>(false);
     const [activeService, setActiveService] = useState<boolean>(false)
     const [openModalLogin, setOpenModalLogin] = useState<boolean>(false)
+
+    const { openDialogLogin, setOpenDialogLogin } = useDialogLogin()
+
     const [statusModal, setStatusModal] = useState<string>("login")
 
     const dataHeader = [
@@ -97,7 +101,6 @@ const Header = () => {
             setIsLoading(true)
 
         }
-
     }, [getCookie])
 
 
@@ -135,14 +138,14 @@ const Header = () => {
 
     const handleOpenChangeModal = (type: string) => {
         if (type === 'login') {
-            setOpenModalLogin(!openModalLogin)
+            setOpenDialogLogin(!openDialogLogin)
 
             // dùng setTimeout để quản lí flow modal 
             setTimeout(() => {
                 setStatusModal('login')
             }, 200);
         } else if (type === 'signup') {
-            setOpenModalLogin(!openModalLogin)
+            setOpenDialogLogin(!openDialogLogin)
             setStatusModal('signup')
         }
     }
@@ -255,7 +258,7 @@ const Header = () => {
                                                     :
                                                     <div className='flex gap-2 mb-6'>
                                                         <DialogLogin
-                                                            openModal={openModalLogin}
+                                                            asChild={true}
                                                             statusModal={statusModal}
                                                             setStatusModal={setStatusModal}
                                                             handleOpenChangeModal={() => handleOpenChangeModal('signup')}
@@ -269,7 +272,7 @@ const Header = () => {
                                                         </DialogLogin>
                                                         <Separator orientation="vertical" className='bg-[#B4B8C5] h-auto my-2' />
                                                         <DialogLogin
-                                                            openModal={openModalLogin}
+                                                            asChild={true}
                                                             statusModal={statusModal}
                                                             setStatusModal={setStatusModal}
                                                             handleOpenChangeModal={() => handleOpenChangeModal('login')}
@@ -481,7 +484,7 @@ const Header = () => {
                                                 :
                                                 <>
                                                     <DialogLogin
-                                                        openModal={openModalLogin}
+                                                        asChild={true}
                                                         statusModal={statusModal}
                                                         setStatusModal={setStatusModal}
                                                         handleOpenChangeModal={() => handleOpenChangeModal('signup')}
@@ -495,7 +498,7 @@ const Header = () => {
                                                     </DialogLogin>
                                                     <Separator orientation="vertical" className='bg-[#B4B8C5] h-auto my-2' />
                                                     <DialogLogin
-                                                        openModal={openModalLogin}
+                                                        asChild={true}
                                                         statusModal={statusModal}
                                                         setStatusModal={setStatusModal}
                                                         handleOpenChangeModal={() => handleOpenChangeModal('login')}
