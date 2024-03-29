@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
     const token: any = request.cookies.get("token_kanow");
 
     if (pathname.startsWith("/account")) {
-        if (!token || token == "kanow") {
+        if (!token || token?.value == "kanow") {
             return NextResponse.redirect(process.env.NEXT_PUBLIC_URL_WEBSITE as string);
         }
         return NextResponse.next();
