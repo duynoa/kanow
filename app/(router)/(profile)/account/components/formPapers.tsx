@@ -178,16 +178,25 @@ const FormPapers = ({ form, isState }: Props) => {
                                                                         }
                                                                         form.reset({ ...form.getValues(), filePapers: null })
                                                                     }}
-                                                                    className="text-red-500 bg-red-200 w-fit h-fit rounded-full p-1 m-1 cursor-pointer" size={26} />
+                                                                    className="text-red-500 bg-red-200 w-fit h-fit rounded-full p-1 m-1 cursor-pointer" size={26}
+                                                                />
                                                             </div>
                                                         </>
-                                                        : <Label htmlFor="picture" className="h-full w-full border-[#BEBFC2]/80 hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center"><IoMdAdd size={32} /></Label>
+                                                        :
+                                                        <Label
+                                                            htmlFor="picture"
+                                                            className="h-full w-full border-[#BEBFC2]/80 hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center"
+                                                        >
+                                                            <IoMdAdd size={32} />
+                                                        </Label>
                                                     }
                                                 </div>
                                             </>
                                         </FormControl>
                                         {fieldState?.invalid && fieldState?.error && (
-                                            <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                            <FormMessage>
+                                                {fieldState?.error?.message}
+                                            </FormMessage>
                                         )}
                                     </FormItem>
                                 );
