@@ -22,6 +22,7 @@ import ButtonToTop from '../button/ButtonToTop';
 import { usePathname } from 'next/navigation';
 import useAuthenticationAPI from '@/services/auth/auth.services';
 import { useAuth } from '@/hooks/useAuth';
+import AleartDialogLogout from '../alert/AleartDialogLogout';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -88,6 +89,8 @@ const LayoutContainer = ({
                 <main className='overflow-hidden w-full h-full'>
                     {children}
                     <ButtonToTop />
+                    <AleartDialogLogout />
+
                 </main>
                 {pathname !== "/search-car" && <Footer />}
                 <ToastContainer

@@ -8,8 +8,9 @@ import { FaRegQuestionCircle } from 'react-icons/fa'
 import Image from 'next/image'
 import { uuidv4 } from '@/lib/uuid'
 import SessionStarRating from './components/SessionStarRating'
-import FormPapers from './components/formPapers'
-import FormInfo from './components/formInfo'
+import FormPapers from './components/FormPapers'
+import FormInfo from './components/FormInfo'
+
 type Props = {}
 
 type Rating = {

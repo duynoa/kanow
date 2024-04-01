@@ -139,7 +139,8 @@ const FormPapers = ({ form, isState }: Props) => {
                                                     id={!isState.editPapers ? "" : "picture"}
                                                     type="file"
                                                     multiple
-                                                    className="hidden" />
+                                                    className="hidden"
+                                                />
                                                 <div className="h-[282px] relative bg-white rounded-md">
                                                     {value ?
                                                         <>
@@ -147,7 +148,9 @@ const FormPapers = ({ form, isState }: Props) => {
                                                                 src={URL.createObjectURL(value)}
                                                                 objectFit="cover"
                                                                 layout="fill"
-                                                                alt="image" className="w-full h-full rounded-md p-0 m-0" />
+                                                                alt="image"
+                                                                className="w-full h-full rounded-md p-0 m-0"
+                                                            />
                                                             <div className="bg-white rounded-full rounded-fit absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
                                                                 <MdClear
                                                                     onClick={() => {
@@ -157,16 +160,25 @@ const FormPapers = ({ form, isState }: Props) => {
                                                                         }
                                                                         form.reset({ ...form.getValues(), filePapers: null })
                                                                     }}
-                                                                    className="text-red-500 bg-red-200 w-fit h-fit rounded-full p-1 m-1 cursor-pointer" size={26} />
+                                                                    className="text-red-500 bg-red-200 w-fit h-fit rounded-full p-1 m-1 cursor-pointer" size={26}
+                                                                />
                                                             </div>
                                                         </>
-                                                        : <Label htmlFor="picture" className="h-full w-full border-[#BEBFC2]/80 hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center"><IoMdAdd size={32} /></Label>
+                                                        :
+                                                        <Label
+                                                            htmlFor="picture"
+                                                            className="h-full w-full border-[#BEBFC2]/80 hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center"
+                                                        >
+                                                            <IoMdAdd size={32} />
+                                                        </Label>
                                                     }
                                                 </div>
                                             </>
                                         </FormControl>
                                         {fieldState?.invalid && fieldState?.error && (
-                                            <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                            <FormMessage>
+                                                {fieldState?.error?.message}
+                                            </FormMessage>
                                         )}
                                     </FormItem>
                                 );
