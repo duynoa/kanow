@@ -5,15 +5,15 @@ import { useForm } from 'react-hook-form'
 import React, { useEffect, useState } from 'react'
 import { FaRegQuestionCircle } from 'react-icons/fa'
 
-import FormInfo from './components/FormInfo'
 import { Button } from "@/components/ui/button"
-import FormPapers from './components/FormPapers'
 import SessionStarRating from './components/SessionStarRating'
 import apiAccount from '@/services/account/account.services'
 import { useAuth } from '@/hooks/useAuth'
 import moment from 'moment'
 import { toastCore } from '@/lib/toast'
 import useAuthenticationAPI from '@/services/auth/auth.services'
+import FormInfo from './components/formInfo'
+import FormPapers from './components/formPapers'
 type Props = {}
 
 type Rating = {
