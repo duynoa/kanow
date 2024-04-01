@@ -9,9 +9,9 @@ type Props = {
 }
 const SessionStarRating = ({ isState }: Props) => {
     return (
-        <div className="flex flex-col gap-4 p-8">
+        <div className="flex flex-col md:gap-8 gap-4 p-8">
             <div className='flex flex-col gap-1'>
-                <h1 className='text-[#3E424E] 2xl:text-2xl lg:text-xl font-semibold '>Đánh giá</h1>
+                <h1 className='text-[#3E424E] lg:text-2xl text-xl font-semibold '>Đánh giá</h1>
                 <div className="flex items-center gap-2">
                     <StarRatings
                         rating={isState.totalStar}
@@ -39,7 +39,7 @@ const SessionStarRating = ({ isState }: Props) => {
             </div>
             {
                 isState?.dataStarRatings && isState?.dataStarRatings?.slice(0, 5)?.map((item, index) => (
-                    <div key={item.id} className={`${index !== isState?.dataStarRatings?.length - 1 ? "border-b" : "border-b pb-3"} flex flex-col `}>
+                    <div key={item.id} className={`${index == isState?.dataStarRatings?.length - 1 ? "border-0" : "border-b pb-3"} flex flex-col `}>
                         <div className='flex items-center gap-3'>
                             <div className='3xl:w-14 3xl:h-14 3xl:max-w-14 w-12 h-12 max-w-12 rounded-full drop-shadow'>
                                 <Image
