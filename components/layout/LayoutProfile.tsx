@@ -33,6 +33,9 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { SelectItemNocheck } from '../ui/selectNocheck'
 import { useAlertDialogLogout } from '@/hooks/useAlertDialog'
 import AleartDialogLogout from '../alert/AleartDialogLogout'
+import apiAccount from '@/services/account/account.services'
+import moment from 'moment'
+import { Skeleton } from '../ui/skeleton'
 
 const LayoutProfile = ({
     children
@@ -51,8 +54,11 @@ const LayoutProfile = ({
     const [isMounted, setIsMounted] = useState<boolean>(false)
 
     const initialState = {
-        tab: 1
+        tab: 1,
+        isLoading: false,
     }
+
+    const { apiUpdateInfo } = apiAccount()
 
     const [isState, sIsState] = useState<any>(initialState)
 
@@ -190,6 +196,10 @@ const LayoutProfile = ({
 
     useEffect(() => {
         setIsMounted(true)
+        queryState({ isLoading: true })
+        setTimeout(() => {
+            queryState({ isLoading: false })
+        }, 500)
     }, [])
 
     const handleLogout = async () => {
@@ -208,17 +218,23 @@ const LayoutProfile = ({
         }
     }
 
-    console.log('informationUser', informationUser);
-
-    const handleChangeAvatar = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChangeAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputElement = document.getElementById('avatar') as HTMLInputElement | null;
-        console.log('inputElement', inputElement);
-        console.log('event', event);
+        let form: any = new FormData();
         // Kiểm tra event.target và event.target.files trước khi truy cập
         if (event.target && event.target.files) {
-            console.log('event.target.files[0]', event.target.files[0]);
+            form.append('avatar', event.target.files[0] ?? "")
+            const { data: { message, result } } = await apiUpdateInfo(form)
+            if (result) {
+                toastCore.success(message)
+                setInformationUser({ ...informationUser, avatar: URL.createObjectURL(event.target.files[0]) });
+            } else {
+                toastCore.error(message)
+            }
         }
     }
+    console.log(informationUser);
+
 
     const handleChangeSidebar = (value: any) => {
         console.log('value:', value);
@@ -247,59 +263,63 @@ const LayoutProfile = ({
                 <div className='grid grid-cols-12 xxl:gap-6 xl:gap-4 gap-8'>
                     <div className='xl:col-span-2 lg:col-span-3 col-span-12 flex flex-col 2xl:gap-6 gap-4'>
                         <div className='flex flex-col 2xl:gap-3 gap-2 justify-center items-center caret-transparent'>
-                            <div className='3xl:w-24 3xl:h-24 w-20 h-20 rounded-full'>
-                                <Input
-                                    onChange={(event) => handleChangeAvatar(event)}
-                                    accept="image/*, application/pdf"
-                                    id={"avatar"}
-                                    type="file"
-                                    multiple
-                                    className="hidden"
-                                />
-                                <Label htmlFor='avatar' className='relative cursor-pointer group'>
-                                    <Avatar className='w-full h-full shadow group-hover:opacity-80 duration-200 transition'>
-                                        <AvatarImage
-                                            src={informationUser?.avatar ? informationUser?.avatar : '/avatar/avatar_default.png'}
-                                            alt="@kanow"
-                                        />
-                                        <AvatarFallback >
-                                            <Image
-                                                width={100}
-                                                height={100}
-                                                src='/avatar/avatar_default.png'
+                            {isState.isLoading ?
+                                <Skeleton className="3xl:w-24 3xl:h-24 w-20 h-20 rounded-full bg-white" />
+                                :
+                                <div className='3xl:w-24 3xl:h-24 w-20 h-20 rounded-full'>
+                                    <Input
+                                        onChange={(event) => handleChangeAvatar(event)}
+                                        accept="image/*, application/pdf"
+                                        id={"avatar"}
+                                        type="file"
+                                        multiple
+                                        className="hidden"
+                                    />
+                                    <Label htmlFor='avatar' className='relative cursor-pointer group'>
+                                        <Avatar className='w-full h-full shadow group-hover:opacity-80 duration-200 transition'>
+                                            <AvatarImage
+                                                src={informationUser?.avatar ? informationUser?.avatar : '/avatar/avatar_default.png'}
                                                 alt="@kanow"
-                                                className='w-full h-full'
                                             />
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <div className='absolute 3xl:size-8 size-7 bg-[#1EAAB1] rounded-full bottom-0 right-0 flex justify-center items-center'>
-                                        {/* <HiCamera className='size-5 text-white' /> */}
-                                        <Image
-                                            width={120}
-                                            height={120}
-                                            src='/icon/account/icon_camera.png'
-                                            alt="camera"
-                                            className='size-5 object-contain'
-                                        />
-                                    </div>
-                                </Label>
-                            </div>
+                                            <AvatarFallback >
+                                                <Image
+                                                    width={100}
+                                                    height={100}
+                                                    src='/avatar/avatar_default.png'
+                                                    alt="@kanow"
+                                                    className='w-full h-full'
+                                                />
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <div className='absolute 3xl:size-8 size-7 bg-[#1EAAB1] rounded-full bottom-0 right-0 flex justify-center items-center'>
+                                            {/* <HiCamera className='size-5 text-white' /> */}
+                                            <Image
+                                                width={120}
+                                                height={120}
+                                                src='/icon/account/icon_camera.png'
+                                                alt="camera"
+                                                className='size-5 object-contain'
+                                            />
+                                        </div>
+                                    </Label>
+                                </div>
+                            }
 
                             <div className='3xl:text-sm text-xs text-[#585F71] font-semibold text-center'>
-                                Tham gia từ 2024
+                                Tham gia từ {moment(informationUser?.created_at).format('YYYY')}
                             </div>
                             <div className='flex items-center justify-between xl:gap-4 gap-2'>
                                 <div className='flex items-center gap-1'>
                                     <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#FFC118]' />
                                     <div className='3xl:text-sm 2xl:text-xs lg:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
-                                        {FormatNumberToDecimal(50, 1)} điểm
+                                        {FormatNumberToDecimal(informationUser?.point ?? 0, 1)} điểm
                                     </div>
                                 </div>
 
                                 <div className='flex items-center gap-1'>
                                     <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#3AC996]' />
                                     <div className='3xl:text-sm 2xl:text-xs lg:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
-                                        {FormatNumberHundred(20, 100)} Chuyến
+                                        {FormatNumberHundred(informationUser?.total_trip ?? 0, 100)} Chuyến
                                     </div>
                                 </div>
                                 {/* {

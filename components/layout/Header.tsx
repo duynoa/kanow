@@ -228,7 +228,7 @@ const Header = () => {
                                                 {informationUser ?
                                                     <div className='flex items-center justify-between mb-6'>
                                                         <div className='flex items-center gap-2'>
-                                                            <Link href={'/account'} className='3xl:size-10 3xl:min-w-10 3xl:min-h-10 size-8 min-w-8  min-h-8'>
+                                                            <Link onClick={_ToogleIsOff} href={'/account'} className='3xl:size-10 3xl:min-w-10 3xl:min-h-10 size-8 min-w-8  min-h-8'>
                                                                 <Avatar className='w-full h-full shadow'>
                                                                     <AvatarImage
                                                                         src={informationUser?.avatar ? informationUser?.avatar : '/avatar/avatar_default.png'}
@@ -247,6 +247,7 @@ const Header = () => {
                                                             </Link>
                                                             <Link
                                                                 href={'/account'}
+                                                                onClick={_ToogleIsOff}
                                                                 className={`text-[#0E0E0E]/80 flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}>
                                                                 <span className='capitalize'>{informationUser?.fullname}</span>
                                                                 <IoIosArrowDown className='2xl:text-2xl text-xl text-[#2FB9BD]' />

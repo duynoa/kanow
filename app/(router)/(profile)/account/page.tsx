@@ -1,18 +1,18 @@
 'use client'
+import moment from 'moment'
 import Image from 'next/image'
-import { uuidv4 } from '@/lib/uuid'
 import { useForm } from 'react-hook-form'
 import React, { useEffect, useState } from 'react'
 import { FaRegQuestionCircle } from 'react-icons/fa'
 
-import FormInfo from './components/formInfo'
-import { Button } from "@/components/ui/button"
-import FormPapers from './components/formPapers'
-import SessionStarRating from './components/SessionStarRating'
-import apiAccount from '@/services/account/account.services'
-import { useAuth } from '@/hooks/useAuth'
-import moment from 'moment'
+import { uuidv4 } from '@/lib/uuid'
 import { toastCore } from '@/lib/toast'
+import { useAuth } from '@/hooks/useAuth'
+import FormInformation from './components/FormInformation'
+import { Button } from "@/components/ui/button"
+import FormPapers from './components/FormPapers'
+import apiAccount from '@/services/account/account.services'
+import SessionStarRating from './components/SessionStarRating'
 import useAuthenticationAPI from '@/services/auth/auth.services'
 type Props = {}
 
@@ -70,54 +70,58 @@ const Account = (props: Props) => {
 
     const form = useForm({
         defaultValues: {
-            fullName: "",
-            dateInfo: new Date(),
+            fullName: informationUser?.fullname ?? "",
+            dateInfo: informationUser?.birthday ?? null,
             gender: informationUser?.gender == 1 ? "male" : "girl",
-            email: "",
-            phone: "",
+            email: informationUser?.email ?? "",
+            phone: informationUser?.phone ?? "",
             //giay phep lai xe
-            namePapers: "",
-            numberPapers: "",
-            datePapers: new Date(),
-            filePapers: null
+            namePapers: informationUser?.drivingLiscense?.fullname ?? "",
+            numberPapers: informationUser?.drivingLiscense?.number_liscense ?? '',
+            datePapers: informationUser?.drivingLiscense?.birthday ?? null,
+            filePapers: informationUser?.drivingLiscense?.image ?? null
         },
     });
 
+    const onSetValue = (informationUser: any) => {
+        const newData = [
+            {
+                name: 'fullName', value: informationUser?.fullname
+            },
+            {
+                name: 'dateInfo', value: informationUser?.birthday
+            },
+            {
+                name: 'email', value: informationUser?.email
+            },
+            {
+                name: 'phone', value: informationUser?.phone
+            },
+            {
+                name: 'gender', value: informationUser?.gender == 1 ? "male" : "girl"
+            },
+            {
+                name: 'namePapers', value: informationUser?.drivingLiscense?.fullname
+            },
+            {
+                name: 'numberPapers', value: informationUser?.drivingLiscense?.number_liscense
+            },
+            {
+                name: 'datePapers', value: informationUser?.drivingLiscense?.birthday
+            },
+            {
+                name: 'filePapers', value: informationUser?.drivingLiscense?.image
+            }
+        ]
+
+        newData.forEach((item: any) => {
+            form.setValue(item.name, item.value)
+        })
+    }
 
     useEffect(() => {
         if (informationUser) {
-            const newData = [
-                {
-                    name: 'fullName', value: informationUser?.fullname
-                },
-                {
-                    name: 'dateInfo', value: informationUser?.birthday
-                },
-                {
-                    name: 'email', value: informationUser?.email
-                },
-                {
-                    name: 'phone', value: informationUser?.phone
-                },
-                {
-                    name: 'gender', value: informationUser?.gender == 1 ? "male" : "girl"
-                },
-                {
-                    name: 'namePapers', value: informationUser?.drivingLiscense?.fullname
-                },
-                {
-                    name: 'numberPapers', value: informationUser?.drivingLiscense?.number_liscense
-                },
-                {
-                    name: 'datePapers', value: informationUser?.drivingLiscense?.birthday
-                },
-                {
-                    name: 'filePapers', value: informationUser?.drivingLiscense?.image
-                }
-            ]
-            newData.forEach((item: any) => {
-                form.setValue(item.name, item.value)
-            })
+            onSetValue(informationUser)
         }
     }, [informationUser])
 
@@ -129,14 +133,19 @@ const Account = (props: Props) => {
     const handleClickButtonEdit = (type: string) => {
         if (type === "editInfo") {
             queryState({ editInfo: !isState.editInfo })
+
         } else {
             queryState({ editPapers: !isState.editPapers })
+        }
+
+        if (!isState.editInfo || !isState.editPapers) {
+            onSetValue(informationUser)
         }
     }
 
     const onSubmit = async (values: any, type: any) => {
         let form: any = new FormData();
-        let success = false
+        let success: boolean = false
 
         if (type === 'editInfo') {
             form.append('email', values.email ?? '')
@@ -191,19 +200,21 @@ const Account = (props: Props) => {
                                 }
                             }
                             }
-                                className={`${isState.editInfo ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full text-sm lg:px-8 px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
+                                className={`${isState.editInfo ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full text-sm lg:px-8
+                                 px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
                                 {isState.editInfo ? 'Cập nhật' : "Chỉnh sửa"}
                             </Button>
                             {isState.editInfo &&
                                 <Button
                                     type='button'
-                                    onClick={() => handleClickButtonEdit('editInfo')} className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8 px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
+                                    onClick={() => handleClickButtonEdit('editInfo')} className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full 
+                                    text-sm lg:px-8 px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
                                     Hủy
                                 </Button>
                             }
                         </div>
                     </div>
-                    <FormInfo form={form} isState={isState} />
+                    <FormInformation form={form} isState={isState} />
                 </div>
             </div>
             <div className="rounded-2xl bg-white">
@@ -230,13 +241,15 @@ const Account = (props: Props) => {
                                 }
                             }
                             }
-                                className={`${isState.editPapers ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full text-sm lg:px-8 px-5 xl:py-3 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
+                                className={`${isState.editPapers ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full text-sm
+                                 lg:px-8 px-5 xl:py-3 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
                                 {isState.editPapers ? 'Cập nhật' : "Chỉnh sửa"}
                             </Button>
                             {isState.editPapers &&
                                 <Button
                                     type='button'
-                                    onClick={() => handleClickButtonEdit('editPapers')} className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8 px-5 xl:py-3 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
+                                    onClick={() => handleClickButtonEdit('editPapers')} className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm
+                                     lg:px-8 px-5 xl:py-3 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
                                     Hủy
                                 </Button>
                             }
