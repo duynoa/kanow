@@ -97,7 +97,7 @@ const Footer = () => {
                 {
                     id: uuidv4(),
                     name: 'Về KANOW',
-                    link: '/dispute-resolution'
+                    link: '/'
                 },
                 {
                     id: uuidv4(),
