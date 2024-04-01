@@ -14,7 +14,7 @@ const SessionStarRating = ({ isState }: Props) => {
                 <h1 className='text-[#3E424E] lg:text-2xl text-xl font-semibold '>Đánh giá</h1>
                 <div className="flex items-center gap-2">
                     <StarRatings
-                        rating={isState.totalStar}
+                        rating={isState.totalStar ?? 0}
                         starRatedColor="#FCC43E"
                         starHoverColor='#FCC43E'
                         starDimension='16px'
@@ -23,7 +23,7 @@ const SessionStarRating = ({ isState }: Props) => {
                         name='rating'
                     />
                     <div className='3xl:text-base text-sm text-[#FF9900] font-semibold'>
-                        {FormatNumberToDecimal(isState.totalStar, 1)}/5
+                        {FormatNumberToDecimal(isState.totalStar ?? 0, 1)}/5
                     </div>
                     {
                         isState?.totalReview !== 0 ?
