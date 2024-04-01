@@ -39,15 +39,14 @@ const LayoutContainer = ({
     const pathname = usePathname()
     const { isVisibleMobile, onResizeMobile, onCloseResizeMobile, isVisibleTablet, onResizeTablet, onCloseResizeTablet } = useResize()
 
-    const [isMounted, setIsMounted] = useState<boolean>(false)
-
     useEffect(() => {
-        setIsMounted(true);
         const scrollTop = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         scrollTop()
+
     }, [pathname])
+
 
     useEffect(() => {
         Aos.init({
@@ -84,11 +83,6 @@ const LayoutContainer = ({
             window.removeEventListener('resize', handleResize);
         };
     }, [isVisibleMobile, onCloseResizeMobile, onCloseResizeTablet, onResizeMobile, onResizeTablet, isVisibleTablet]);
-
-    if (!isMounted) {
-        return null;
-    }
-
     return (
         <html lang="en">
             <body className={`${inter.className} w-full bg-[#FCFDFD]`}>

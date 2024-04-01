@@ -474,7 +474,7 @@ const Header = () => {
                                                 </>
                                                 :
                                                 <>
-                                                    <DialogLogin
+                                                    {/* <DialogLogin
                                                         asChild={true}
                                                         statusModal={statusModal}
                                                         setStatusModal={setStatusModal}
@@ -486,7 +486,14 @@ const Header = () => {
                                                         >
                                                             Đăng Ký
                                                         </Button>
-                                                    </DialogLogin>
+                                                    </DialogLogin> */}
+                                                    <Button
+                                                        type="button"
+                                                        className='3xl:text-base text-sm 3xl:py-4 3xl:px-4 p-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
+                                                        onClick={() => handleOpenChangeModal('signup')}
+                                                    >
+                                                        Đăng Ký
+                                                    </Button>
                                                     <Separator orientation="vertical" className='bg-[#B4B8C5] h-auto my-2' />
                                                     <Button
                                                         type="button"
