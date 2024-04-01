@@ -83,6 +83,10 @@ const Account = (props: Props) => {
         },
     });
 
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
     const onSetValue = (informationUser: any) => {
         const newData = [
             {
@@ -125,7 +129,7 @@ const Account = (props: Props) => {
             console.log("informationUser", informationUser.review);
             console.log("informationUser", informationUser);
             queryState({
-                dataStarRatings: informationUser.review?.map((item: any) => {
+                dataStarRatings: informationUser.review?.data?.map((item: any) => {
                     return {
                         id: item?.id,
                         avatar: item?.avatar ? item?.avatar : '/avatar/avatar1.png',
@@ -134,7 +138,7 @@ const Account = (props: Props) => {
                         content: item?.content,
                         star: item?.star
                     }
-                })
+                }) || []
             })
 
             // queryState
