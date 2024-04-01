@@ -80,9 +80,7 @@ const Header = () => {
 
     useEffect(() => {
         const getInfoUser = async () => {
-
             const { data: information } = await apiInfoUser();
-
             if (information?.result) {
                 setInformationUser(information?.info);
             } else {
