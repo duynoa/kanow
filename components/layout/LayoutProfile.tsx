@@ -233,8 +233,6 @@ const LayoutProfile = ({
             }
         }
     }
-    console.log(informationUser);
-
 
     const handleChangeSidebar = (value: any) => {
         console.log('value:', value);
@@ -309,17 +307,19 @@ const LayoutProfile = ({
                                 Tham gia từ {moment(informationUser?.created_at).format('YYYY')}
                             </div>
                             <div className='flex items-center justify-between xl:gap-4 gap-2'>
-                                <div className='flex items-center gap-1'>
-                                    <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#FFC118]' />
-                                    <div className='3xl:text-sm 2xl:text-xs lg:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
-                                        {FormatNumberToDecimal(informationUser?.point ?? 0, 1)} điểm
+                                {informationUser?.total_trip > 0 &&
+                                    <div className='flex items-center gap-1'>
+                                        <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#FFC118]' />
+                                        <div className='3xl:text-sm 2xl:text-xs lg:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
+                                            {FormatNumberToDecimal(informationUser?.point ?? 0, 1)} điểm
+                                        </div>
                                     </div>
-                                </div>
+                                }
 
                                 <div className='flex items-center gap-1'>
-                                    <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#3AC996]' />
+                                    {informationUser?.total_trip > 0 && <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#3AC996]' />}
                                     <div className='3xl:text-sm 2xl:text-xs lg:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
-                                        {FormatNumberHundred(informationUser?.total_trip ?? 0, 100)} Chuyến
+                                        {`${informationUser?.total_trip > 0 ? `${FormatNumberHundred(informationUser?.total_trip ?? 0, 100)} chuyến` : 'Chưa có chuyến'}`}
                                     </div>
                                 </div>
                                 {/* {
