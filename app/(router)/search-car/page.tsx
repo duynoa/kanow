@@ -33,7 +33,6 @@ import { getListCars, postUpdateFavoriteHeartCar } from '@/services/cars/cars.se
 import { DialogFilterListCars } from '@/components/modals/DialogFilterListCars';
 import { CustomDataListCars } from '@/custom/CustomData';
 import { useCookie } from '@/hooks/useCookie';
-import { DialogLogin } from '@/components/modals/DialogLogin';
 
 type Props = {}
 
@@ -41,7 +40,7 @@ const SearchCars = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
     // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
-    const { openDialogLogin, setOpenDialogLogin } = useDialogLogin()
+    const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
     const { date, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogFilterListCars } = useDialogFilterListCars()
     const { getCookie } = useCookie()
@@ -58,7 +57,6 @@ const SearchCars = (props: Props) => {
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
     const [isFilterFixed, setIsFilterFixed] = useState<boolean>(false);
-    const [statusModal, setStatusModal] = useState<string>("login")
 
     // DATA BỘ LỌC FILTER
     const listFilter = [
@@ -1004,15 +1002,7 @@ const SearchCars = (props: Props) => {
                 <div ref={lastContainerRef} />
             </div>
 
-            <DialogCalendar />
             <DialogFilterListCars isState={isState} queryKeyIsState={queryKeyIsState} />
-            <DialogLogin
-                asChild={true}
-                different={"different"}
-                statusModal={statusModal}
-                setStatusModal={setStatusModal}
-                handleOpenChangeModal={handleOpenChangeModal}
-            />
         </>
     )
 }

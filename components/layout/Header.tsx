@@ -13,19 +13,13 @@ import { IoCloseSharp } from "react-icons/io5";
 import { Menu } from 'lucide-react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { Button } from '../ui/button';
-import { DialogLogin } from '../modals/DialogLogin';
 import { Separator } from '../ui/separator';
 import { useAuth } from '@/hooks/useAuth';
-import { CustomDataHeader } from '@/custom/CustomDataHeader';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import useAuthenticationAPI from '@/services/auth/auth.services';
 import { useCookie } from '@/hooks/useCookie';
 import { Skeleton } from '../ui/skeleton';
-import { TooltipHeader } from '../tooltip/TooltipHeader';
 import { useDialogLogin } from '@/hooks/useOpenDialog';
-
-
-
 
 const Header = () => {
     // lấy thông tin user
@@ -42,9 +36,9 @@ const Header = () => {
     const [activeService, setActiveService] = useState<boolean>(false)
     const [openModalLogin, setOpenModalLogin] = useState<boolean>(false)
 
-    const { openDialogLogin, setOpenDialogLogin } = useDialogLogin()
+    const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
 
-    const [statusModal, setStatusModal] = useState<string>("login")
+    // const [statusModal, setStatusModal] = useState<string>("login")
 
     const dataHeader = [
         {
@@ -256,33 +250,21 @@ const Header = () => {
                                                     </div>
                                                     :
                                                     <div className='flex gap-2 mb-6'>
-                                                        <DialogLogin
-                                                            asChild={true}
-                                                            statusModal={statusModal}
-                                                            setStatusModal={setStatusModal}
-                                                            handleOpenChangeModal={() => handleOpenChangeModal('signup')}
+                                                        <Button
+                                                            onClick={() => handleOpenChangeModal('signup')}
+                                                            type="button"
+                                                            className='3xl:text-base text-sm 3xl:py-4 3xl:px-4 lg:p-3 px-4 py-2 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
                                                         >
-                                                            <Button
-                                                                type="button"
-                                                                className='3xl:text-base text-sm 3xl:py-4 3xl:px-4 lg:p-3 px-4 py-2 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
-                                                            >
-                                                                Đăng Ký
-                                                            </Button>
-                                                        </DialogLogin>
+                                                            Đăng Ký
+                                                        </Button>
                                                         <Separator orientation="vertical" className='bg-[#B4B8C5] h-auto my-2' />
-                                                        <DialogLogin
-                                                            asChild={true}
-                                                            statusModal={statusModal}
-                                                            setStatusModal={setStatusModal}
-                                                            handleOpenChangeModal={() => handleOpenChangeModal('login')}
+                                                        <Button
+                                                            onClick={() => handleOpenChangeModal('login')}
+                                                            type="button"
+                                                            className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 lg:px-6 lg:py-3 px-4 py-2 w-fit 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white'
                                                         >
-                                                            <Button
-                                                                type="button"
-                                                                className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 lg:px-6 lg:py-3 px-4 py-2 w-fit 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white'
-                                                            >
-                                                                Đăng nhập
-                                                            </Button>
-                                                        </DialogLogin>
+                                                            Đăng nhập
+                                                        </Button>
                                                     </div>
 
                                                 }
@@ -474,19 +456,6 @@ const Header = () => {
                                                 </>
                                                 :
                                                 <>
-                                                    {/* <DialogLogin
-                                                        asChild={true}
-                                                        statusModal={statusModal}
-                                                        setStatusModal={setStatusModal}
-                                                        handleOpenChangeModal={() => handleOpenChangeModal('signup')}
-                                                    >
-                                                        <Button
-                                                            type="button"
-                                                            className='3xl:text-base text-sm 3xl:py-4 3xl:px-4 p-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
-                                                        >
-                                                            Đăng Ký
-                                                        </Button>
-                                                    </DialogLogin> */}
                                                     <Button
                                                         type="button"
                                                         className='3xl:text-base text-sm 3xl:py-4 3xl:px-4 p-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
@@ -502,19 +471,6 @@ const Header = () => {
                                                     >
                                                         Đăng nhập
                                                     </Button>
-                                                    {/* <DialogLogin
-                                                        asChild={true}
-                                                        statusModal={statusModal}
-                                                        setStatusModal={setStatusModal}
-                                                        handleOpenChangeModal={() => handleOpenChangeModal('login')}
-                                                    >
-                                                        <Button
-                                                            type="button"
-                                                            className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-6 py-3 w-fit 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'
-                                                        >
-                                                            Đăng nhập
-                                                        </Button>
-                                                    </DialogLogin> */}
                                                 </>
                                             }
                                         </>

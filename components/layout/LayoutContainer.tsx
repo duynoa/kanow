@@ -20,10 +20,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import ButtonToTop from '../button/ButtonToTop';
 import { usePathname } from 'next/navigation';
-import useAuthenticationAPI from '@/services/auth/auth.services';
-import { useAuth } from '@/hooks/useAuth';
+
 import AleartDialogLogout from '../alert/AleartDialogLogout';
-import { DialogLogin } from '../modals/DialogLogin';
+import { DialogLoginTest } from '../modals/DialogLoginTest';
+import { DialogCalendar } from '../modals/DialogCalendar';
+import { DialogReviewImage } from '../modals/DialogReviewImage';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -91,7 +92,9 @@ const LayoutContainer = ({
                     {children}
                     <ButtonToTop />
                     <AleartDialogLogout />
-                    {/* <DialogLogin /> */}
+                    <DialogLoginTest />
+                    <DialogCalendar />
+                    <DialogReviewImage />
                 </main>
                 {pathname !== "/search-car" && <Footer />}
                 <ToastContainer

@@ -6,11 +6,15 @@ import { create } from "zustand";
 // dialog login
 interface IOpenDialogLogin {
     openDialogLogin: boolean;
+    statusModal: string
+    setStatusModal: (type: any) => void
     setOpenDialogLogin: (key: any) => void;
 }
 
 export const useDialogLogin = create<IOpenDialogLogin>((set) => ({
     openDialogLogin: false,
+    statusModal: "login",
+    setStatusModal: (type: string) => set((state) => ({ statusModal: type })),
     setOpenDialogLogin: (key: boolean) => set((state) => ({ openDialogLogin: key })),
 }));
 
