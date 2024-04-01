@@ -170,8 +170,6 @@ const Header = () => {
         return null;
     }
 
-
-
     return (
         <>
             <header
@@ -180,7 +178,7 @@ const Header = () => {
             >
                 {
                     isVisibleTablet ?
-                        // màn hình mobile,tablet
+                        // màn hình mobile, tablet
                         <div className="custom-container 3xl:h-[120px] h-[80px] grid grid-cols-4">
                             <Link
                                 href="/"
@@ -394,16 +392,6 @@ const Header = () => {
                                                                                 {item?.title ? item?.title : ''}
                                                                             </div>
                                                                         </Link>
-                                                                        // <Link
-                                                                        //     key={item.id}
-                                                                        //     href={`/partner/${item.link}`}
-                                                                        //     className={`${pathname.includes(`/partner/${item.link}`) ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
-                                                                        // >
-
-                                                                        //     <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-300 ease-in-out line-clamp-2`}>
-                                                                        //         {item?.title ? item?.title : ''}
-                                                                        //     </div>
-                                                                        // </Link>
                                                                     ))
                                                                 }
                                                             </div>
@@ -436,7 +424,8 @@ const Header = () => {
                                         </div>
                                     ))
                                 }
-                                {getCookie && informationUser &&
+                                {
+                                    getCookie && informationUser &&
                                     <Link
                                         href={'/search-car'}
                                         className={`${(pathname.includes('/search-car')) ? ' text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : ' text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
@@ -477,7 +466,8 @@ const Header = () => {
                                                     </Link>
                                                     <Link
                                                         href={'/account'}
-                                                        className={`text-[#0E0E0E]/80 flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}>
+                                                        className={`text-[#0E0E0E]/80 flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                                    >
                                                         <span className='capitalize caret-transparent '>{informationUser?.fullname}</span>
                                                         <IoIosArrowDown className='2xl:text-2xl text-xl text-[#2FB9BD]' />
                                                     </Link>
@@ -498,7 +488,14 @@ const Header = () => {
                                                         </Button>
                                                     </DialogLogin>
                                                     <Separator orientation="vertical" className='bg-[#B4B8C5] h-auto my-2' />
-                                                    <DialogLogin
+                                                    <Button
+                                                        type="button"
+                                                        className='3xl:text-base text-sm 3xl:px-10 3xl:py-4 2xl:px-8 2xl:py-3 px-6 py-3 w-fit 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'
+                                                        onClick={() => handleOpenChangeModal('login')}
+                                                    >
+                                                        Đăng nhập
+                                                    </Button>
+                                                    {/* <DialogLogin
                                                         asChild={true}
                                                         statusModal={statusModal}
                                                         setStatusModal={setStatusModal}
@@ -510,7 +507,7 @@ const Header = () => {
                                                         >
                                                             Đăng nhập
                                                         </Button>
-                                                    </DialogLogin>
+                                                    </DialogLogin> */}
                                                 </>
                                             }
                                         </>

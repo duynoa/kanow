@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { HiArrowLongRight, HiArrowLongLeft } from "react-icons/hi2";
 import Link from 'next/link';
 import { Clock4 } from 'lucide-react';
+import { FormatPhoneNumber } from '@/components/format/FormatNumber';
 
 
 type Props = {}
@@ -292,10 +293,10 @@ const SignupDriverStep = (props: Props) => {
                                         </div>
                                         <div className='flex flex-col gap-1'>
                                             <div className='3xl:text-base lg:text-sm md:text-xs text-sm text-[#3E424E] font-semibold'>
-                                                Văn phòng Công Ty CPDV Bạn Uống Tôi Lái
+                                                Văn phòng CÔNG TY TNHH KANOW
                                             </div>
                                             <div className='3xl:text-base lg:text-sm md:text-xs text-sm text-[#3E424E] font-semibold'>
-                                                24 DN7, Phường Tân Hưng Thuận, Quận 12, Thành phố Hồ Chí Minh
+                                                84 Tôn Thất Tùng, Phường Bến Thành, Quận 1, TP.HCM
                                             </div>
                                         </div>
                                     </div>
@@ -324,11 +325,11 @@ const SignupDriverStep = (props: Props) => {
                                             />
                                         </div>
                                         <Link
-                                            href="https://zalo.me/banuongtoilai"
+                                            href="https://zalo.me/2281264205827497572"
                                             target='_blank'
                                             className='3xl:text-base lg:text-sm md:text-xs text-sm text-[#3E424E] font-semibold hover:underline hover:underline-offset-2'
                                         >
-                                            https://zalo.me/banuongtoilai
+                                            https://zalo.me/2281264205827497572
                                         </Link>
                                     </div>
                                     <div className='flex flex-row items-center gap-3'>
@@ -342,7 +343,8 @@ const SignupDriverStep = (props: Props) => {
                                             />
                                         </div>
                                         <div className='3xl:text-base lg:text-sm md:text-xs text-sm text-[#3E424E] font-semibold'>
-                                            19009235 - 0908.084.499
+                                            {/* 19009235 - 0908.084.499 */}
+                                            {FormatPhoneNumber('0843999999')}
                                         </div>
                                     </div>
                                     <div className='flex flex-row items-center gap-3'>
@@ -356,11 +358,11 @@ const SignupDriverStep = (props: Props) => {
                                             />
                                         </div>
                                         <Link
-                                            href="https://butl.vn"
+                                            href="http://kanow.vn/"
                                             target='_blank'
                                             className='3xl:text-base lg:text-sm md:text-xs text-sm text-[#3E424E] font-semibold hover:underline hover:underline-offset-2'
                                         >
-                                            https://butl.vn
+                                            http://kanow.vn/
                                         </Link>
                                     </div>
                                 </div>

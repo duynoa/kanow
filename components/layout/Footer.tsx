@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { FaInstagram, FaFacebook, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 import Link from 'next/link';
+import { FormatPhoneNumber } from '../format/FormatNumber';
 
 const Footer = () => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
@@ -69,7 +70,7 @@ const Footer = () => {
             list: [
                 {
                     id: uuidv4(),
-                    name: 'Hướng dẫn chung',
+                    name: 'Chính sách huỷ chuyến',
                     link: '/dispute-resolution'
                 },
                 {
@@ -139,7 +140,7 @@ const Footer = () => {
                             Tổng đài hỗ trợ
                         </div>
                         <div className='text-[#383A43] 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal'>
-                            1900 1090
+                            {FormatPhoneNumber('0843999999')}
                         </div>
                     </div>
                     <div className='mt-1'>
@@ -147,7 +148,7 @@ const Footer = () => {
                             Hòm thư
                         </div>
                         <div className='text-[#383A43] 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal'>
-                            kanow@gmail.com
+                            kanow.vn@gmail.com
                         </div>
                     </div>
                 </div>
@@ -155,7 +156,7 @@ const Footer = () => {
                 {
                     dataFooter.map((item, index) => (
                         <React.Fragment key={item.id}>
-                            <div className='lg:col-span-2 col-span-1 w-full flex flex-col lg:gap-4 gap-2'>
+                            <div className='lg:col-span-2 col-span-1 flex flex-col lg:gap-4 gap-2'>
                                 {
                                     item.title ?
                                         <div className='text-[#000000] 2xl:text-2xl xl:text-[22px] lg:text-[19px] text-xl font-semibold capitalize'>
@@ -167,14 +168,14 @@ const Footer = () => {
                                 <div className='flex flex-col lg:gap-3 gap-1'>
                                     {
                                         item.list.map((e) => (
-                                            <React.Fragment key={e.id}>
+                                            <div key={e.id} className='w-fit'>
                                                 <Link
                                                     href={e.link}
                                                     className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1 hover:scale-[1.01] hover:font-medium transition-colors'
                                                 >
                                                     {e.name}
                                                 </Link>
-                                            </React.Fragment>
+                                            </div>
                                         ))
                                     }
                                 </div>
@@ -187,7 +188,7 @@ const Footer = () => {
                     <div className='text-[#000000] 2xl:text-2xl xl:text-[22px] lg:text-[19px] text-xl font-semibold'>
                         Đối tác
                     </div>
-                    <div className='flex flex-col lg:gap-3 gap-1'>
+                    <div className='flex flex-col lg:gap-3 gap-1 w-fit'>
                         <Link
                             href="/partner/vehicle-owner"
                             className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1 hover:scale-[1.01] hover:font-medium transition-colors'
@@ -206,14 +207,14 @@ const Footer = () => {
             <div className='bg-[#F6F7F8]/80 py-6'>
                 <div className='custom-container grid lg:grid-cols-12 grid-cols-1 lg:gap-2 gap-6'>
                     <div className='text-[#000000] font-bold lg:col-span-2 col-span-1 w-full flex flex-col 2xl:gap-5 gap-3'>
-                        © Công ty Cổ Phần KANOW
+                        © CÔNG TY TNHH KANOW
                     </div>
                     <div className='col-span-1' />
                     <div className='text-[#484D5C] 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal lg:col-span-2 col-span-1 w-full flex lg:gap-4 gap-2 '>
-                        Số GCNĐKKD: 0317307544
+                        Số GCNĐKKD: {FormatPhoneNumber('0318312360')}
                     </div>
                     <div className='text-[#484D5C] 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal lg:col-span-2 col-span-1 w-full flex lg:gap-4 gap-2 '>
-                        Ngày cấp: 24-05-22
+                        Ngày cấp: 23-02-24
                     </div>
                     <div className='text-[#484D5C] 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal lg:col-span-3 col-span-1 w-full flex lg:gap-4 gap-2 '>
                         Nơi cấp: Sở Kế hoạch và Đầu tư TPHCM
@@ -233,7 +234,7 @@ const Footer = () => {
                 <div className='col-span-1' />
                 <div className='lg:col-span-5 col-span-1 w-full flex flex-col'>
                     <div className='text-[#484D5C] 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal'>
-                        Địa chỉ: Văn phòng 02, Tầng 08, Tòa nhà Pearl Plaza, Số 561A Điện Biên Phủ, Phường 25, Quận Bình Thạnh, Thành phố Hồ Chí Minh, Việt Nam.
+                        84 Tôn Thất Tùng, Phường Bến Thành, Quận 1, TP.HCM
                     </div>
                 </div>
                 <div className='col-span-2' />

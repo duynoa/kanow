@@ -12,8 +12,9 @@ import { useAuth } from '@/hooks/useAuth'
 import moment from 'moment'
 import { toastCore } from '@/lib/toast'
 import useAuthenticationAPI from '@/services/auth/auth.services'
-import FormInfo from './components/formInfo'
-import FormPapers from './components/formPapers'
+import FormInfo from './components/FormInfo'
+import FormPapers from './components/FormPapers'
+
 type Props = {}
 
 type Rating = {

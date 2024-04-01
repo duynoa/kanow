@@ -23,6 +23,7 @@ import { usePathname } from 'next/navigation';
 import useAuthenticationAPI from '@/services/auth/auth.services';
 import { useAuth } from '@/hooks/useAuth';
 import AleartDialogLogout from '../alert/AleartDialogLogout';
+import { DialogLogin } from '../modals/DialogLogin';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -36,9 +37,7 @@ const LayoutContainer = ({
     children: React.ReactNode
 }) => {
     const pathname = usePathname()
-
     const { isVisibleMobile, onResizeMobile, onCloseResizeMobile, isVisibleTablet, onResizeTablet, onCloseResizeTablet } = useResize()
-
 
     useEffect(() => {
         const scrollTop = () => {
@@ -53,6 +52,7 @@ const LayoutContainer = ({
             once: true
         });
     }, []);
+
     // ẩn/hiện khi chuyển qua màn hình nhỏ khi không dùng chung div để tránh xung đột 
     useEffect(() => {
         // Kiểm tra kích thước màn hình và cập nhật trạng thái isVisible
@@ -90,7 +90,7 @@ const LayoutContainer = ({
                     {children}
                     <ButtonToTop />
                     <AleartDialogLogout />
-
+                    {/* <DialogLogin /> */}
                 </main>
                 {pathname !== "/search-car" && <Footer />}
                 <ToastContainer
