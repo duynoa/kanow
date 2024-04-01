@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import moment from "moment";
 import Image from "next/image";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 type Props = {
     form: any,
@@ -37,13 +37,14 @@ const FormInformation = ({ form, isState }: Props) => {
                                             <Input
                                                 disabled={!isState.editInfo}
                                                 type="text"
-                                                className={`  disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC] border-2 2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                                className={`  disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
+                                                 focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                 placeholder="Họ và tên của bạn"
                                                 {...field}
                                             />
                                         </FormControl>
 
-                                        {fieldState?.invalid && fieldState?.error && (
+                                        {isState.editInfo && fieldState?.invalid && fieldState?.error && (
                                             <FormMessage>{fieldState?.error?.message}</FormMessage>
                                         )}
                                     </FormItem>
@@ -73,7 +74,8 @@ const FormInformation = ({ form, isState }: Props) => {
                                                     <PopoverTrigger asChild>
                                                         <Button
                                                             disabled={!isState.editInfo} variant={"default"}
-                                                            className={'w-full 2xl:py-3 2xl:text-sm lg:text-xs lg:py-2 md:py-2 py-2 disabled:bg-gray-200 disabled:border-gray-300 disabled:border-2 bg-white border-[#E6E8EC] hover:bg-transparent hover:disabled:bg-gray-200 border-2 text-[#3E424E] font-normal px-3 rounded-2xl justify-between text-left'}
+                                                            className="w-full 2xl:py-3 2xl:text-sm lg:text-xs lg:py-2 md:py-2 py-2 disabled:bg-gray-200 disabled:border-gray-300 disabled:border-2 bg-white focus:border-[#2FB9BD]
+                                                             border-[#E6E8EC]   hover:bg-transparent hover:disabled:bg-gray-200 border-2 text-[#3E424E] font-normal px-3 rounded-2xl justify-between text-left"
                                                         >
                                                             {field.value ? moment(field.value).format("DD/MM/YYYY") : <span>Nhập ngày sinh</span>}
                                                             {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
@@ -93,7 +95,7 @@ const FormInformation = ({ form, isState }: Props) => {
                                                 </Popover>
                                             </FormControl>
 
-                                            {fieldState?.invalid && fieldState?.error && (
+                                            {isState.editInfo && fieldState?.invalid && fieldState?.error && (
                                                 <FormMessage>{fieldState?.error?.message}</FormMessage>
                                             )}
                                         </FormItem>
@@ -117,11 +119,11 @@ const FormInformation = ({ form, isState }: Props) => {
                                                 className='flex items-center gap-8 md:gap-8 sm:gap-4'>
                                                 <div className="flex items-center space-x-2">
                                                     <RadioGroupItem value="male" className='text-[#2FB9BD] border-[#2FB9BD] 2xl:text-sm lg:text-xs' id="r1" />
-                                                    <Label htmlFor="r1">Nam</Label>
+                                                    <Label className="cursor-pointer" htmlFor="r1">Nam</Label>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
                                                     <RadioGroupItem value="girl" className='text-[#2FB9BD] border-[#2FB9BD] 2xl:text-sm lg:text-xs' id="r2" />
-                                                    <Label htmlFor="r2">Nữ</Label>
+                                                    <Label className="cursor-pointer" htmlFor="r2">Nữ</Label>
                                                 </div>
                                             </RadioGroup>
                                         </FormControl>
@@ -154,13 +156,14 @@ const FormInformation = ({ form, isState }: Props) => {
                                             <Input
                                                 disabled={!isState.editInfo}
                                                 type="text"
-                                                className={`  disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC] border-2 2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                                className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC] border-2 focus:border-[#2FB9BD]
+                                                 2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                 placeholder="Email"
                                                 {...field}
                                             />
                                         </FormControl>
 
-                                        {fieldState?.invalid && fieldState?.error && (
+                                        {isState.editInfo && fieldState?.invalid && fieldState?.error && (
                                             <FormMessage>{fieldState?.error?.message}</FormMessage>
                                         )}
                                     </FormItem>
@@ -175,6 +178,14 @@ const FormInformation = ({ form, isState }: Props) => {
                                     value: isState.editInfo,
                                     message: 'Vui lòng nhập số điện thoại',
                                 },
+                                minLength: {
+                                    value: 10,
+                                    message: "Số điện thoại phải có ít nhất 10 số"
+                                },
+                                maxLength: {
+                                    value: 10,
+                                    message: "Số điện thoại không được dài hơn 10 số"
+                                }
                             }}
                             render={({ field, fieldState }) => {
                                 return (
@@ -186,13 +197,14 @@ const FormInformation = ({ form, isState }: Props) => {
                                             <Input
                                                 disabled={!isState.editInfo}
                                                 type="number"
-                                                className={`  disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC] border-2 2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                                className={`  disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC] border-2  focus:border-[#2FB9BD]
+                                                2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                 placeholder="Số điện thoại"
                                                 {...field}
                                             />
                                         </FormControl>
 
-                                        {fieldState?.invalid && fieldState?.error && (
+                                        {isState.editInfo && fieldState?.invalid && fieldState?.error && (
                                             <FormMessage>{fieldState?.error?.message}</FormMessage>
                                         )}
                                     </FormItem>
