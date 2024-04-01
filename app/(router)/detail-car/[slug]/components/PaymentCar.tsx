@@ -10,7 +10,7 @@ import { TiArrowSortedUp } from 'react-icons/ti'
 import { PiShieldCheckFill } from "react-icons/pi";
 import { FaCalendarAlt, FaRegQuestionCircle } from 'react-icons/fa'
 
-import { useDialogAnswerPolicy, useDialogCalendar, useDialogLogin, useDialogPromotion, useDialogReportCar } from '@/hooks/useOpenDialog'
+import { useDialogAnswerPolicy, useDialogCalendar, useDialogLogin, useDialogPromotion, useDialogReportCar, useDialogRequestCarRental } from '@/hooks/useOpenDialog'
 
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -37,9 +37,13 @@ const PaymentCar = ({
     const { setOpenDialogPromotion } = useDialogPromotion()
     const { setOpenDialogReportCar } = useDialogReportCar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
-    const { isVisibleTablet } = useResize()
-    const { getCookie } = useCookie()
     const { setOpenDialogLogin } = useDialogLogin()
+    const { openDialogRequestCarRental, dataListRequestCarRental, setDataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
+
+    console.log('dataListRequestCarRental', dataListRequestCarRental);
+    console.log('openDialogRequestCarRental', openDialogRequestCarRental);
+    const { getCookie } = useCookie()
+    const { isVisibleTablet } = useResize()
 
     const handleOpenDialog = async (type: string) => {
         if (type === 'custom_promotion') {
@@ -99,7 +103,17 @@ const PaymentCar = ({
         }
     }
 
-    console.log("getCookie... : ", getCookie)
+    const handleSubmitCar = () => {
+        if (getCookie !== "kanow" && getCookie !== undefined) {
+            setDataListRequestCarRental(isState)
+            setOpenDialogRequestCarRental(true)
+            console.log('check123');
+
+        } else {
+            setOpenDialogLogin(true)
+            console.log('check321');
+        }
+    }
 
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
@@ -442,7 +456,11 @@ const PaymentCar = ({
                     </div>
                 </div>
 
-                <Button className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-2xl'>
+                <Button
+                    type="button"
+                    onClick={handleSubmitCar}
+                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-2xl'
+                >
                     Chọn thuê
                 </Button>
 

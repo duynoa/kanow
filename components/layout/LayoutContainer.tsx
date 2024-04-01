@@ -22,9 +22,10 @@ import ButtonToTop from '../button/ButtonToTop';
 import { usePathname } from 'next/navigation';
 
 import AleartDialogLogout from '../alert/AleartDialogLogout';
-import { DialogLoginTest } from '../modals/DialogLoginTest';
+import { DialogLogin } from '../modals/DialogLogin';
 import { DialogCalendar } from '../modals/DialogCalendar';
 import { DialogReviewImage } from '../modals/DialogReviewImage';
+import { DialogRequestCarRental } from '../modals/DialogRequestCarRental';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -92,9 +93,10 @@ const LayoutContainer = ({
                     {children}
                     <ButtonToTop />
                     <AleartDialogLogout />
-                    <DialogLoginTest />
+                    <DialogLogin />
                     <DialogCalendar />
                     <DialogReviewImage />
+                    <DialogRequestCarRental />
                 </main>
                 {pathname !== "/search-car" && <Footer />}
                 <ToastContainer

@@ -33,7 +33,6 @@ import { IInitialStateDetailCar } from '@/types/Cars/ICars'
 import { getListPromotions } from '@/services/cars/promotion.services'
 import { useDialogLogin, useDialogPromotion, useDialogReportCar } from '@/hooks/useOpenDialog'
 import { useCookie } from '@/hooks/useCookie'
-import { DialogLogin } from '@/components/modals/DialogLogin'
 import { DialogReportCar } from '@/components/modals/DialogReportCar'
 import { getListReportCar } from '@/services/cars/report.services'
 
