@@ -13,7 +13,7 @@ import moment from 'moment'
 import { toastCore } from '@/lib/toast'
 import useAuthenticationAPI from '@/services/auth/auth.services'
 import FormInformation from './components/FormInformation'
-import FormPapersA from './components/FormPapersA'
+import FormPapers from './components/FormPapers'
 
 type Props = {}
 
@@ -240,7 +240,7 @@ const Account = (props: Props) => {
                             }
                         </div>
                     </div>
-                    <FormPapersA form={form} isState={isState} />
+                    <FormPapers form={form} isState={isState} />
                 </div>
             </div>
             <div className="rounded-2xl bg-white">

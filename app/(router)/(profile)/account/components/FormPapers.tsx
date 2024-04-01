@@ -15,7 +15,7 @@ type Props = {
     isState: any,
 }
 
-const FormPapersA = ({ form, isState }: Props) => {
+const FormPapers = ({ form, isState }: Props) => {
     return (
         <Form {...form}>
             <div className="space-y-4" >
@@ -212,4 +212,4 @@ const FormPapersA = ({ form, isState }: Props) => {
         </Form>
     )
 }
-export default FormPapersA
+export default FormPapers
