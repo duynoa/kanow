@@ -4,16 +4,11 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Separator } from "@/components/ui/separator";
-import { CalendarIcon } from "lucide-react";
+import { toastCore } from "@/lib/toast";
 import moment from "moment";
 import Image from "next/image";
 import { IoMdAdd } from "react-icons/io";
 import { MdClear } from "react-icons/md";
-
-
-
 
 type Props = {
     form: any,
@@ -23,17 +18,23 @@ const FormPapers = ({ form, isState }: Props) => {
     return (
         <Form {...form}>
             <div className="space-y-4" >
-                <div className='grid grid-cols-2 gap-8 '>
+                <div className='grid md:grid-cols-2 grid-cols-1 lg:gap-8 md:gap-6 gap-5 '>
                     <div className='flex flex-col 2xl:gap-6 lg:gap-4 gap-6 bg-white'>
-                        <h1 className="text-[#3E424E] font-semibold 2xl:text-[18px] lg:text-sm">Thông tin chung</h1>
+                        <h1 className="text-[#3E424E] font-semibold text-[18px]">Thông tin chung</h1>
                         <FormField
                             control={form.control}
+                            rules={{
+                                required: {
+                                    value: isState.editPapers,
+                                    message: 'Vui lòng nhập số GPLX',
+                                },
+                            }}
                             name="numberPapers"
                             render={({ field, fieldState }) => {
                                 return (
                                     <FormItem>
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                            Số GPLX
+                                            Số GPLX {isState.editPapers && <span className="text-red-500">*</span>}
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -55,17 +56,23 @@ const FormPapers = ({ form, isState }: Props) => {
                         <FormField
                             control={form.control}
                             name="namePapers"
+                            rules={{
+                                required: {
+                                    value: isState.editPapers,
+                                    message: 'Vui lòng nhập họ và tên',
+                                },
+                            }}
                             render={({ field, fieldState }) => {
                                 return (
                                     <FormItem>
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                            Họ và tên
+                                            Họ và tên {isState.editPapers && <span className="text-red-500">*</span>}
                                         </FormLabel>
                                         <FormControl>
                                             <Input
                                                 disabled={!isState.editPapers}
                                                 type="text"
-                                                className={`  disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC] border-2 2xl:py-3 lg:py-2 md:py-2 py-2 rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                                className={`${fieldState?.invalid && fieldState?.error && "border-red-500"}  disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC] border-2 2xl:py-3 lg:py-2 md:py-2 py-2 rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                 placeholder="Nhập đầy đủ họ và tên"
                                                 {...field}
                                             />
@@ -81,11 +88,17 @@ const FormPapers = ({ form, isState }: Props) => {
                         <FormField
                             control={form.control}
                             name="datePapers"
+                            rules={{
+                                required: {
+                                    value: isState.editPapers,
+                                    message: 'Vui lòng chọn ngày tháng năm sinh',
+                                },
+                            }}
                             render={({ field, fieldState }) => {
                                 return (
                                     <FormItem>
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                            Ngày sinh
+                                            Ngày sinh {isState.editPapers && <span className="text-red-500">*</span>}
                                         </FormLabel>
                                         <FormControl>
                                             <Popover>
@@ -122,7 +135,7 @@ const FormPapers = ({ form, isState }: Props) => {
                         />
                     </div>
                     <div className="flex flex-col gap-6">
-                        <Label htmlFor="picture" className="text-[#3E424E] font-semibold 2xl:text-[18px] lg:text-sm">Hình ảnh</Label>
+                        <Label htmlFor="picture" className="text-[#3E424E] font-semibold text-[18px]">Hình ảnh <span className="text-red-500">*</span></Label>
                         <FormField
                             control={form.control}
                             name="filePapers"
@@ -132,25 +145,33 @@ const FormPapers = ({ form, isState }: Props) => {
                                         <FormControl>
                                             <>
                                                 <Input {...fieldProps}
-                                                    onChange={(event: any) =>
+                                                    onChange={(event: any) => {
+
                                                         onChange(event.target.files[0])
+                                                    }
+
                                                     }
                                                     accept="image/*, application/pdf"
                                                     id={!isState.editPapers ? "" : "picture"}
                                                     type="file"
                                                     multiple
                                                     className="hidden" />
-                                                <div className="h-[282px] relative bg-white rounded-md">
+                                                <div className="h-[280px] relative bg-white rounded-md">
                                                     {value ?
                                                         <>
                                                             <Image
-                                                                src={URL.createObjectURL(value)}
-                                                                objectFit="cover"
-                                                                layout="fill"
-                                                                alt="image" className="w-full h-full rounded-md p-0 m-0" />
-                                                            <div className="bg-white rounded-full rounded-fit absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                                                                src={value instanceof File ? URL.createObjectURL(value) : value}
+                                                                width={1280}
+                                                                height={1024}
+                                                                alt="image" className="w-full h-full object-cover rounded-md" />
+                                                            <div
+                                                                className="bg-white rounded-full rounded-fit absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
                                                                 <MdClear
                                                                     onClick={() => {
+                                                                        if (!isState.editPapers) {
+                                                                            toastCore.warning('Vui lòng chọn chỉnh sửa')
+                                                                            return
+                                                                        }
                                                                         const inputElement = document.getElementById('picture') as HTMLInputElement | null;
                                                                         if (inputElement) {
                                                                             inputElement.value = '';
