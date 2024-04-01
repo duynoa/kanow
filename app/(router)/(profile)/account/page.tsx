@@ -12,8 +12,8 @@ import { useAuth } from '@/hooks/useAuth'
 import moment from 'moment'
 import { toastCore } from '@/lib/toast'
 import useAuthenticationAPI from '@/services/auth/auth.services'
-import FormInfo from './components/FormInfo'
-import FormPapers from './components/FormPapers'
+import FormInformation from './components/FormInformation'
+import FormPapersA from './components/FormPapersA'
 
 type Props = {}
 
@@ -83,7 +83,9 @@ const Account = (props: Props) => {
             filePapers: null
         },
     });
-
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
 
     useEffect(() => {
         if (informationUser) {
@@ -121,11 +123,6 @@ const Account = (props: Props) => {
             })
         }
     }, [informationUser])
-
-
-    useEffect(() => {
-        setIsMounted(true)
-    }, [])
 
     const handleClickButtonEdit = (type: string) => {
         if (type === "editInfo") {
@@ -204,7 +201,7 @@ const Account = (props: Props) => {
                             }
                         </div>
                     </div>
-                    <FormInfo form={form} isState={isState} />
+                    <FormInformation form={form} isState={isState} />
                 </div>
             </div>
             <div className="rounded-2xl bg-white">
@@ -243,7 +240,7 @@ const Account = (props: Props) => {
                             }
                         </div>
                     </div>
-                    <FormPapers form={form} isState={isState} />
+                    <FormPapersA form={form} isState={isState} />
                 </div>
             </div>
             <div className="rounded-2xl bg-white">

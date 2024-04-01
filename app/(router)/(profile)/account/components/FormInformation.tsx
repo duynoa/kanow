@@ -12,7 +12,7 @@ type Props = {
     form: any,
     isState: any,
 }
-const FormInfo = ({ form, isState }: Props) => {
+const FormInformation = ({ form, isState }: Props) => {
     return (
         <Form {...form}>
             <div className="space-y-4" >
@@ -205,4 +205,4 @@ const FormInfo = ({ form, isState }: Props) => {
         </Form>
     )
 }
-export default FormInfo
+export default FormInformation
