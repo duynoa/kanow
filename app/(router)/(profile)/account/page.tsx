@@ -8,7 +8,7 @@ import { FaRegQuestionCircle } from 'react-icons/fa'
 import { uuidv4 } from '@/lib/uuid'
 import { toastCore } from '@/lib/toast'
 import { useAuth } from '@/hooks/useAuth'
-import FormInformation from './components/FormInformation'
+import FormInformation from './components/FormInfomation'
 import { Button } from "@/components/ui/button"
 import FormPapers from './components/FormPapers'
 import apiAccount from '@/services/account/account.services'
