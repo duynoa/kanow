@@ -141,11 +141,6 @@ const Account = (props: Props) => {
         }
     }, [informationUser])
 
-
-    useEffect(() => {
-        setIsMounted(true)
-    }, [])
-
     const handleClickButtonEdit = (type: string) => {
         if (type === "editInfo") {
             queryState({ editInfo: !isState.editInfo })

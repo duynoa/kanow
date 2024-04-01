@@ -44,14 +44,13 @@ type Props = {
 }
 
 const DetailCar = ({ params }: Props) => {
-    const { setOpenDialogLogin } = useDialogLogin()
+    const { setOpenDialogLogin, setStatusModal } = useDialogLogin()
     const { dataPromotions, setDataPromotions } = useDialogPromotion()
     const { dataListReportCar, setDataListReportCar } = useDialogReportCar()
     const { getCookie } = useCookie()
     const { isVisibleMobile, isVisibleTablet } = useResize()
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
     const [isMounted, setIsMounted] = useState<boolean>(false)
-    const [statusModal, setStatusModal] = useState<string>("login")
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
     const [showSecondHeader, setShowSecondHeader] = useState(false);
 
@@ -221,7 +220,6 @@ const DetailCar = ({ params }: Props) => {
     }
 
     useEffect(() => {
-
         fetchDataDetailCar()
         fetchDataListCarsRelated()
         fetchListPromotions()
@@ -417,10 +415,7 @@ const DetailCar = ({ params }: Props) => {
 
     return (
         <>
-            <div
-                className={`${showSecondHeader ? "block" : "hidden"} 3xl:h-[120px] w-full h-[80px] z-30 fixed top-0 bg-white`}
-            // style={{ background: "linear-gradient(180deg, rgba(194, 249, 249, 0.60) 0%, rgba(194, 249, 249, 0.00) 100%)" }}
-            >
+            <div className={`${showSecondHeader ? "block" : "hidden"} 3xl:h-[120px] w-full h-[80px] z-30 fixed top-0 bg-white`}>
                 <div className='custom-container h-full flex flex-row items-center gap-10'>
                     <div
                         onClick={() => handleClickToId(1)}
@@ -479,7 +474,10 @@ const DetailCar = ({ params }: Props) => {
                     >
                         {
                             isState?.dataDetailCar && isState?.dataDetailCar?.image_car && isState?.dataDetailCar?.image_car.map((carDetail: any, index: number) => (
-                                <SwiperSlide key={`carDetail-${carDetail.id}`} onClick={() => handleOpenReviewImage(carDetail.id, index)}>
+                                <SwiperSlide
+                                    key={`carDetail-${carDetail.id}`}
+                                    onClick={() => handleOpenReviewImage(carDetail.id, index)}
+                                >
                                     <div className='w-full md:h-[380px] h-[240px] cursor-pointer'>
                                         <Image
                                             src={carDetail.name ? carDetail.name : '/default/default.png'}
@@ -899,20 +897,10 @@ const DetailCar = ({ params }: Props) => {
                     }
                 </div>
             </div>
-
-            <DialogLogin
-                asChild={true}
-                different={"different"}
-                statusModal={statusModal}
-                setStatusModal={setStatusModal}
-                handleOpenChangeModal={handleOpenChangeModal}
-            />
-            <DialogReviewImage />
             <DialogPromotion
                 isState={isState}
                 queryKeyIsState={queryKeyIsState}
             />
-            <DialogCalendar />
             <DialogAnswerPolicy
                 isState={isState}
                 queryKeyIsState={queryKeyIsState}

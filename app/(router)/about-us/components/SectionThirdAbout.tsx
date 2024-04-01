@@ -1,5 +1,7 @@
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 import Marquee from 'react-fast-marquee'
 import { v4 as uuidv4 } from 'uuid'
@@ -7,6 +9,8 @@ import { v4 as uuidv4 } from 'uuid'
 type Props = {}
 
 const SectionThirdAbout = (props: Props) => {
+    const router = useRouter()
+
     const imageSlider = [
         {
             id: uuidv4(),
@@ -121,7 +125,10 @@ const SectionThirdAbout = (props: Props) => {
                                 </div>
                                 <div className='flex flex-col gap-4'>
                                     <div className='w-full'>
-                                        <Button className='3xl:text-lg xl:text-base text-sm 3xl:px-12 3xl:py-3 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white'>
+                                        <Button
+                                            onClick={() => router.push('/')}
+                                            className='3xl:text-lg xl:text-base text-sm 3xl:px-12 3xl:py-3 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white font-semibold'
+                                        >
                                             Thuê xe tự lái
                                         </Button>
                                     </div>
@@ -150,7 +157,10 @@ const SectionThirdAbout = (props: Props) => {
                                 </div>
                                 <div className='flex flex-col gap-4'>
                                     <div className='w-full'>
-                                        <Button className='3xl:text-lg xl:text-base text-sm 3xl:px-12 3xl:py-3 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white'>
+                                        <Button
+                                            onClick={() => router.push('/')}
+                                            className='3xl:text-lg xl:text-base text-sm 3xl:px-12 3xl:py-3 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white'
+                                        >
                                             Thuê xe có tài xế
                                         </Button>
                                     </div>

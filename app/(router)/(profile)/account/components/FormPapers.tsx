@@ -15,6 +15,7 @@ type Props = {
     form: any,
     isState: any,
 }
+
 const FormPapers = ({ form, isState }: Props) => {
     return (
         <Form {...form}>

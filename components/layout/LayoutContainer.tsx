@@ -20,9 +20,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import ButtonToTop from '../button/ButtonToTop';
 import { usePathname } from 'next/navigation';
-import useAuthenticationAPI from '@/services/auth/auth.services';
-import { useAuth } from '@/hooks/useAuth';
+
 import AleartDialogLogout from '../alert/AleartDialogLogout';
+import { DialogLoginTest } from '../modals/DialogLoginTest';
+import { DialogCalendar } from '../modals/DialogCalendar';
+import { DialogReviewImage } from '../modals/DialogReviewImage';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -36,16 +38,16 @@ const LayoutContainer = ({
     children: React.ReactNode
 }) => {
     const pathname = usePathname()
-
     const { isVisibleMobile, onResizeMobile, onCloseResizeMobile, isVisibleTablet, onResizeTablet, onCloseResizeTablet } = useResize()
-
 
     useEffect(() => {
         const scrollTop = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         scrollTop()
-    }, [])
+
+    }, [pathname])
+
 
     useEffect(() => {
         Aos.init({
@@ -53,6 +55,7 @@ const LayoutContainer = ({
             once: true
         });
     }, []);
+
     // ẩn/hiện khi chuyển qua màn hình nhỏ khi không dùng chung div để tránh xung đột 
     useEffect(() => {
         // Kiểm tra kích thước màn hình và cập nhật trạng thái isVisible
@@ -81,7 +84,6 @@ const LayoutContainer = ({
             window.removeEventListener('resize', handleResize);
         };
     }, [isVisibleMobile, onCloseResizeMobile, onCloseResizeTablet, onResizeMobile, onResizeTablet, isVisibleTablet]);
-
     return (
         <html lang="en">
             <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
@@ -90,7 +92,9 @@ const LayoutContainer = ({
                     {children}
                     <ButtonToTop />
                     <AleartDialogLogout />
-
+                    <DialogLoginTest />
+                    <DialogCalendar />
+                    <DialogReviewImage />
                 </main>
                 {pathname !== "/search-car" && <Footer />}
                 <ToastContainer

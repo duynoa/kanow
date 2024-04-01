@@ -43,7 +43,6 @@ const InfomationCar = ({
     handleClickFavorite
 }: Props) => {
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
-    const { openDialogLogin, setOpenDialogLogin } = useDialogLogin()
     const [expandedItems, setExpandedItems] = useState<boolean>(false);
 
     const handleToggleExpand = () => {
@@ -180,24 +179,6 @@ const InfomationCar = ({
     const dataMaps = {
         google_map_link: ""
     }
-
-    // function formatDate(item: string) {
-    //     if (!item) {
-    //         return '';
-    //     }
-
-    //     const date = parseISO(item)
-    //     // const date = item;
-
-    //     console.log('date :', date);
-
-
-    //     if (isYesterday(date)) {
-    //         return `Hôm qua lúc ${format(date, 'HH:mm')}`;
-    //     }
-
-    //     return formatDistanceToNow(date, { addSuffix: true, locale: vi });
-    // }
 
     if (!isMounted) {
         return null
