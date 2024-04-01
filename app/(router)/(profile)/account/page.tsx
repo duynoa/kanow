@@ -8,7 +8,7 @@ import { FaRegQuestionCircle } from 'react-icons/fa'
 import { uuidv4 } from '@/lib/uuid'
 import { toastCore } from '@/lib/toast'
 import { useAuth } from '@/hooks/useAuth'
-import FormInformation from './components/FormInformation'
+import FormInformation from './components/FormInfomation'
 import { Button } from "@/components/ui/button"
 import apiAccount from '@/services/account/account.services'
 import SessionStarRating from './components/SessionStarRating'
@@ -125,6 +125,22 @@ const Account = (props: Props) => {
     useEffect(() => {
         if (informationUser) {
             onSetValue(informationUser)
+            console.log("informationUser", informationUser.review);
+            console.log("informationUser", informationUser);
+            queryState({
+                dataStarRatings: informationUser.review?.data?.map((item: any) => {
+                    return {
+                        id: item?.id,
+                        avatar: item?.avatar ? item?.avatar : '/avatar/avatar1.png',
+                        name: item?.customer_name,
+                        date: item?.date,
+                        content: item?.content,
+                        star: item?.star
+                    }
+                }) || []
+            })
+
+            // queryState
         }
     }, [informationUser])
 
@@ -177,6 +193,10 @@ const Account = (props: Props) => {
 
     }
 
+    const handlePage = (page: number) => {
+
+    }
+
 
     if (!isMounted) {
         return null;
@@ -221,7 +241,7 @@ const Account = (props: Props) => {
                         <div className='flex flex-col gap-3'>
                             <div className='flex items-center md:gap-4 gap-2'>
                                 <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold '>Giấy phép lái xe </h1>
-                                <span className='bg-[#FA3434] rounded-2xl ml-1 text-white  py-1 px-4 text-xs  font-normal'>Chưa xác thực</span>
+                                <span className={`${informationUser?.drivingLiscense?.status == 0 ? "bg-[#FA3434]" : "bg-[#2FB9BD]"} rounded-2xl ml-1 text-white  py-1 px-4 text-xs  font-normal`}>{informationUser?.drivingLiscense?.status == 0 ? "Chưa xác thực" : "Đã xác thực"}</span>
                             </div>
                             <div className='flex flex-row items-center gap-2'>
                                 <h4 className='text-[#3E424E] font-normal lg:text-base text-sm'>
@@ -264,6 +284,13 @@ const Account = (props: Props) => {
             </div>
             <div className="rounded-2xl bg-white">
                 <SessionStarRating isState={isState} />
+                <div className="flex justify-center items-center my-4">
+                    <Button
+                        type='button'
+                        className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] text-sm lg:px-8 px-10 py-2 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
+                        Xem thêm
+                    </Button>
+                </div>
             </div>
         </div >
     )
