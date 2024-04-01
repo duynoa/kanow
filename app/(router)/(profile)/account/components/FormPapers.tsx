@@ -174,7 +174,8 @@ const FormPapers = ({ form, isState }: Props) => {
                                                                 src={value instanceof File ? URL.createObjectURL(value) : value}
                                                                 width={1280}
                                                                 height={1024}
-                                                                alt="image" className="w-full h-full object-cover rounded-md" />
+                                                                alt="image" className="w-full h-full object-cover rounded-md"
+                                                            />
                                                             <div
                                                                 className="bg-white rounded-full rounded-fit absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
                                                                 <MdClear

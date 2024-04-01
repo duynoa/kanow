@@ -35,18 +35,11 @@ import { useDialogLogin } from "@/hooks/useOpenDialog";
 import { useResize } from "@/hooks/useResize";
 import { usePathname } from "next/navigation";
 
-type Props = {
-    children?: React.ReactNode;
-    statusModal: string;
-    setStatusModal?: any;
-    handleOpenChangeModal: () => void;
-    asChild: boolean;
-    different?: string
-};
+type Props = {};
 
-export function DialogLogin({ children, statusModal, setStatusModal, handleOpenChangeModal, asChild, different }: Props) {
+export function DialogLogin({ }: Props) {
     const { setCookie, removeCookie } = useCookie()
-    const { openDialogLogin, setOpenDialogLogin } = useDialogLogin()
+    const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
     const { apiLogin, apiInfoUser, apiSignup, apiOtpSignup } = useAuthenticationAPI();
     const { setInformationUser } = useAuth()
     const { isVisibleTablet } = useResize()
@@ -55,7 +48,7 @@ export function DialogLogin({ children, statusModal, setStatusModal, handleOpenC
 
     const pathname = usePathname()
 
-    const [checkPolicy, setCheckPolicy] = useState<boolean>(true);
+    const [checkPolicy, setCheckPolicy] = useState<boolean>(false);
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -70,7 +63,6 @@ export function DialogLogin({ children, statusModal, setStatusModal, handleOpenC
             promoCode: "",
         },
     });
-
 
     const password = form.watch("password", "");
 
@@ -97,7 +89,7 @@ export function DialogLogin({ children, statusModal, setStatusModal, handleOpenC
                 if (information?.result) {
                     setInformationUser(information?.info);
                 }
-                handleOpenChangeModal()
+                setOpenDialogLogin(false)
             } else {
                 removeCookie("token_kanow")
                 toastCore.error(data?.message);
@@ -122,7 +114,7 @@ export function DialogLogin({ children, statusModal, setStatusModal, handleOpenC
             if (dataSigup?.token) {
                 setCookie("token_kanow", dataSigup?.token, { expires: 7 });
                 toastCore.success(dataSigup?.message);
-                handleOpenChangeModal()
+                setOpenDialogLogin(false)
             } else {
                 removeCookie("token_kanow")
                 toastCore.error(dataSigup?.message);
@@ -187,13 +179,28 @@ export function DialogLogin({ children, statusModal, setStatusModal, handleOpenC
         return () => clearInterval(timer);
     }, [timeOtp]); // Đảm bảo useEffect chỉ chạy khi timeLeft thay đổi
 
+    const handleOpenChangeModal = (type: string) => {
+        if (type === 'login') {
+            setOpenDialogLogin(!openDialogLogin)
+
+            // dùng setTimeout để quản lí flow modal 
+            setTimeout(() => {
+                setStatusModal('login')
+            }, 200);
+        } else if (type === 'signup') {
+            setOpenDialogLogin(!openDialogLogin)
+            setTimeout(() => {
+                setStatusModal('login')
+            }, 200);
+        }
+    }
+
     return (
-        <Dialog modal open={openDialogLogin} onOpenChange={handleOpenChangeModal}>
-            <DialogTrigger asChild={asChild}>{asChild ? children : null}</DialogTrigger>
-            {different && !isVisibleTablet ? null : <DialogOverlay />}
+        <Dialog modal open={openDialogLogin} onOpenChange={() => handleOpenChangeModal(statusModal)}>
+            <DialogOverlay />
             <DialogContent className={`${statusModal == 'otp' ? 'lg:max-w-[400px] max-w-[45%]' : "lg:max-w-[520px] max-w-[95%]"}   max-h-[90vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
                 <DialogClose
-                    onClick={handleOpenChangeModal}
+                    onClick={() => handleOpenChangeModal(statusModal)}
                     className="size-8 border flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
                 >
                     <X className="size-4 text-[#000000]" />

@@ -10,7 +10,6 @@ import { toastCore } from '@/lib/toast'
 import { useAuth } from '@/hooks/useAuth'
 import FormInformation from './components/FormInfomation'
 import { Button } from "@/components/ui/button"
-import FormPapers from './components/FormPapers'
 import apiAccount from '@/services/account/account.services'
 import SessionStarRating from './components/SessionStarRating'
 import useAuthenticationAPI from '@/services/auth/auth.services'
@@ -82,7 +81,6 @@ const Account = (props: Props) => {
             filePapers: informationUser?.drivingLiscense?.image ?? null
         },
     });
-
     useEffect(() => {
         setIsMounted(true)
     }, [])

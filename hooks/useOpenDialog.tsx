@@ -1,3 +1,4 @@
+import { IInitialStateDetailCar } from "@/types/Cars/ICars";
 import { IInfoPromotion } from "@/types/Cars/IPromotions";
 import { addDays, setHours, setMinutes } from "date-fns";
 import { DateRange } from "react-day-picker";
@@ -94,4 +95,21 @@ export const useDialogReportCar = create<IOpenDialogReportCar>((set) => ({
     dataListReportCar: [],
     setOpenDialogReportCar: (key: any, type?: string) => set((state) => ({ openDialogReportCar: key, type: type })),
     setDataListReportCar: (key: any[]) => set((state) => ({ dataListReportCar: key })),
+}));
+
+// dialog request car rental (dialog xác nhận gửi xe)
+interface IOpenDialogRequestCarRental {
+    openDialogRequestCarRental: boolean;
+    type?: string;
+    dataListRequestCarRental?: IInitialStateDetailCar;
+    setOpenDialogRequestCarRental: (key: any, type?: string) => void;
+    setDataListRequestCarRental: (dataListRequestCarRental?: IInitialStateDetailCar) => void
+}
+
+export const useDialogRequestCarRental = create<IOpenDialogRequestCarRental>((set) => ({
+    openDialogRequestCarRental: false,
+    type: "",
+    dataListRequestCarRental: undefined,
+    setOpenDialogRequestCarRental: (key: any, type?: string) => set((state) => ({ openDialogRequestCarRental: key, type: type })),
+    setDataListRequestCarRental: (key: any) => set((state) => ({ dataListRequestCarRental: key })),
 }));
