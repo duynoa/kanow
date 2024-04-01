@@ -26,9 +26,9 @@ const SessionStarRating = ({ isState }: Props) => {
                         {FormatNumberToDecimal(isState.totalStar, 1)}/5
                     </div>
                     {
-                        isState?.totalStar !== 0 ?
+                        isState?.totalReview !== 0 ?
                             <div className='3xl:text-base text-sm text-[#6F7689]'>
-                                ({isState?.totalStar ? isState?.totalStar : 0} đánh giá)
+                                ({isState?.totalReview ? isState?.totalReview : 0} đánh giá)
                             </div>
                             :
                             <div className='3xl:text-base text-sm text-[#6F7689]'>
@@ -38,7 +38,7 @@ const SessionStarRating = ({ isState }: Props) => {
                 </div>
             </div>
             {
-                isState?.dataStarRatings && isState?.dataStarRatings?.slice(0, 5)?.map((item, index) => (
+                isState?.dataStarRatings && isState?.dataStarRatings?.slice(0, 3)?.map((item, index) => (
                     <div key={item.id} className={`${index == isState?.dataStarRatings?.length - 1 ? "border-0" : "border-b pb-3"} flex flex-col `}>
                         <div className='flex items-center gap-3'>
                             <div className='3xl:w-14 3xl:h-14 3xl:max-w-14 w-12 h-12 max-w-12 rounded-full drop-shadow'>

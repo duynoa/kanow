@@ -29,7 +29,10 @@ export interface StatePageAccount {
     editInfo: boolean
     editPapers: boolean,
     dataStarRatings: Rating[],
-    totalStar: number
+    totalStar: number,
+    totalReview: number,
+    page: number,
+    limit: number
 }
 const Account = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
@@ -37,34 +40,22 @@ const Account = (props: Props) => {
     const initialSate: StatePageAccount = {
         editInfo: false,
         editPapers: false,
-        dataStarRatings: [{
-            id: uuidv4(),
-            avatar: '/avatar/avatar1.png',
-            name: 'Huy Tran',
-            date: new Date(),
-            content: "Xe tốt",
-            star: 3
-        },
-
-        {
-            id: uuidv4(),
-            avatar: '/avatar/avatar1.png',
-            name: 'Huy Tran Dac',
-            date: new Date(),
-            content: "Xe tốt",
-            star: 3
-        }
-        ],
-        totalStar: 1
+        dataStarRatings: [],
+        //danh gia
+        totalStar: 0,
+        totalReview: 0,
+        ///phan trang danh gia
+        page: 1,
+        limit: 10
     }
-
-    const [isState, sIsState] = useState<StatePageAccount>(initialSate)
-
-    const { informationUser, setInformationUser } = useAuth()
 
     const { apiInfoUser } = useAuthenticationAPI()
 
-    const { apiUpdateInfo } = apiAccount()
+    const { informationUser, setInformationUser } = useAuth()
+
+    const { apiUpdateInfo, apiPaginationStartingUser } = apiAccount()
+
+    const [isState, sIsState] = useState<StatePageAccount>(initialSate)
 
     const queryState = (key: any) => sIsState((prev: StatePageAccount) => ({ ...prev, ...key }))
 
@@ -122,25 +113,29 @@ const Account = (props: Props) => {
         })
     }
 
+    const dataStarRatings = (array: any[]) => {
+        const data = array.map((item: any) => {
+            return {
+                id: item?.id,
+                avatar: item?.customer?.avatar ? item?.customer?.avatar : '/avatar/avatar1.png',
+                name: item?.customer?.fullname,
+                date: item?.created_at,
+                content: item?.content,
+                star: item?.star
+            }
+        })
+        return data
+    }
+
     useEffect(() => {
         if (informationUser) {
             onSetValue(informationUser)
-            console.log("informationUser", informationUser.review);
-            console.log("informationUser", informationUser);
+            const newData = dataStarRatings(informationUser?.review?.data)
             queryState({
-                dataStarRatings: informationUser.review?.data?.map((item: any) => {
-                    return {
-                        id: item?.id,
-                        avatar: item?.avatar ? item?.avatar : '/avatar/avatar1.png',
-                        name: item?.customer_name,
-                        date: item?.date,
-                        content: item?.content,
-                        star: item?.star
-                    }
-                }) || []
+                dataStarRatings: newData || [],
+                totalReview: informationUser?.total_review,
+                totalStar: informationUser?.star_avg
             })
-
-            // queryState
         }
     }, [informationUser])
 
@@ -192,11 +187,32 @@ const Account = (props: Props) => {
         }
 
     }
+    console.log("informationUser", informationUser);
 
-    const handlePage = (page: number) => {
-
+    const handlePage = async () => {
+        let form: any = new FormData();
+        form.append('current_page', isState.page)
+        form.append('per_page', isState.limit)
+        const { data } = await apiPaginationStartingUser(form)
+        if (data?.result) {
+            const newData = dataStarRatings(data?.info?.review?.data)
+            const dataDB = {
+                ...informationUser,
+                review: {
+                    ...informationUser?.review,
+                    data: [...informationUser?.review.data, ...data?.info?.review?.data],
+                    next_page_url: data?.info?.review?.next_page_url,
+                }
+            }
+            queryState({ dataStarRatings: [...isState.dataStarRatings, ...newData] })
+            setInformationUser(dataDB)
+        } else {
+            console.log('error');
+        }
     }
-
+    useEffect(() => {
+        isState.page != 1 && handlePage()
+    }, [isState.page])
 
     if (!isMounted) {
         return null;
@@ -284,13 +300,16 @@ const Account = (props: Props) => {
             </div>
             <div className="rounded-2xl bg-white">
                 <SessionStarRating isState={isState} />
-                <div className="flex justify-center items-center my-4">
-                    <Button
-                        type='button'
-                        className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] text-sm lg:px-8 px-10 py-2 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
-                        Xem thêm
-                    </Button>
-                </div>
+                {informationUser?.review?.next_page_url &&
+                    <div className="flex justify-center items-center my-4">
+                        <Button
+                            onClick={() => queryState({ page: isState.page + 1 })}
+                            type='button'
+                            className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] text-sm lg:px-8 px-10 py-2 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
+                            Xem thêm
+                        </Button>
+                    </div>
+                }
             </div>
         </div >
     )

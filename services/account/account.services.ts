@@ -5,7 +5,11 @@ const apiAccount = () => {
         return axios.post(`/update_account`, data);
     };
 
-    return { apiUpdateInfo };
+    const apiPaginationStartingUser = (data: any) => {
+        return axios.post(`/get_info_account`, data);
+    };
+
+    return { apiUpdateInfo, apiPaginationStartingUser };
 };
 
 export default apiAccount;
