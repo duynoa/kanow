@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import apiAccount from '@/services/account/account.services'
 import SessionStarRating from './components/SessionStarRating'
 import useAuthenticationAPI from '@/services/auth/auth.services'
+import FormPapers from './components/FormPapers'
 type Props = {}
 
 type Rating = {
