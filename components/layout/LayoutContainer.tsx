@@ -21,11 +21,12 @@ import { ToastContainer } from 'react-toastify';
 import ButtonToTop from '../button/ButtonToTop';
 import { usePathname } from 'next/navigation';
 
-import AleartDialogLogout from '../alert/AleartDialogLogout';
+import AlertDialogLogout from '../alert/AlertDialogLogout';
 import { DialogLogin } from '../modals/DialogLogin';
 import { DialogCalendar } from '../modals/DialogCalendar';
 import { DialogReviewImage } from '../modals/DialogReviewImage';
 import { DialogRequestCarRental } from '../modals/DialogRequestCarRental';
+import { DialogValidate } from '../modals/DialogValidate';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -92,11 +93,12 @@ const LayoutContainer = ({
                 <main className='overflow-hidden w-full h-full'>
                     {children}
                     <ButtonToTop />
-                    <AleartDialogLogout />
+                    <AlertDialogLogout />
                     <DialogLogin />
                     <DialogCalendar />
                     <DialogReviewImage />
                     <DialogRequestCarRental />
+                    <DialogValidate />
                 </main>
                 {pathname !== "/search-car" && <Footer />}
                 <ToastContainer

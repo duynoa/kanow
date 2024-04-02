@@ -1,4 +1,9 @@
 
+import Image from "next/image";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+
 import {
     Dialog,
     DialogClose,
@@ -8,23 +13,26 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { X } from "lucide-react";
-import { useCookie } from "@/hooks/useCookie";
-import { useDialogAnswerPolicy, useDialogLogin, useDialogRequestCarRental } from "@/hooks/useOpenDialog";
-import Image from "next/image";
+
 import { FaRegQuestionCircle, FaStar } from "react-icons/fa";
 import { FaCircleCheck } from "react-icons/fa6";
-import { FormatNumberDot, FormatNumberHundred } from "../format/FormatNumber";
 import { PiShieldCheckFill } from "react-icons/pi";
 import { HiClock } from "react-icons/hi2";
 import { TiLocation } from "react-icons/ti";
+
+import { FormatNumberDot, FormatNumberHundred } from "../format/FormatNumber";
+import { ActionTooltip } from "../tooltip/ActionTooltip";
+
+import { useResize } from "@/hooks/useResize";
+import { useDialogAnswerPolicy, useDialogRequestCarRental } from "@/hooks/useOpenDialog";
+
+import { Label } from "../ui/label";
+import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
+import { Checkbox } from "../ui/checkbox";
+import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
-import { Textarea } from "../ui/textarea";
-import { Label } from "../ui/label";
-import { useForm } from "react-hook-form";
-import { ScrollArea } from "../ui/scroll-area";
-import { ActionTooltip } from "../tooltip/ActionTooltip";
-import { useResize } from "@/hooks/useResize";
 
 type Props = {};
 
@@ -33,14 +41,14 @@ export function DialogRequestCarRental({ }: Props) {
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { openDialogRequestCarRental, dataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
 
+    const [checkPolicy, setCheckPolicy] = useState<boolean>(false)
+
     const form = useForm({
         defaultValues: {
             note: ""
         },
     });
 
-    console.log('dataListRequestCarRental', dataListRequestCarRental);
-    console.log('openDialogRequestCarRental', openDialogRequestCarRental);
     const onSubmit = async (values: any) => {
         try {
 
@@ -50,28 +58,32 @@ export function DialogRequestCarRental({ }: Props) {
         }
     }
 
+    const handleCloseModal = () => {
+        setOpenDialogRequestCarRental(false)
+    }
+
     return (
-        <Dialog modal open={openDialogRequestCarRental} onOpenChange={() => setOpenDialogRequestCarRental(false)}>
+        <Dialog modal open={openDialogRequestCarRental} onOpenChange={handleCloseModal}>
             <DialogOverlay />
-            <DialogContent className={`lg:max-w-[1024px] max-w-[95%] py-0 px-4 max-h-[95vh] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
+            <DialogContent className={`xl:max-w-[1024px] lg:max-w-[820px] max-w-[98%] w-full py-0 px-6 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
                 <DialogClose
-                    onClick={() => setOpenDialogRequestCarRental(false)}
+                    onClick={handleCloseModal}
                     className="z-20 size-8 border flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
                 >
                     <X className="size-4 text-[#000000]" />
                     <span className="sr-only">Close</span>
                 </DialogClose>
-                <DialogHeader className="flex items-start w-full px-4 py-6 absolute bg-white rounded-t-lg">
+                <DialogHeader className="flex items-start w-full px-6 py-6 absolute bg-white rounded-t-lg">
                     <DialogTitle className={`text-2xl capitalize font-bold`}>
                         Xác nhận đặt xe
                     </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit((values) => onSubmit(values))}>
-                        <ScrollArea className='pb-4 pr-4 mt-[80px] h-[calc(95vh-100px)] overflow-auto'>
-                            <div className='flex flex-col 3xl:gap-6 gap-4 3xl:pb-6'>
-                                <div className='flex items-center 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border border-b border-x-0 border-t-0'>
-                                    <div className='w-56 h-36'>
+                        <ScrollArea className='3xl:mb-6 mb-4 md:pr-4 pr-2 mt-[80px] h-[calc(95vh-100px)]'>
+                            <div className='flex flex-col 3xl:gap-6 gap-4 pb-2 max-w-full'>
+                                <div className='flex md:flex-row flex-col md:items-center 3xl:gap-4 gap-4 3xl:pb-6 pb-4 border border-b border-x-0 border-t-0'>
+                                    <div className='3xl:w-56 3xl:h-36 md:w-52 md:h-32 w-full h-52'>
                                         <Image
                                             alt="image"
                                             width={400}
@@ -81,12 +93,12 @@ export function DialogRequestCarRental({ }: Props) {
                                         />
                                     </div>
 
-                                    <div className='flex flex-col h-full py-1 justify-between'>
+                                    <div className='flex flex-col justify-between gap-3 h-full'>
                                         <div className='3xl:text-base text-sm font-bold uppercase'>
                                             {dataListRequestCarRental?.dataDetailCar?.name_car ? dataListRequestCarRental?.dataDetailCar?.name_car : ""}
                                         </div>
 
-                                        <div className='flex flex-col'>
+                                        <div className='flex flex-col gap-1'>
                                             <div className='space-x-2'>
                                                 <span className='3xl:text-sm text-xs text-[#8C93A3] font-normal'>Mã số xe:</span>
                                                 <span className='3xl:text-sm text-xs text-[#585F71] font-semibold'>
@@ -96,7 +108,7 @@ export function DialogRequestCarRental({ }: Props) {
                                             <div className='flex items-center gap-4'>
                                                 <div className='flex items-center gap-1'>
                                                     <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
-                                                    <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
+                                                    <div className='3xl:text-sm text-xs text-[#484D5C] font-medium'>
                                                         4.9
                                                     </div>
                                                 </div>
@@ -110,7 +122,7 @@ export function DialogRequestCarRental({ }: Props) {
                                             </div>
                                         </div>
 
-                                        <div className='px-4 py-2 flex items-center gap-2 border border-[#64E4E4] rounded-lg bg-[#F1FCFC] w-fit'>
+                                        <div className='px-4 py-2 flex items-center gap-2 border border-[#64E4E4] rounded-lg bg-[#F1FCFC] w-fit caret-transparent'>
                                             <span className='3xl:text-base text-sm font-semibold text-[#3E424E]'>Bảo hiểm thuê xe MIC</span>
                                             <PiShieldCheckFill
                                                 onClick={() => console.log('check')}
@@ -125,8 +137,8 @@ export function DialogRequestCarRental({ }: Props) {
                                         Thông tin thuê xe
                                     </div>
 
-                                    <div className='flex items-center justify-between'>
-                                        <div className='w-1/2 max-w-[50%] flex flex-col'>
+                                    <div className='flex md:flex-row flex-col md:items-center justify-between md:gap-0 gap-4'>
+                                        <div className='md:w-1/2 md:max-w-[50%] w-full flex flex-col'>
                                             <div className='flex items-center gap-2'>
                                                 <div className='min-w-5'>
                                                     <HiClock className='size-5 text-[#2FB9BD]' />
@@ -135,40 +147,37 @@ export function DialogRequestCarRental({ }: Props) {
                                                     Thời gian thuê
                                                 </div>
                                             </div>
-                                            <div className='pl-7'>
-                                                <div className='flex items-center gap-1'>
-                                                    <div className="3xl:text-base text-sm text-[#2FB9BD] font-medium">
-                                                        Từ:
-                                                    </div>
-                                                    <div className="3xl:text-base text-sm text-[#16171B] font-medium">
-                                                        12h00 12/12/24
-                                                    </div>
+                                            <div className='pl-7 mt-1 flex items-center gap-1'>
+                                                <div className="3xl:text-base text-sm text-[#2FB9BD] font-medium">
+                                                    Từ:
+                                                </div>
+                                                <div className="3xl:text-base text-sm text-[#16171B] font-medium">
+                                                    12h00 12/12/24
                                                 </div>
                                             </div>
-                                            <div className='pl-7'>
-                                                <div className='flex items-center gap-1'>
-                                                    <div className="3xl:text-base text-sm text-[#2FB9BD] font-medium">
-                                                        Đến:
-                                                    </div>
-                                                    <div className="3xl:text-base text-sm text-[#16171B] font-medium">
-                                                        12h00 12/12/24
-                                                    </div>
+                                            <div className='pl-7 flex items-center gap-1'>
+                                                <div className="3xl:text-base text-sm text-[#2FB9BD] font-medium">
+                                                    Đến:
+                                                </div>
+                                                <div className="3xl:text-base text-sm text-[#16171B] font-medium">
+                                                    12h00 12/12/24
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className='w-1/2 max-w-[50%] flex flex-col'>
+
+                                        <div className='md:w-1/2 md:max-w-[50%] w-full flex flex-col'>
                                             <div className='flex items-center gap-2'>
                                                 <div className='min-w-5'>
-                                                    <TiLocation className='3xl:text-base text-sm text-[#FA3434] size-5' />
+                                                    <TiLocation className='text-[#FA3434] size-5' />
                                                 </div>
                                                 <div className="3xl:text-base text-sm text-[#6F7689] font-normal">
                                                     Nhận xe ở địa điểm của chủ xe
                                                 </div>
                                             </div>
-                                            <div className='pl-7 3xl:text-base text-sm text-[#16171B] font-medium'>
+                                            <div className='pl-7 mt-1 3xl:text-base text-sm text-[#16171B] font-medium'>
                                                 12 Hoàn Kiếm Hà Nội
                                             </div>
-                                            <div className='pl-7 3xl:text-base text-sm text-[#2FB9BD] font-medium cursor-pointer w-fit'>
+                                            <div className='pl-7 3xl:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-medium cursor-pointer w-fit duration-200 transition caret-transparent'>
                                                 Xem bản đồ
                                             </div>
                                         </div>
@@ -228,7 +237,6 @@ export function DialogRequestCarRental({ }: Props) {
                                     </div>
 
                                     <div className='flex flex-col gap-2'>
-                                        <Label className='text-base text-[#000000] font-semibold'>Nội dung</Label>
                                         <FormField
                                             control={form.control}
                                             name="note"
@@ -241,8 +249,8 @@ export function DialogRequestCarRental({ }: Props) {
 
                                                 return (
                                                     <FormItem>
-                                                        <FormLabel className="3xl:text-base text-sm text-[#49495C] font-medium">
-                                                            Ghi chú
+                                                        <FormLabel className="3xl:text-base text-sm text-[#000000] font-semibold">
+                                                            Nội dung ghi chú
                                                         </FormLabel>
                                                         <div>
                                                             <FormControl>
@@ -293,7 +301,7 @@ export function DialogRequestCarRental({ }: Props) {
                                         Vui lòng chuẩn bị 2 loại giấy tờ:
                                     </div>
                                     <div className='grid grid-cols-12 w-full gap-4'>
-                                        <div className='col-span-4 flex flex-row items-center w-full gap-8'>
+                                        <div className='lg:col-span-4 col-span-12 flex flex-row items-center w-full lg:gap-8 gap-4'>
                                             <div className='w-8 min-w-8 h-8 flex items-center justify-center text-base rounded-full font-bold bg-[#14868E] text-white'>
                                                 1
                                             </div>
@@ -317,12 +325,12 @@ export function DialogRequestCarRental({ }: Props) {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className='col-span-8 flex flex-row items-center gap-8'>
+                                        <div className='lg:col-span-8 col-span-12 flex flex-row items-center lg:gap-8 gap-4'>
                                             <div className='w-8 min-w-8 h-8 flex items-center justify-center text-base rounded-full font-bold bg-[#14868E] text-white'>
                                                 2
                                             </div>
-                                            <div className='w-full p-4 border-2 rounded-2xl flex gap-4'>
-                                                <div className='flex flex-col gap-6 max-w-[45%]'>
+                                            <div className='w-full p-4 border-2 rounded-2xl flex md:flex-row flex-col gap-4'>
+                                                <div className='flex flex-col gap-6 md:max-w-[45%] max-w-full'>
                                                     <div className='w-[140px] max-w-[140px] h-auto'>
                                                         <Image
                                                             src="/other/info/citizenCard.png"
@@ -341,12 +349,12 @@ export function DialogRequestCarRental({ }: Props) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className='flex items-center gap-6 max-w-[10%]'>
+                                                <div className='flex items-center gap-6 md:max-w-[10%] max-w-full'>
                                                     <div className='uppercase text-[#FF9900] 3xl:text-base text-sm font-semibold'>
                                                         Hoặc
                                                     </div>
                                                 </div>
-                                                <div className='flex flex-col gap-6 max-w-[45%]'>
+                                                <div className='flex flex-col gap-6 md:max-w-[45%] max-w-full'>
                                                     <div className='w-[140px] max-w-[140px] h-auto'>
                                                         <Image
                                                             src="/other/info/passport.png"
@@ -440,7 +448,7 @@ export function DialogRequestCarRental({ }: Props) {
                                         </div>
                                     </div>
 
-                                    {/* tổng tạm tính */}
+                                    {/* Tổng tạm tính */}
                                     <div className='flex justify-between items-center'>
                                         <div className='3xl:text-base text-sm text-[#3E424E] font-medium'>
                                             Tổng tạm tính
@@ -452,7 +460,7 @@ export function DialogRequestCarRental({ }: Props) {
 
                                     <div className='border w-full' />
 
-                                    {/* thành tiền */}
+                                    {/* Thành tiền */}
                                     <div className='flex flex-col gap-2'>
                                         <div className='flex justify-between items-center font-bold'>
                                             <div className='3xl:text-base text-sm text-[#3E424E] font-bold'>
@@ -528,13 +536,56 @@ export function DialogRequestCarRental({ }: Props) {
                                         </div>
                                     </div>
                                 </div>
-                                <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4'>
+
+                                <div className='flex flex-col 3xl:gap-4 gap-2'>
                                     <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                                         Tài sản thế chấp
                                     </div>
 
                                     <div className='3xl:text-base text-sm text-[#3E424E]'>
                                         Không yêu cầu khách thuê thế chấp tài sản
+                                    </div>
+                                </div>
+
+                                <div className='flex md:flex-row flex-col md:items-center md:gap-0 gap-4 justify-between'>
+                                    <div className="flex items-center space-x-2">
+                                        <Checkbox
+                                            id="policy"
+                                            className="size-4 text-white border-[#9EA1AE] data-[state=checked]:border-[#2FB9BD] data-[state=checked]:bg-[#2FB9BD] data-[state=checked]:text-white"
+                                            checked={checkPolicy}
+                                            onCheckedChange={(checked: boolean) => setCheckPolicy(checked)}
+                                        />
+                                        <Label
+                                            htmlFor="policy"
+                                            className="flex items-center gap-1 text-sm cursor-pointer font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 caret-transparent"
+                                        >
+                                            <span>Tôi đồng ý với</span>
+                                            <Link
+                                                href="/"
+                                                className='text-[#2FB9BD] hover:text-[#2FB9BD]/80 duration-200 transition'
+                                                onClick={handleCloseModal}
+                                            >
+                                                chính sách huỷ chuyến
+                                            </Link>
+                                            <span className="text-[#F15A5A]">*</span>
+                                        </Label>
+                                    </div>
+
+                                    <div className='flex items-center gap-4'>
+                                        <Button
+                                            type="button"
+                                            className="3xl:text-base text-sm text-[#2FB9BD] border border-[#2FB9BD] bg-white hover:bg-slate-200 w-full px-6 py-3 rounded-xl uppercase caret-transparent"
+                                            onClick={handleCloseModal}
+                                        >
+                                            Huỷ
+                                        </Button>
+                                        <Button
+                                            type="submit"
+                                            disabled={checkPolicy ? false : true}
+                                            className="3xl:text-base text-sm text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full px-6 py-3 rounded-xl uppercase caret-transparent"
+                                        >
+                                            Gửi yêu cầu thuê xe
+                                        </Button>
                                     </div>
                                 </div>
                             </div>

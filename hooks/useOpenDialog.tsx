@@ -113,3 +113,20 @@ export const useDialogRequestCarRental = create<IOpenDialogRequestCarRental>((se
     setOpenDialogRequestCarRental: (key: any, type?: string) => set((state) => ({ openDialogRequestCarRental: key, type: type })),
     setDataListRequestCarRental: (key: any) => set((state) => ({ dataListRequestCarRental: key })),
 }));
+
+// dialog validate (dialog các validate)
+interface IOpenDialogValidate {
+    openDialogValidate: boolean;
+    type?: string;
+    dataValidate?: any;
+    setOpenDialogValidate: (key: any, type?: string) => void;
+    setDataValidate: (dataValidate?: any) => void
+}
+
+export const useDialogValidate = create<IOpenDialogValidate>((set) => ({
+    openDialogValidate: false,
+    type: "",
+    dataValidate: undefined,
+    setOpenDialogValidate: (key: any, type?: string) => set((state) => ({ openDialogValidate: key, type: type })),
+    setDataValidate: (key: any) => set((state) => ({ dataValidate: key })),
+}));

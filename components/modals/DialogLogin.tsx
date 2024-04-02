@@ -198,7 +198,7 @@ export function DialogLogin({ }: Props) {
     return (
         <Dialog modal open={openDialogLogin} onOpenChange={() => handleOpenChangeModal(statusModal)}>
             <DialogOverlay />
-            <DialogContent className={`${statusModal == 'otp' ? 'lg:max-w-[400px] max-w-[45%]' : "lg:max-w-[520px] max-w-[95%]"}   max-h-[90vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
+            <DialogContent className={`${statusModal == 'otp' ? 'lg:max-w-[400px] max-w-[45%]' : "lg:max-w-[520px] max-w-[95%]"} max-h-[90vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
                 <DialogClose
                     onClick={() => handleOpenChangeModal(statusModal)}
                     className="size-8 border flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
@@ -206,6 +206,7 @@ export function DialogLogin({ }: Props) {
                     <X className="size-4 text-[#000000]" />
                     <span className="sr-only">Close</span>
                 </DialogClose>
+
                 <DialogHeader className="flex items-center justify-center w-full 3xl:mt-6 mt-3">
                     <DialogTitle className={`${statusModal === "otp" ? "" : "capitalize"} text-2xl`}>
                         {statusModal === "login" && "Đăng nhập"}
@@ -213,412 +214,418 @@ export function DialogLogin({ }: Props) {
                         {statusModal === "otp" && "Nhập mã OTP"}
                     </DialogTitle>
                 </DialogHeader>
+
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit((values: any) => onSubmit(values, statusModal))}
                         className="space-y-4"
                     >
-                        {statusModal === "login" && (
-                            <>
-                                <FormField
-                                    control={form.control}
-                                    name="phoneNumber"
-                                    rules={{
-                                        required: "Vui lòng nhập số điện thoại!",
-                                        minLength: {
-                                            value: 10,
-                                            message: "Số điện thoại phải có ít nhất 10 số!"
-                                        },
-                                        maxLength: {
-                                            value: 10,
-                                            message: "Số điện thoại không được dài hơn 10 số!"
-                                        }
-                                    }}
-                                    render={({ field, fieldState }) => {
-                                        return (
-                                            <FormItem>
-                                                <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
-                                                    Số điện thoại <span className="text-[#F15A5A]">*</span>
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        type="number"
-                                                        disabled={isLoading}
-                                                        className={`${fieldState?.invalid && fieldState?.error
-                                                            ? "border rounded-lg border-[#F15A5A]"
-                                                            : "border-b rounded-lg border-[#D8DAE5]"
-                                                            } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
-                                                        placeholder="Nhập số điện thoại"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-
-                                                {fieldState?.invalid && fieldState?.error && (
-                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                                )}
-                                            </FormItem>
-                                        );
-                                    }}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="password"
-                                    rules={{
-                                        required: "Vui lòng nhập password!",
-                                        minLength: {
-                                            value: 8,
-                                            message: "Mật khẩu phải có ít nhất 8 ký tự!",
-                                        },
-                                    }}
-                                    render={({ field, fieldState }) => (
-                                        <FormItem>
-                                            <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
-                                                Mật khẩu <span className="text-[#F15A5A]">*</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                <div className="relative">
-                                                    <Input
-                                                        disabled={isLoading}
-                                                        className={`${fieldState?.invalid && fieldState?.error
-                                                            ? "border rounded-lg border-[#F15A5A]"
-                                                            : "border-b rounded-lg border-[#D8DAE5]"
-                                                            } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
-                                                        placeholder="Nhập mật khẩu"
-                                                        type={showPassword ? "text" : "password"}
-                                                        {...field}
-                                                    />
-                                                    {showPassword ? (
-                                                        <RiEyeLine
-                                                            onClick={() => handleShowPassword("password")}
-                                                            className="absolute top-[25%] right-4 3xl:size-6 size-5 cursor-pointer"
+                        {
+                            statusModal === "login" && (
+                                <>
+                                    <FormField
+                                        control={form.control}
+                                        name="phoneNumber"
+                                        rules={{
+                                            required: "Vui lòng nhập số điện thoại!",
+                                            minLength: {
+                                                value: 10,
+                                                message: "Số điện thoại phải có ít nhất 10 số!"
+                                            },
+                                            maxLength: {
+                                                value: 10,
+                                                message: "Số điện thoại không được dài hơn 10 số!"
+                                            }
+                                        }}
+                                        render={({ field, fieldState }) => {
+                                            return (
+                                                <FormItem>
+                                                    <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
+                                                        Số điện thoại <span className="text-[#F15A5A]">*</span>
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            type="number"
+                                                            disabled={isLoading}
+                                                            className={`${fieldState?.invalid && fieldState?.error
+                                                                ? "border rounded-lg border-[#F15A5A]"
+                                                                : "border-b rounded-lg border-[#D8DAE5]"
+                                                                } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
+                                                            placeholder="Nhập số điện thoại"
+                                                            {...field}
                                                         />
-                                                    ) : (
-                                                        <RiEyeOffLine
-                                                            onClick={() => handleShowPassword("password")}
-                                                            className="absolute top-[25%] right-4 3xl:size-6 size-5 cursor-pointer"
-                                                        />
+                                                    </FormControl>
+
+                                                    {fieldState?.invalid && fieldState?.error && (
+                                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
                                                     )}
-                                                </div>
-                                            </FormControl>
-                                            {fieldState?.invalid && fieldState?.error && (
-                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                            )}
-                                        </FormItem>
-                                    )}
-                                />
-                                <div className="flex w-full justify-end">
-                                    <div className="w-fit text-sm font-semibold cursor-pointer caret-transparent text-[#2FB9BD] hover:text-[#2FB9BD]/80 duration-200 transition-all">
-                                        Quên mật khẩu?
-                                    </div>
-                                </div>
-                                <div className="flex flex-col items-center gap-2">
-                                    <Button
-                                        type="submit"
-                                        disabled={isLoading}
-                                        className="3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full 3xl:py-4 py-3 rounded-xl"
-                                    >
-                                        Đăng nhập
-                                    </Button>
-                                    <div className="flex items-center gap-1 text-sm">
-                                        <span>Bạn chưa là thành viên?</span>
-                                        <span
-                                            onClick={handleChangeStatus}
-                                            className="cursor-pointer text-[#2FB9BD] hover:text-[#2FB9BD]/80 duration-200 transition-all"
-                                        >
-                                            Đăng ký ngay
-                                        </span>
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                        {statusModal === "signup" && (
-                            <>
-                                <FormField
-                                    control={form.control}
-                                    name="phoneNumber"
-                                    rules={{
-                                        required: "Vui lòng nhập số điện thoại!",
-                                        minLength: {
-                                            value: 10,
-                                            message: "Số điện thoại phải có ít nhất 10 số!"
-                                        },
-                                        maxLength: {
-                                            value: 10,
-                                            message: "Số điện thoại không được dài hơn 10 số!"
-                                        }
-                                    }}
-                                    render={({ field, fieldState }) => {
-                                        return (
-                                            <FormItem>
-                                                <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
-                                                    Số điện thoại
-                                                    <span className="text-[#F15A5A]">*</span>
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        type="number"
-                                                        disabled={isLoading}
-                                                        className={`${fieldState?.invalid && fieldState?.error
-                                                            ? "border rounded-lg border-[#F15A5A]"
-                                                            : "border-b rounded-lg border-[#D8DAE5]"
-                                                            } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
-                                                        placeholder="Nhập số điện thoại"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-
-                                                {fieldState?.invalid && fieldState?.error && (
-                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                                )}
-                                            </FormItem>
-                                        );
-                                    }}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="fullName"
-                                    rules={{
-                                        required: "Nhập họ và tên!",
-                                    }}
-                                    render={({ field, fieldState }) => {
-                                        return (
-                                            <FormItem>
-                                                <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
-                                                    Họ và tên
-                                                    <span className="text-[#F15A5A]">*</span>
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        disabled={isLoading}
-                                                        className={`${fieldState?.invalid && fieldState?.error
-                                                            ? "border rounded-lg border-[#F15A5A]"
-                                                            : "border-b rounded-lg border-[#D8DAE5]"
-                                                            } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
-                                                        placeholder="Nhập họ và tên"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-
-                                                {fieldState?.invalid && fieldState?.error && (
-                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                                )}
-                                            </FormItem>
-                                        );
-                                    }}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="password"
-                                    rules={{
-                                        required: "Vui lòng nhập password!",
-                                        minLength: {
-                                            value: 8,
-                                            message: "Mật khẩu phải có ít nhất 8 ký tự!",
-                                        },
-                                    }}
-                                    render={({ field, fieldState }) => (
-                                        <FormItem>
-                                            <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
-                                                Mật khẩu <span className="text-[#F15A5A]">*</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                <div className="relative">
-                                                    <Input
-                                                        disabled={isLoading}
-                                                        className={`${fieldState?.invalid && fieldState?.error
-                                                            ? "border rounded-lg border-[#F15A5A]"
-                                                            : "border-b rounded-lg border-[#D8DAE5]"
-                                                            } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
-                                                        placeholder="Nhập mật khẩu"
-                                                        type={showPassword ? "text" : "password"}
-                                                        {...field}
-                                                    />
-                                                    {showPassword ? (
-                                                        <RiEyeLine
-                                                            onClick={() => handleShowPassword("password")}
-                                                            className="absolute top-[25%] right-4 3xl:size-6 size-5 cursor-pointer"
-                                                        />
-                                                    ) : (
-                                                        <RiEyeOffLine
-                                                            onClick={() => handleShowPassword("password")}
-                                                            className="absolute top-[25%] right-4 3xl:size-6 size-5 cursor-pointer"
-                                                        />
-                                                    )}
-                                                </div>
-                                            </FormControl>
-                                            {fieldState?.invalid && fieldState?.error && (
-                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                            )}
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="confirmPassword"
-                                    rules={{
-                                        required: "Vui lòng nhập mật khẩu xác nhận!",
-                                        minLength: {
-                                            value: 8,
-                                            message: "Mật khẩu phải có ít nhất 8 ký tự!",
-                                        },
-                                        validate: (value) => value === password || "Mật khẩu không khớp!",
-                                    }}
-                                    render={({ field, fieldState }) => (
-                                        <FormItem>
-                                            <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
-                                                Nhập lại mật khẩu <span className="text-[#F15A5A]">*</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                <div className="relative">
-                                                    <Input
-                                                        disabled={isLoading}
-                                                        className={`${fieldState?.invalid && fieldState?.error
-                                                            ? "border rounded-lg border-[#F15A5A]"
-                                                            : "border-b rounded-lg border-[#D8DAE5]"
-                                                            } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
-                                                        // className="bg-white rounded-none border-b border-x-0 border-t-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
-                                                        placeholder="Nhập lại mật khẩu"
-                                                        type={showPasswordConfirm ? "text" : "password"}
-                                                        {...field}
-                                                    />
-                                                    {showPasswordConfirm ? (
-                                                        <RiEyeLine
-                                                            onClick={() => handleShowPassword("passwordConfirm")}
-                                                            className="absolute top-[25%] right-4 3xl:size-6 size-5 cursor-pointer"
-                                                        />
-                                                    ) : (
-                                                        <RiEyeOffLine
-                                                            onClick={() => handleShowPassword("passwordConfirm")}
-                                                            className="absolute top-[25%] right-4 3xl:size-6 size-5 cursor-pointer"
-                                                        />
-                                                    )}
-                                                </div>
-                                            </FormControl>
-                                            {fieldState?.invalid && fieldState?.error && (
-                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                            )}
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="promoCode"
-                                    render={({ field, fieldState }) => {
-                                        return (
-                                            <FormItem>
-                                                <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
-                                                    Mã giới thiệu (nếu có)
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        disabled={isLoading}
-                                                        className={`${fieldState?.invalid && fieldState?.error
-                                                            ? "border rounded-lg border-[#F15A5A]"
-                                                            : "border-b rounded-lg border-[#D8DAE5]"
-                                                            } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
-                                                        placeholder="Nhập mã giới thiệu (nếu có)"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        );
-                                    }}
-                                />
-
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                        id="ok"
-                                        className="size-4 text-white border-[#9EA1AE] data-[state=checked]:border-[#2FB9BD] data-[state=checked]:bg-[#2FB9BD] data-[state=checked]:text-white"
-                                        checked={checkPolicy}
-                                        onCheckedChange={(checked: boolean) => setCheckPolicy(checked)}
+                                                </FormItem>
+                                            );
+                                        }}
                                     />
-                                    <Label
-                                        htmlFor="ok"
-                                        onClick={() => setCheckPolicy(!checkPolicy)}
-                                        className="text-sm cursor-pointer font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 caret-transparent"
-                                    >
-                                        Tôi đồng ý với điều khoản và chính sách
-                                        <span className="text-[#F15A5A]">*</span>
-                                    </Label>
-                                </div>
-                                <div className="flex flex-col items-center gap-2">
-                                    <Button
-                                        type="submit"
-                                        disabled={checkPolicy ? false : true}
-                                        className="3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full 3xl:py-4 py-3 rounded-xl"
-                                    >
-                                        Tạo tài khoản
-                                    </Button>
-                                    <div className="flex items-center gap-1 text-sm">
-                                        <span>Bạn đã có tài khoản?</span>
-                                        <span
-                                            onClick={handleChangeStatus}
-                                            className="cursor-pointer text-[#2FB9BD] hover:text-[#2FB9BD]/80 duration-200 transition-all"
+
+                                    <FormField
+                                        control={form.control}
+                                        name="password"
+                                        rules={{
+                                            required: "Vui lòng nhập password!",
+                                            minLength: {
+                                                value: 8,
+                                                message: "Mật khẩu phải có ít nhất 8 ký tự!",
+                                            },
+                                        }}
+                                        render={({ field, fieldState }) => (
+                                            <FormItem>
+                                                <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
+                                                    Mật khẩu <span className="text-[#F15A5A]">*</span>
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <div className="relative">
+                                                        <Input
+                                                            disabled={isLoading}
+                                                            className={`${fieldState?.invalid && fieldState?.error
+                                                                ? "border rounded-lg border-[#F15A5A]"
+                                                                : "border-b rounded-lg border-[#D8DAE5]"
+                                                                } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
+                                                            placeholder="Nhập mật khẩu"
+                                                            type={showPassword ? "text" : "password"}
+                                                            {...field}
+                                                        />
+                                                        {showPassword ? (
+                                                            <RiEyeLine
+                                                                onClick={() => handleShowPassword("password")}
+                                                                className="absolute top-[25%] right-4 3xl:size-6 size-5 cursor-pointer"
+                                                            />
+                                                        ) : (
+                                                            <RiEyeOffLine
+                                                                onClick={() => handleShowPassword("password")}
+                                                                className="absolute top-[25%] right-4 3xl:size-6 size-5 cursor-pointer"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </FormControl>
+                                                {fieldState?.invalid && fieldState?.error && (
+                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                )}
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <div className="flex w-full justify-end">
+                                        <div className="w-fit text-sm font-semibold cursor-pointer caret-transparent text-[#2FB9BD] hover:text-[#2FB9BD]/80 duration-200 transition-all">
+                                            Quên mật khẩu?
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <Button
+                                            type="submit"
+                                            disabled={isLoading}
+                                            className="3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full 3xl:py-4 py-3 rounded-xl"
                                         >
                                             Đăng nhập
-                                        </span>
+                                        </Button>
+                                        <div className="flex items-center gap-1 text-sm">
+                                            <span>Bạn chưa là thành viên?</span>
+                                            <span
+                                                onClick={handleChangeStatus}
+                                                className="cursor-pointer text-[#2FB9BD] hover:text-[#2FB9BD]/80 duration-200 transition-all"
+                                            >
+                                                Đăng ký ngay
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </>
-                        )}
-                        {statusModal == 'otp' && (
-                            <>
-                                <FormField
-                                    control={form.control}
-                                    name="promoCode"
-                                    rules={{
-                                        minLength: 4,
-                                        required: true
-                                    }}
-                                    render={({ field, fieldState }) => {
-                                        const num = form.getValues("phoneNumber");
-                                        return (
-                                            <FormItem>
-                                                <div className="flex-col gap-2">
+                                </>
+                            )
+                        }
+                        {
+                            statusModal === "signup" && (
+                                <>
+                                    <FormField
+                                        control={form.control}
+                                        name="phoneNumber"
+                                        rules={{
+                                            required: "Vui lòng nhập số điện thoại!",
+                                            minLength: {
+                                                value: 10,
+                                                message: "Số điện thoại phải có ít nhất 10 số!"
+                                            },
+                                            maxLength: {
+                                                value: 10,
+                                                message: "Số điện thoại không được dài hơn 10 số!"
+                                            }
+                                        }}
+                                        render={({ field, fieldState }) => {
+                                            return (
+                                                <FormItem>
                                                     <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
-                                                        Vui lòng nhập mã OTP gồm 4 số được gửi tới số điện thoại: <span className="text-[#2FB9BD]">{FormatPhoneNumber(num)}</span>
+                                                        Số điện thoại
+                                                        <span className="text-[#F15A5A]">*</span>
                                                     </FormLabel>
-                                                    <div className="text-[#2FB9BD] text-center py-2">{timeOtp}</div>
-                                                </div>
-                                                <FormControl className="">
-                                                    <InputOTP maxLength={4} className="w-full" {...field}>
-                                                        <InputOTPGroup className="mx-auto gap-2 w-fit">
-                                                            <InputOTPSlot className="border ring-[#2FB9BD]" index={0} />
-                                                            <InputOTPSlot className="border ring-[#2FB9BD]" index={1} />
-                                                            <InputOTPSlot className="border ring-[#2FB9BD]" index={2} />
-                                                            <InputOTPSlot className="border ring-[#2FB9BD]" index={3} />
-                                                        </InputOTPGroup>
+                                                    <FormControl>
+                                                        <Input
+                                                            type="number"
+                                                            disabled={isLoading}
+                                                            className={`${fieldState?.invalid && fieldState?.error
+                                                                ? "border rounded-lg border-[#F15A5A]"
+                                                                : "border-b rounded-lg border-[#D8DAE5]"
+                                                                } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
+                                                            placeholder="Nhập số điện thoại"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
 
-                                                    </InputOTP>
+                                                    {fieldState?.invalid && fieldState?.error && (
+                                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                    )}
+                                                </FormItem>
+                                            );
+                                        }}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="fullName"
+                                        rules={{
+                                            required: "Nhập họ và tên!",
+                                        }}
+                                        render={({ field, fieldState }) => {
+                                            return (
+                                                <FormItem>
+                                                    <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
+                                                        Họ và tên
+                                                        <span className="text-[#F15A5A]">*</span>
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            disabled={isLoading}
+                                                            className={`${fieldState?.invalid && fieldState?.error
+                                                                ? "border rounded-lg border-[#F15A5A]"
+                                                                : "border-b rounded-lg border-[#D8DAE5]"
+                                                                } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
+                                                            placeholder="Nhập họ và tên"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+
+                                                    {fieldState?.invalid && fieldState?.error && (
+                                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                    )}
+                                                </FormItem>
+                                            );
+                                        }}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="password"
+                                        rules={{
+                                            required: "Vui lòng nhập password!",
+                                            minLength: {
+                                                value: 8,
+                                                message: "Mật khẩu phải có ít nhất 8 ký tự!",
+                                            },
+                                        }}
+                                        render={({ field, fieldState }) => (
+                                            <FormItem>
+                                                <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
+                                                    Mật khẩu <span className="text-[#F15A5A]">*</span>
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <div className="relative">
+                                                        <Input
+                                                            disabled={isLoading}
+                                                            className={`${fieldState?.invalid && fieldState?.error
+                                                                ? "border rounded-lg border-[#F15A5A]"
+                                                                : "border-b rounded-lg border-[#D8DAE5]"
+                                                                } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
+                                                            placeholder="Nhập mật khẩu"
+                                                            type={showPassword ? "text" : "password"}
+                                                            {...field}
+                                                        />
+                                                        {showPassword ? (
+                                                            <RiEyeLine
+                                                                onClick={() => handleShowPassword("password")}
+                                                                className="absolute top-[25%] right-4 3xl:size-6 size-5 cursor-pointer"
+                                                            />
+                                                        ) : (
+                                                            <RiEyeOffLine
+                                                                onClick={() => handleShowPassword("password")}
+                                                                className="absolute top-[25%] right-4 3xl:size-6 size-5 cursor-pointer"
+                                                            />
+                                                        )}
+                                                    </div>
                                                 </FormControl>
-
                                                 {fieldState?.invalid && fieldState?.error && (
                                                     <FormMessage>{fieldState?.error?.message}</FormMessage>
                                                 )}
                                             </FormItem>
-                                        );
-                                    }}
-                                />
-                                <button
-                                    onClick={handleForgotOtp}
-                                    type="button"
-                                    className="text-base text-red-500 hover:bg-transparent bg-white w-full py-2 rounded-base"
-                                >
-                                    Gửi lại mã OTP
-                                </button>
-                                <Button
-                                    type="submit"
-                                    className="3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full 3xl:py-3 py-2 rounded-xl"
-                                >
-                                    Xác nhận
-                                </Button>
-                            </>
+                                        )}
+                                    />
 
-                        )}
+                                    <FormField
+                                        control={form.control}
+                                        name="confirmPassword"
+                                        rules={{
+                                            required: "Vui lòng nhập mật khẩu xác nhận!",
+                                            minLength: {
+                                                value: 8,
+                                                message: "Mật khẩu phải có ít nhất 8 ký tự!",
+                                            },
+                                            validate: (value) => value === password || "Mật khẩu không khớp!",
+                                        }}
+                                        render={({ field, fieldState }) => (
+                                            <FormItem>
+                                                <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
+                                                    Nhập lại mật khẩu <span className="text-[#F15A5A]">*</span>
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <div className="relative">
+                                                        <Input
+                                                            disabled={isLoading}
+                                                            className={`${fieldState?.invalid && fieldState?.error
+                                                                ? "border rounded-lg border-[#F15A5A]"
+                                                                : "border-b rounded-lg border-[#D8DAE5]"
+                                                                } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
+                                                            // className="bg-white rounded-none border-b border-x-0 border-t-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
+                                                            placeholder="Nhập lại mật khẩu"
+                                                            type={showPasswordConfirm ? "text" : "password"}
+                                                            {...field}
+                                                        />
+                                                        {showPasswordConfirm ? (
+                                                            <RiEyeLine
+                                                                onClick={() => handleShowPassword("passwordConfirm")}
+                                                                className="absolute top-[25%] right-4 3xl:size-6 size-5 cursor-pointer"
+                                                            />
+                                                        ) : (
+                                                            <RiEyeOffLine
+                                                                onClick={() => handleShowPassword("passwordConfirm")}
+                                                                className="absolute top-[25%] right-4 3xl:size-6 size-5 cursor-pointer"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </FormControl>
+                                                {fieldState?.invalid && fieldState?.error && (
+                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                )}
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="promoCode"
+                                        render={({ field, fieldState }) => {
+                                            return (
+                                                <FormItem>
+                                                    <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
+                                                        Mã giới thiệu (nếu có)
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            disabled={isLoading}
+                                                            className={`${fieldState?.invalid && fieldState?.error
+                                                                ? "border rounded-lg border-[#F15A5A]"
+                                                                : "border-b rounded-lg border-[#D8DAE5]"
+                                                                } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
+                                                            placeholder="Nhập mã giới thiệu (nếu có)"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                </FormItem>
+                                            );
+                                        }}
+                                    />
+
+                                    <div className="flex items-center space-x-2">
+                                        <Checkbox
+                                            id="ok"
+                                            className="size-4 text-white border-[#9EA1AE] data-[state=checked]:border-[#2FB9BD] data-[state=checked]:bg-[#2FB9BD] data-[state=checked]:text-white"
+                                            checked={checkPolicy}
+                                            onCheckedChange={(checked: boolean) => setCheckPolicy(checked)}
+                                        />
+                                        <Label
+                                            htmlFor="ok"
+                                            onClick={() => setCheckPolicy(!checkPolicy)}
+                                            className="text-sm cursor-pointer font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 caret-transparent"
+                                        >
+                                            Tôi đồng ý với điều khoản và chính sách
+                                            <span className="text-[#F15A5A]">*</span>
+                                        </Label>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <Button
+                                            type="submit"
+                                            disabled={checkPolicy ? false : true}
+                                            className="3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full 3xl:py-4 py-3 rounded-xl"
+                                        >
+                                            Tạo tài khoản
+                                        </Button>
+                                        <div className="flex items-center gap-1 text-sm">
+                                            <span>Bạn đã có tài khoản?</span>
+                                            <span
+                                                onClick={handleChangeStatus}
+                                                className="cursor-pointer text-[#2FB9BD] hover:text-[#2FB9BD]/80 duration-200 transition-all"
+                                            >
+                                                Đăng nhập
+                                            </span>
+                                        </div>
+                                    </div>
+                                </>
+                            )
+                        }
+                        {
+                            statusModal == 'otp' && (
+                                <>
+                                    <FormField
+                                        control={form.control}
+                                        name="promoCode"
+                                        rules={{
+                                            minLength: 4,
+                                            required: true
+                                        }}
+                                        render={({ field, fieldState }) => {
+                                            const num = form.getValues("phoneNumber");
+                                            return (
+                                                <FormItem>
+                                                    <div className="flex-col gap-2">
+                                                        <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
+                                                            Vui lòng nhập mã OTP gồm 4 số được gửi tới số điện thoại: <span className="text-[#2FB9BD]">{FormatPhoneNumber(num)}</span>
+                                                        </FormLabel>
+                                                        <div className="text-[#2FB9BD] text-center py-2">{timeOtp}</div>
+                                                    </div>
+                                                    <FormControl className="">
+                                                        <InputOTP maxLength={4} className="w-full" {...field}>
+                                                            <InputOTPGroup className="mx-auto gap-2 w-fit">
+                                                                <InputOTPSlot className="border ring-[#2FB9BD]" index={0} />
+                                                                <InputOTPSlot className="border ring-[#2FB9BD]" index={1} />
+                                                                <InputOTPSlot className="border ring-[#2FB9BD]" index={2} />
+                                                                <InputOTPSlot className="border ring-[#2FB9BD]" index={3} />
+                                                            </InputOTPGroup>
+
+                                                        </InputOTP>
+                                                    </FormControl>
+
+                                                    {fieldState?.invalid && fieldState?.error && (
+                                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                    )}
+                                                </FormItem>
+                                            );
+                                        }}
+                                    />
+                                    <button
+                                        onClick={handleForgotOtp}
+                                        type="button"
+                                        className="text-base text-red-500 hover:bg-transparent bg-white w-full py-2 rounded-base"
+                                    >
+                                        Gửi lại mã OTP
+                                    </button>
+                                    <Button
+                                        type="submit"
+                                        className="3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full 3xl:py-3 py-2 rounded-xl"
+                                    >
+                                        Xác nhận
+                                    </Button>
+                                </>
+                            )
+                        }
                     </form>
                 </Form>
             </DialogContent>
