@@ -5,15 +5,14 @@ import { useForm } from 'react-hook-form'
 import React, { useEffect, useState } from 'react'
 import { FaRegQuestionCircle } from 'react-icons/fa'
 
-import { uuidv4 } from '@/lib/uuid'
 import { toastCore } from '@/lib/toast'
 import { useAuth } from '@/hooks/useAuth'
-import FormInformation from './components/FormInfomation'
 import { Button } from "@/components/ui/button"
+import FormPapers from './components/FormPapers'
+import FormInformation from './components/FormInfomation'
 import apiAccount from '@/services/account/account.services'
 import SessionStarRating from './components/SessionStarRating'
 import useAuthenticationAPI from '@/services/auth/auth.services'
-import FormPapers from './components/FormPapers'
 type Props = {}
 
 type Rating = {
@@ -59,11 +58,14 @@ const Account = (props: Props) => {
 
     const queryState = (key: any) => sIsState((prev: StatePageAccount) => ({ ...prev, ...key }))
 
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
     const form = useForm({
         defaultValues: {
             fullName: informationUser?.fullname ?? "",
             dateInfo: informationUser?.birthday ?? null,
-            gender: informationUser?.gender == 1 ? "male" : "girl",
+            gender: informationUser?.gender == 1 && "male" || informationUser?.gender == 2 && "girl",
             email: informationUser?.email ?? "",
             phone: informationUser?.phone ?? "",
             //giay phep lai xe
@@ -73,11 +75,10 @@ const Account = (props: Props) => {
             filePapers: informationUser?.drivingLiscense?.image ?? null
         },
     });
-    useEffect(() => {
-        setIsMounted(true)
-    }, [])
+
 
     const onSetValue = (informationUser: any) => {
+
         const newData = [
             {
                 name: 'fullName', value: informationUser?.fullname
@@ -92,7 +93,7 @@ const Account = (props: Props) => {
                 name: 'phone', value: informationUser?.phone
             },
             {
-                name: 'gender', value: informationUser?.gender == 1 ? "male" : "girl"
+                name: 'gender', value: informationUser?.gender == 1 && "male" || informationUser?.gender == 2 && "girl"
             },
             {
                 name: 'namePapers', value: informationUser?.drivingLiscense?.fullname
@@ -187,8 +188,6 @@ const Account = (props: Props) => {
         }
 
     }
-    console.log("informationUser", informationUser);
-
     const handlePage = async () => {
         let form: any = new FormData();
         form.append('current_page', isState.page)
@@ -212,6 +211,7 @@ const Account = (props: Props) => {
     }
     useEffect(() => {
         isState.page != 1 && handlePage()
+
     }, [isState.page])
 
     if (!isMounted) {

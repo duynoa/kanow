@@ -7,6 +7,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useAuth } from "@/hooks/useAuth";
+import { toastCore } from "@/lib/toast";
 
 type Props = {
     form: any,
@@ -114,8 +116,15 @@ const FormInformation = ({ form, isState }: Props) => {
                                         </FormLabel>
                                         <FormControl>
                                             <RadioGroup
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
+                                                onValueChange={(e) => {
+                                                    if (!isState.editInfo) {
+                                                        toastCore.warning('Vui lòng chọn chỉnh sửa')
+                                                        return
+                                                    }
+                                                    field.onChange(e)
+                                                }
+                                                }
+                                                value={field.value}
                                                 className='flex items-center gap-8 md:gap-8 sm:gap-4'>
                                                 <div className="flex items-center space-x-2">
                                                     <RadioGroupItem value="male" className='text-[#2FB9BD] border-[#2FB9BD] 2xl:text-sm lg:text-xs' id="r1" />
