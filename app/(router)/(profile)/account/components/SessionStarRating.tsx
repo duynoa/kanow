@@ -22,9 +22,12 @@ const SessionStarRating = ({ isState }: Props) => {
                         numberOfStars={5}
                         name='rating'
                     />
-                    <div className='3xl:text-base text-sm text-[#FF9900] font-semibold'>
-                        {FormatNumberToDecimal(isState.totalStar ?? 0, 1)}/5
-                    </div>
+                    {isState?.totalReview !== 0
+                        &&
+                        <div className='3xl:text-base text-sm text-[#FF9900] font-semibold'>
+                            {FormatNumberToDecimal(isState.totalStar ?? 0, 1)}/5
+                        </div>
+                    }
                     {
                         isState?.totalReview !== 0 ?
                             <div className='3xl:text-base text-sm text-[#6F7689]'>
