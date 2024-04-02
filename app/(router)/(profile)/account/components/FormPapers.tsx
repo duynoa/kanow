@@ -172,8 +172,10 @@ const FormPapers = ({ form, isState }: Props) => {
                                                     <Button
                                                         disabled={!isState.editPapers}
                                                         variant={"default"}
-                                                        className="w-full focus:border-[#2FB9BD] 2xl:py-3 lg:py-2 md:py-2 py-2 2xl:text-sm lg:text-xs disabled:bg-gray-200 disabled:border-gray-300 disabled:border-2
-                                                         bg-white border-[#E6E8EC] hover:bg-transparent hover:disabled:bg-gray-200 border-2 text-[#3E424E] font-normal px-3 rounded-2xl justify-between text-left"
+                                                        className={`border-[#E6E8EC] w-full focus:border-[#2FB9BD] 2xl:py-3 lg:py-2 md:py-2 py-2 2xl:text-sm lg:text-xs disabled:bg-gray-200 disabled:border-gray-300 disabled:border-2
+                                                        bg-white  hover:bg-transparent hover:disabled:bg-gray-200 border-2 text-[#3E424E] font-normal px-3 rounded-2xl justify-between text-left`}
+                                                    //     className={`${isState.editPapers && fieldState?.invalid && fieldState?.error ? 'border-[#2FB9BD]' : "border-[#E6E8EC]"} w-full focus:border-[#2FB9BD] 2xl:py-3 lg:py-2 md:py-2 py-2 2xl:text-sm lg:text-xs disabled:bg-gray-200 disabled:border-gray-300 disabled:border-2
+                                                    // bg-white  hover:bg-transparent hover:disabled:bg-gray-200 border-2 text-[#3E424E] font-normal px-3 rounded-2xl justify-between text-left`}
                                                     >
                                                         {field.value ? moment(field.value).format("DD/MM/YYYY") : <span>Chọn ngày sinh</span>}
                                                         {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
@@ -262,7 +264,7 @@ const FormPapers = ({ form, isState }: Props) => {
                                                                         }
                                                                         form.reset({ ...form.getValues(), filePapers: null })
                                                                     }}
-                                                                    className="text-red-500 bg-red-200 w-fit h-fit rounded-full p-1 m-1 cursor-pointer" size={26}
+                                                                    className="text-red-500 bg-red-200 md:size-9 size-8 rounded-full p-1 m-1 cursor-pointer md:text-[26px] text-xl"
                                                                 />
                                                             </div>
                                                         </>
