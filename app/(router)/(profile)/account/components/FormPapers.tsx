@@ -9,6 +9,11 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { DropdownProps } from "react-day-picker";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { DatePickerShowYear } from "@/components/datePicker/DatePickerShowYear";
 
 type Props = {
     form: any,
@@ -16,6 +21,53 @@ type Props = {
 }
 
 const FormPapers = ({ form, isState }: Props) => {
+    let messages = ""
+    const validateDateOrder = (birthday: string) => {
+        const currentDate = new Date();
+        const parsedBirthday = new Date(birthday);
+
+        // Kiểm tra xem ngày sinh có lớn hơn ngày hiện tại hay không
+        if (parsedBirthday > currentDate) {
+            messages = "Ngày sinh không được lớn hơn ngày hiện tại";
+            return false;
+        }
+
+        // Tính toán tuổi
+        const age = currentDate.getFullYear() - parsedBirthday.getFullYear();
+
+        // Kiểm tra xem người dùng có đủ 18 tuổi hay không
+        if (age < 18) {
+            messages = "Bạn chưa đủ 18 tuổi, chưa được cấp GPLX";
+            return false;
+        }
+
+        // Nếu ngày sinh hợp lệ và người dùng đủ 18 tuổi, trả về true
+        return true;
+    };
+    // const validateDateOrder = (brithday: string) => {
+    //     const currentDate = new Date();
+    //     currentDate.setHours(0, 0, 0, 0);
+    //     const parsedBrithday = new Date(brithday);
+    //     let age = currentDate.getFullYear() - parsedBrithday.getFullYear();
+    //     // Kiểm tra nếu sinh nhật đã qua trong năm nay, nếu chưa thì trừ đi 1 tuổi
+    //     if (currentDate < new Date(parsedBrithday.setFullYear(currentDate.getFullYear()))) {
+    //         age--;
+    //     }
+    //     console.log("parsedBrithday", parsedBrithday);
+    //     console.log("currentDate", currentDate);
+    //     console.log("brithday", brithday);
+
+    //     if (parsedBrithday > currentDate) {
+    //         messages = "Ngày sinh không được lớn hơn ngày hiện tại";
+    //         return false;
+    //     } else if (age < 18) {
+    //         messages = "Bạn chưa đủ 18 tuổi, chưa được cấp GPLX";
+    //         return false
+    //     }
+    //     else {
+    //         return true;
+    //     }
+    // };
     return (
         <Form {...form}>
             <div className="space-y-4" >
@@ -94,7 +146,18 @@ const FormPapers = ({ form, isState }: Props) => {
                             rules={{
                                 required: {
                                     value: isState.editPapers,
-                                    message: 'Vui lòng chọn ngày tháng năm sinh',
+                                    message: 'Vui lòng chọn ngày sinh',
+                                },
+                                validate: {
+                                    validate: (value) => {
+                                        try {
+                                            validateDateOrder(value);
+                                            return messages || true;
+                                        } catch (error) {
+                                            throw error;
+                                        }
+                                    },
+
                                 },
                             }}
                             render={({ field, fieldState }) => {
@@ -112,7 +175,7 @@ const FormPapers = ({ form, isState }: Props) => {
                                                         className="w-full focus:border-[#2FB9BD] 2xl:py-3 lg:py-2 md:py-2 py-2 2xl:text-sm lg:text-xs disabled:bg-gray-200 disabled:border-gray-300 disabled:border-2
                                                          bg-white border-[#E6E8EC] hover:bg-transparent hover:disabled:bg-gray-200 border-2 text-[#3E424E] font-normal px-3 rounded-2xl justify-between text-left"
                                                     >
-                                                        {field.value ? moment(field.value).format("DD/MM/YYYY") : <span>Nhập ngày sinh</span>}
+                                                        {field.value ? moment(field.value).format("DD/MM/YYYY") : <span>Chọn ngày sinh</span>}
                                                         {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
                                                         <div className="mr-2 h-5 max-h-5 w-5 max-w-5">
                                                             <Image src={'/icon/account/calendar.png'} width={1280} height={1024} alt="" className="w-full h-full object-cover" />
@@ -120,11 +183,16 @@ const FormPapers = ({ form, isState }: Props) => {
                                                     </Button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-auto p-0">
-                                                    <Calendar
+                                                    <DatePickerShowYear
                                                         mode="single"
+                                                        captionLayout="dropdown-buttons"
                                                         selected={field.value}
                                                         onSelect={(newDate: any) => field.onChange(newDate)}
-                                                        initialFocus
+                                                        // onSelect={field.onChange}
+                                                        form={() => form.setValue('datePapers', null)}
+                                                        fromYear={1960}
+                                                        toYear={2030}
+
                                                     />
                                                 </PopoverContent>
                                             </Popover>

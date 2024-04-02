@@ -154,9 +154,11 @@ const Account = (props: Props) => {
     }
 
     const onSubmit = async (values: any, type: any) => {
+        console.log(values);
+        console.log(type);
+
         let form: any = new FormData();
         let success: boolean = false
-
         if (type === 'editInfo') {
             form.append('email', values.email ?? '')
             form.append('phone', values.phone ?? "")
@@ -189,6 +191,7 @@ const Account = (props: Props) => {
 
     }
     const handlePage = async () => {
+
         let form: any = new FormData();
         form.append('current_page', isState.page)
         form.append('per_page', isState.limit)
@@ -257,7 +260,9 @@ const Account = (props: Props) => {
                         <div className='flex flex-col gap-3'>
                             <div className='flex items-center md:gap-4 gap-2'>
                                 <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold '>Giấy phép lái xe </h1>
-                                <span className={`${informationUser?.drivingLiscense?.status == 0 ? "bg-[#FA3434]" : "bg-[#2FB9BD]"} rounded-2xl ml-1 text-white  py-1 px-4 text-xs  font-normal`}>{informationUser?.drivingLiscense?.status == 0 ? "Chưa xác thực" : "Đã xác thực"}</span>
+                                <span className={`${informationUser?.drivingLiscense?.length == 0 || informationUser?.drivingLiscense?.status == 0 ? "bg-[#FA3434]" : "bg-[#2FB9BD]"} rounded-2xl ml-1 text-white  py-1 px-4 text-xs  font-normal`}>
+                                    {informationUser?.drivingLiscense?.length == 0 || informationUser?.drivingLiscense?.status == 0 ? "Chưa xác thực" : "Đã xác thực"}
+                                </span>
                             </div>
                             <div className='flex flex-row items-center gap-2'>
                                 <h4 className='text-[#3E424E] font-normal lg:text-base text-sm'>

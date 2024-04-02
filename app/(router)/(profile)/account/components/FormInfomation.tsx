@@ -15,6 +15,17 @@ type Props = {
     isState: any,
 }
 const FormInformation = ({ form, isState }: Props) => {
+    let messages = ""
+    const validateDateOrder = (brithday: string) => {
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        const parsedBrithday = new Date(brithday);
+        if (parsedBrithday > currentDate) {
+            messages = "Ngày sinh không được lớn hơn ngày hiện tại";
+            return false;
+        }
+        return true;
+    };
     return (
         <Form {...form}>
             <div className="space-y-4" >
@@ -62,7 +73,17 @@ const FormInformation = ({ form, isState }: Props) => {
                                 rules={{
                                     required: {
                                         value: isState.editInfo,
-                                        message: 'Vui lòng chọn ngày tháng năm sinh',
+                                        message: 'Vui lòng chọn ngày sinh',
+                                    },
+                                    validate: {
+                                        dateOrder: (value) => {
+                                            try {
+                                                validateDateOrder(value);
+                                                return messages || true;
+                                            } catch (error) {
+                                                throw error;
+                                            }
+                                        },
                                     },
                                 }}
                                 render={({ field, fieldState }) => {
@@ -79,7 +100,7 @@ const FormInformation = ({ form, isState }: Props) => {
                                                             className="w-full 2xl:py-3 2xl:text-sm lg:text-xs lg:py-2 md:py-2 py-2 disabled:bg-gray-200 disabled:border-gray-300 disabled:border-2 bg-white focus:border-[#2FB9BD]
                                                              border-[#E6E8EC]   hover:bg-transparent hover:disabled:bg-gray-200 border-2 text-[#3E424E] font-normal px-3 rounded-2xl justify-between text-left"
                                                         >
-                                                            {field.value ? moment(field.value).format("DD/MM/YYYY") : <span>Nhập ngày sinh</span>}
+                                                            {field.value ? moment(field.value).format("DD/MM/YYYY") : <span>Chọn ngày sinh</span>}
                                                             {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
                                                             <div className="mr-2 h-5 max-h-5 w-5 max-w-5">
                                                                 <Image src={'/icon/account/calendar.png'} width={1280} height={1024} alt="" className="w-full h-full object-cover" />
