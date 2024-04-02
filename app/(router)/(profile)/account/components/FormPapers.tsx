@@ -1,7 +1,7 @@
 import moment from "moment";
 import Image from "next/image";
-import { MdClear } from "react-icons/md";
 import { toastCore } from "@/lib/toast";
+import { MdClear } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useAuth } from "@/hooks/useAuth";
 
 type Props = {
     form: any,
@@ -147,7 +146,7 @@ const FormPapers = ({ form, isState }: Props) => {
                             rules={{
                                 required: {
                                     value: isState.editPapers,
-                                    message: 'Vui lòng chọn hình ảnh',
+                                    message: 'Vui lòng thêm hình ảnh',
                                 },
                             }}
                             render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
@@ -155,6 +154,11 @@ const FormPapers = ({ form, isState }: Props) => {
                                     <FormItem>
                                         <FormControl>
                                             <>
+                                                {isState.editPapers && fieldState?.invalid && fieldState?.error && (
+                                                    <FormMessage>
+                                                        {fieldState?.error?.message}
+                                                    </FormMessage>
+                                                )}
                                                 <Input {...fieldProps}
                                                     onChange={(event: any) => {
 
@@ -210,11 +214,6 @@ const FormPapers = ({ form, isState }: Props) => {
                                                 </div>
                                             </>
                                         </FormControl>
-                                        {/* {fieldState?.invalid && fieldState?.error && (
-                                            <FormMessage>
-                                                {fieldState?.error?.message}
-                                            </FormMessage>
-                                        )} */}
                                     </FormItem>
                                 );
                             }}
