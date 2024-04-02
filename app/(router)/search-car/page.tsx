@@ -842,6 +842,7 @@ const SearchCars = (props: Props) => {
                                     id={`card-${card.id}`}
                                     className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
                                     href={`/detail-car/${card.id}?${ConvertToSlug(card?.name_car)}`}
+                                    prefetch={false}
                                 >
                                     {
                                         card?.promotion?.length > 0 ?

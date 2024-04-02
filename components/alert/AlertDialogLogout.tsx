@@ -22,7 +22,7 @@ import { Button } from '../ui/button'
 
 type Props = {}
 
-const AleartDialogLogout = (props: Props) => {
+const AlertDialogLogout = (props: Props) => {
     const router = useRouter()
     const { removeCookie, getCookie, setCookie } = useCookie()
     const { setInformationUser } = useAuth()
@@ -78,4 +78,4 @@ const AleartDialogLogout = (props: Props) => {
     )
 }
 
-export default AleartDialogLogout
+export default AlertDialogLogout

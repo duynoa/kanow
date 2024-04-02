@@ -32,7 +32,7 @@ import { useResize } from '@/hooks/useResize'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { SelectItemNocheck } from '../ui/selectNocheck'
 import { useAlertDialogLogout } from '@/hooks/useAlertDialog'
-import AleartDialogLogout from '../alert/AleartDialogLogout'
+import AlertDialogLogout from '../alert/AlertDialogLogout'
 import apiAccount from '@/services/account/account.services'
 import moment from 'moment'
 import { Skeleton } from '../ui/skeleton'
@@ -92,7 +92,7 @@ const LayoutProfile = ({
             name: 'Chuyến của tôi',
             icon_inactive: '/icon/account/inactive/radar.png',
             icon_active: '/icon/account/active/radar.png',
-            link: "/list-my-trip",
+            link: "/my-trips",
         },
         {
             id: 5,
@@ -109,7 +109,6 @@ const LayoutProfile = ({
             link: "/list-address",
         },
     ]
-
     const listSettingAccount = [
         {
             id: 7,

@@ -97,7 +97,7 @@ const Footer = () => {
                 {
                     id: uuidv4(),
                     name: 'Về KANOW',
-                    link: '/'
+                    link: '/about-us'
                 },
                 {
                     id: uuidv4(),

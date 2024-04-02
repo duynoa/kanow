@@ -10,7 +10,7 @@ import { TiArrowSortedUp } from 'react-icons/ti'
 import { PiShieldCheckFill } from "react-icons/pi";
 import { FaCalendarAlt, FaRegQuestionCircle } from 'react-icons/fa'
 
-import { useDialogAnswerPolicy, useDialogCalendar, useDialogLogin, useDialogPromotion, useDialogReportCar, useDialogRequestCarRental } from '@/hooks/useOpenDialog'
+import { useDialogAnswerPolicy, useDialogCalendar, useDialogLogin, useDialogPromotion, useDialogReportCar, useDialogRequestCarRental, useDialogValidate } from '@/hooks/useOpenDialog'
 
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -38,6 +38,7 @@ const PaymentCar = ({
     const { setOpenDialogReportCar } = useDialogReportCar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { setOpenDialogLogin } = useDialogLogin()
+    const { setOpenDialogValidate } = useDialogValidate()
     const { openDialogRequestCarRental, dataListRequestCarRental, setDataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
 
     console.log('dataListRequestCarRental', dataListRequestCarRental);
@@ -107,11 +108,9 @@ const PaymentCar = ({
         if (getCookie !== "kanow" && getCookie !== undefined) {
             setDataListRequestCarRental(isState)
             setOpenDialogRequestCarRental(true)
-            console.log('check123');
-
+            // setOpenDialogValidate(true)
         } else {
             setOpenDialogLogin(true)
-            console.log('check321');
         }
     }
 
@@ -459,7 +458,7 @@ const PaymentCar = ({
                 <Button
                     type="button"
                     onClick={handleSubmitCar}
-                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-2xl'
+                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-2xl caret-transparent'
                 >
                     Chọn thuê
                 </Button>
