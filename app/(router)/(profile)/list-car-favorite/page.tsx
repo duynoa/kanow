@@ -18,7 +18,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { useResize } from '@/hooks/useResize'
 import { Skeleton } from '@/components/ui/skeleton'
 import { is } from 'date-fns/locale'
-import SkeletonCarFavorite from './components/SkletonCarFavorite'
+import SkeletonCarFavorite from './components/SkeletonCarFavorite'
 
 type Props = {}
 
