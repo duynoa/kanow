@@ -27,6 +27,7 @@ import { DialogCalendar } from '../modals/DialogCalendar';
 import { DialogReviewImage } from '../modals/DialogReviewImage';
 import { DialogRequestCarRental } from '../modals/DialogRequestCarRental';
 import { DialogValidate } from '../modals/DialogValidate';
+import AlertCancel from '../alert/AlertCancel';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -99,6 +100,7 @@ const LayoutContainer = ({
                     <DialogReviewImage />
                     <DialogRequestCarRental />
                     <DialogValidate />
+                    <AlertCancel />
                 </main>
                 {pathname !== "/search-car" && <Footer />}
                 <ToastContainer

@@ -36,7 +36,7 @@ type Props = {
     handleClickFavorite: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
-const InfomationCar = ({
+const InformationCar = ({
     isState,
     queryKeyIsState,
     params,
@@ -851,4 +851,4 @@ const InfomationCar = ({
     )
 }
 
-export default InfomationCar
+export default InformationCar
