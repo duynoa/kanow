@@ -11,6 +11,7 @@ const instance = axios.create({
 });
 
 instance.defaults.headers.common = {
+    // Authorization: `Bearer MjR8fHx8fHwyMDI0LTAzLTA2IDEwOjExOjQ2fHx8fHx8Z29vZ2xlfHx8MTA0ODkzODczOTA1Njc1MTM2MTQ5`,
     Authorization: `Bearer ${Cookie.get("token_kanow") === undefined ? "kanow" : Cookie.get("token_kanow")}`,
 };
 
@@ -19,6 +20,7 @@ instance.interceptors.request.use(
     function (config) {
         // Attach the token from the cookie to the request headers
         const myCookie = Cookie.get("token_kanow");
+        // const myCookie = "MjR8fHx8fHwyMDI0LTAzLTA2IDEwOjExOjQ2fHx8fHx8Z29vZ2xlfHx8MTA0ODkzODczOTA1Njc1MTM2MTQ5";
         if (myCookie) {
             config.headers.Authorization = `Bearer ${myCookie ? myCookie : "kanow"}`;
         }
