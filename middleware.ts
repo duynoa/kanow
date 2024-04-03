@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
     const { pathname, origin } = request.nextUrl;
     const token: any = request.cookies.get("token_kanow");
 
-    if (pathname.startsWith("/account") || pathname.startsWith("/list-car-favorite")) {
+    if (pathname.startsWith("/account") || pathname.startsWith("/list-car-favorite") || pathname.startsWith("/info-rental-car")) {
         if (!token || token?.value == "kanow") {
             return NextResponse.redirect(process.env.NEXT_PUBLIC_URL_WEBSITE as string);
         }
@@ -15,6 +15,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/account", "/list-car-favorite"],
+    matcher: ["/account", "/list-car-favorite", "/info-rental-car/:path*"],
     // matcher: ["/bar/:path*", "/checkout/:path*", "/order/:path*"],
 };

@@ -33,6 +33,7 @@ import { getListCars, postUpdateFavoriteHeartCar } from '@/services/cars/cars.se
 import { DialogFilterListCars } from '@/components/modals/DialogFilterListCars';
 import { CustomDataListCars } from '@/custom/CustomData';
 import { useCookie } from '@/hooks/useCookie';
+import SkeletonListCar from './components/SkeletonListCar';
 
 type Props = {}
 
@@ -834,7 +835,13 @@ const SearchCars = (props: Props) => {
                 <div className='custom-container grid xxl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-6 gap-4 justify-start h-full'>
                     {
                         isState.onSuccess.onSuccessPage ?
-                            <div>loading....</div>
+                            <>
+                                {[...Array(8)].map((_, index) => (
+                                    <React.Fragment key={`index-${index}`}>
+                                        <SkeletonListCar />
+                                    </React.Fragment>
+                                ))}
+                            </>
                             :
                             isState?.listCardCars && isState?.listCardCars?.map((card: any, index: number) => (
                                 <Link

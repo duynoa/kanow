@@ -10,7 +10,8 @@ const SkeletonCarFavorite = () => {
             <Link
                 href={'#'}
                 prefetch={false}
-                className='3xl:w-[30%] xxl:w-[35%]  2xl:w-[35%] xl:w-[40%] lg:w-[45%] w-full 3xl:h-[210px] xxl:h-[190px] 2xl:h-[190px] xl:h-[175px] lg:h-[170px] md:h-[280px] h-[200px] relative'>
+                className='3xl:w-[30%] xxl:w-[35%]  2xl:w-[35%] xl:w-[40%] lg:w-[45%] w-full 3xl:h-[210px] xxl:h-[190px] 2xl:h-[190px] xl:h-[175px] lg:h-[170px] md:h-[280px] h-[200px] relative'
+            >
                 <Skeleton className='rounded-xl h-full w-full object-cover' />
             </Link>
             <div className='3xl:w-[50%] xxl:w-[45%] 2xl:w-[45%] xl:w-[40%] lg:w-[45%] w-full flex flex-col 3xl:gap-2 xxl:gap-2.5 2xl:gap-2 xl:gap-2 lg:gap-2 gap-2'>

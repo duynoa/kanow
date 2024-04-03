@@ -176,6 +176,7 @@ const Header = () => {
                             <Link
                                 href="/"
                                 className='col-span-2 flex items-center justify-start'
+                                prefetch={false}
                             >
                                 <Image
                                     alt='logo'
@@ -201,6 +202,7 @@ const Header = () => {
                                                 <Link
                                                     href="/"
                                                     className='flex items-center justify-center'
+                                                    prefetch={false}
                                                 >
                                                     <Image
                                                         alt='logo'
@@ -219,7 +221,12 @@ const Header = () => {
                                                 {informationUser ?
                                                     <div className='flex items-center justify-between mb-6'>
                                                         <div className='flex items-center gap-2'>
-                                                            <Link onClick={_ToogleIsOff} href={'/account'} className='3xl:size-10 3xl:min-w-10 3xl:min-h-10 size-8 min-w-8  min-h-8'>
+                                                            <Link
+                                                                onClick={_ToogleIsOff}
+                                                                href={'/account'}
+                                                                className='3xl:size-10 3xl:min-w-10 3xl:min-h-10 size-8 min-w-8  min-h-8'
+                                                                prefetch={false}
+                                                            >
                                                                 <Avatar className='w-full h-full shadow'>
                                                                     <AvatarImage
                                                                         src={informationUser?.avatar ? informationUser?.avatar : '/avatar/avatar_default.png'}
@@ -239,7 +246,9 @@ const Header = () => {
                                                             <Link
                                                                 href={'/account'}
                                                                 onClick={_ToogleIsOff}
-                                                                className={`text-[#0E0E0E]/80 flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}>
+                                                                className={`text-[#0E0E0E]/80 flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                                                prefetch={false}
+                                                            >
                                                                 <span className='capitalize'>{informationUser?.fullname}</span>
                                                                 <IoIosArrowDown className='2xl:text-2xl text-xl text-[#2FB9BD]' />
                                                             </Link>
@@ -295,6 +304,7 @@ const Header = () => {
                                                                                 onClick={_ToogleIsOff}
                                                                                 href={`/partner/${item.link}`}
                                                                                 className={`${(item.link === '/' && pathname === '/') || (pathname.includes(item.link) && item.link !== '/') ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#F6F6F6] py-2 px-8 rounded-lg cursor-pointer`}
+                                                                                prefetch={false}
                                                                             >
                                                                                 <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-500 ease-in-out line-clamp-2`}>
                                                                                     {item?.title ? item?.title : ''}
@@ -310,6 +320,7 @@ const Header = () => {
                                                                 href={data.link}
                                                                 className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#9D9FA6]'} mb-6 text-base w-fit duration-300 transition ease-in-out flex items-center`}
                                                                 onClick={_ToogleIsOff}
+                                                                prefetch={false}
                                                             >
                                                                 {data.name}
                                                             </Link>
@@ -320,6 +331,7 @@ const Header = () => {
                                                         href={'/search-car'}
                                                         className={`${(pathname === '/search-car') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#9D9FA6]'} mb-6 text-base w-fit duration-300 transition ease-in-out flex items-center`}
                                                         onClick={_ToogleIsOff}
+                                                        prefetch={false}
                                                     >
                                                         Chuyến của tôi
                                                     </Link>
@@ -337,6 +349,7 @@ const Header = () => {
                             <Link
                                 href="/"
                                 className='col-span-2 w-full h-auto'
+                                prefetch={false}
                             >
                                 <Image
                                     alt='logo'
@@ -368,6 +381,7 @@ const Header = () => {
                                                                             className={`${(item.link === '/' && pathname === '/') || (pathname.includes(item.link) && item.link !== '/') ? 'bg-[#C2F9F9]' : ''} focus:scale-105 flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
                                                                             style={zoomedStyle}
                                                                             onClick={handleClickToZoom}
+                                                                            prefetch={false}
                                                                         >
 
                                                                             <div className={`max-w-full font-medium 3xl:text-lg xxl:text-base xl:text-sm lg:text-[13px] text-sm hover:text-[#0E0E0E] transition-all duration-300 ease-in-out line-clamp-2`}>
@@ -395,6 +409,7 @@ const Header = () => {
                                                             <Link
                                                                 href={data.link}
                                                                 className={`${(data.link === '/' && pathname === '/') || (pathname.includes(data.link) && data.link !== '/') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                                                prefetch={false}
                                                             >
                                                                 {data.name}
                                                             </Link>
@@ -411,6 +426,7 @@ const Header = () => {
                                     <Link
                                         href={'/search-car'}
                                         className={`${(pathname.includes('/search-car')) ? ' text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : ' text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                        prefetch={false}
                                     >
                                         Chuyến của tôi
                                     </Link>
@@ -429,7 +445,11 @@ const Header = () => {
                                                     <div className='3xl:min-w-7 3xl:min-h-7 3xl:size-7  min-w-6 min-h-6 size-6' >
                                                         <Image src={'/icon/header/notifications.png'} width={100} height={100} alt='' className='object-contain size-full' />
                                                     </div>
-                                                    <Link href={'/account'} className='3xl:size-10 3xl:min-w-10 3xl:min-h-10 size-8 min-w-8  min-h-8'>
+                                                    <Link
+                                                        href={'/account'}
+                                                        className='3xl:size-10 3xl:min-w-10 3xl:min-h-10 size-8 min-w-8  min-h-8'
+                                                        prefetch={false}
+                                                    >
                                                         <Avatar className='w-full h-full shadow'>
                                                             <AvatarImage
                                                                 src={informationUser?.avatar ? informationUser?.avatar : '/avatar/avatar_default.png'}
@@ -449,6 +469,7 @@ const Header = () => {
                                                     <Link
                                                         href={'/account'}
                                                         className={`text-[#0E0E0E]/80 flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                                        prefetch={false}
                                                     >
                                                         <span className='capitalize caret-transparent '>{informationUser?.fullname}</span>
                                                         <IoIosArrowDown className='2xl:text-2xl text-xl text-[#2FB9BD]' />

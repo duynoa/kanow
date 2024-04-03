@@ -172,6 +172,7 @@ const Footer = () => {
                                                 <Link
                                                     href={e.link}
                                                     className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1 hover:scale-[1.01] hover:font-medium transition-colors'
+                                                    prefetch={false}
                                                 >
                                                     {e.name}
                                                 </Link>
@@ -191,12 +192,14 @@ const Footer = () => {
                     <div className='flex flex-col lg:gap-3 gap-1 w-fit'>
                         <Link
                             href="/partner/vehicle-owner"
+                            prefetch={false}
                             className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1 hover:scale-[1.01] hover:font-medium transition-colors'
                         >
                             Đăng ký thành chủ xe
                         </Link>
                         <Link
                             href="/partner/driver"
+                            prefetch={false}
                             className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1 hover:scale-[1.01] hover:font-medium transition-colors'
                         >
                             Đăng ký thành tài xế

@@ -94,13 +94,13 @@ const LayoutProfile = ({
             icon_active: '/icon/account/active/radar.png',
             link: "/my-trips",
         },
-        {
-            id: 5,
-            name: 'Đơn hàng cho thuê dài hạn',
-            icon_inactive: '/icon/account/inactive/archive_book.png',
-            icon_active: '/icon/account/active/archive_book.png',
-            link: "/list-my-trip",
-        },
+        // {
+        //     id: 5,
+        //     name: 'Đơn hàng cho thuê dài hạn',
+        //     icon_inactive: '/icon/account/inactive/archive_book.png',
+        //     icon_active: '/icon/account/active/archive_book.png',
+        //     link: "/list-my-trip",
+        // },
         {
             id: 6,
             name: 'Sổ địa chỉ',
@@ -156,13 +156,13 @@ const LayoutProfile = ({
             icon_active: '/icon/account/active/radar.png',
             link: "/list-my-trip",
         },
-        {
-            id: 5,
-            name: 'Đơn hàng cho thuê dài hạn',
-            icon_inactive: '/icon/account/inactive/archive_book.png',
-            icon_active: '/icon/account/active/archive_book.png',
-            link: "/list-my-trip",
-        },
+        // {
+        //     id: 5,
+        //     name: 'Đơn hàng cho thuê dài hạn',
+        //     icon_inactive: '/icon/account/inactive/archive_book.png',
+        //     icon_active: '/icon/account/active/archive_book.png',
+        //     link: "/list-my-trip",
+        // },
         {
             id: 6,
             name: 'Sổ địa chỉ',
