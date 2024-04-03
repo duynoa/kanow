@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { useResize } from '@/hooks/useResize';
 
@@ -23,13 +23,13 @@ import { useDialogLogin } from '@/hooks/useOpenDialog';
 
 const Header = () => {
     // lấy thông tin user
-    const { getCookie, setCookie } = useCookie()
+    const router = useRouter()
     const { isVisibleTablet } = useResize()
+    const { getCookie, setCookie } = useCookie()
     const { apiInfoUser } = useAuthenticationAPI()
     const [isLoading, setIsLoading] = useState(false)
     const { informationUser, setInformationUser } = useAuth()
     const [isZoomAnimated, setIsZoomAnimated] = useState<boolean>(false);
-
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [isScrollBlocked, setIsScrollBlocked] = useState<boolean>(false);
     const [showActive, setShowActive] = useState<boolean>(false);
@@ -86,6 +86,7 @@ const Header = () => {
             } else {
                 setCookie("token_kanow", "kanow", { expires: 7 });
                 setInformationUser('')
+                router.push('/');
             }
             setIsLoading(false)
         }
