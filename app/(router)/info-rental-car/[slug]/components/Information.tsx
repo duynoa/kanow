@@ -155,7 +155,7 @@ const Information = ({
     return (
         <div className='flex flex-col gap-6 xxl:w-[70%] xxl:max-w-[70%] lg:w-[65%] lg:max-w-[65%] w-full max-w-full h-full pb-16 lg:order-none order-2'>
             <div className='flex md:flex-row flex-col md:items-center 3xl:gap-4 gap-4 3xl:pb-6 pb-4 border border-b border-x-0 border-t-0'>
-                <div className='2xl:w-56 2xl:h-36 md:w-52 md:h-32 w-full h-52'>
+                <div className='md:w-56 md:h-36 w-full h-52'>
                     <Image
                         alt="image"
                         width={400}
