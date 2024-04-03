@@ -61,14 +61,14 @@ const AlertDialogLogout = (props: Props) => {
                     <Button
                         type="button"
                         onClick={() => setOpenAlertDialogLogout(false)}
-                        className='3xl:text-base text-sm w-fit py-2 px-4 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
+                        className='3xl:text-base text-sm w-fit py-3 px-6 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
                     >
                         Hủy
                     </Button>
                     <AlertDialogAction
                         onClick={handleLogout}
                         type="button"
-                        className='3xl:text-base text-sm  w-fit py-2 px-4 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white'
+                        className='3xl:text-base text-sm  w-fit py-3 px-6 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white'
                     >
                         Đăng xuất
                     </AlertDialogAction>

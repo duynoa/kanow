@@ -25,7 +25,7 @@ import { DialogPromotion } from '@/components/modals/DialogPromotion'
 import { DialogCalendar } from '@/components/modals/DialogCalendar'
 
 import PaymentCar from './components/PaymentCar'
-import InfomationCar from './components/InfomationCar';
+import InformationCar from './components/InformationCar';
 import { getDataDetailCar, getListCarsRelated, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services'
 import { CustomDataDetailCar, CustomDataListCars } from '@/custom/CustomData'
 import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy'
@@ -541,7 +541,7 @@ const DetailCar = ({ params }: Props) => {
             }
 
             <div className='custom-container 3xl:mt-8 mt-4 flex lg:flex-row flex-col gap-6'>
-                <InfomationCar
+                <InformationCar
                     isState={isState}
                     queryKeyIsState={queryKeyIsState}
                     params={params}

@@ -458,7 +458,7 @@ const PaymentCar = ({
                 <Button
                     type="button"
                     onClick={handleSubmitCar}
-                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-2xl caret-transparent'
+                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
                 >
                     Chọn thuê
                 </Button>

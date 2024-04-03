@@ -1,7 +1,7 @@
 import { IDataDetailCar } from "@/types/Cars/ICars";
 
 // custom in list cars
-export const CustomDataListCars = (data: any) => {
+const CustomDataListCars = (data: any) => {
     let customDataListCars = data?.data?.map((item: any) => ({
         id: item?.id,
         address: `${item?.district}, ${item?.province}`,
@@ -36,7 +36,7 @@ export const CustomDataListCars = (data: any) => {
 };
 
 // data detail car
-export const CustomDataDetailCar = (res: any) => {
+const CustomDataDetailCar = (res: any) => {
     let customDataDetailCar: IDataDetailCar = {
         id: res?.data?.id,
         address: `${res?.data?.district}, ${res?.data?.province}`,
@@ -128,3 +128,18 @@ export const CustomDataDetailCar = (res: any) => {
     };
     return { customDataDetailCar };
 };
+
+const CustomListTransaction = (res: any) => {
+    let customListTransaction: any = res?.data?.slice(0, 5)?.map((item: any) => ({
+        id: item?.id,
+        name: item?.id == 4  ? "Kết thúc" : item?.name,
+        index: item?.index
+    }))
+    return { customListTransaction };
+}
+
+export {
+    CustomDataListCars,
+    CustomDataDetailCar,
+    CustomListTransaction
+}
