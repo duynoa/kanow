@@ -1,22 +1,20 @@
 import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import axios from "./utils/axios-customize";
 export async function middleware(request: NextRequest) {
     const { pathname, origin } = request.nextUrl;
     const token: any = request.cookies.get("token_kanow");
 
-    if (pathname.startsWith("/account")) {
+    if (pathname.startsWith("/account") || pathname.startsWith("/list-car-favorite")) {
         if (!token || token?.value == "kanow") {
             return NextResponse.redirect(process.env.NEXT_PUBLIC_URL_WEBSITE as string);
         }
         return NextResponse.next();
     }
-
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: ["/account"],
+    matcher: ["/account", "/list-car-favorite"],
     // matcher: ["/bar/:path*", "/checkout/:path*", "/order/:path*"],
 };
