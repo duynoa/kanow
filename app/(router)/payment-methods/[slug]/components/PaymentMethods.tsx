@@ -22,7 +22,6 @@ const PaymentMethods = ({
 }: Props) => {
     const router = useRouter()
     const handleChangePayment = (item: any, index: number) => {
-        console.log('item', item);
         queryKeyIsState({
             payment: {
                 idActivePaymentMethod: item.id,

@@ -154,9 +154,6 @@ const Account = (props: Props) => {
     }
 
     const onSubmit = async (values: any, type: any) => {
-        console.log(values);
-        console.log(type);
-
         let form: any = new FormData();
         let success: boolean = false
         if (type === 'editInfo') {

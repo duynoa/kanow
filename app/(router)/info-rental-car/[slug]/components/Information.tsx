@@ -233,7 +233,7 @@ const Information = ({
                                 Từ:
                             </div>
                             <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
-                                12h00 12/12/24
+                                12h00 12/12/2024
                             </div>
                         </div>
                         <div className='pl-7 flex items-center gap-1'>
@@ -241,7 +241,7 @@ const Information = ({
                                 Đến:
                             </div>
                             <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
-                                12h00 12/12/24
+                                12h00 12/12/2024
                             </div>
                         </div>
                     </div>

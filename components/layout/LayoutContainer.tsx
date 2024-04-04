@@ -102,7 +102,7 @@ const LayoutContainer = ({
                     <DialogValidate />
                     <AlertCancel />
                 </main>
-                {pathname !== "/search-car" && <Footer />}
+                {pathname !== "/list-car-autonomous" && <Footer />}
                 <ToastContainer
                     position="top-right"
                     autoClose={5000}

@@ -41,8 +41,6 @@ const PaymentCar = ({
     const { setOpenDialogValidate } = useDialogValidate()
     const { openDialogRequestCarRental, dataListRequestCarRental, setDataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
 
-    console.log('dataListRequestCarRental', dataListRequestCarRental);
-    console.log('openDialogRequestCarRental', openDialogRequestCarRental);
     const { getCookie } = useCookie()
     const { isVisibleTablet } = useResize()
 

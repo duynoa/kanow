@@ -19,7 +19,6 @@ type Props = {}
 const AlertCancel = (props: Props) => {
     const { openAlertCancel, setOpenAlertCancel } = useAlertCancel()
 
-    console.log('openAlertCancel', openAlertCancel);
 
     return (
         <AlertDialog open={openAlertCancel} onOpenChange={() => setOpenAlertCancel(false)}>

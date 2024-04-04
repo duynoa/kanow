@@ -126,7 +126,7 @@ const SectionThirdAbout = (props: Props) => {
                                 <div className='flex flex-col gap-4'>
                                     <div className='w-full'>
                                         <Button
-                                            onClick={() => router.push('/')}
+                                            onClick={() => router.push('/list-car-autonomous')}
                                             className='3xl:text-lg xl:text-base text-sm 3xl:px-12 3xl:py-3 2xl:px-8 2xl:py-3 px-8 py-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white font-semibold'
                                         >
                                             Thuê xe tự lái

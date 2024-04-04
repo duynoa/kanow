@@ -105,7 +105,7 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
                 code: event.target.value
             }
             const { data } = await getListPromotions(dataSearch)
-            console.log('data :', data);
+
             if (data && data.data) {
                 setDataPromotions(data?.data)
             }
