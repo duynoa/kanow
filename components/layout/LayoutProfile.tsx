@@ -483,7 +483,8 @@ const LayoutProfile = ({
                         }
 
                     </div>
-                    <div className='xl:col-span-10 lg:col-span-9 col-span-12 w-full h-full'>
+                    <div className='xl:col-span-10 lg:col-span-9 col-span-12 w-full h-auto'>
+                        {/* <div className='xl:col-span-10 lg:col-span-9 col-span-12 w-full h-full'> */}
                         {children}
                     </div>
                 </div>

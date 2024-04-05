@@ -3,13 +3,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import { useResize } from '@/hooks/useResize'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
 import BackgroundUiProfile from '@/themes/profile/BackgroundUiProfile'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { IMyTrips } from '@/types/Profile/IMyTrips'
+import apiMyTrips from '@/services/myTrips/myTrips.services'
+import { CustomDataMyTripCar } from '@/custom/CustomData'
 
 type Props = {}
 
@@ -18,7 +20,14 @@ const MyTrips = (props: Props) => {
     const initialState: IMyTrips = {
         isLoadingCar: false,
         dataMyTrips: [],
+        page: 1,
+        limit: 4,
+        favourite: "1",
+        next: "",
+        totalDrivingCar: 0
     }
+
+    const { apiListMyTrips } = apiMyTrips()
 
     const { isVisibleMobile, isVisibleTablet } = useResize()
 
@@ -27,6 +36,37 @@ const MyTrips = (props: Props) => {
     const [isState, sIsState] = useState<IMyTrips>(initialState)
 
     const queryState = (key: any) => sIsState((prev: IMyTrips) => ({ ...prev, ...key }))
+
+
+    const handleFetchListCars = async () => {
+        queryState({ isLoadingCar: true })
+        try {
+            const { data } = await apiListMyTrips(isState.page, isState.limit)
+            console.log("data", data);
+            if (data && data.data && data.base) {
+                const { customDataMyTripCar } = CustomDataMyTripCar(data)
+
+                queryState({
+                    dataMyTrips: customDataMyTripCar,
+                    page: isState.page + 1,
+                    next: data?.links?.next,
+                    totalDrivingCar: data?.meta?.total
+                })
+            }
+
+        }
+        catch (err) {
+            throw err
+        }
+        finally {
+            queryState({ isLoadingCar: false })
+        }
+
+    }
+
+    useEffect(() => {
+        handleFetchListCars()
+    }, [isState.favourite])
 
     return (
         <BackgroundUiProfile className='space-y-4 '>

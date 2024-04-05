@@ -15,7 +15,6 @@ const SearchAddress = ({ onChange, children }: any) => {
     }
     return (
         <LoadScript
-            // googleMapsApiKey={''}
             googleMapsApiKey={googleKey.google_api_key}
             libraries={["places"]}
         >
