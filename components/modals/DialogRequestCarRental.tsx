@@ -62,6 +62,9 @@ export function DialogRequestCarRental({ }: Props) {
         setOpenDialogRequestCarRental(false)
     }
 
+    console.log('dataListRequestCarRental : ', dataListRequestCarRental);
+
+
     return (
         <Dialog modal open={openDialogRequestCarRental} onOpenChange={handleCloseModal}>
             <DialogOverlay />
@@ -143,24 +146,24 @@ export function DialogRequestCarRental({ }: Props) {
                                                 <div className='min-w-5'>
                                                     <HiClock className='size-5 text-[#2FB9BD]' />
                                                 </div>
-                                                <div className="3xl:text-base text-sm text-[#6F7689] font-normal">
+                                                <div className="3xl:text-sm text-xs text-[#6F7689] font-normal">
                                                     Thời gian thuê
                                                 </div>
                                             </div>
                                             <div className='pl-7 mt-1 flex items-center gap-1'>
-                                                <div className="3xl:text-base text-sm text-[#2FB9BD] font-medium">
+                                                <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#2FB9BD] font-medium">
                                                     Từ:
                                                 </div>
-                                                <div className="3xl:text-base text-sm text-[#16171B] font-medium">
-                                                    12h00 12/12/24
+                                                <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
+                                                    12h00 12/12/2024
                                                 </div>
                                             </div>
                                             <div className='pl-7 flex items-center gap-1'>
-                                                <div className="3xl:text-base text-sm text-[#2FB9BD] font-medium">
+                                                <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#2FB9BD] font-medium">
                                                     Đến:
                                                 </div>
-                                                <div className="3xl:text-base text-sm text-[#16171B] font-medium">
-                                                    12h00 12/12/24
+                                                <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
+                                                    12h00 12/12/2024
                                                 </div>
                                             </div>
                                         </div>
@@ -170,14 +173,14 @@ export function DialogRequestCarRental({ }: Props) {
                                                 <div className='min-w-5'>
                                                     <TiLocation className='text-[#FA3434] size-5' />
                                                 </div>
-                                                <div className="3xl:text-base text-sm text-[#6F7689] font-normal">
+                                                <div className="3xl:text-sm text-xs text-[#6F7689] font-normal">
                                                     Nhận xe ở địa điểm của chủ xe
                                                 </div>
                                             </div>
-                                            <div className='pl-7 mt-1 3xl:text-base text-sm text-[#16171B] font-medium'>
+                                            <div className='pl-7 mt-1 3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium'>
                                                 12 Hoàn Kiếm Hà Nội
                                             </div>
-                                            <div className='pl-7 3xl:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-medium cursor-pointer w-fit duration-200 transition caret-transparent'>
+                                            <div className='pl-7 3xl:text-base lg:text-sm md:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-medium cursor-pointer w-fit duration-200 transition caret-transparent'>
                                                 Xem bản đồ
                                             </div>
                                         </div>
@@ -379,7 +382,7 @@ export function DialogRequestCarRental({ }: Props) {
                                 </div>
 
                                 <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border border-b border-x-0 border-t-0'>
-                                    <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
+                                    {/* <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                                         Bảng tính giá
                                     </div>
 
@@ -448,7 +451,7 @@ export function DialogRequestCarRental({ }: Props) {
                                         </div>
                                     </div>
 
-                                    {/* Tổng tạm tính */}
+                                    Tổng tạm tính
                                     <div className='flex justify-between items-center'>
                                         <div className='3xl:text-base text-sm text-[#3E424E] font-medium'>
                                             Tổng tạm tính
@@ -460,11 +463,11 @@ export function DialogRequestCarRental({ }: Props) {
 
                                     <div className='border w-full' />
 
-                                    {/* Thành tiền */}
+                                    Thành tiền
                                     <div className='flex flex-col gap-2'>
                                         <div className='flex justify-between items-center font-bold'>
-                                            <div className='3xl:text-base text-sm text-[#3E424E] font-bold'>
-                                                Thành tiền
+                                            <div className='3xl:text-lg text-base text-[#3E424E] font-bold'>
+                                                Thành tiền:
                                             </div>
                                             <div className='text-[#3E424E] font-bold 3xl:text-base text-sm'>
                                                 {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.total_amount ? dataListRequestCarRental?.dataDetailCar?.price?.total_amount : 0)}<span>đ/ngày</span>
@@ -532,6 +535,164 @@ export function DialogRequestCarRental({ }: Props) {
 
                                             <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
                                                 {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.rent_cost_day ? dataListRequestCarRental?.dataDetailCar?.price?.rent_cost_day : 0)}<span>đ/ngày</span>
+                                            </div>
+                                        </div>
+                                    </div> */}
+
+
+                                    <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
+                                        Bảng tính giá
+                                    </div>
+
+                                    <div className='flex flex-col gap-2 pb-2 border-b'>
+                                        <div className='flex justify-between gap-2 items-center'>
+                                            <div className='flex flex-row items-center gap-2'>
+                                                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-normal'>
+                                                    Đơn giá thuê
+                                                </div>
+                                                {
+                                                    isVisibleTablet ?
+                                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                                            <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
+                                                        </div>
+                                                        :
+                                                        <ActionTooltip
+                                                            side="bottom"
+                                                            align="center"
+                                                            label={(
+                                                                <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
+                                                                    <span dangerouslySetInnerHTML={{ __html: `${dataListRequestCarRental?.dataDetailCar?.policy?.car_price_policy ? dataListRequestCarRental?.dataDetailCar?.policy?.car_price_policy : ''}` }} />
+                                                                </div>
+                                                            )}
+                                                        >
+                                                            <div>
+                                                                <FaRegQuestionCircle className='text-[#FF9900] lg:text-xl text-lg cursor-pointer' />
+                                                            </div>
+                                                        </ActionTooltip>
+                                                }
+                                            </div>
+
+                                            <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                                {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.rent_cost_day ? dataListRequestCarRental?.dataDetailCar?.price?.rent_cost_day : 0)}<span>đ/ngày</span>
+                                            </div>
+                                        </div>
+
+                                        <div className='flex justify-between gap-2 items-center'>
+                                            <div className='flex flex-row items-center gap-2'>
+                                                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-normal'>
+                                                    Bảo hiểm thuê xe
+                                                </div>
+                                                {
+                                                    isVisibleTablet ?
+                                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_insurance_policy")}>
+                                                            <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
+                                                        </div>
+                                                        :
+                                                        <ActionTooltip
+                                                            side="bottom"
+                                                            align="center"
+                                                            label={(
+                                                                <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
+                                                                    <span dangerouslySetInnerHTML={{ __html: `${dataListRequestCarRental?.dataDetailCar?.policy?.car_insurance_policy ? dataListRequestCarRental?.dataDetailCar?.policy?.car_insurance_policy : ''}` }} />
+                                                                </div>
+                                                            )}
+                                                        >
+                                                            <div>
+                                                                <FaRegQuestionCircle className='text-[#FF9900] lg:text-xl text-lg cursor-pointer' />
+                                                            </div>
+                                                        </ActionTooltip>
+                                                }
+                                            </div>
+                                            <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                                {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.price_insurance_day ? dataListRequestCarRental?.dataDetailCar?.price?.price_insurance_day : 0)}<span>đ</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Tổng tạm tính */}
+                                    <div className='flex justify-between gap-2 items-center'>
+                                        <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#383A43] font-medium'>
+                                            Tổng tạm tính:
+                                        </div>
+                                        <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                            {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.temp_total_amount ? dataListRequestCarRental?.dataDetailCar?.price?.temp_total_amount : 0)}{dataListRequestCarRental?.dataDetailCar?.price?.number_day === 1 ? <span>đ/ngày</span> : <span>đ/{dataListRequestCarRental?.dataDetailCar?.price?.number_day} ngày</span>}
+                                        </div>
+                                    </div>
+
+                                    <div className='border border-[#B4B8C5] w-full' />
+
+                                    {/* Thành tiền */}
+                                    <div className='flex flex-col gap-2'>
+                                        <div className='flex justify-between gap-2 items-center pb-2 border-b'>
+                                            <div className='3xl:text-lg text-base text-[#383A43] font-bold'>
+                                                Thành tiền:
+                                            </div>
+                                            <div className='text-[#16171B] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                                {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.total_amount ? dataListRequestCarRental?.dataDetailCar?.price?.total_amount : 0)}{dataListRequestCarRental?.dataDetailCar?.price?.number_day === 1 ? <span>đ/ngày</span> : <span>đ/{dataListRequestCarRental?.dataDetailCar?.price?.number_day} ngày</span>}
+                                            </div>
+                                        </div>
+
+                                        <div className='flex justify-between gap-2 items-center'>
+                                            <div className='flex flex-row items-center gap-2'>
+                                                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#3E424E]'>
+                                                    Cọc qua ứng dụng
+                                                </div>
+                                                {
+                                                    isVisibleTablet ?
+                                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                                            <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
+                                                        </div>
+                                                        :
+                                                        <ActionTooltip
+                                                            side="bottom"
+                                                            align="center"
+                                                            label={(
+                                                                <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
+                                                                    <span dangerouslySetInnerHTML={{ __html: `${dataListRequestCarRental?.dataDetailCar?.policy?.car_deposit_policy ? dataListRequestCarRental?.dataDetailCar?.policy?.car_deposit_policy : ''}` }} />
+                                                                </div>
+                                                            )}
+                                                        >
+                                                            <div>
+                                                                <FaRegQuestionCircle className='text-[#FF9900] lg:text-xl text-lg cursor-pointer' />
+                                                            </div>
+                                                        </ActionTooltip>
+                                                }
+                                            </div>
+
+                                            <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                                {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.price_depoist ? dataListRequestCarRental?.dataDetailCar?.price?.price_depoist : 0)}<span>đ</span>
+                                            </div>
+                                        </div>
+
+                                        <div className='flex justify-between gap-2 items-center'>
+                                            <div className='flex flex-row items-center gap-2'>
+                                                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#3E424E]'>
+                                                    Thanh toán khi nhận xe
+                                                </div>
+                                                {
+                                                    isVisibleTablet ?
+                                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                                            <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
+                                                        </div>
+                                                        :
+                                                        <ActionTooltip
+                                                            side="bottom"
+                                                            align="center"
+                                                            label={(
+                                                                <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
+                                                                    <span dangerouslySetInnerHTML={{ __html: `${dataListRequestCarRental?.dataDetailCar?.policy?.car_payment_policy ? dataListRequestCarRental?.dataDetailCar?.policy?.car_payment_policy : ''}` }} />
+                                                                </div>
+                                                            )}
+                                                        >
+                                                            <div>
+                                                                <FaRegQuestionCircle className='text-[#FF9900] lg:text-xl text-lg cursor-pointer' />
+                                                            </div>
+                                                        </ActionTooltip>
+                                                }
+                                            </div>
+
+                                            <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                                {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.cash_on_delivery ? dataListRequestCarRental?.dataDetailCar?.price?.cash_on_delivery : 0)}<span>đ</span>
                                             </div>
                                         </div>
                                     </div>

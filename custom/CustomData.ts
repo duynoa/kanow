@@ -1,4 +1,5 @@
 import { IDataDetailCar } from "@/types/Cars/ICars";
+import { IInitialStateInfoRentalCar } from "@/types/Initial/IInitial";
 
 // custom in list cars
 const CustomDataListCars = (data: any) => {
@@ -118,28 +119,83 @@ const CustomDataDetailCar = (res: any) => {
             note_mortgage: res?.data?.note_mortgage,
         },
         surcharge_car: res?.data?.surcharge_car,
-        cancel_trip: res?.data?.cancel_trip,
-        policy: {
-            car_rental_policy: res?.data?.documentation_policy_car,
-            car_collateral_policy: res?.data?.mortgage_policy_car,
-            car_insurance_policy: res?.data?.setting_insurance_car,
-            car_price_policy: res?.data?.setting_price_car,
-        },
     };
     return { customDataDetailCar };
 };
 
-const CustomListTransaction = (res: any) => {
-    let customListTransaction: any = res?.data?.slice(0, 5)?.map((item: any) => ({
-        id: item?.id,
-        name: item?.id == 4  ? "Kết thúc" : item?.name,
-        index: item?.index
-    }))
-    return { customListTransaction };
+const CustomDataInfoRentalCar = (res: any) => {
+    let customDataInfoRentalCar: any = {
+        base: res?.base?.base,
+        id: res?.data?.id,
+        car: {
+            id: res?.data?.car?.id,
+            image: `${res?.base?.base}/${res?.data?.car?.image}`,
+            name: res?.data?.car?.name,
+            number_car: res?.data?.car?.number_car,
+            reference_no: res?.data?.reference_no,
+            note_mortgage: res?.data?.car?.note_mortgage,
+        },
+        date_time: {
+            date: res?.data?.date,
+            date_start: res?.data?.date_start,
+            date_end: res?.data?.date_end,
+        },
+        customer: {
+            id: res?.data?.customer?.id,
+            fullname: res?.data?.customer?.fullname,
+            avatar: res?.data?.customer?.avatar,
+            total_star: res?.data?.customer?.total_star,
+            total_trip: res?.data?.customer?.total_trip,
+            phone: res?.data?.customer?.phone
+        },
+        address: {
+            district: res?.data?.district,
+            province: res?.data?.province,
+            full_address: `${res?.data?.district}, ${res?.data?.province}`
+        },
+        surcharge_car: res?.data?.surcharge_car,
+        status: {
+            statusCustom: res?.data.status.status > 4 ? 4 : res.data.status.status,
+            status: res?.data.status.status,
+            color: res?.data.status.color,
+            name: res?.data.status.name,
+        },
+        price: {
+            // tiền gốc 
+            rent_cost_day: +res?.data?.price?.rent_cost_day,
+            // tiền bảo hiểm
+            price_insurance_day: +res?.data?.price?.price_insurance_day,
+            // tổng tạm tính
+            temp_total_amount: +res?.data?.price?.total,
+            // tiền đặt cọc
+            price_depoist: +res?.data?.price?.depoist,
+            // thành tiền
+            total_amount: +res?.data?.price?.grand_total,
+            // số ngày
+            number_day: +res?.data?.price?.number_day,
+            // thanh toán khi nhận xe (Thành tiền - tiền cọc)
+            cash_on_delivery: (+res?.data?.price?.grand_total) - (+res?.data?.price?.depoist)
+        },
+    }
+    return { customDataInfoRentalCar };
+}
+
+const CustomDataPolicy = (res: any) => {
+    let customDataPolicy: any = {
+        car_deposit_policy: res?.document_deposit,
+        car_payment_policy: res?.document_payment,
+        car_rental_policy: res?.documentation_policy_car,
+        car_collateral_policy: res?.mortgage_policy_car,
+        car_insurance_policy: res?.setting_insurance_car,
+        car_price_policy: res?.setting_price_car,
+        cancel_trip: res?.cancel_trip,
+    }
+    return { customDataPolicy };
 }
 
 export {
     CustomDataListCars,
     CustomDataDetailCar,
-    CustomListTransaction
+    CustomDataInfoRentalCar,
+    CustomDataPolicy
 }

@@ -77,7 +77,7 @@ export function DialogLogin({ }: Props) {
             const { data } = await apiLogin(formData);
 
             if (data?.token) {
-                if (pathname === "/search-car") {
+                if (pathname === "/list-car-autonomous") {
                     window.location.reload()
                 } else {
                     toastCore.success(data?.message);

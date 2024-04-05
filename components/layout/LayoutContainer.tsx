@@ -28,6 +28,7 @@ import { DialogReviewImage } from '../modals/DialogReviewImage';
 import { DialogRequestCarRental } from '../modals/DialogRequestCarRental';
 import { DialogValidate } from '../modals/DialogValidate';
 import AlertCancel from '../alert/AlertCancel';
+import { DialogAnswerPolicy } from '../modals/DialogAnswerPolicy';
 import Script from 'next/script';
 import { useGoogleKey } from '@/hooks/useGoogleKey';
 import apiGoogleKey from '@/services/gooogle/googleKey.services';
@@ -123,8 +124,9 @@ const LayoutContainer = ({
                     <DialogRequestCarRental />
                     <DialogValidate />
                     <AlertCancel />
+                    <DialogAnswerPolicy />
                 </main>
-                {pathname !== "/search-car" && <Footer />}
+                {pathname !== "/list-car-autonomous" && <Footer />}
                 <ToastContainer
                     position="top-right"
                     autoClose={5000}

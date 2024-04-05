@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import moment from "moment";
 import StarRatings from 'react-star-ratings';
-import { v4 as uuidv4 } from 'uuid'
 
 import { FaRegQuestionCircle, FaStar } from 'react-icons/fa'
 import { FaCircleCheck } from 'react-icons/fa6'
@@ -14,18 +13,13 @@ import { useResize } from '@/hooks/useResize'
 import Map from '@/components/map/Maps'
 import { Badge } from '@/components/ui/badge'
 import { FormatNumberHundred, FormatNumberToDecimal } from '@/components/format/FormatNumber'
-import { IInitialStateDetailCar } from '@/types/Cars/ICars';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-import { format, formatDistanceToNow, isYesterday, parseISO } from 'date-fns';
-// import { vi } from 'date-fns/locale';
 import "moment/locale/vi";
-import { vi } from 'date-fns/locale';
 import { ActionTooltip } from '@/components/tooltip/ActionTooltip';
-import { useDialogAnswerPolicy, useDialogLogin } from '@/hooks/useOpenDialog';
-import { getDataDetailCar, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
-import { toastCore } from '@/lib/toast';
-import { CustomDataDetailCar } from '@/custom/CustomData';
+import { useDialogAnswerPolicy } from '@/hooks/useOpenDialog';
+import { IInitialStateDetailCar } from '@/types/Initial/IInitial';
+import { useDataPolicy } from '@/hooks/useDataQueryKey';
 
 type Props = {
     isState: IInitialStateDetailCar,
@@ -43,6 +37,8 @@ const InformationCar = ({
     handleClickFavorite
 }: Props) => {
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
+    const { isStatePolicy } = useDataPolicy()
+
     const [expandedItems, setExpandedItems] = useState<boolean>(false);
 
     const handleToggleExpand = () => {
@@ -59,122 +55,6 @@ const InformationCar = ({
     useEffect(() => {
         setIsMounted(true)
     }, [])
-
-    const featuresCar = [
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_1.svg",
-            name: 'Bản đồ',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_2.svg",
-            name: 'Camera hành trình',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_3.svg",
-            name: 'Cảm biến lốp',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_4.svg",
-            name: 'Cảnh báo tốc độ',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_5.svg",
-            name: 'Bluetooth',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_6.svg",
-            name: 'ETC',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_7.svg",
-            name: 'Khe cắm USB',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_8.svg",
-            name: 'Màn hình DVD',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_9.svg",
-            name: 'Camera lùi',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_10.svg",
-            name: 'Định vị GPS',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_11.svg",
-            name: 'Túi khí an toàn',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_12.svg",
-            name: 'Cảm biến va chạm',
-        },
-    ]
-
-    const listComment = [
-        {
-            id: uuidv4(),
-            fullName: 'Phạm thị minh phượng',
-            createdTime: '2 tuần trước',
-            content: "Dịch vụ tốt",
-            rating: 5
-        },
-        {
-            id: uuidv4(),
-            fullName: 'Phạm thị minh phượng',
-            createdTime: '2 tuần trước',
-            content: "Dịch vụ tốt, nhưng nói hơi nhiều!",
-            rating: 4.5
-        },
-        {
-            id: uuidv4(),
-            fullName: 'Phạm thị minh phượng',
-            createdTime: '2 tuần trước',
-            content: "Không chịu chở động vật",
-            rating: 4
-        },
-        {
-            id: uuidv4(),
-            fullName: 'Phạm thị minh phượng',
-            createdTime: '2 tuần trước',
-            content: "Dịch vụ tốt 232",
-            rating: 5
-        },
-        {
-            id: uuidv4(),
-            fullName: 'Phạm thị minh phượng',
-            createdTime: '2 tuần trước',
-            content: "Dịch vụ tốt",
-            rating: 5
-        },
-    ]
-
-    const listSurcharge = [
-        {
-            id: uuidv4(),
-            title: 'Phí vượt giới hạn',
-            description: "Phụ phí phát sinh nếu lộ trình di chuyển vượt quá 900km khi thuê xe 3 ngày",
-            money: "5k/km"
-        },
-        {
-            id: uuidv4(),
-            title: 'Phụ phí khác',
-            description: "Phụ phí phát sinh nếu trả xe trễ, xe không đảm bảo vệ sinh hoặc bị ám mùi",
-            money: "5k/km"
-        },
-    ]
 
     const dataMaps = {
         google_map_link: ""
@@ -220,18 +100,6 @@ const InformationCar = ({
                         </div>
 
                         <div className='flex gap-3 md:items-center items-start caret-transparent'>
-                            {
-                                isState?.dataDetailCar?.point_star ?
-                                    <div className='flex items-center gap-1'>
-                                        <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#FF9900]' />
-                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-medium      '>
-                                            {isState?.dataDetailCar?.point_star ? (FormatNumberToDecimal(isState?.dataDetailCar?.point_star, 1)) : 0}
-                                        </div>
-                                    </div>
-                                    :
-                                    null
-                            }
-
                             {
                                 isState?.dataDetailCar?.total_trip ?
                                     <div className='flex items-center gap-1'>
@@ -411,19 +279,25 @@ const InformationCar = ({
                                 {isState?.dataDetailCar?.car_owner?.fullname ? isState?.dataDetailCar?.car_owner?.fullname : ""}
                             </div>
                             <div className='flex items-center gap-4'>
-                                <div className='flex items-center gap-1'>
-                                    <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
-                                    <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
-                                        4.9
-                                    </div>
-                                </div>
+                                {
+                                    isState?.dataDetailCar?.point_star ?
+                                        <div className='flex items-center gap-1'>
+                                            <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
+                                            <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
+                                                {isState?.dataDetailCar?.point_star ? (FormatNumberToDecimal(isState?.dataDetailCar?.point_star, 1)) : 0}
 
-                                <div className='flex items-center gap-1'>
+                                            </div>
+                                        </div>
+                                        :
+                                        null
+                                }
+
+                                {/* <div className='flex items-center gap-1'>
                                     <FaCircleCheck className='3xl:text-base text-sm text-[#3AC996]' />
                                     <div className='3xl:text-sm text-xs text-[#484D5C] font-semibold'>
                                         {FormatNumberHundred(19, 100)} Chuyến
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>
@@ -602,7 +476,7 @@ const InformationCar = ({
                                 align="center"
                                 label={(
                                     <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
-                                        <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_rental_policy ? isState?.dataDetailCar?.policy?.car_rental_policy : ''}` }} />
+                                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_rental_policy ? isStatePolicy?.dataPolicy?.car_rental_policy : ''}` }} />
                                     </div>
                                 )}
                             >
@@ -711,7 +585,7 @@ const InformationCar = ({
                                 align="center"
                                 label={(
                                     <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
-                                        <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_collateral_policy ? isState?.dataDetailCar?.policy?.car_collateral_policy : ''}` }} />
+                                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_collateral_policy ? isStatePolicy?.dataPolicy?.car_collateral_policy : ''}` }} />
                                     </div>
                                 )}
                             >
@@ -756,11 +630,11 @@ const InformationCar = ({
                     Chính sách huỷ chuyến
                 </div>
                 <div className='3xl:text-base text-sm text-[#585F71]'>
-                    {isState?.dataDetailCar?.cancel_trip?.title_cancel_trip ? isState?.dataDetailCar?.cancel_trip?.title_cancel_trip : ""}
+                    {isStatePolicy?.dataPolicy?.cancel_trip?.title_cancel_trip ? isStatePolicy?.dataPolicy?.cancel_trip?.title_cancel_trip : ""}
                 </div>
 
                 {
-                    isState?.dataDetailCar?.cancel_trip?.policy_cancel_trip?.length > 0 ?
+                    isStatePolicy?.dataPolicy?.cancel_trip?.policy_cancel_trip && isStatePolicy?.dataPolicy?.cancel_trip?.policy_cancel_trip?.length > 0 ?
                         <div className='grid grid-rows-1'>
                             <div className='row-span-1 grid grid-cols-3'>
                                 <div className="col-span-1 p-5 border border-b-0 border-r-0 rounded-tl-xl">
@@ -781,8 +655,8 @@ const InformationCar = ({
                             </div>
 
                             {
-                                isState?.dataDetailCar?.cancel_trip?.policy_cancel_trip && isState?.dataDetailCar?.cancel_trip?.policy_cancel_trip?.map((item, index) => (
-                                    <div key={`cancel-${item.id}`} className={`${isState?.dataDetailCar?.cancel_trip?.policy_cancel_trip.length - 1 == index ? "border-b" : ""} row-span-1 grid grid-cols-3`}>
+                                isStatePolicy?.dataPolicy?.cancel_trip?.policy_cancel_trip && isStatePolicy?.dataPolicy?.cancel_trip?.policy_cancel_trip?.map((item, index) => (
+                                    <div key={`cancel-${item.id}`} className={`${isStatePolicy?.dataPolicy?.cancel_trip?.policy_cancel_trip && isStatePolicy?.dataPolicy?.cancel_trip?.policy_cancel_trip?.length - 1 == index ? "border-b" : ""} row-span-1 grid grid-cols-3`}>
                                         <div className="col-span-1 p-4 border border-b-0 border-r-0">
                                             <div className='3xl:text-base text-sm font-medium'>
                                                 {item?.name ? item?.name : ""}
@@ -807,15 +681,15 @@ const InformationCar = ({
                 }
 
                 <div className='text-sm text-[#585F71] group-hover:text-[#585F71]/80 duration-500 transition ease-in-out'>
-                    <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.cancel_trip?.note_cancel_trip ? isState?.dataDetailCar?.cancel_trip?.note_cancel_trip : ''}` }} />
+                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.cancel_trip?.note_cancel_trip ? isStatePolicy?.dataPolicy?.cancel_trip?.note_cancel_trip : ''}` }} />
                 </div>
 
                 <div className="flex items-end gap-2">
                     <div className='3xl:text-base text-sm text-[#585F71] group-hover:text-[#585F71]/80 duration-500 transition ease-in-out'>
-                        <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.cancel_trip?.compensation_refund ? isState?.dataDetailCar?.cancel_trip?.compensation_refund : ''}` }} />
+                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund ? isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund : ''}` }} />
                     </div>
                     {
-                        isState?.dataDetailCar?.cancel_trip?.compensation_refund ?
+                        isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund ?
 
                             isVisibleTablet ?
                                 (
@@ -830,7 +704,7 @@ const InformationCar = ({
                                         align="center"
                                         label={(
                                             <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
-                                                <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.cancel_trip?.compensation_refund ? isState?.dataDetailCar?.cancel_trip?.compensation_refund : ''}` }} />
+                                                <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund ? isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund : ''}` }} />
                                             </div>
                                         )}
                                     >
@@ -843,9 +717,6 @@ const InformationCar = ({
                             null
                     }
                 </div>
-                {/* <div className='3xl:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out w-fit'>
-                    Xem thêm
-                </div> */}
             </div>
         </div >
     )

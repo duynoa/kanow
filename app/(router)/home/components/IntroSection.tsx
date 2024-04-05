@@ -167,7 +167,7 @@ const IntroSection = () => {
                                 type='button'
                                 size="basic"
                                 className='3xl:text-base text-sm w-full 3xl:py-4 xl:py-3 py-2 text-center uppercase text-white bg-[#FF9900] hover:bg-[#FF9900]/80 font-bold rounded-xl'
-                                onClick={() => router.push('/search-car')}
+                                onClick={() => router.push('/list-car-autonomous')}
                             >
                                 <span>Tìm xe</span>
                             </Button>

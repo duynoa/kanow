@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react'
 
 import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy'
-import { IInitialStateDetailCar } from '@/types/Cars/ICars'
 
 import { useCookie } from '@/hooks/useCookie'
 import {
@@ -15,7 +14,7 @@ import {
     PiPath
 } from 'react-icons/pi'
 import { getInfoDetailCarTransaction } from '@/services/cars/payment.services'
-import { IInitialStateInfoRentalCar, IInitialStatePayment } from '@/types/Cars/IInitial'
+import { IInitialStatePayment } from '@/types/Initial/IInitial'
 import PaymentMethods from './components/PaymentMethods'
 
 type Props = {

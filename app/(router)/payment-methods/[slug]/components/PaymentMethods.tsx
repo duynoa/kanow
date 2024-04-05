@@ -1,7 +1,7 @@
 import { FormatNumberDot } from '@/components/format/FormatNumber'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
-import { IInitialStatePayment } from '@/types/Cars/IInitial'
+import { IInitialStatePayment } from '@/types/Initial/IInitial'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React from 'react'
@@ -22,7 +22,6 @@ const PaymentMethods = ({
 }: Props) => {
     const router = useRouter()
     const handleChangePayment = (item: any, index: number) => {
-        console.log('item', item);
         queryKeyIsState({
             payment: {
                 idActivePaymentMethod: item.id,

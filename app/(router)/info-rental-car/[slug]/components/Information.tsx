@@ -12,7 +12,6 @@ import { TiLocation } from 'react-icons/ti'
 import { useResize } from '@/hooks/useResize'
 
 import { FormatNumberHundred, FormatPhoneNumber } from '@/components/format/FormatNumber'
-import { IInitialStateDetailCar } from '@/types/Cars/ICars';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // import { vi } from 'date-fns/locale';
@@ -22,23 +21,25 @@ import { ActionTooltip } from '@/components/tooltip/ActionTooltip';
 import { useDialogAnswerPolicy } from '@/hooks/useOpenDialog';
 import { PiShieldCheckFill } from 'react-icons/pi';
 import { HiClock } from 'react-icons/hi';
-import { IInitialStateInfoRentalCar } from '@/types/Cars/IInitial';
+import { IInitialStateInfoRentalCar } from '@/types/Initial/IInitial';
 import { Badge } from '@/components/ui/badge';
+import { useDataInfoRentalCar, useDataPolicy } from '@/hooks/useDataQueryKey';
 
 type Props = {
-    isState: IInitialStateInfoRentalCar,
-    queryKeyIsState: (key: any) => void,
+
     params: {
         slug: string
     },
 }
 
 const Information = ({
-    isState,
-    queryKeyIsState,
+
     params,
 }: Props) => {
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
+    const { isStateInfoRentalCar } = useDataInfoRentalCar()
+    const { isStatePolicy } = useDataPolicy()
+
     const [expandedItems, setExpandedItems] = useState<boolean>(false);
 
     const handleToggleExpand = () => {
@@ -48,9 +49,6 @@ const Information = ({
     const { isVisibleMobile, isVisibleTablet } = useResize()
     const [isMounted, setIsMounted] = useState<boolean>(false)
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
-
-    const latitude = 10.796455918645478; // Thay đổi giá trị này bằng vĩ độ thực tế
-    const longitude = 106.63445664322627; // Thay đổi giá trị này bằng kinh độ thực tế
 
     useEffect(() => {
         setIsMounted(true)
@@ -148,6 +146,8 @@ const Information = ({
         google_map_link: ""
     }
 
+    console.log('isStateInfoRentalCar : ', isStateInfoRentalCar);
+
     if (!isMounted) {
         return null
     }
@@ -161,43 +161,45 @@ const Information = ({
                         width={400}
                         height={400}
                         className='w-full h-full object-cover rounded-lg'
-                        src={"/other/car/car1.png"}
-                    // src={isState?.dataDetailCar && isState?.dataDetailCar?.image_car ? isState?.dataDetailCar?.image_car[0]?.name : "/default/default.png"}
+                        src={isStateInfoRentalCar?.detailRentalCar && isStateInfoRentalCar?.detailRentalCar?.car ? isStateInfoRentalCar?.detailRentalCar?.car?.image : "/default/default.png"}
                     />
                 </div>
 
                 <div className='flex flex-col justify-between gap-3 h-full'>
                     <div className='3xl:text-base lg:text-sm md:text-base text-sm font-bold uppercase'>
-                        {/* {isState?.dataDetailCar?.name_car ? isState?.dataDetailCar?.name_car : ""} */}
-                        Mitsubishi Xpander 2023
+                        {isStateInfoRentalCar?.detailRentalCar?.car?.name ? isStateInfoRentalCar?.detailRentalCar?.car?.name : ""}
                     </div>
 
                     <div className='flex flex-col gap-2'>
                         <div className='space-x-2'>
                             <span className='3xl:text-sm text-xs text-[#8C93A3] font-normal'>Mã số xe:</span>
                             <span className='3xl:text-sm text-xs text-[#585F71] font-semibold'>
-                                59A 627371
-                                {/* {isState?.dataDetailCar?.trait_car?.number_car ? isState?.dataDetailCar?.trait_car?.number_car : ""} */}
+                                {isStateInfoRentalCar?.detailRentalCar?.car?.number_car ? isStateInfoRentalCar?.detailRentalCar?.car?.number_car : ""}
                             </span>
                             {
-                                isState?.detailRentalCar?.status && isState?.detailRentalCar?.status?.status >= 2 &&
+                                isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status >= 2 &&
                                 <Badge className='px-3 py-1 bg-[#000000]/50 rounded-xl text-white 3xl:text-sm text-xs'>
-                                    Mã số chuyến: 21321321
+                                    Mã số chuyến: {isStateInfoRentalCar?.detailRentalCar?.car?.reference_no ? isStateInfoRentalCar?.detailRentalCar?.car?.reference_no : ""}
                                 </Badge>
                             }
                         </div>
                         <div className='flex items-center gap-4'>
-                            <div className='flex items-center gap-1'>
+                            {/* <div className='flex items-center gap-1'>
                                 <FaStar className='3xl:text-base lg:text-sm md:text-base text-sm text-[#FF9900]' />
                                 <div className='3xl:text-sm text-xs text-[#484D5C] font-medium'>
                                     4.9
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div className='flex items-center gap-1'>
                                 <FaCircleCheck className='3xl:text-base lg:text-sm md:text-base text-sm text-[#3AC996]' />
                                 <div className='3xl:text-sm text-xs text-[#484D5C] font-semibold'>
-                                    {FormatNumberHundred(19, 100)} Chuyến
+                                    {
+                                        isStateInfoRentalCar?.detailRentalCar && isStateInfoRentalCar?.detailRentalCar?.customer?.total_trip !== 0 ?
+                                            `${FormatNumberHundred(isStateInfoRentalCar?.detailRentalCar?.customer?.total_trip, 100)} Chuyến`
+                                            :
+                                            "Chưa có chuyến"
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -233,7 +235,8 @@ const Information = ({
                                 Từ:
                             </div>
                             <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
-                                12h00 12/12/24
+                                {/* 12h00 12/12/2024 */}
+                                {moment(isStateInfoRentalCar?.detailRentalCar?.date_time?.date_start).format("HH[h]MM dd/mm/YYYY")}
                             </div>
                         </div>
                         <div className='pl-7 flex items-center gap-1'>
@@ -241,7 +244,8 @@ const Information = ({
                                 Đến:
                             </div>
                             <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
-                                12h00 12/12/24
+                                {moment(isStateInfoRentalCar?.detailRentalCar?.date_time?.date_end).format("HH[h]MM dd/mm/YYYY")}
+                                {/* 12h00 12/12/2024 */}
                             </div>
                         </div>
                     </div>
@@ -275,8 +279,8 @@ const Information = ({
                         <div className='3xl:w-16 3xl:h-16 3xl:min-w-16 w-14 min-w-14 h-14 rounded-full border-[3px] border-[#ffffff] drop-shadow'>
                             <Avatar className='w-full h-full shadow'>
                                 <AvatarImage
-                                    src={'/avatar/avatar_default.png'}
-                                    // src={isState?.dataDetailCar?.car_owner?.avatar ? isState?.dataDetailCar?.car_owner?.avatar : '/avatar/avatar_default.png'}
+                                    // src={'/avatar/avatar_default.png'}
+                                    src={isStateInfoRentalCar?.detailRentalCar?.customer?.avatar ? isStateInfoRentalCar?.detailRentalCar?.customer?.avatar : '/avatar/avatar_default.png'}
                                     alt="@kanow"
                                 />
                                 <AvatarFallback >
@@ -293,29 +297,33 @@ const Information = ({
 
                         <div className='flex flex-col 3xl:gap-2 gap-1'>
                             <div className='uppercase text-[#16171B] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
-                                {/* {isState?.dataDetailCar?.car_owner?.fullname ? isState?.dataDetailCar?.car_owner?.fullname : ""} */}
-                                Lan Vũ
+                                {isStateInfoRentalCar?.detailRentalCar?.customer?.fullname ? isStateInfoRentalCar?.detailRentalCar?.customer?.fullname : ""}
                             </div>
                             {
-                                isState?.detailRentalCar?.status && (isState?.detailRentalCar?.status?.status === 2 || isState?.detailRentalCar?.status?.status === 3) &&
+                                isStateInfoRentalCar?.detailRentalCar?.status && (isStateInfoRentalCar?.detailRentalCar?.status?.status === 2 || isStateInfoRentalCar?.detailRentalCar?.status?.status === 3 || isStateInfoRentalCar?.detailRentalCar?.status?.status === 4) &&
                                 <div className='3xl:text-sm text-xs text-[#484D6C] font-medium'>
-                                    SĐT: {FormatPhoneNumber(`0987564537`)}
+                                    SĐT: {FormatPhoneNumber(`${isStateInfoRentalCar?.detailRentalCar?.customer?.phone}`)}
                                 </div>
                             }
                             <div className='flex items-center gap-4'>
-                                <div className='flex items-center gap-1'>
-                                    <FaStar className='3xl:text-base lg:text-sm md:text-base text-sm text-[#FF9900]' />
-                                    <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
-                                        4.9
-                                    </div>
-                                </div>
+                                {
+                                    isStateInfoRentalCar?.detailRentalCar && isStateInfoRentalCar?.detailRentalCar?.customer?.total_star ?
+                                        <div className='flex items-center gap-1'>
+                                            <FaStar className='3xl:text-base lg:text-sm md:text-base text-sm text-[#FF9900]' />
+                                            <div className='3xl:text-sm text-xs text-[#484D5C] font-medium'>
+                                                {isStateInfoRentalCar?.detailRentalCar?.customer?.total_star}
+                                            </div>
+                                        </div>
+                                        :
+                                        null
+                                }
 
-                                <div className='flex items-center gap-1'>
+                                {/* <div className='flex items-center gap-1'>
                                     <FaCircleCheck className='3xl:text-base lg:text-sm md:text-base text-sm text-[#3AC996]' />
                                     <div className='3xl:text-sm text-xs text-[#484D5C] font-semibold'>
                                         {FormatNumberHundred(19, 100)} Chuyến
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>
@@ -327,7 +335,7 @@ const Information = ({
             </div>
 
             {
-                isState?.detailRentalCar?.status && isState?.detailRentalCar?.status?.status === 4 &&
+                isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status === 4 &&
                 <div className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b'>
                     <div className='flex items-center justify-between'>
                         <div className='flex flex-col gap-1'>
@@ -395,62 +403,6 @@ const Information = ({
                             </div>
                         ))
                     }
-                    {/* {
-                        isState?.dataDetailCar?.info_review_car?.review_car && isState?.dataDetailCar?.info_review_car?.review_car?.slice(0, 5)?.map((item, index) => (
-                            <div key={item.id} className={`${index !== isState?.dataDetailCar?.info_review_car?.review_car?.length - 1 ? "border-b pb-3" : ""} flex flex-col`}>
-                                <div className='flex items-center gap-3'>
-                                    <div className='3xl:w-14 3xl:h-14 3xl:max-w-14 w-12 h-12 max-w-12 rounded-full drop-shadow'>
-                                        <Image
-                                            src="/avatar/avatar1.png"
-                                            alt="avatar"
-                                            width={100}
-                                            height={100}
-                                            className='w-full h-full object-contain rounded-full'
-                                        />
-                                    </div>
-                                    <div className='flex flex-col gap-1'>
-                                        <div className='capitalize 3xl:text-base lg:text-sm md:text-base text-sm text-[#484D5C] font-semibold'>
-                                            {item.customer_name ? item.customer_name : ''}
-                                        </div>
-                                        <div className='3xl:text-sm text-xs text-[#8C93A3]'>
-                                            {
-                                                moment().subtract(1, "days").isSame(moment(item?.date, "DD/MM/YYYY"), "day")
-                                                    ? `Hôm qua lúc ${moment(item?.date).format("HH:mm")}`
-                                                    : moment(item?.date).fromNow()
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#585F71] mt-2'>
-                                    {item.content ? item.content : ''}
-                                </div>
-                                <div className='flex items-center'>
-                                    {
-                                        isVisibleMobile ?
-                                            <StarRatings
-                                                rating={item.star ? item.star : 0}
-                                                starRatedColor="#FCC43E"
-                                                starHoverColor='#FCC43E'
-                                                starDimension='14px'
-                                                starSpacing='0px'
-                                                numberOfStars={5}
-                                                name='rating'
-                                            />
-                                            :
-                                            <StarRatings
-                                                rating={item.star ? item.star : 0}
-                                                starRatedColor="#FCC43E"
-                                                starHoverColor='#FCC43E'
-                                                starDimension='14px'
-                                                starSpacing='2px'
-                                                numberOfStars={5}
-                                                name='rating'
-                                            />
-                                    }
-                                </div>
-                            </div>
-                        ))
-                    } */}
                 </div>
             }
 
@@ -459,7 +411,6 @@ const Information = ({
                     <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                         Giấy tờ thuê xe
                     </div>
-
                     {
                         isVisibleTablet ?
                             <div onClick={() => setOpenDialogAnswerPolicy(true, "car_rental_policy")}>
@@ -470,9 +421,8 @@ const Information = ({
                                 side="bottom"
                                 align="center"
                                 label={(
-                                    <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
-                                        <span dangerouslySetInnerHTML={{ __html: `` }} />
-                                        {/* <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_rental_policy ? isState?.dataDetailCar?.policy?.car_rental_policy : ''}` }} /> */}
+                                    <div className='flex flex-col gap-1 max-w-[240px]'>
+                                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_rental_policy ? isStatePolicy?.dataPolicy?.car_rental_policy : ''}` }} />
                                     </div>
                                 )}
                             >
@@ -492,13 +442,13 @@ const Information = ({
                             1
                         </div>
                         <div className='w-full h-full p-4 border-2 rounded-2xl flex flex-col gap-6'>
-                            <div className='w-[140px] max-w-[140px] h-auto'>
+                            <div className='w-[140px] max-w-[140px] h-[90px]'>
                                 <Image
                                     src="/other/info/driverLicense.png"
                                     alt="driver_license"
                                     width={600}
                                     height={600}
-                                    className='w-full h-auto object-contain'
+                                    className='w-full h-full object-contain'
                                 />
                             </div>
                             <div className='w-full flex flex-col gap-1'>
@@ -517,13 +467,13 @@ const Information = ({
                         </div>
                         <div className='w-full p-4 border-2 rounded-2xl flex md:flex-row flex-col gap-4'>
                             <div className='flex flex-col gap-6 md:max-w-[45%] max-w-full'>
-                                <div className='w-[140px] max-w-[140px] h-auto'>
+                                <div className='w-[140px] max-w-[140px] h-[90px]'>
                                     <Image
                                         src="/other/info/citizenCard.png"
                                         alt="citizen_card"
                                         width={600}
                                         height={600}
-                                        className='w-full h-auto object-contain'
+                                        className='w-full h-full object-contain'
                                     />
                                 </div>
                                 <div className='w-full flex flex-col gap-1'>
@@ -541,13 +491,13 @@ const Information = ({
                                 </div>
                             </div>
                             <div className='flex flex-col gap-6 md:max-w-[45%] max-w-full'>
-                                <div className='w-[140px] max-w-[140px] h-auto'>
+                                <div className='w-[140px] max-w-[140px] h-[90px]'>
                                     <Image
                                         src="/other/info/passport.png"
                                         alt="passport"
                                         width={600}
                                         height={600}
-                                        className='w-full h-auto object-contain'
+                                        className='w-full h-full object-contain'
                                     />
                                 </div>
                                 <div className='w-full flex flex-col gap-1'>
@@ -579,9 +529,9 @@ const Information = ({
                                 side="bottom"
                                 align="center"
                                 label={(
-                                    <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
-                                        <span dangerouslySetInnerHTML={{ __html: `` }} />
-                                        {/* <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_collateral_policy ? isState?.dataDetailCar?.policy?.car_collateral_policy : ''}` }} /> */}
+                                    <div className='flex flex-col gap-1 max-w-[240px]'>
+                                        {/* <span dangerouslySetInnerHTML={{ __html: `` }} /> */}
+                                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_collateral_policy ? isStatePolicy?.dataPolicy?.car_collateral_policy : ''}` }} />
                                     </div>
                                 )}
                             >
@@ -592,8 +542,7 @@ const Information = ({
                     }
                 </div>
                 <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#585F71]'>
-                    {/* {isState?.dataDetailCar?.collateral_car?.note_mortgage ? isState?.dataDetailCar?.collateral_car?.note_mortgage : ""} */}
-                    15 triệu (tiền mặt hoặc chuyển khoản cho chủ xe khi nhận xe) hoặc xe máy (kèm cà vẹt gốc) giá trị 15 triệu
+                    {isStateInfoRentalCar?.detailRentalCar?.car?.note_mortgage ? isStateInfoRentalCar?.detailRentalCar?.car?.note_mortgage : ""}
                 </div>
             </div>
 
@@ -602,7 +551,7 @@ const Information = ({
                     Phụ phí có thể phát sinh
                 </div>
                 <div className='flex flex-col gap-4'>
-                    {
+                    {/* {
                         listSurcharge && listSurcharge?.map((item) => (
                             <div key={`id-${item.id}`} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
                                 <div className='w-[70%] max-w-[70%] flex flex-col gap-1'>
@@ -618,9 +567,9 @@ const Information = ({
                                 </div>
                             </div>
                         ))
-                    }
-                    {/* {
-                        isState?.dataDetailCar?.surcharge_car && isState?.dataDetailCar?.surcharge_car?.map((item) => (
+                    } */}
+                    {
+                        isStateInfoRentalCar?.detailRentalCar?.surcharge_car && isStateInfoRentalCar?.detailRentalCar?.surcharge_car?.map((item) => (
                             <div key={`id-${item.id}`} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
                                 <div className='w-[70%] max-w-[70%] flex flex-col gap-1'>
                                     <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-semibold'>
@@ -635,7 +584,7 @@ const Information = ({
                                 </div>
                             </div>
                         ))
-                    } */}
+                    }
 
                 </div>
             </div>
@@ -644,15 +593,14 @@ const Information = ({
                 <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                     Chính sách huỷ chuyến
                 </div>
+
                 <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#585F71]'>
-                    {/* {isState?.dataDetailCar?.cancel_trip?.title_cancel_trip ? isState?.dataDetailCar?.cancel_trip?.title_cancel_trip : ""} */}
-                    An tâm thuê xe, không lo bị hủy chuyến với chính sách hủy chuyến của KANOW
+                    {isStatePolicy?.dataPolicy?.cancel_trip?.title_cancel_trip ? isStatePolicy?.dataPolicy?.cancel_trip?.title_cancel_trip : ""}
                 </div>
 
-
                 {/* phần này xử lí khi có api */}
-                {/* {
-                    isState?.dataDetailCar?.cancel_trip?.policy_cancel_trip?.length > 0 ?
+                {
+                    isStatePolicy?.dataPolicy?.cancel_trip?.policy_cancel_trip && isStatePolicy?.dataPolicy?.cancel_trip?.policy_cancel_trip?.length > 0 ?
                         <div className='grid grid-rows-1'>
                             <div className='row-span-1 grid grid-cols-3'>
                                 <div className="col-span-1 p-5 border border-b-0 border-r-0 rounded-tl-xl">
@@ -673,8 +621,8 @@ const Information = ({
                             </div>
 
                             {
-                                isState?.dataDetailCar?.cancel_trip?.policy_cancel_trip && isState?.dataDetailCar?.cancel_trip?.policy_cancel_trip?.map((item, index) => (
-                                    <div key={`cancel-${item.id}`} className={`${isState?.dataDetailCar?.cancel_trip?.policy_cancel_trip.length - 1 == index ? "border-b" : ""} row-span-1 grid grid-cols-3`}>
+                                isStatePolicy?.dataPolicy?.cancel_trip?.policy_cancel_trip && isStatePolicy?.dataPolicy?.cancel_trip?.policy_cancel_trip?.map((item: any, index: number) => (
+                                    <div key={`cancel-${item.id}`} className={`${isStatePolicy?.dataPolicy?.cancel_trip?.policy_cancel_trip && isStatePolicy?.dataPolicy?.cancel_trip?.policy_cancel_trip.length - 1 == index ? "border-b" : ""} row-span-1 grid grid-cols-3`}>
                                         <div className="col-span-1 p-4 border border-b-0 border-r-0">
                                             <div className='3xl:text-base lg:text-sm md:text-base text-sm font-medium'>
                                                 {item?.name ? item?.name : ""}
@@ -699,15 +647,15 @@ const Information = ({
                 }
 
                 <div className='text-sm text-[#585F71] group-hover:text-[#585F71]/80 duration-500 transition ease-in-out'>
-                    <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.cancel_trip?.note_cancel_trip ? isState?.dataDetailCar?.cancel_trip?.note_cancel_trip : ''}` }} />
+                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.cancel_trip?.note_cancel_trip ? isStatePolicy?.dataPolicy?.cancel_trip?.note_cancel_trip : ''}` }} />
                 </div>
 
                 <div className="flex items-end gap-2">
                     <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#585F71] group-hover:text-[#585F71]/80 duration-500 transition ease-in-out'>
-                        <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.cancel_trip?.compensation_refund ? isState?.dataDetailCar?.cancel_trip?.compensation_refund : ''}` }} />
+                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund ? isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund : ''}` }} />
                     </div>
                     {
-                        isState?.dataDetailCar?.cancel_trip?.compensation_refund ?
+                        isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund ?
 
                             isVisibleTablet ?
                                 (
@@ -721,8 +669,8 @@ const Information = ({
                                         side="bottom"
                                         align="center"
                                         label={(
-                                            <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
-                                                <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.cancel_trip?.compensation_refund ? isState?.dataDetailCar?.cancel_trip?.compensation_refund : ''}` }} />
+                                            <div className='flex flex-col gap-1 max-w-[240px]'>
+                                                <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund ? isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund : ''}` }} />
                                             </div>
                                         )}
                                     >
@@ -734,7 +682,7 @@ const Information = ({
                             :
                             null
                     }
-                </div> */}
+                </div>
             </div>
         </div >
     )

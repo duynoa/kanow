@@ -328,8 +328,8 @@ const Header = () => {
                                                 }
                                                 {getCookie && informationUser &&
                                                     <Link
-                                                        href={'/search-car'}
-                                                        className={`${(pathname === '/search-car') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#9D9FA6]'} mb-6 text-base w-fit duration-300 transition ease-in-out flex items-center`}
+                                                        href={'list-car-autonomous'}
+                                                        className={`${(pathname === 'list-car-autonomous') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#9D9FA6]'} mb-6 text-base w-fit duration-300 transition ease-in-out flex items-center`}
                                                         onClick={_ToogleIsOff}
                                                         prefetch={false}
                                                     >
@@ -424,8 +424,8 @@ const Header = () => {
                                 {
                                     getCookie && informationUser &&
                                     <Link
-                                        href={'/search-car'}
-                                        className={`${(pathname.includes('/search-car')) ? ' text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : ' text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                        href={'/list-car-autonomous'}
+                                        className={`${(pathname.includes('/list-car-autonomous')) ? ' text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : ' text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
                                         prefetch={false}
                                     >
                                         Chuyến của tôi
