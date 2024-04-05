@@ -27,13 +27,13 @@ import { DialogCalendar } from '@/components/modals/DialogCalendar';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import Image from 'next/image';
-import { IInitialStateSearchCar } from '@/types/Cars/ICars';
 import { getListCars, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
 
 import { DialogFilterListCars } from '@/components/modals/DialogFilterListCars';
 import { CustomDataListCars } from '@/custom/CustomData';
 import { useCookie } from '@/hooks/useCookie';
 import SkeletonListCar from './components/SkeletonListCar';
+import { IInitialStateSearchCar } from '@/types/Initial/IInitial';
 
 type Props = {}
 

@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react'
 
 import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy'
-import { IInitialStateDetailCar } from '@/types/Cars/ICars'
 
 import { useCookie } from '@/hooks/useCookie'
 import {
@@ -17,9 +16,12 @@ import {
 import Information from './components/Information'
 import PriceList from './components/PriceList'
 import { getInfoDetailCarTransaction } from '@/services/cars/payment.services'
-import { IInitialStateInfoRentalCar } from '@/types/Cars/IInitial'
+import { IInitialStateInfoRentalCar } from '@/types/Initial/IInitial'
 import PaymentMethods from '../../payment-methods/[slug]/components/PaymentMethods'
 import { useResize } from '@/hooks/useResize'
+import { useDataInfoRentalCar, useDataPolicy } from '@/hooks/useDataQueryKey'
+import { CustomDataInfoRentalCar, CustomDataPolicy } from '@/custom/CustomData'
+import { getDataPolicy } from '@/services/cars/policy.services'
 
 type Props = {
     params: {
@@ -29,6 +31,8 @@ type Props = {
 
 const InfoRentalCar = ({ params }: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
+    const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
+    const { queryKeyIsStatePolicy } = useDataPolicy()
     const { isVisibleMobile } = useResize()
 
     const dataStep = [
@@ -70,9 +74,7 @@ const InfoRentalCar = ({ params }: Props) => {
     ]
 
     const initialState: IInitialStateInfoRentalCar = {
-        detailRentalCar: {
-            status: undefined,
-        }
+        detailRentalCar: undefined,
     };
 
     const [isState, setIsState] = useState<any>(initialState)
@@ -82,28 +84,34 @@ const InfoRentalCar = ({ params }: Props) => {
         setIsMounted(true)
     }, [])
 
-
     useEffect(() => {
         const fetchStepTransaction = async () => {
             const { data } = await getInfoDetailCarTransaction(params?.slug);
             console.log('data :', data);
 
             if (data && data.data && data.base) {
-                queryKeyIsState({
-                    detailRentalCar: {
-                        ...isState.detailRentalCar,
-                        status: {
-                            statusCustom: data.data.status.status > 4 ? 4 : data.data.status.status,
-                            status: data.data.status.status,
-                            color: data.data.status.color,
-                            name: data.data.status.name,
-                        }
-                    }
+                let { customDataInfoRentalCar } = CustomDataInfoRentalCar(data)
+
+                queryKeyIsStateInfoRentalCar({
+                    detailRentalCar: customDataInfoRentalCar
+                })
+            }
+        }
+        const fetchDataPolicy = async () => {
+            const { data } = await getDataPolicy();
+            console.log('data policy :', data);
+
+            if (data) {
+                let { customDataPolicy } = CustomDataPolicy(data)
+
+                queryKeyIsStatePolicy({
+                    dataPolicy: customDataPolicy
                 })
             }
         }
 
         fetchStepTransaction()
+        fetchDataPolicy()
     }, [])
 
     // Hàm để đếm số cụm từ trong một chuỗi (dùng để chỉnh vị trí chữ trong step nhìn cho tương đối)
@@ -141,9 +149,9 @@ const InfoRentalCar = ({ params }: Props) => {
                                 <div key={step.id} className='flex flex-col gap-3 relative'>
                                     <div className='flex items-center'>
                                         <div className={`
-                                        ${index < isState?.detailRentalCar?.status?.statusCustom && "bg-[#C2F9F9] text-[#3E424E]"}
-                                         ${step.status === isState?.detailRentalCar?.status?.statusCustom && "bg-[#2FB9BD] text-white"} 
-                                         ${step.status > isState?.detailRentalCar?.status?.statusCustom && "bg-[#F6F6F8] text-[#3E424E]"} 
+                                        ${isStateInfoRentalCar?.detailRentalCar && index < isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "bg-[#C2F9F9] text-[#3E424E]"}
+                                         ${isStateInfoRentalCar?.detailRentalCar && step.status === isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "bg-[#2FB9BD] text-white"} 
+                                         ${isStateInfoRentalCar?.detailRentalCar && step.status > isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "bg-[#F6F6F8] text-[#3E424E]"} 
                                         flex justify-center items-center p-4 rounded-full`}
                                         >
                                             {step.icon ? step.icon : ""}
@@ -171,38 +179,12 @@ const InfoRentalCar = ({ params }: Props) => {
                 </div>
             </div>
             {
-                isState?.detailRentalCar?.status &&
+                isStateInfoRentalCar?.detailRentalCar?.status &&
                 <div className='custom-container 3xl:mt-8 mt-4 flex lg:flex-row flex-col gap-6'>
-                    <Information
-                        isState={isState}
-                        queryKeyIsState={queryKeyIsState}
-                        params={params}
-                    />
-
-                    <PriceList
-                        isState={isState}
-                        queryKeyIsState={queryKeyIsState}
-                        params={params}
-                    />
+                    <Information params={params} />
+                    <PriceList params={params} />
                 </div>
             }
-
-            {/* thanh toán cọc */}
-            {/* {
-                isState?.detailRentalCar?.status && isState?.detailRentalCar?.status?.status === 2 &&
-                <div className='bg-[#F6F6F8]'>
-                    <PaymentMethods
-                        isState={isState}
-                        queryKeyIsState={queryKeyIsState}
-                        listPaymentMethods={listPaymentMethods}
-                    />
-                </div>
-            } */}
-
-            <DialogAnswerPolicy
-                isState={isState}
-                queryKeyIsState={queryKeyIsState}
-            />
         </>
     )
 }

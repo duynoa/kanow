@@ -1,6 +1,4 @@
-import { IInfoPromotion } from "./IPromotions";
-import { IReportCar } from "./IReportCar";
-
+// data card car
 interface IDataCardCar {
     car_owner: {
         avatar: string;
@@ -42,12 +40,15 @@ interface IDataCardCar {
     }[];
 }
 
+// filter type(loại) car
 interface ITypesCar {
     id: number;
     image: string;
     name: string;
     total_car: number;
 }
+
+// filter automaker(hãng) car
 interface IAutomaker {
     id: number;
     image: string;
@@ -55,35 +56,7 @@ interface IAutomaker {
     total_car: number;
 }
 
-interface IInitialStateSearchCar {
-    listCardCars: IDataCardCar[];
-    page: number;
-    isLoadingScroll: boolean;
-    next: any;
-    filter: {
-        listTypesCar: ITypesCar[];
-        listAutomaker: IAutomaker[];
-    };
-    dataParams: {
-        company_car_search: string;
-        type_car_search: number[];
-        tram_search: number;
-        discount_search: number;
-        transmission_search: string;
-        book_car_flash: number;
-        delivery_car: number;
-        mortgage: number;
-        star_search: number;
-    };
-    onSuccess: {
-        onSuccessPage: boolean;
-    };
-    limit: {
-        limitFilterCars: number;
-        limitAllCars: number;
-    };
-}
-
+// detail car
 interface IDataDetailCar {
     id: string;
     address: string;
@@ -176,47 +149,78 @@ interface IDataDetailCar {
             surcharge_car_id: number;
         };
     }[];
-    cancel_trip: {
-        title_cancel_trip: string;
-        compensation_refund: string;
-        note_cancel_trip: string;
-        policy_cancel_trip: {
-            id: number;
-            guest_cancel: string;
-            name: string;
-            owen_cancel: string;
-        }[];
-    };
-    policy: {
-        car_rental_policy: string;
-        car_collateral_policy: string;
-        car_insurance_policy: string;
-        car_price_policy: string;
-    };
 }
 
-interface IInitialStateDetailCar {
-    dataDetailCar: IDataDetailCar;
-    infoPromotion: {
-        selectPromotion: string,
-        activePromotion: IInfoPromotion | null,
+// detail rental car
+interface IDetailRentalCar {
+    base: string,
+    id: number,
+    car: {
+        id: number,
+        image: string,
+        name: string,
+        number_car: string,
+        reference_no: string,
+        note_mortgage: string,
     },
-    listCarsRelated: IDataCardCar[],
-    reportCar: {
-        listReportCar: IReportCar[],
-        selectReportCar: string,
-        contentReportCar: string,
-    }
-    onSuccess: {
-        onSuccessPage: boolean;
-    };
+    date_time: {
+        date: string,
+        date_start: string,
+        date_end: string,
+    },
+    customer: {
+        id: number,
+        fullname: string,
+        avatar: string,
+        total_star: number | null,
+        total_trip: number,
+        phone: string,
+    },
+    address: {
+        district: string,
+        province: string,
+        full_address: string
+    },
+    surcharge_car: {
+        id: number;
+        name: string;
+        note: string;
+        value: string;
+        created_at: string;
+        updated_at: string;
+        pivot: {
+            car_id: number;
+            surcharge_car_id: number;
+        };
+    }[],
+    status: {
+        statusCustom: number,
+        status: number,
+        color: string,
+        name: string,
+    },
+    price: {
+        // tiền gốc 
+        rent_cost_day: number,
+        // tiền bảo hiểm
+        price_insurance_day: number,
+        // tổng tạm tính
+        temp_total_amount: number,
+        // tiền đặt cọc
+        price_depoist: number,
+        // thành tiền
+        total_amount: number,
+        // số ngày
+        number_day: number,
+        // thành tiền
+        cash_on_delivery: number
+    },
 }
 
 export type {
     IDataCardCar,
     ITypesCar,
     IAutomaker,
-    IInitialStateSearchCar,
     IDataDetailCar,
-    IInitialStateDetailCar,
+    IDetailRentalCar
 };

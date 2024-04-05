@@ -27,14 +27,16 @@ import { DialogCalendar } from '@/components/modals/DialogCalendar'
 import PaymentCar from './components/PaymentCar'
 import InformationCar from './components/InformationCar';
 import { getDataDetailCar, getListCarsRelated, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services'
-import { CustomDataDetailCar, CustomDataListCars } from '@/custom/CustomData'
+import { CustomDataDetailCar, CustomDataListCars, CustomDataPolicy } from '@/custom/CustomData'
 import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy'
-import { IInitialStateDetailCar } from '@/types/Cars/ICars'
 import { getListPromotions } from '@/services/cars/promotion.services'
 import { useDialogLogin, useDialogPromotion, useDialogReportCar } from '@/hooks/useOpenDialog'
 import { useCookie } from '@/hooks/useCookie'
 import { DialogReportCar } from '@/components/modals/DialogReportCar'
 import { getListReportCar } from '@/services/cars/report.services'
+import { IInitialStateDetailCar } from '@/types/Initial/IInitial'
+import { getDataPolicy } from '@/services/cars/policy.services'
+import { useDataPolicy } from '@/hooks/useDataQueryKey'
 
 type Props = {
     params: {
@@ -43,12 +45,14 @@ type Props = {
 }
 
 const DetailCar = ({ params }: Props) => {
-    const { setOpenDialogLogin, setStatusModal } = useDialogLogin()
-    const { dataPromotions, setDataPromotions } = useDialogPromotion()
-    const { dataListReportCar, setDataListReportCar } = useDialogReportCar()
     const { getCookie } = useCookie()
+    const { setOpenDialogLogin } = useDialogLogin()
+    const { dataListReportCar } = useDialogReportCar()
     const { isVisibleMobile, isVisibleTablet } = useResize()
+    const { dataPromotions, setDataPromotions } = useDialogPromotion()
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
+    const { queryKeyIsStatePolicy } = useDataPolicy()
+
     const [isMounted, setIsMounted] = useState<boolean>(false)
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
     const [showSecondHeader, setShowSecondHeader] = useState(false);
@@ -104,18 +108,6 @@ const DetailCar = ({ params }: Props) => {
                 note_mortgage: "",
             },
             surcharge_car: [],
-            cancel_trip: {
-                title_cancel_trip: "",
-                compensation_refund: "",
-                note_cancel_trip: "",
-                policy_cancel_trip: [],
-            },
-            policy: {
-                car_rental_policy: "",
-                car_collateral_policy: "",
-                car_insurance_policy: "",
-                car_price_policy: "",
-            },
         },
         infoPromotion: {
             selectPromotion: "0",
@@ -129,7 +121,7 @@ const DetailCar = ({ params }: Props) => {
         },
         onSuccess: {
             onSuccessPage: false
-        }
+        },
     };
 
     const [isState, setIsState] = useState<IInitialStateDetailCar>(initialState)
@@ -152,7 +144,6 @@ const DetailCar = ({ params }: Props) => {
                 let { customDataDetailCar } = CustomDataDetailCar(data)
 
                 queryKeyIsState({
-                    ...isState,
                     dataDetailCar: customDataDetailCar,
                     onSuccess: {
                         onSuccessPage: false
@@ -183,126 +174,62 @@ const DetailCar = ({ params }: Props) => {
             throw err
         }
     }
-    const fetchListPromotions = async () => {
-        if (dataPromotions.length === 0) {
-            try {
-                const dataSearch = {
-                    code: ""
-                }
-                const { data } = await getListPromotions(dataSearch)
-                if (data && data.data) {
-                    setDataPromotions(data?.data)
-                }
-            } catch (err) {
-                throw err
-            }
-        }
-    }
-    const fetchListReportCar = async () => {
-        if (dataListReportCar.length === 0) {
-            try {
-                const { data } = await getListReportCar();
-                console.log('data', data);
-                if (data && data.data) {
-                    queryKeyIsState({
-                        reportCar: {
-                            ...isState?.reportCar,
-                            listReportCar: data.data
-                        }
-                    })
-                }
-
-            } catch (err) {
-                throw err
-            }
-        }
-    }
 
     useEffect(() => {
+        const fetchListPromotions = async () => {
+            if (dataPromotions.length === 0) {
+                try {
+                    const dataSearch = {
+                        code: ""
+                    }
+                    const { data } = await getListPromotions(dataSearch)
+                    if (data && data.data) {
+                        setDataPromotions(data?.data)
+                    }
+                } catch (err) {
+                    throw err
+                }
+            }
+        }
+
+        const fetchListReportCar = async () => {
+            if (dataListReportCar.length === 0) {
+                try {
+                    const { data } = await getListReportCar();
+
+                    if (data && data.data) {
+                        queryKeyIsState({
+                            reportCar: {
+                                ...isState?.reportCar,
+                                listReportCar: data.data
+                            }
+                        })
+                    }
+
+                } catch (err) {
+                    throw err
+                }
+            }
+        }
+
+        const fetchDataPolicy = async () => {
+            const { data } = await getDataPolicy();
+            console.log('data policy :', data);
+
+            if (data) {
+                let { customDataPolicy } = CustomDataPolicy(data)
+                queryKeyIsStatePolicy({
+                    dataPolicy: customDataPolicy
+                })
+            }
+        }
+
+        fetchDataPolicy()
         fetchDataDetailCar()
         fetchDataListCarsRelated()
         fetchListPromotions()
         fetchListReportCar()
     }, [params.slug, getCookie])
-
-    const dataListCardCars = [
-        {
-            id: uuidv4(),
-            image: '/card/card_car1.png',
-            favorite: false,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            avatar: "/avatar/avatar1.png",
-            title: "Mitsubishi xpander 2023",
-            address: 'Quận Phú Nhuận, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 392000,
-            priceAfterPromotion: 292000,
-            point: 4.9,
-            quantityTrips: 19
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            avatar: "/avatar/avatar2.png",
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            avatar: "/avatar/avatar3.png",
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            avatar: "/avatar/avatar4.png",
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-    ]
 
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {
         e.stopPropagation()
@@ -403,10 +330,7 @@ const DetailCar = ({ params }: Props) => {
         setDataImage(isState?.dataDetailCar?.image_car)
     }
 
-    const handleOpenChangeModal = () => {
-        setOpenDialogLogin(false)
-        setStatusModal("login")
-    }
+    console.log('check isState', isState);
 
     if (!isMounted) {
         return null
@@ -897,10 +821,6 @@ const DetailCar = ({ params }: Props) => {
                 </div>
             </div>
             <DialogPromotion
-                isState={isState}
-                queryKeyIsState={queryKeyIsState}
-            />
-            <DialogAnswerPolicy
                 isState={isState}
                 queryKeyIsState={queryKeyIsState}
             />

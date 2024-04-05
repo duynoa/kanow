@@ -12,15 +12,14 @@ import {
 import { X } from "lucide-react"
 
 import { useDialogAnswerPolicy } from "@/hooks/useOpenDialog";
+import { IInitialStateDetailCar } from "@/types/Initial/IInitial";
+import { useDataPolicy } from "@/hooks/useDataQueryKey";
 
-import { IInitialStateDetailCar } from "@/types/Cars/ICars";
-type Props = {
-    isState: IInitialStateDetailCar,
-    queryKeyIsState: (key: any) => void
-}
+type Props = {}
 
-export function DialogAnswerPolicy({ isState, queryKeyIsState }: Props) {
+export function DialogAnswerPolicy({ }: Props) {
     const { openDialogAnswerPolicy, setOpenDialogAnswerPolicy, type } = useDialogAnswerPolicy()
+    const { isStatePolicy } = useDataPolicy()
 
     const handleOpenChangeModal = () => {
         setOpenDialogAnswerPolicy(!openDialogAnswerPolicy)
@@ -55,23 +54,23 @@ export function DialogAnswerPolicy({ isState, queryKeyIsState }: Props) {
                 <div className='flex flex-col gap-2 p-4'>
                     {
                         type === "car_rental_policy" &&
-                        <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_rental_policy ? isState?.dataDetailCar?.policy?.car_rental_policy : ''}` }} />
+                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_rental_policy ? isStatePolicy?.dataPolicy?.car_rental_policy : ''}` }} />
                     }
                     {
                         type === "car_collateral_policy" &&
-                        <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_collateral_policy ? isState?.dataDetailCar?.policy?.car_collateral_policy : ''}` }} />
+                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_collateral_policy ? isStatePolicy?.dataPolicy?.car_collateral_policy : ''}` }} />
                     }
                     {
                         type === "car_price_policy" &&
-                        <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_price_policy ? isState?.dataDetailCar?.policy?.car_price_policy : ''}` }} />
+                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_price_policy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} />
                     }
                     {
                         type === "car_insurance_policy" &&
-                        <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_insurance_policy ? isState?.dataDetailCar?.policy?.car_insurance_policy : ''}` }} />
+                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_insurance_policy ? isStatePolicy?.dataPolicy?.car_insurance_policy : ''}` }} />
                     }
                     {
                         type === "cancellation_policy" &&
-                        <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.cancel_trip?.compensation_refund ? isState?.dataDetailCar?.cancel_trip?.compensation_refund : ''}` }} />
+                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund ? isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund : ''}` }} />
                     }
                 </div>
             </DialogContent>

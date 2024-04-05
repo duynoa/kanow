@@ -1,28 +1,36 @@
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { cn } from '@/lib/utils'
 import { vi } from 'date-fns/locale'
 import { format } from 'date-fns'
-import { v4 as uuidv4 } from 'uuid'
 
 import { TiArrowSortedUp } from 'react-icons/ti'
 import { PiShieldCheckFill } from "react-icons/pi";
 import { FaCalendarAlt, FaRegQuestionCircle } from 'react-icons/fa'
 
-import { useDialogAnswerPolicy, useDialogCalendar, useDialogLogin, useDialogPromotion, useDialogReportCar, useDialogRequestCarRental, useDialogValidate } from '@/hooks/useOpenDialog'
+import {
+    useDialogAnswerPolicy,
+    useDialogCalendar,
+    useDialogLogin,
+    useDialogPromotion,
+    useDialogReportCar,
+    useDialogRequestCarRental,
+    useDialogValidate
+} from '@/hooks/useOpenDialog'
 
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { FormatNumberDot, FormatNumberToThousands } from '@/components/format/FormatNumber'
-import { IInitialStateDetailCar } from '@/types/Cars/ICars'
 import { ActionTooltip } from '@/components/tooltip/ActionTooltip'
 import { useResize } from '@/hooks/useResize'
-import { getListPromotions } from '@/services/cars/promotion.services'
+
 import { FaDeleteLeft } from 'react-icons/fa6'
 import { useCookie } from '@/hooks/useCookie'
+import { IInitialStateDetailCar } from '@/types/Initial/IInitial'
+import { useDataPolicy } from '@/hooks/useDataQueryKey'
 
 type Props = {
     isState: IInitialStateDetailCar,
@@ -38,8 +46,8 @@ const PaymentCar = ({
     const { setOpenDialogReportCar } = useDialogReportCar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { setOpenDialogLogin } = useDialogLogin()
-    const { setOpenDialogValidate } = useDialogValidate()
-    const { openDialogRequestCarRental, dataListRequestCarRental, setDataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
+    const { isStatePolicy } = useDataPolicy()
+    const { setDataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
 
     const { getCookie } = useCookie()
     const { isVisibleTablet } = useResize()
@@ -106,11 +114,12 @@ const PaymentCar = ({
         if (getCookie !== "kanow" && getCookie !== undefined) {
             setDataListRequestCarRental(isState)
             setOpenDialogRequestCarRental(true)
-            // setOpenDialogValidate(true)
         } else {
             setOpenDialogLogin(true)
         }
     }
+
+    console.log('isState cxcxc  : ', isState);
 
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
@@ -261,7 +270,7 @@ const PaymentCar = ({
                                             align="center"
                                             label={(
                                                 <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                    <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_price_policy ? isState?.dataDetailCar?.policy?.car_price_policy : ''}` }} />
+                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} />
                                                 </div>
                                             )}
                                         >
@@ -293,7 +302,7 @@ const PaymentCar = ({
                                             align="center"
                                             label={(
                                                 <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                    <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.policy?.car_insurance_policy ? isState?.dataDetailCar?.policy?.car_insurance_policy : ''}` }} />
+                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_insurance_policy ? isStatePolicy?.dataPolicy?.car_insurance_policy : ''}` }} />
                                                 </div>
                                             )}
                                         >
