@@ -463,7 +463,7 @@ export function DialogRequestCarRental({ }: Props) {
                                         </div>
                                     </div>
 
-                                    <div className='border border-[#B4B8C5]/80 w-full' />
+                                    <div className='border border-x-0 border-b-0 w-full' />
 
                                     {/* Thành tiền */}
                                     <div className='flex flex-col gap-2'>
