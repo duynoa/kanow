@@ -2,7 +2,7 @@ import moment from "moment"
 import Image from "next/image"
 import StarRatings from "react-star-ratings"
 import { FormatNumberToDecimal } from "@/components/format/FormatNumber"
-import { StatePageAccount } from "../page"
+import { StatePageAccount } from "@/types/Profile/IAccount"
 
 type Props = {
     isState: StatePageAccount
