@@ -8,7 +8,9 @@ export async function middleware(request: NextRequest) {
     if (
         pathname.startsWith("/account") ||
         pathname.startsWith("/list-car-favorite") ||
-        pathname.startsWith("/info-rental-car")
+        pathname.startsWith("/info-rental-car") ||
+        pathname.startsWith("/change-password") ||
+        pathname.startsWith("/list-address")
     ) {
         if (!token || token?.value == "kanow") {
             return NextResponse.redirect(process.env.NEXT_PUBLIC_URL_WEBSITE as string);
@@ -19,6 +21,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/account", "/list-car-favorite", "/info-rental-car/:path*"],
+    matcher: ["/account", "/list-car-favorite", "/info-rental-car/:path*", "change-password", "list-address"],
     // matcher: ["/bar/:path*", "/checkout/:path*", "/order/:path*"],
 };

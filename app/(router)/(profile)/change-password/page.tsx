@@ -1,21 +1,18 @@
 'use client'
 import React, { useState } from "react"
-import { useForm } from 'react-hook-form'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import useAuthenticationAPI from "@/services/auth/auth.services";
-import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
 import { toastCore } from "@/lib/toast";
+import { useForm } from 'react-hook-form'
+import { Input } from "@/components/ui/input";
 import { useCookie } from "@/hooks/useCookie";
+import { Button } from "@/components/ui/button";
+import BackgroundUiProfile from "@/themes/profile/BackgroundUiProfile";
+import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
+import useAuthenticationAPI from "@/services/auth/auth.services";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { InitialSate } from "@/types/Profile/IChangePassword";
 
 type Props = {}
 
-interface InitialSate {
-    showOldPassword: boolean
-    showNewPassword: boolean
-    showConfirmPassword: boolean
-}
 
 const ChangePassWord = (props: Props) => {
 
@@ -78,7 +75,7 @@ const ChangePassWord = (props: Props) => {
 
 
     return (
-        <div className="flex flex-col gap-4 md:p-8 p-6 rounded-2xl bg-white">
+        <BackgroundUiProfile className="flex flex-col gap-4 ">
             <div className='flex flex-col gap-2'>
                 <div className='flex items-center md:gap-4 gap-2'>
                     <h1 className='text-[#3E424E] lg:text-2xl text-xl font-semibold '>Đổi mật khẩu</h1>
@@ -228,7 +225,7 @@ const ChangePassWord = (props: Props) => {
                     </div>
                 </div>
             </Form>
-        </div>
+        </BackgroundUiProfile>
     )
 }
 export default ChangePassWord

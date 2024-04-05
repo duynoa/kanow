@@ -9,30 +9,15 @@ import { toastCore } from '@/lib/toast'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from "@/components/ui/button"
 import FormPapers from './components/FormPapers'
+import BackgroundUiProfile from '@/themes/profile/BackgroundUiProfile'
 import FormInformation from './components/FormInfomation'
 import apiAccount from '@/services/account/account.services'
 import SessionStarRating from './components/SessionStarRating'
 import useAuthenticationAPI from '@/services/auth/auth.services'
+import { StatePageAccount } from '@/types/Profile/IAccount'
 type Props = {}
 
-type Rating = {
-    id: any,
-    avatar: string,
-    name: string,
-    date: any,
-    content: string,
-    star: number
 
-}
-export interface StatePageAccount {
-    editInfo: boolean
-    editPapers: boolean,
-    dataStarRatings: Rating[],
-    totalStar: number,
-    totalReview: number,
-    page: number,
-    limit: number
-}
 const Account = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
 
@@ -221,38 +206,36 @@ const Account = (props: Props) => {
     return (
         <div className="flex flex-col gap-8">
             {/* helo */}
-            <div className="rounded-2xl bg-white">
-                <div className="md:p-8 p-6">
-                    <div className="flex md:flex-row flex-col justify-between">
-                        <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Thông tin tài khoản</h1>
-                        <div className='flex items-center gap-5 md:my-0 my-5'>
-                            <Button onClick={() => {
-                                if (isState.editInfo) {
-                                    form.handleSubmit((values) => onSubmit(values, 'editInfo'))()
-                                } else {
-                                    handleClickButtonEdit('editInfo')
-                                }
+            <BackgroundUiProfile>
+                <div className="flex md:flex-row flex-col justify-between">
+                    <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Thông tin tài khoản</h1>
+                    <div className='flex items-center gap-5 md:my-0 my-5'>
+                        <Button onClick={() => {
+                            if (isState.editInfo) {
+                                form.handleSubmit((values) => onSubmit(values, 'editInfo'))()
+                            } else {
+                                handleClickButtonEdit('editInfo')
                             }
-                            }
-                                className={`${isState.editInfo ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full text-sm lg:px-8
+                        }
+                        }
+                            className={`${isState.editInfo ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full text-sm lg:px-8
                                  px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
-                                {isState.editInfo ? 'Cập nhật' : "Chỉnh sửa"}
-                            </Button>
-                            {isState.editInfo &&
-                                <Button
-                                    type='button'
-                                    onClick={() => handleClickButtonEdit('editInfo')} className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full 
+                            {isState.editInfo ? 'Cập nhật' : "Chỉnh sửa"}
+                        </Button>
+                        {isState.editInfo &&
+                            <Button
+                                type='button'
+                                onClick={() => handleClickButtonEdit('editInfo')} className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full 
                                     text-sm lg:px-8 px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
-                                    Hủy
-                                </Button>
-                            }
-                        </div>
+                                Hủy
+                            </Button>
+                        }
                     </div>
-                    <FormInformation form={form} isState={isState} />
                 </div>
-            </div>
-            <div className="rounded-2xl bg-white">
-                <div className="md:p-8 p-6 flex flex-col md:gap-6">
+                <FormInformation form={form} isState={isState} />
+            </BackgroundUiProfile>
+            <BackgroundUiProfile>
+                <div className=" flex flex-col md:gap-6">
                     <div className="flex md:flex-row flex-col md:gap-0 gap-2 justify-between">
                         <div className='flex flex-col gap-3'>
                             <div className='flex items-center md:gap-4 gap-2'>
@@ -293,14 +276,14 @@ const Account = (props: Props) => {
                     </div>
                     <FormPapers form={form} isState={isState} />
                 </div>
-            </div>
-            <div className="rounded-2xl bg-white">
-                <div className="md:p-8 p-6 flex flex-col gap-8">
+            </BackgroundUiProfile>
+            <BackgroundUiProfile>
+                <div className=" flex flex-col gap-8">
                     <h1 className='text-[#3E424E] lg:text-2xl text-xl font-semibold '>Danh sách xe</h1>
                     <Image src={'/card/no_car.png'} alt="logo" width={1280} height={1024} className='w-full h-full object-cover'></Image>
                 </div>
-            </div>
-            <div className="rounded-2xl bg-white">
+            </BackgroundUiProfile>
+            <BackgroundUiProfile>
                 <SessionStarRating isState={isState} />
                 {informationUser?.review?.next_page_url &&
                     <div className="flex justify-center items-center my-4">
@@ -312,7 +295,7 @@ const Account = (props: Props) => {
                         </Button>
                     </div>
                 }
-            </div>
+            </BackgroundUiProfile>
         </div >
     )
 }

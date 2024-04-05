@@ -1,40 +1,28 @@
 "use client"
-import { uuidv4 } from '@/lib/uuid'
-import React, { useEffect, useRef, useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { FaStar } from 'react-icons/fa'
-import { FaCircleCheck } from 'react-icons/fa6'
-import { FormatNumberHundred, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
-import { TiHeartFullOutline, TiLocation } from 'react-icons/ti'
-import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
-import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Image from 'next/image'
-import apiListCarFavorite from '@/services/listCarFavorite/listCarFavorite.services'
+import { FaStar } from 'react-icons/fa'
+import { Badge } from '@/components/ui/badge'
+import { useResize } from '@/hooks/useResize'
+import { FaCircleCheck } from 'react-icons/fa6'
+import { Button } from '@/components/ui/button'
 import { CustomDataListCars } from '@/custom/CustomData'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useResize } from '@/hooks/useResize'
-import { Skeleton } from '@/components/ui/skeleton'
-import { is } from 'date-fns/locale'
+import React, { useEffect, useRef, useState } from 'react'
+import { TiHeartFullOutline, TiLocation } from 'react-icons/ti'
+import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
 import SkeletonCarFavorite from './components/SkeletonCarFavorite'
+import BackgroundUiProfile from '@/themes/profile/BackgroundUiProfile'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import apiListCarFavorite from '@/services/listCarFavorite/listCarFavorite.services'
+import { FormatNumberHundred, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
+import { IListCarFavorite } from '@/types/Profile/IListCarFavorite'
 
 type Props = {}
 
-export interface ListCarFavorite {
-    dataDrivingCar: any[]
-    talentedCar: any[],
-    page: number,
-    next: any,
-    limit: number
-    favourite: string,
-    isLoadingScroll: boolean,
-    totalDrivingCar: number,
-    isLoadingCar: boolean
-}
 const ListCarFavorite = (props: Props) => {
-    const initialData: ListCarFavorite = {
+    const initialData: IListCarFavorite = {
         isLoadingCar: false,
         dataDrivingCar: [],
         talentedCar: [],
@@ -58,7 +46,7 @@ const ListCarFavorite = (props: Props) => {
 
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
-    const [isState, sIsState] = useState<ListCarFavorite>(initialData)
+    const [isState, sIsState] = useState<IListCarFavorite>(initialData)
 
     const { apiListCar, apiUpdateFavoriteHeartCar } = apiListCarFavorite()
 
@@ -209,7 +197,7 @@ const ListCarFavorite = (props: Props) => {
 
 
     return (
-        <div className='space-y-4 lg:p-8 lg:pr-2 pr-3 p-6  rounded-2xl bg-white'>
+        <BackgroundUiProfile className='space-y-4 lg:pr-2 pr-3'>
             <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Xe yêu thích của tôi</h1>
             <Tabs defaultValue="1" onValueChange={value => queryState({ favourite: value, page: 1 })} className="w-full">
                 <TabsList className='bg-transparent border-b border-b-[#F6F6F8] rounded-none w-full justify-start gap-8 p-0'>
@@ -431,7 +419,7 @@ const ListCarFavorite = (props: Props) => {
                     </ScrollArea>
                 </TabsContent>
             </Tabs>
-        </div >
+        </BackgroundUiProfile >
     )
 }
 

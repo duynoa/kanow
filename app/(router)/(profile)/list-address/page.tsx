@@ -9,22 +9,13 @@ import FormCreatAddress from "./components/FormCreatAddress"
 import apiAddress from "@/services/listAddress/listAddress.services"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useAlert } from "@/hooks/useAlertDialog"
+import BackgroundUiProfile from "@/themes/profile/BackgroundUiProfile"
+import { IListAddress } from "@/types/Profile/IListAddress"
 
 type Props = {}
-interface IInitialState {
-    idAddress: string,
-    tabAddress: string,
-    openCity: boolean,
-    openDistrict: boolean,
-    openWards: boolean,
-    dataCity: any[],
-    dataDistrict: any[],
-    dataWards: any[],
-    listAddress: any[],
-    isLoadingAddress: boolean
-}
+
 const ListAddress = (props: Props) => {
-    const initialSatate: IInitialState = {
+    const initialSatate: IListAddress = {
         idAddress: "0",
         tabAddress: 'list',
         openCity: false,
@@ -51,7 +42,7 @@ const ListAddress = (props: Props) => {
 
     const valuesForm = form.getValues()
 
-    const [isState, setIsState] = useState<IInitialState>(initialSatate)
+    const [isState, setIsState] = useState<IListAddress>(initialSatate)
 
     const { setOpenAlert, onFinally } = useAlert()
 
@@ -68,20 +59,6 @@ const ListAddress = (props: Props) => {
             throw error
         } finally {
             queryKeyIsState({ isLoadingAddress: false })
-        }
-    }
-
-    const deleteAddress = async (id: any) => {
-        try {
-            const { data } = await apiDeleteAddress(id)
-            if (data?.result) {
-                toastCore.success(data?.message)
-                queryKeyIsState({ idAddress: '0', tabAddress: 'list' })
-            } else {
-                toastCore.error(data?.message)
-            }
-        } catch (error) {
-            throw error
         }
     }
 
@@ -224,61 +201,64 @@ const ListAddress = (props: Props) => {
     }
 
     return (
-        <Tabs value={isState.tabAddress} onValueChange={(e) => {
-            queryKeyIsState({ tabAddress: e, idAddress: '0' })
-            form.reset()
-        }} className="flex flex-col gap-4 md:p-8 p-6 rounded-2xl bg-white">
-            <div className="flex md:flex-row flex-col md:gap-0 gap-2 justify-between">
-                <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>{isState.tabAddress === 'list' ? 'Địa chỉ của tôi' : isState.idAddress === '0' ? 'Thêm địa chỉ' : 'Thay đổi địa chỉ'}</h1>
-                <TabsList className="bg-transparent" asChild>
-                    <div className={`${isState.idAddress != '0' ? 'flex gap-4 items-center' : ""}`}>
-                        {isState.idAddress != '0' &&
-                            <Button
-                                type="button"
-                                onClick={() => setOpenAlert(true, 'deleteAddres', isState.idAddress)}
-                                className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80" hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
+
+        <BackgroundUiProfile>
+            <Tabs value={isState.tabAddress} onValueChange={(e) => {
+                queryKeyIsState({ tabAddress: e, idAddress: '0' })
+                form.reset()
+            }} className="flex flex-col gap-4 ">
+                <div className="flex md:flex-row flex-col md:gap-0 gap-2 justify-between">
+                    <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>{isState.tabAddress === 'list' ? 'Địa chỉ của tôi' : isState.idAddress === '0' ? 'Thêm địa chỉ' : 'Thay đổi địa chỉ'}</h1>
+                    <TabsList className="bg-transparent" asChild>
+                        <div className={`${isState.idAddress != '0' ? 'flex gap-4 items-center' : ""}`}>
+                            {isState.idAddress != '0' &&
+                                <Button
+                                    type="button"
+                                    onClick={() => setOpenAlert(true, 'deleteAddres', isState.idAddress)}
+                                    className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80" hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
                                         px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}
-                            >
-                                Xóa địa chỉ
-                            </Button>
-                        }
-                        {isState.tabAddress === 'list' &&
-                            <TabsTrigger asChild value="add">
-                                <Button
-                                    className={`data-[state=active]:bg-[#2FB9BD]/80 bg-[#2FB9BD]/80 data-[state=active]:text-white hover:bg-[#2FB9BD]/80 text-white border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
+                                >
+                                    Xóa địa chỉ
+                                </Button>
+                            }
+                            {isState.tabAddress === 'list' &&
+                                <TabsTrigger asChild value="add">
+                                    <Button
+                                        className={`data-[state=active]:bg-[#2FB9BD]/80 bg-[#2FB9BD]/80 data-[state=active]:text-white hover:bg-[#2FB9BD]/80 text-white border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
                                 px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
-                                    Thêm địa chỉ
-                                </Button>
-                            </TabsTrigger>
-                        }
-                        {
-                            isState.tabAddress === 'add' &&
-                            <TabsTrigger asChild value="list">
-                                <Button
-                                    className={`data-[state=active]:bg-[#2FB9BD]/80 bg-[#2FB9BD]/80 data-[state=active]:text-white hover:bg-[#2FB9BD]/80 text-white border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
+                                        Thêm địa chỉ
+                                    </Button>
+                                </TabsTrigger>
+                            }
+                            {
+                                isState.tabAddress === 'add' &&
+                                <TabsTrigger asChild value="list">
+                                    <Button
+                                        className={`data-[state=active]:bg-[#2FB9BD]/80 bg-[#2FB9BD]/80 data-[state=active]:text-white hover:bg-[#2FB9BD]/80 text-white border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
                             px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
-                                    Hủy
-                                </Button>
-                            </TabsTrigger>
-                        }
-                    </div>
-                </TabsList>
-            </div>
-            <div>
-                <TabsContent value="list">
-                    <ListAddressMap isState={isState} queryKeyIsState={queryKeyIsState} />
-                </TabsContent>
-                <TabsContent value="add">
-                    <FormCreatAddress
-                        form={form}
-                        isState={isState}
-                        queryKeyIsState={queryKeyIsState}
-                        handleSearchApi={handleSearchApi}
-                        onSubmit={onSubmit}
-                    />
-                </TabsContent>
-            </div>
-        </Tabs>
+                                        Hủy
+                                    </Button>
+                                </TabsTrigger>
+                            }
+                        </div>
+                    </TabsList>
+                </div>
+                <div>
+                    <TabsContent value="list">
+                        <ListAddressMap isState={isState} queryKeyIsState={queryKeyIsState} />
+                    </TabsContent>
+                    <TabsContent value="add">
+                        <FormCreatAddress
+                            form={form}
+                            isState={isState}
+                            queryKeyIsState={queryKeyIsState}
+                            handleSearchApi={handleSearchApi}
+                            onSubmit={onSubmit}
+                        />
+                    </TabsContent>
+                </div>
+            </Tabs>
+        </BackgroundUiProfile>
     )
 }
 export default ListAddress
