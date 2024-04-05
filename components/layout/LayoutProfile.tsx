@@ -154,7 +154,7 @@ const LayoutProfile = ({
             name: 'Chuyến của tôi',
             icon_inactive: '/icon/account/inactive/radar.png',
             icon_active: '/icon/account/active/radar.png',
-            link: "/list-my-trip",
+            link: "/my-trips",
         },
         // {
         //     id: 5,
