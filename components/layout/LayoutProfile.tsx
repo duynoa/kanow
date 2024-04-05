@@ -201,21 +201,6 @@ const LayoutProfile = ({
         }, 500)
     }, [])
 
-    const handleLogout = async () => {
-        const { data } = await apiLogout()
-        if (data?.result) {
-            router.push('/')
-            setInformationUser("")
-            if (getCookie == 'kanow') {
-                removeCookie("token_kanow")
-            } else {
-                setCookie("token_kanow", "kanow", { expires: 7 })
-            }
-            toastCore.success(data?.message)
-        } else {
-            toastCore.error(data?.message)
-        }
-    }
 
     const handleChangeAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputElement = document.getElementById('avatar') as HTMLInputElement | null;
@@ -465,10 +450,10 @@ const LayoutProfile = ({
                                     </div>
 
                                     <div className='flex items-center justify-center caret-transparent'>
-                                        <AlertDialog>
-                                            <AlertDialogTrigger className={`3xl:text-sm text-xs text-[#FA3434] font-semibold w-fit cursor-pointer hover:text-[#FA3434]/80 duration-200 transition`}>
-                                                Đăng xuất
-                                            </AlertDialogTrigger>
+                                        <div onClick={() => setOpenAlertDialogLogout(true)} className={`3xl:text-sm text-xs text-[#FA3434] font-semibold w-fit cursor-pointer hover:text-[#FA3434]/80 duration-200 transition`}>
+                                            Đăng xuất
+                                        </div>
+                                        {/* <AlertDialog>
                                             <AlertDialogContent className='max-w-[380px]'>
                                                 <AlertDialogHeader>
                                                     <AlertDialogTitle>Bạn có muốn đăng xuất không?</AlertDialogTitle>
@@ -492,7 +477,7 @@ const LayoutProfile = ({
                                                     </AlertDialogAction>
                                                 </AlertDialogFooter>
                                             </AlertDialogContent>
-                                        </AlertDialog>
+                                        </AlertDialog> */}
                                     </div>
                                 </>
                         }

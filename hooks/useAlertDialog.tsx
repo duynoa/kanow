@@ -25,3 +25,23 @@ export const useAlertCancel = create<IOpenAlertCancel>((set) => ({
     type: "",
     setOpenAlertCancel: (key: any, type?: string) => set((state) => ({ openAlertCancel: key, type: type })),
 }));
+
+
+//aler delete
+interface IOpenAlert {
+    openAlert: boolean;
+    type?: string;
+    value?: any;
+    onFinally?: boolean;
+    setOnFinally: (key: any) => void;
+    setOpenAlert: (key: any, type?: string, value?: any) => void;
+}
+
+export const useAlert = create<IOpenAlert>((set) => ({
+    openAlert: false,
+    type: "",
+    value: '',
+    onFinally: false,
+    setOnFinally: (key: any) => set((state) => ({ onFinally: key })),
+    setOpenAlert: (key: any, type?: string, value?: any) => set((state) => ({ openAlert: key, type: type, value: value })),
+}));

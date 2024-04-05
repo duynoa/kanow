@@ -8,6 +8,7 @@ import ListAddressMap from "./components/ListAddressMap"
 import FormCreatAddress from "./components/FormCreatAddress"
 import apiAddress from "@/services/listAddress/listAddress.services"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useAlert } from "@/hooks/useAlertDialog"
 
 type Props = {}
 interface IInitialState {
@@ -52,6 +53,8 @@ const ListAddress = (props: Props) => {
 
     const [isState, setIsState] = useState<IInitialState>(initialSatate)
 
+    const { setOpenAlert, onFinally } = useAlert()
+
     const queryKeyIsState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
     const { apiListCity, apiListDistrict, apiListWard, apiCreateAddress, apiListAddress, apiDetailAddress, apiDeleteAddress } = apiAddress()
@@ -81,6 +84,12 @@ const ListAddress = (props: Props) => {
             throw error
         }
     }
+
+    useEffect(() => {
+        if (onFinally) {
+            queryKeyIsState({ idAddress: '0', tabAddress: 'list' })
+        }
+    }, [onFinally])
 
     useEffect(() => {
         fetchListAddress()
@@ -226,7 +235,7 @@ const ListAddress = (props: Props) => {
                         {isState.idAddress != '0' &&
                             <Button
                                 type="button"
-                                onClick={() => deleteAddress(isState.idAddress)}
+                                onClick={() => setOpenAlert(true, 'deleteAddres', isState.idAddress)}
                                 className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80" hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
                                         px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}
                             >
