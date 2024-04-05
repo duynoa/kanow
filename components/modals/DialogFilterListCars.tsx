@@ -17,12 +17,12 @@ import { useDialogFilterListCars } from "@/hooks/useOpenDialog";
 import { FormatNumberHundred } from "../format/FormatNumber";
 import { Button } from "../ui/button";
 import { getListAutomaker, getListCars, getListTypeCars } from "@/services/cars/cars.services";
-import { IInitialStateSearchCar } from "@/types/Cars/ICars";
 import { ScrollArea } from "../ui/scroll-area";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 import { toast } from "react-toastify";
 import { CustomDataListCars } from "@/custom/CustomData";
+import { IInitialStateSearchCar } from "@/types/Initial/IInitial";
 
 type Props = {
     isState: IInitialStateSearchCar,

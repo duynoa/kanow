@@ -19,14 +19,14 @@ import Image from "next/image";
 import { useDialogPromotion } from "@/hooks/useOpenDialog";
 import { Input } from "../ui/input";
 import { PiWarningCircleBold } from "react-icons/pi";
-import { FormatNumberDot, FormatNumberToThousands } from "../format/FormatNumber";
+import { FormatNumberDot } from "../format/FormatNumber";
 import { Button } from "../ui/button";
-import { IInitialStateDetailCar } from "@/types/Cars/ICars";
 import { getListPromotions } from "@/services/cars/promotion.services";
 
 import { debounce } from "lodash";
 import { IInfoPromotion } from "@/types/Cars/IPromotions";
 import moment from "moment";
+import { IInitialStateDetailCar } from "@/types/Initial/IInitial";
 
 type Props = {
     isState: IInitialStateDetailCar,
