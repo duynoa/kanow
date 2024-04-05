@@ -101,10 +101,10 @@ const LayoutContainer = ({
     useEffect(() => {
         const getKey = async () => {
             try {
-                const { data } = await apiGetGoogleKey()
-                if (data) {
-                    setGoogleKey(data)
-                }
+                // const { data } = await apiGetGoogleKey()
+                // if (data) {
+                //     setGoogleKey(data)
+                // }
             } catch (error) {
                 throw error
             }
