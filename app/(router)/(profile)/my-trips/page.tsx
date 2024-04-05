@@ -39,7 +39,7 @@ const MyTrips = (props: Props) => {
 
 
     const handleFetchListCars = async () => {
-        queryState({ isLoadingCar: true })
+        queryState({ isLoadingCar: false })
         try {
             const { data } = await apiListMyTrips(isState.page, isState.limit)
             console.log("data", data);
