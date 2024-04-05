@@ -30,6 +30,7 @@ import { useForm } from "react-hook-form";
 
 import { postReportCar } from "@/services/cars/report.services";
 import { toastCore } from "@/lib/toast";
+
 import { IInitialStateDetailCar } from "@/types/Initial/IInitial";
 
 type Props = {
@@ -94,6 +95,8 @@ export function DialogReportCar({ isState, queryKeyIsState }: Props) {
             throw err
         }
     }
+    console.log('');
+    
 
     return (
         <Dialog modal open={openDialogReportCar} onOpenChange={handleOpenChangeModal}>
