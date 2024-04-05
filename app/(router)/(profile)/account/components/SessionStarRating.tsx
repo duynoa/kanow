@@ -9,7 +9,7 @@ type Props = {
 }
 const SessionStarRating = ({ isState }: Props) => {
     return (
-        <div className="flex flex-col md:gap-8 gap-4 p-8">
+        <div className="flex flex-col md:gap-8 gap-4 ">
             <div className='flex flex-col gap-1'>
                 <h1 className='text-[#3E424E] lg:text-2xl text-xl font-semibold '>Đánh giá</h1>
                 <div className="flex items-center gap-2">

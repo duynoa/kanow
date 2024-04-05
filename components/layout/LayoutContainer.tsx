@@ -32,6 +32,7 @@ import { DialogAnswerPolicy } from '../modals/DialogAnswerPolicy';
 import Script from 'next/script';
 import { useGoogleKey } from '@/hooks/useGoogleKey';
 import apiGoogleKey from '@/services/gooogle/googleKey.services';
+import AlertDialogCustom from '../alert/AlertDialogCustom';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -125,6 +126,8 @@ const LayoutContainer = ({
                     <DialogValidate />
                     <AlertCancel />
                     <DialogAnswerPolicy />
+                    {/* // nút xóa địa chỉ */}
+                    <AlertDialogCustom />
                 </main>
                 {pathname !== "/list-car-autonomous" && <Footer />}
                 <ToastContainer
