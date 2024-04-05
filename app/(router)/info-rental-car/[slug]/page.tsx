@@ -7,6 +7,7 @@ import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy'
 import { useCookie } from '@/hooks/useCookie'
 import {
     PiCar,
+    PiCheckBold,
     PiCheckSquareOffset,
     PiClipboardText,
     PiClipboardTextBold,
@@ -39,46 +40,39 @@ const InfoRentalCar = ({ params }: Props) => {
         {
             id: 1212,
             title: "Gửi yêu cầu",
-            icon: <PiClipboardText className='size-6' />,
+            icon: <PiCheckBold className='size-5' />,
             status: 0,
             index: 0,
         },
         {
             id: 1214142,
             title: "Duyệt yêu cầu",
-            icon: <PiCheckSquareOffset className='size-6' />,
+            icon: <PiCheckBold className='size-5' />,
             status: 1,
             index: 1,
         },
         {
             id: 121552,
             title: "Thanh toán cọc",
-            icon: <PiCreditCard className='size-6' />,
+            icon: <PiCheckBold className='size-5' />,
             status: 2,
             index: 2,
         },
         {
             id: 1214442,
             title: "Khởi hành",
-            icon: <PiCar className='size-6' />,
+            icon: <PiCheckBold className='size-5' />,
             status: 3,
             index: 3
         },
         {
             id: 1212555,
             title: "Kết thúc",
-            icon: <PiPath className='size-6' />,
+            icon: <PiCheckBold className='size-5' />,
             status: 4,
             index: 4
         },
     ]
-
-    const initialState: IInitialStateInfoRentalCar = {
-        detailRentalCar: undefined,
-    };
-
-    const [isState, setIsState] = useState<any>(initialState)
-    const queryKeyIsState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
     useEffect(() => {
         setIsMounted(true)
@@ -87,7 +81,6 @@ const InfoRentalCar = ({ params }: Props) => {
     useEffect(() => {
         const fetchStepTransaction = async () => {
             const { data } = await getInfoDetailCarTransaction(params?.slug);
-            console.log('data :', data);
 
             if (data && data.data && data.base) {
                 let { customDataInfoRentalCar } = CustomDataInfoRentalCar(data)
@@ -99,7 +92,6 @@ const InfoRentalCar = ({ params }: Props) => {
         }
         const fetchDataPolicy = async () => {
             const { data } = await getDataPolicy();
-            console.log('data policy :', data);
 
             if (data) {
                 let { customDataPolicy } = CustomDataPolicy(data)
@@ -142,36 +134,43 @@ const InfoRentalCar = ({ params }: Props) => {
     return (
         <>
             <div className='w-full max-w-full bg-white/50'>
-                <div className='3xl:pt-8 3xl:pb-16 pt-6 pb-12 md:px-0 px-10 custom-container flex items-center justify-center caret-transparent md:overflow-hidden overflow-auto'>
+                <div className='3xl:pt-8 3xl:pb-16 pt-6 pb-12 custom-container flex md:gap-3 gap-2 items-center justify-center caret-transparent md:overflow-hidden overflow-auto'>
                     {
                         dataStep?.map((step, index) => {
                             return (
-                                <div key={step.id} className='flex flex-col gap-3 relative'>
-                                    <div className='flex items-center'>
-                                        <div className={`
-                                        ${isStateInfoRentalCar?.detailRentalCar && index < isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "bg-[#C2F9F9] text-[#3E424E]"}
-                                         ${isStateInfoRentalCar?.detailRentalCar && step.status === isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "bg-[#2FB9BD] text-white"} 
-                                         ${isStateInfoRentalCar?.detailRentalCar && step.status > isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "bg-[#F6F6F8] text-[#3E424E]"} 
-                                        flex justify-center items-center p-4 rounded-full`}
-                                        >
-                                            {step.icon ? step.icon : ""}
+                                <div key={step.id} className='flex items-center md:gap-3 gap-2'>
+                                    <div className={`
+                                        ${isStateInfoRentalCar?.detailRentalCar && index < isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "bg-[#2FB9BD] text-white"}
+                                         ${isStateInfoRentalCar?.detailRentalCar && step.status === isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "border-2 border-[#2FB9BD] bg-[#F1FCFC] text-[#2FB9BD]"} 
+                                         ${isStateInfoRentalCar?.detailRentalCar && step.status > isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "border-2 border-[#B4B8C5] bg-[#F6F6F8] text-[#B4B8C5]"} 
+                                        flex justify-center items-center size-6 max-w-6 p-5 rounded-full`}
+                                    >
+                                        <div className='3xl:text-base text-sm'>
+                                            {isStateInfoRentalCar?.detailRentalCar && index < isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom ? step.icon : index + 1}
                                         </div>
-                                        {
-                                            dataStep?.length - 1 === index
-                                                ?
-                                                null
-                                                :
-                                                <div className='xl:w-52 lg:w-36 md:w-20 w-2 border border-dashed' />
-                                        }
                                     </div>
+
                                     {
                                         isVisibleMobile ?
                                             null
                                             :
-                                            <div className={`${step.title && countWordClusters(step.title) >= 2 ? '-left-4' : 'left-0'} absolute -bottom-6 text-sm font-semibold text-[#585F71] w-52`}>
+                                            <div className={`
+                                                ${isStateInfoRentalCar?.detailRentalCar && index < isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && " text-[#585F71]"}
+                                                ${isStateInfoRentalCar?.detailRentalCar && step.status === isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "text-[#2FB9BD]"} 
+                                                ${isStateInfoRentalCar?.detailRentalCar && step.status > isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "text-[#585F71]"}
+                                                font-medium w-fit
+                                                `}>
                                                 {step.title ? step.title : ""}
                                             </div>
                                     }
+                                    {
+                                        dataStep?.length - 1 === index
+                                            ?
+                                            null
+                                            :
+                                            <div className='md:w-20 w-1 border border-dashed' />
+                                    }
+
                                 </div>
                             )
                         })

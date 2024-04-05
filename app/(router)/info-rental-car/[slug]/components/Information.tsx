@@ -146,8 +146,6 @@ const Information = ({
         google_map_link: ""
     }
 
-    console.log('isStateInfoRentalCar : ', isStateInfoRentalCar);
-
     if (!isMounted) {
         return null
     }

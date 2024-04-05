@@ -214,7 +214,6 @@ const DetailCar = ({ params }: Props) => {
 
         const fetchDataPolicy = async () => {
             const { data } = await getDataPolicy();
-            console.log('data policy :', data);
 
             if (data) {
                 let { customDataPolicy } = CustomDataPolicy(data)
@@ -329,8 +328,6 @@ const DetailCar = ({ params }: Props) => {
         setIndexImage(index)
         setDataImage(isState?.dataDetailCar?.image_car)
     }
-
-    console.log('check isState', isState);
 
     if (!isMounted) {
         return null

@@ -286,8 +286,6 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
             limit = isState.limit.limitFilterCars;
         }
 
-        console.log('query', query);
-
         const { data } = await getListCars(1, limit, query)
 
         if (data && data.data && data.base) {

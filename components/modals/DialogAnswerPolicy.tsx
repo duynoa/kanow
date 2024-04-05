@@ -48,28 +48,45 @@ export function DialogAnswerPolicy({ }: Props) {
                         {type === "car_price_policy" && "Đơn giá thuê xe"}
                         {type === "car_insurance_policy" && "Bảo hiểm thuê xe"}
                         {type === "cancellation_policy" && "Thủ tục hoàn tiền & đền cọc"}
+                        {type === "car_deposit_policy" && "Chính sách cọc"}
+                        {type === "car_payment_policy" && "Thanh toán khi nhận xe"}
                     </DialogTitle>
                 </DialogHeader>
 
                 <div className='flex flex-col gap-2 p-4'>
+                    {/* policy giấy tờ thuê xe */}
                     {
                         type === "car_rental_policy" &&
                         <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_rental_policy ? isStatePolicy?.dataPolicy?.car_rental_policy : ''}` }} />
                     }
+                    {/* policy tài sản thế chấp */}
                     {
                         type === "car_collateral_policy" &&
                         <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_collateral_policy ? isStatePolicy?.dataPolicy?.car_collateral_policy : ''}` }} />
                     }
+                    {/* policy đơn giá thuê */}
                     {
                         type === "car_price_policy" &&
                         <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_price_policy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} />
                     }
+                    {/* policy bảo hiểm */}
                     {
                         type === "car_insurance_policy" &&
                         <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_insurance_policy ? isStatePolicy?.dataPolicy?.car_insurance_policy : ''}` }} />
                     }
+                    {/* policy huỷ chuyến */}
                     {
                         type === "cancellation_policy" &&
+                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund ? isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund : ''}` }} />
+                    }
+                    {/* policy cọc */}
+                    {
+                        type === "car_deposit_policy" &&
+                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund ? isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund : ''}` }} />
+                    }
+                    {/* policy thanh toán khi nhận xe */}
+                    {
+                        type === "car_payment_policy" &&
                         <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund ? isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund : ''}` }} />
                     }
                 </div>

@@ -63,16 +63,17 @@ const CustomDataDetailCar = (res: any) => {
         favorite_car: res?.data?.favourite_car,
 
         price: {
-
+            // tiền trước khuyến mãi đầu 
             price_before_promotion: res?.data?.price?.rent_cost_day,
-
+            // tiền sau khuyến mãi đầu (nếu có lấy tiền gốc - tiền khuyến mãi trong mảng lấy cái đầu tiên)
             price_after_promotion:
                 res?.data?.promotion?.length > 0
                     ? res?.data?.price?.rent_cost_day -
                     res?.data?.promotion[0]?.price_promotion
                     : res?.data?.price?.rent_cost_day,
-
+            // tiền gốc 
             rent_cost_day: res?.data?.price?.rent_cost_day,
+            // tiền bảo hiểm
             price_insurance_day: res?.data?.price?.price_insurance_day,
 
             // *  ((giá gốc + bảo hiểm) * (tổng số ngày)) - (số tiền khuyến mãi)
@@ -80,11 +81,13 @@ const CustomDataDetailCar = (res: any) => {
             // ** option 1: khuyến mãi tính cho riêng từng ngày (bill = tổng ngày = tổng khuyến mãi)
             // ** option 2: chọn khuyến mãi từ mã tính cho tổng bill (bill = tổng bill - số tiền cố định của khuyến mãi)
 
+            // tổng tạm thời
             temp_total_amount:
                 (res?.data?.price?.rent_cost_day +
                     res?.data?.price?.price_insurance_day) *
                 1,
 
+            // thành tiền
             // số là ngày điền vào...
             total_amount:
                 res?.data?.promotion?.length > 0
@@ -92,7 +95,18 @@ const CustomDataDetailCar = (res: any) => {
                     (res?.data?.price?.rent_cost_day - res?.data?.promotion[0]?.price_promotion) * 1 + res?.data?.price?.price_insurance_day
                     :
                     res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day,
-            max_money_discount: 0
+
+            // tiền đặt cọc
+            price_depoist: (+res?.data?.price?.percent_deposit > 0 || res?.data?.promotion?.length > 0) ?
+                ((+res?.data?.price?.rent_cost_day - +res?.data?.promotion[0]?.price_promotion) * 1 + res?.data?.price?.price_insurance_day) * (+res?.data?.price?.percent_deposit / 100)
+                :
+                res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day
+            ,
+            // số ngày
+            number_day: +res?.data?.price?.number_day,
+            // thanh toán khi nhận xe (Thành tiền - tiền cọc)
+            cash_on_delivery: (+res?.data?.price?.grand_total) - (+res?.data?.price?.depoist),
+            max_money_discount: 0,
         },
         promotion: res?.data?.promotion,
         trait_car: {
@@ -167,10 +181,10 @@ const CustomDataInfoRentalCar = (res: any) => {
             price_insurance_day: +res?.data?.price?.price_insurance_day,
             // tổng tạm tính
             temp_total_amount: +res?.data?.price?.total,
-            // tiền đặt cọc
-            price_depoist: +res?.data?.price?.depoist,
             // thành tiền
             total_amount: +res?.data?.price?.grand_total,
+            // tiền đặt cọc
+            price_depoist: +res?.data?.price?.depoist,
             // số ngày
             number_day: +res?.data?.price?.number_day,
             // thanh toán khi nhận xe (Thành tiền - tiền cọc)
@@ -189,6 +203,9 @@ const CustomDataPolicy = (res: any) => {
         car_insurance_policy: res?.setting_insurance_car,
         car_price_policy: res?.setting_price_car,
         cancel_trip: res?.cancel_trip,
+        number_deposit_car: +res?.number_deposit_car,
+        percent_deposit: +res?.percent_deposit,
+        percent_insurance: +res?.percent_insurance
     }
     return { customDataPolicy };
 }
