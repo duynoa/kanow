@@ -1,5 +1,5 @@
-import { IInitialStateDetailCar } from "@/types/Cars/ICars";
 import { IInfoPromotion } from "@/types/Cars/IPromotions";
+import { IInitialStateDetailCar } from "@/types/Initial/IInitial";
 import { addDays, setHours, setMinutes } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { create } from "zustand";
