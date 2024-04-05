@@ -64,6 +64,8 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
                     price: {
                         ...isState?.dataDetailCar?.price,
                         total_amount: isState?.dataDetailCar?.price?.temp_total_amount - maxMoneyDiscount,
+                        price_depoist: (isState?.dataDetailCar?.price?.temp_total_amount - maxMoneyDiscount) * (isState?.dataDetailCar?.price?.percent_deposit / 100),
+                        cash_on_delivery: ((isState?.dataDetailCar?.price?.temp_total_amount - maxMoneyDiscount)) - ((isState?.dataDetailCar?.price?.temp_total_amount - maxMoneyDiscount) * (isState?.dataDetailCar?.price?.percent_deposit / 100)),
                         max_money_discount: maxMoneyDiscount
                     }
                 }
@@ -83,7 +85,10 @@ export function DialogPromotion({ isState, queryKeyIsState }: Props) {
                     ...isState?.dataDetailCar,
                     price: {
                         ...isState?.dataDetailCar?.price,
-                        total_amount: isState?.dataDetailCar?.price?.temp_total_amount - item?.cash
+                        total_amount: isState?.dataDetailCar?.price?.temp_total_amount - item?.cash,
+                        price_depoist: (isState?.dataDetailCar?.price?.temp_total_amount - item?.cash) * (isState?.dataDetailCar?.price?.percent_deposit / 100),
+                        cash_on_delivery: ((isState?.dataDetailCar?.price?.temp_total_amount - item?.cash) - ((isState?.dataDetailCar?.price?.temp_total_amount - item?.cash) * (isState?.dataDetailCar?.price?.percent_deposit / 100))),
+
                     }
                 }
             })
