@@ -29,6 +29,9 @@ import { DialogRequestCarRental } from '../modals/DialogRequestCarRental';
 import { DialogValidate } from '../modals/DialogValidate';
 import AlertCancel from '../alert/AlertCancel';
 import { DialogAnswerPolicy } from '../modals/DialogAnswerPolicy';
+import Script from 'next/script';
+import { useGoogleKey } from '@/hooks/useGoogleKey';
+import apiGoogleKey from '@/services/gooogle/googleKey.services';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -42,6 +45,11 @@ const LayoutContainer = ({
     children: React.ReactNode
 }) => {
     const pathname = usePathname()
+
+    const { setGoogleKey } = useGoogleKey()
+
+    const { apiGetGoogleKey } = apiGoogleKey()
+
     const { isVisibleMobile, onResizeMobile, onCloseResizeMobile, isVisibleTablet, onResizeTablet, onCloseResizeTablet } = useResize()
 
     useEffect(() => {
@@ -88,6 +96,20 @@ const LayoutContainer = ({
             window.removeEventListener('resize', handleResize);
         };
     }, [isVisibleMobile, onCloseResizeMobile, onCloseResizeTablet, onResizeMobile, onResizeTablet, isVisibleTablet]);
+    // apiGoogleKey
+    useEffect(() => {
+        const getKey = async () => {
+            try {
+                const { data } = await apiGetGoogleKey()
+                if (data) {
+                    setGoogleKey(data)
+                }
+            } catch (error) {
+                throw error
+            }
+        }
+        getKey()
+    }, [])
     return (
         <html lang="en">
             <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
@@ -118,6 +140,7 @@ const LayoutContainer = ({
                     theme="light"
                 />
             </body>
+            {/* <Script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1cC7gG0SKu8ZVC4N5T89u9QfVQVMM_ZY" type="text/javascript" /> */}
         </html >
     )
 }
