@@ -202,7 +202,7 @@ const ListAddress = (props: Props) => {
 
     return (
 
-        <BackgroundUiProfile>
+        <BackgroundUiProfile className={''}>
             <Tabs value={isState.tabAddress} onValueChange={(e) => {
                 queryKeyIsState({ tabAddress: e, idAddress: '0' })
                 form.reset()
