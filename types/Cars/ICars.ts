@@ -84,6 +84,7 @@ interface IDataDetailCar {
     point_star: number;
     total_trip: number;
     price: {
+        percent_deposit: number;
         // tiền trước khuyến mãi show ra giao diện
         price_before_promotion: number;
         // tiền sau khuyến mãi show ra giao diện

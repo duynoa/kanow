@@ -85,6 +85,8 @@ const PaymentCar = ({
                     price: {
                         ...isState?.dataDetailCar?.price,
                         total_amount: isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion,
+                        price_depoist: (isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion) * (isState?.dataDetailCar?.price?.percent_deposit / 100),
+                        cash_on_delivery: ((isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion)) - ((isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion) * (isState?.dataDetailCar?.price?.percent_deposit / 100)),
                     }
                 },
                 infoPromotion: {
@@ -99,6 +101,8 @@ const PaymentCar = ({
                     price: {
                         ...isState?.dataDetailCar?.price,
                         total_amount: isState?.dataDetailCar?.price?.temp_total_amount,
+                        price_depoist: (isState?.dataDetailCar?.price?.temp_total_amount) * (isState?.dataDetailCar?.price?.percent_deposit / 100),
+                        cash_on_delivery: ((isState?.dataDetailCar?.price?.temp_total_amount)) - ((isState?.dataDetailCar?.price?.temp_total_amount) * (isState?.dataDetailCar?.price?.percent_deposit / 100)),
                     }
                 },
                 infoPromotion: {
