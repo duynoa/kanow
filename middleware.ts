@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function middleware(request: NextRequest) {
     const { pathname, origin } = request.nextUrl;
     const token: any = request.cookies.get("token_kanow");
-    const checkUrl = ["/account", "/list-car-favorite", "change-password", "list-address"];
+    const checkUrl = ["/account", "/list-car-favorite", "/change-password", "/list-address"];
     if (
         pathname.startsWith("/account") ||
         pathname.startsWith("/list-car-favorite") ||
@@ -21,6 +21,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/account", "/list-car-favorite", "/info-rental-car/:path*", "change-password", "list-address"],
+    matcher: ["/account", "/list-car-favorite", "/info-rental-car/:path*", "/change-password", "/list-address"],
     // matcher: ["/bar/:path*", "/checkout/:path*", "/order/:path*"],
 };
