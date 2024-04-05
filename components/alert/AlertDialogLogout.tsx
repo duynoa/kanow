@@ -29,8 +29,6 @@ const AlertDialogLogout = (props: Props) => {
     const { openAlertDialogLogout, setOpenAlertDialogLogout } = useAlertDialogLogout()
     const { apiLogout } = useAuthenticationAPI()
 
-    console.log('openAlertDialogLogout', openAlertDialogLogout);
-
     const handleLogout = async () => {
         const { data } = await apiLogout()
         if (data?.result) {

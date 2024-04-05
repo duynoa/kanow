@@ -15,7 +15,10 @@ interface IDataPolicy {
             name: string;
             owen_cancel: string;
         }[];
-    }
+    },
+    number_deposit_car: number,
+    percent_deposit: number,
+    percent_insurance: number
 }
 
 export type {

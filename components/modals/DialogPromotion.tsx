@@ -1,21 +1,17 @@
-import React, { useEffect, useState, useMemo } from "react"
+import React, { useState } from "react"
 
 import {
     Dialog,
     DialogClose,
     DialogContent,
-    DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogOverlay,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 import { TbDiscount2 } from "react-icons/tb";
 
 import { X } from "lucide-react"
 
-import Image from "next/image";
 import { useDialogPromotion } from "@/hooks/useOpenDialog";
 import { Input } from "../ui/input";
 import { PiWarningCircleBold } from "react-icons/pi";

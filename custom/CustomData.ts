@@ -61,13 +61,14 @@ const CustomDataDetailCar = (res: any) => {
 
         price: {
             price_before_promotion: res?.data?.price?.rent_cost_day,
-
+            // tiền sau khuyến mãi đầu (nếu có lấy tiền gốc - tiền khuyến mãi trong mảng lấy cái đầu tiên)
             price_after_promotion:
                 res?.data?.promotion?.length > 0
                     ? res?.data?.price?.rent_cost_day - res?.data?.promotion[0]?.price_promotion
                     : res?.data?.price?.rent_cost_day,
-
+            // tiền gốc
             rent_cost_day: res?.data?.price?.rent_cost_day,
+            // tiền bảo hiểm
             price_insurance_day: res?.data?.price?.price_insurance_day,
 
             // *  ((giá gốc + bảo hiểm) * (tổng số ngày)) - (số tiền khuyến mãi)
@@ -77,6 +78,7 @@ const CustomDataDetailCar = (res: any) => {
 
             temp_total_amount: (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) * 1,
 
+            // thành tiền
             // số là ngày điền vào...
             total_amount:
                 res?.data?.promotion?.length > 0
@@ -156,10 +158,10 @@ const CustomDataInfoRentalCar = (res: any) => {
             price_insurance_day: +res?.data?.price?.price_insurance_day,
             // tổng tạm tính
             temp_total_amount: +res?.data?.price?.total,
-            // tiền đặt cọc
-            price_depoist: +res?.data?.price?.depoist,
             // thành tiền
             total_amount: +res?.data?.price?.grand_total,
+            // tiền đặt cọc
+            price_depoist: +res?.data?.price?.depoist,
             // số ngày
             number_day: +res?.data?.price?.number_day,
             // thanh toán khi nhận xe (Thành tiền - tiền cọc)

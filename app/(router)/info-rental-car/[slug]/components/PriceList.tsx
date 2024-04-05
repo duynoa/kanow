@@ -36,8 +36,6 @@ const PriceList = ({
         setOpenAlertCancel(true)
     }
 
-    console.log('isStatePolicy :', isStatePolicy);
-
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
             {/* thông tin giữa các step */}
@@ -210,7 +208,7 @@ const PriceList = ({
                             </div>
                             {
                                 isVisibleTablet ?
-                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "car_deposit_policy")}>
                                         <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                     </div>
                                     :
@@ -242,7 +240,7 @@ const PriceList = ({
                             </div>
                             {
                                 isVisibleTablet ?
-                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "car_payment_policy")}>
                                         <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                     </div>
                                     :

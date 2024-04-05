@@ -67,7 +67,6 @@ export function DialogRequestCarRental({ }: Props) {
     console.log('dataListRequestCarRental : ', dataListRequestCarRental);
     console.log('isStatePolicy : ', isStatePolicy);
 
-
     return (
         <Dialog modal open={openDialogRequestCarRental} onOpenChange={handleCloseModal}>
             <DialogOverlay />
