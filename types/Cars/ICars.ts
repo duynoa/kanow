@@ -87,14 +87,23 @@ interface IDataDetailCar {
         price_before_promotion: number;
         price_after_promotion: number;
 
+        // tiền gốc 
         rent_cost_day: number;
+        // tiền bảo hiểm
         price_insurance_day: number;
 
         // tổng tạm tính (chưa tính % khuyến mãi)
         temp_total_amount: number;
+        // thành tiền (đã tính tiền khuyến mãi)
         total_amount: number;
 
         max_money_discount: number;
+        // tiền đặt cọc
+        price_depoist: number,
+        // số ngày
+        number_day: number,
+        // thanh toán khi nhận xe
+        cash_on_delivery: number
     };
     promotion: {
         id: number;
@@ -212,7 +221,7 @@ interface IDetailRentalCar {
         total_amount: number,
         // số ngày
         number_day: number,
-        // thành tiền
+        // thành toán khi nhận xe
         cash_on_delivery: number
     },
 }
