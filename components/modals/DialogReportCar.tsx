@@ -20,7 +20,6 @@ import {
 import { X } from "lucide-react";
 
 import { useDialogReportCar } from "@/hooks/useOpenDialog";
-import { IInitialStateDetailCar } from "@/types/Cars/ICars";
 
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
@@ -31,6 +30,7 @@ import { useForm } from "react-hook-form";
 
 import { postReportCar } from "@/services/cars/report.services";
 import { toastCore } from "@/lib/toast";
+import { IInitialStateDetailCar } from "@/types/Initial/IInitial";
 
 type Props = {
     isState: IInitialStateDetailCar,
