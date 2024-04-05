@@ -84,7 +84,9 @@ interface IDataDetailCar {
     point_star: number;
     total_trip: number;
     price: {
+        // tiền trước khuyến mãi show ra giao diện
         price_before_promotion: number;
+        // tiền sau khuyến mãi show ra giao diện
         price_after_promotion: number;
 
         // tiền gốc 
@@ -99,11 +101,11 @@ interface IDataDetailCar {
 
         max_money_discount: number;
         // tiền đặt cọc
-        price_depoist: number,
+        price_depoist?: number,
         // số ngày
-        number_day: number,
+        number_day?: number,
         // thanh toán khi nhận xe
-        cash_on_delivery: number
+        cash_on_delivery?: number
     };
     promotion: {
         id: number;
