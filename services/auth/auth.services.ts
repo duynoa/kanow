@@ -21,7 +21,12 @@ const useAuthenticationAPI = () => {
         return axios.post(`/create_otp_sign_up`, data);
     };
 
-    return { apiLogin, apiInfoUser, apiLogout, apiSignup, apiOtpSignup };
+    /// đổi mật khẩu
+    const apiChangePassword = (data: any) => {
+        return axios.post(`/update_account`, data);
+    };
+
+    return { apiLogin, apiInfoUser, apiLogout, apiSignup, apiOtpSignup, apiChangePassword };
 };
 
 export default useAuthenticationAPI;
