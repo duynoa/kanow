@@ -463,7 +463,7 @@ export function DialogRequestCarRental({ }: Props) {
                                         </div>
                                     </div>
 
-                                    <div className='border border-[#B4B8C5]/40 w-full' />
+                                    <div className='border border-[#B4B8C5]/80 w-full' />
 
                                     {/* Thành tiền */}
                                     <div className='flex flex-col gap-2'>
@@ -503,7 +503,7 @@ export function DialogRequestCarRental({ }: Props) {
                                                 }
                                             </div>
 
-                                            <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                            <div className='text-[#2FB9BD] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
                                                 {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.price_depoist ? dataListRequestCarRental?.dataDetailCar?.price?.price_depoist : 0)}<span>đ</span>
                                             </div>
                                         </div>
@@ -535,7 +535,7 @@ export function DialogRequestCarRental({ }: Props) {
                                                 }
                                             </div>
 
-                                            <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                            <div className='text-[#2FB9BD] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
                                                 {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.cash_on_delivery ? dataListRequestCarRental?.dataDetailCar?.price?.cash_on_delivery : 0)}<span>đ</span>
                                             </div>
                                         </div>
