@@ -9,7 +9,7 @@ const apiMyTrips = () => {
                 ...param, // Nối các tham số trong param object
             },
         };
-        return axios.get(`/car/getList`, config);
+        return axios.get(`/transaction/getListTransaction`, config);
     };
 
     return { apiListMyTrips };
