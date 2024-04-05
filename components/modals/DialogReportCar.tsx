@@ -94,9 +94,7 @@ export function DialogReportCar({ isState, queryKeyIsState }: Props) {
         } catch (err) {
             throw err
         }
-    }
-    console.log('');
-    
+    }    
 
     return (
         <Dialog modal open={openDialogReportCar} onOpenChange={handleOpenChangeModal}>
