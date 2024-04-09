@@ -92,7 +92,7 @@ const Header = () => {
         {
             id: uuidv4(),
             title: "Giới thiệu về Kanow",
-            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            desription: "Chào mừng bạn tham gia cộng đồng Kanow, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
             link: '#',
             time: new Date(),
         }
@@ -100,21 +100,21 @@ const Header = () => {
         {
             id: uuidv4(),
             title: "Giới thiệu về Kanow",
-            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            desription: "Chào mừng bạn tham gia cộng đồng Kanow, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
             link: '#',
             time: new Date(),
         },
         {
             id: uuidv4(),
             title: "Giới thiệu về Kanow",
-            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            desription: "Chào mừng bạn tham gia cộng đồng Kanow, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
             link: '#',
             time: new Date(),
         },
         {
             id: uuidv4(),
             title: "Giới thiệu về Kanow",
-            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            desription: "Chào mừng bạn tham gia cộng đồng Kanow, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
             link: '#',
             time: new Date(),
         }
@@ -122,21 +122,21 @@ const Header = () => {
         {
             id: uuidv4(),
             title: "Giới thiệu về Kanow",
-            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            desription: "Chào mừng bạn tham gia cộng đồng Kanow, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
             link: '#',
             time: new Date(),
         },
         {
             id: uuidv4(),
             title: "Giới thiệu về Kanow",
-            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            desription: "Chào mừng bạn tham gia cộng đồng Kanow, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
             link: '#',
             time: new Date(),
         },
         {
             id: uuidv4(),
             title: "Giới thiệu về Kanow",
-            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            desription: "Chào mừng bạn tham gia cộng đồng Kanow, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
             link: '#',
             time: new Date(),
         }
