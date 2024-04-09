@@ -49,11 +49,17 @@ const getListCarsRelated = (param?: any) => {
     return axios.get(`/car/getListCarRelated`, config)
 }
 
+// post request rental car
+const postRequestRentalCar = (data: any) => {
+    return axios.post(`/transaction/addTransaction`, data)
+}
+
 export {
     getListCars,
     getListAutomaker,
     getListTypeCars,
     getDataDetailCar,
     postUpdateFavoriteHeartCar,
-    getListCarsRelated
+    getListCarsRelated,
+    postRequestRentalCar
 };

@@ -11,7 +11,7 @@ import { TiLocation } from 'react-icons/ti'
 
 import { useResize } from '@/hooks/useResize'
 
-import { FormatNumberHundred, FormatPhoneNumber } from '@/components/format/FormatNumber'
+import { FormatNumberHundred, FormatPhoneNumber, FormatPointStar } from '@/components/format/FormatNumber'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // import { vi } from 'date-fns/locale';
@@ -174,12 +174,9 @@ const Information = ({
                             <span className='3xl:text-sm text-xs text-[#585F71] font-semibold'>
                                 {isStateInfoRentalCar?.detailRentalCar?.car?.number_car ? isStateInfoRentalCar?.detailRentalCar?.car?.number_car : ""}
                             </span>
-                            {
-                                isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status >= 2 &&
-                                <Badge className='px-3 py-1 bg-[#000000]/50 rounded-xl text-white 3xl:text-sm text-xs'>
-                                    Mã số chuyến: {isStateInfoRentalCar?.detailRentalCar?.car?.reference_no ? isStateInfoRentalCar?.detailRentalCar?.car?.reference_no : ""}
-                                </Badge>
-                            }
+                            <Badge className='px-3 py-1 bg-[#000000]/50 rounded-xl text-white 3xl:text-sm text-xs'>
+                                Mã số chuyến: {isStateInfoRentalCar?.detailRentalCar?.car?.reference_no ? isStateInfoRentalCar?.detailRentalCar?.car?.reference_no : ""}
+                            </Badge>
                         </div>
                         <div className='flex items-center gap-4'>
                             {/* <div className='flex items-center gap-1'>
@@ -233,7 +230,6 @@ const Information = ({
                                 Từ:
                             </div>
                             <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
-                                {/* 12h00 12/12/2024 */}
                                 {moment(isStateInfoRentalCar?.detailRentalCar?.date_time?.date_start).format("HH[h]MM dd/mm/YYYY")}
                             </div>
                         </div>
@@ -243,7 +239,6 @@ const Information = ({
                             </div>
                             <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
                                 {moment(isStateInfoRentalCar?.detailRentalCar?.date_time?.date_end).format("HH[h]MM dd/mm/YYYY")}
-                                {/* 12h00 12/12/2024 */}
                             </div>
                         </div>
                     </div>
@@ -258,7 +253,8 @@ const Information = ({
                             </div>
                         </div>
                         <div className='pl-7 mt-1 3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium'>
-                            12 Hoàn Kiếm Hà Nội
+                            {isStateInfoRentalCar?.detailRentalCar?.address?.full_address}
+                            {/* 12 Hoàn Kiếm Hà Nội */}
                         </div>
                         <div className='pl-7 3xl:text-base lg:text-sm md:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-medium cursor-pointer w-fit duration-200 transition caret-transparent'>
                             Xem bản đồ
@@ -309,7 +305,7 @@ const Information = ({
                                         <div className='flex items-center gap-1'>
                                             <FaStar className='3xl:text-base lg:text-sm md:text-base text-sm text-[#FF9900]' />
                                             <div className='3xl:text-sm text-xs text-[#484D5C] font-medium'>
-                                                {isStateInfoRentalCar?.detailRentalCar?.customer?.total_star}
+                                                {isStateInfoRentalCar?.detailRentalCar?.customer?.total_star ? (FormatPointStar(isStateInfoRentalCar?.detailRentalCar?.customer?.total_star, 1)) : 0}
                                             </div>
                                         </div>
                                         :

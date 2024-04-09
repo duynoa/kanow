@@ -59,6 +59,14 @@ interface IInitialStateInfoRentalCar {
 
 // initial payment car
 interface IInitialStatePayment {
+    detailRentalCar?: IDetailRentalCar,
+    listPaymentMode: {
+        id: number,
+        image: string,
+        name: string,
+        note: string,
+        type: number
+    }[],
     payment: {
         idActivePaymentMethod: number | string,
         indexPaymentMethod: number

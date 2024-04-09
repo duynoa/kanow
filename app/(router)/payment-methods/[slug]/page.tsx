@@ -13,9 +13,11 @@ import {
     PiCreditCard,
     PiPath
 } from 'react-icons/pi'
-import { getInfoDetailCarTransaction } from '@/services/cars/payment.services'
+import { getInfoDetailCarTransaction, getListPaymentMode } from '@/services/cars/payment.services'
 import { IInitialStatePayment } from '@/types/Initial/IInitial'
 import PaymentMethods from './components/PaymentMethods'
+import { CustomDataInfoRentalCar } from '@/custom/CustomData'
+import { useDataInfoRentalCar, useDataPaymentRental } from '@/hooks/useDataQueryKey'
 
 type Props = {
     params: {
@@ -25,47 +27,51 @@ type Props = {
 
 const InfoRentalCar = ({ params }: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
-
-    const listPaymentMethods = [
-        {
-            id: 237281738,
-            name: "Thanh toán bằng tiền mặt",
-            logo: "/other/payment/cash.png",
-            type: "cash",
-        },
-        {
-            id: 2372,
-            name: "Thẻ ngân hàng nội địa",
-            logo: "/other/payment/local_card.png",
-            type: "local_card",
-        },
-        {
-            id: 237738,
-            name: "Thẻ quốc tế",
-            logo: "/other/payment/international_card.png",
-            type: "international_card",
-        },
-        {
-            id: 281738,
-            name: "Thanh toán qua Momo",
-            logo: "/other/payment/momo.png",
-            type: "momo",
-        },
-    ]
-
-    const initialState: IInitialStatePayment = {
-        payment: {
-            idActivePaymentMethod: listPaymentMethods[0]?.id,
-            indexPaymentMethod: 0
-        }
-    };
-
-    const [isState, setIsState] = useState<IInitialStatePayment>(initialState)
-    const queryKeyIsState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
+    const { isStatePaymentRental, queryKeyIsStatePaymentRental } = useDataPaymentRental()
 
     useEffect(() => {
         setIsMounted(true)
     }, [])
+
+
+
+    useEffect(() => {
+        const fetchListPaymentMode = async () => {
+            const { data } = await getListPaymentMode();
+
+            console.log('data : ', data);
+
+            if (data && data.data) {
+                queryKeyIsStatePaymentRental({
+                    listPaymentMode: data.data,
+                    payment: {
+                        idActivePaymentMethod: data?.data[0]?.id,
+                        indexPaymentMethod: 0
+                    }
+                })
+            }
+        }
+
+        const fetchPriceWithCar = async () => {
+            const { data } = await getInfoDetailCarTransaction(params?.slug);
+
+            console.log('data : ', data);
+
+            if (data && data.data && data.base) {
+                let { customDataInfoRentalCar } = CustomDataInfoRentalCar(data)
+
+                queryKeyIsStatePaymentRental({
+                    detailRentalCar: customDataInfoRentalCar
+                })
+            }
+        }
+
+        fetchListPaymentMode()
+        fetchPriceWithCar()
+    }, [params.slug])
+
+    console.log('isStatePaymentRental : ', isStatePaymentRental);
+
 
 
     if (!isMounted) {
@@ -74,11 +80,7 @@ const InfoRentalCar = ({ params }: Props) => {
 
     return (
         <div className='bg-[#F6F6F8]'>
-            <PaymentMethods
-                isState={isState}
-                queryKeyIsState={queryKeyIsState}
-                listPaymentMethods={listPaymentMethods}
-            />
+            <PaymentMethods />
         </div>
     )
 }

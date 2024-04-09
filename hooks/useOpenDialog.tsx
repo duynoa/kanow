@@ -40,18 +40,22 @@ interface IOpenDialogCalendar {
     setDate: (date: DateRange | undefined) => void;
     openDialogCalendar: boolean;
     setOpenDialogCalendar: (key: any) => void
+    numberDay: number | null
+    setNumberDay: (numberDay: number | null) => void;
 }
 
 const defaultDateRange: DateRange = {
     from: setMinutes(setHours(new Date(), 21), 0),
-    to: setMinutes(setHours(addDays(new Date(), 7), 20), 0),
+    to: setMinutes(setHours(addDays(new Date(), 1), 20), 0),
 };
 
 export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     openDialogCalendar: false,
     date: defaultDateRange,
+    numberDay: null,
     setOpenDialogCalendar: (key: any) => set((state) => ({ ...state, openDialogCalendar: key })),
     setDate: (date: DateRange | undefined) => set((state) => ({ ...state, date })),
+    setNumberDay: (numberDay: number | null) => set((state) => ({ numberDay: numberDay })),
 }))
 
 // dialog filter list car

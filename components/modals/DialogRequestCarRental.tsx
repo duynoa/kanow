@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
     Dialog,
@@ -20,11 +20,11 @@ import { PiShieldCheckFill } from "react-icons/pi";
 import { HiClock } from "react-icons/hi2";
 import { TiLocation } from "react-icons/ti";
 
-import { FormatNumberDot, FormatNumberHundred } from "../format/FormatNumber";
+import { FormatNumberDot, FormatNumberHundred, FormatNumberToDecimal, FormatPointStar } from "../format/FormatNumber";
 import { ActionTooltip } from "../tooltip/ActionTooltip";
 
 import { useResize } from "@/hooks/useResize";
-import { useDialogAnswerPolicy, useDialogRequestCarRental } from "@/hooks/useOpenDialog";
+import { useDialogAnswerPolicy, useDialogCalendar, useDialogRequestCarRental } from "@/hooks/useOpenDialog";
 
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
@@ -34,16 +34,29 @@ import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { useDataPolicy } from "@/hooks/useDataQueryKey";
+import moment from "moment";
+import { postRequestRentalCar } from "@/services/cars/cars.services";
+import { toastCore } from "@/lib/toast";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
 export function DialogRequestCarRental({ }: Props) {
+    const router = useRouter()
     const { isVisibleTablet } = useResize()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isStatePolicy } = useDataPolicy()
     const { openDialogRequestCarRental, dataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
+    const { date, numberDay } = useDialogCalendar()
 
+    const [isMounted, setIsMounted] = useState<boolean>(false)
     const [checkPolicy, setCheckPolicy] = useState<boolean>(false)
+
+    useEffect(() => {
+        if (openDialogRequestCarRental) {
+            setIsMounted(true)
+        }
+    }, [openDialogRequestCarRental])
 
     const form = useForm({
         defaultValues: {
@@ -54,6 +67,31 @@ export function DialogRequestCarRental({ }: Props) {
     const onSubmit = async (values: any) => {
         try {
 
+            const dataRequest: any = {
+                data: {
+                    car_id: dataListRequestCarRental?.dataDetailCar?.id,
+                    date_start: moment(date?.from).format("YYYY-MM-DD HH:mm"),
+                    date_end: moment(date?.to).format("YYYY-MM-DD HH:mm"),
+                    rent_cost: dataListRequestCarRental?.dataDetailCar?.price?.rent_cost,
+                    quantity: numberDay,
+                    promotion_car_id: !dataListRequestCarRental?.infoPromotion?.activePromotion && dataListRequestCarRental?.dataDetailCar?.promotion && dataListRequestCarRental?.dataDetailCar?.promotion?.length > 0 ? dataListRequestCarRental?.dataDetailCar?.promotion[0]?.id : 0,
+                }
+            }
+            if (dataListRequestCarRental?.infoPromotion?.activePromotion) {
+                // Nếu có activePromotion, gán promotion_id
+                dataRequest.data.promotion_id = dataListRequestCarRental?.infoPromotion?.activePromotion?.id;
+            }
+
+            const { data } = await postRequestRentalCar(dataRequest)
+
+            console.log("data", data);
+            if (data && data.result) {
+                toastCore.success('Gửi yêu cầu thuê xe thành công!')
+                setOpenDialogRequestCarRental(false)
+                router.push(`/info-rental-car/${data.id}`)
+            } else {
+                toastCore.error(data.message)
+            }
 
         } catch (err) {
             throw err
@@ -63,9 +101,11 @@ export function DialogRequestCarRental({ }: Props) {
     const handleCloseModal = () => {
         setOpenDialogRequestCarRental(false)
     }
-
     console.log('dataListRequestCarRental : ', dataListRequestCarRental);
-    console.log('isStatePolicy : ', isStatePolicy);
+
+    if (!isMounted) {
+        return null
+    }
 
     return (
         <Dialog modal open={openDialogRequestCarRental} onOpenChange={handleCloseModal}>
@@ -110,7 +150,7 @@ export function DialogRequestCarRental({ }: Props) {
                                                     {dataListRequestCarRental?.dataDetailCar?.trait_car?.number_car ? dataListRequestCarRental?.dataDetailCar?.trait_car?.number_car : ""}
                                                 </span>
                                             </div>
-                                            <div className='flex items-center gap-4'>
+                                            {/* <div className='flex items-center gap-4'>
                                                 <div className='flex items-center gap-1'>
                                                     <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
                                                     <div className='3xl:text-sm text-xs text-[#484D5C] font-medium'>
@@ -124,6 +164,22 @@ export function DialogRequestCarRental({ }: Props) {
                                                         {FormatNumberHundred(19, 100)} Chuyến
                                                     </div>
                                                 </div>
+                                            </div> */}
+
+                                            <div className='flex gap-3 md:items-center items-start caret-transparent'>
+                                                {
+                                                    dataListRequestCarRental?.dataDetailCar?.total_trip ?
+                                                        <div className='flex items-center gap-1'>
+                                                            <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
+                                                            <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                                                {dataListRequestCarRental?.dataDetailCar?.total_trip ? FormatNumberHundred(dataListRequestCarRental?.dataDetailCar?.total_trip, 100) : 0} Chuyến
+                                                            </div>
+                                                        </div>
+                                                        :
+                                                        <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                                            Chưa có chuyến
+                                                        </div>
+                                                }
                                             </div>
                                         </div>
 
@@ -137,6 +193,7 @@ export function DialogRequestCarRental({ }: Props) {
                                     </div>
                                 </div>
 
+                                {/* thông tin thuê xe */}
                                 <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border border-b border-x-0 border-t-0'>
                                     <div className='3xl:text-2xl text-xl font-semibold'>
                                         Thông tin thuê xe
@@ -157,7 +214,7 @@ export function DialogRequestCarRental({ }: Props) {
                                                     Từ:
                                                 </div>
                                                 <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
-                                                    12h00 12/12/2024
+                                                    {moment(date?.from).format("HH[h]mm DD/MM/YYYY")}
                                                 </div>
                                             </div>
                                             <div className='pl-7 flex items-center gap-1'>
@@ -165,7 +222,7 @@ export function DialogRequestCarRental({ }: Props) {
                                                     Đến:
                                                 </div>
                                                 <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
-                                                    12h00 12/12/2024
+                                                    {moment(date?.to).format("HH[h]mm DD/MM/YYYY")}
                                                 </div>
                                             </div>
                                         </div>
@@ -180,7 +237,8 @@ export function DialogRequestCarRental({ }: Props) {
                                                 </div>
                                             </div>
                                             <div className='pl-7 mt-1 3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium'>
-                                                12 Hoàn Kiếm Hà Nội
+                                                {/* 12 Hoàn Kiếm Hà Nội */}
+                                                {dataListRequestCarRental?.dataDetailCar?.full_address}
                                             </div>
                                             <div className='pl-7 3xl:text-base lg:text-sm md:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-medium cursor-pointer w-fit duration-200 transition caret-transparent'>
                                                 Xem bản đồ
@@ -218,21 +276,18 @@ export function DialogRequestCarRental({ }: Props) {
                                                 <div className='uppercase text-[#16171B] font-semibold 3xl:text-base text-sm'>
                                                     {dataListRequestCarRental?.dataDetailCar?.car_owner?.fullname ? dataListRequestCarRental?.dataDetailCar?.car_owner?.fullname : ""}
                                                 </div>
-                                                <div className='flex items-center gap-4'>
-                                                    <div className='flex items-center gap-1'>
-                                                        <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
-                                                        <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
-                                                            4.9
-                                                        </div>
-                                                    </div>
 
-                                                    <div className='flex items-center gap-1'>
-                                                        <FaCircleCheck className='3xl:text-base text-sm text-[#3AC996]' />
-                                                        <div className='3xl:text-sm text-xs text-[#484D5C] font-semibold'>
-                                                            {FormatNumberHundred(19, 100)} Chuyến
+                                                {
+                                                    dataListRequestCarRental?.dataDetailCar?.point_star ?
+                                                        <div className='flex items-center gap-1'>
+                                                            <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
+                                                            <div className='3xl:text-sm text-xs text-[#484D5C] font-medium'>
+                                                                {dataListRequestCarRental?.dataDetailCar?.point_star ? (FormatPointStar(4.9999, 1)) : 0}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
+                                                        :
+                                                        null
+                                                }
                                             </div>
                                         </div>
 
@@ -462,6 +517,76 @@ export function DialogRequestCarRental({ }: Props) {
                                             {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.temp_total_amount ? dataListRequestCarRental?.dataDetailCar?.price?.temp_total_amount : 0)}{dataListRequestCarRental?.dataDetailCar?.price?.number_day === 1 ? <span>đ/ngày</span> : <span>đ/{dataListRequestCarRental?.dataDetailCar?.price?.number_day} ngày</span>}
                                         </div>
                                     </div>
+
+                                    {/* khuyến mãi */}
+                                    {
+                                        dataListRequestCarRental?.infoPromotion?.activePromotion === null && dataListRequestCarRental?.dataDetailCar?.promotion && dataListRequestCarRental?.dataDetailCar?.promotion?.length > 0 ?
+                                            <div className='flex flex-row items-center justify-between gap-2 w-full'>
+                                                <div className='flex flex-col'>
+                                                    <div className='flex items-center gap-1'>
+                                                        <Image
+                                                            src='/icon/icon_ticket_discount_red.svg'
+                                                            alt="ticket"
+                                                            width={80}
+                                                            height={80}
+                                                            className='3xl:w-6 3xl:max-w-6 3xl:h-6 w-5 max-w-5 h-5 object-contain'
+                                                        />
+                                                        <div className='w-[90%] max-w-[90%] 3xl:text-lg xl:text-base text-sm'>
+                                                            Chương trình giảm giá
+                                                        </div>
+                                                    </div>
+                                                    <div className='text-[#6F7689] 3xl:text-base xl:text-sm text-xs'>
+                                                        Giảm {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.promotion[0]?.price_promotion ? dataListRequestCarRental?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ trên đơn giá
+                                                    </div>
+                                                </div>
+                                                {
+                                                    dataListRequestCarRental?.infoPromotion?.selectPromotion === "0" ?
+                                                        <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
+                                                            -{FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.promotion[0]?.price_promotion ? dataListRequestCarRental?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ
+                                                        </div>
+                                                        :
+                                                        null
+                                                }
+                                            </div>
+                                            :
+                                            null
+                                    }
+                                    {
+                                        dataListRequestCarRental?.infoPromotion?.activePromotion ?
+                                            <div className='flex flex-row items-center justify-between gap-2 w-full'>
+                                                <div className='flex flex-col'>
+                                                    <div className='flex items-center gap-1'>
+                                                        <Image
+                                                            src='/icon/icon_ticket_discount_green.svg'
+                                                            alt="ticket"
+                                                            width={80}
+                                                            height={80}
+                                                            className='3xl:w-6 3xl:max-w-6 3xl:h-6 w-5 max-w-5 h-5 object-contain fill-[#2FB9BD]'
+                                                        />
+                                                        <div className='w-[90%] max-w-[90%] flex items-center gap-2'>
+                                                            <div className='xl:text-base text-sm'>
+                                                                <span className='font-normal'>Mã</span> <span className='font-semibold uppercase'>{dataListRequestCarRental?.infoPromotion?.activePromotion?.code}</span>
+                                                            </div>
+                                                            {/* <div onClick={(event) => handleRemoveDiscount(event)}>
+                                                                        <FaDeleteLeft className="size-5 text-rose-500" />
+                                                                    </div> */}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {
+                                                    dataListRequestCarRental?.infoPromotion?.activePromotion?.percent !== 0 ?
+                                                        <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
+                                                            -{FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.max_money_discount ? dataListRequestCarRental?.dataDetailCar?.price?.max_money_discount : 0)}đ
+                                                        </div>
+                                                        :
+                                                        <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
+                                                            -{FormatNumberDot(dataListRequestCarRental?.infoPromotion?.activePromotion?.cash ? dataListRequestCarRental?.infoPromotion?.activePromotion?.cash : 0)}đ
+                                                        </div>
+                                                }
+                                            </div>
+                                            :
+                                            null
+                                    }
 
                                     <div className='border border-x-0 border-b-0 w-full' />
 

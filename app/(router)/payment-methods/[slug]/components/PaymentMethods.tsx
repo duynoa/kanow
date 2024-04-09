@@ -1,6 +1,9 @@
 import { FormatNumberDot } from '@/components/format/FormatNumber'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
+import { useDataPaymentRental } from '@/hooks/useDataQueryKey'
+import { toastCore } from '@/lib/toast'
+import { postPaymentRentalCar } from '@/services/cars/payment.services'
 import { IInitialStatePayment } from '@/types/Initial/IInitial'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -9,25 +12,39 @@ import { BsArrow90DegLeft } from 'react-icons/bs'
 import { FaArrowLeftLong } from 'react-icons/fa6'
 import { PiCheckCircleFill } from 'react-icons/pi'
 
-type Props = {
-    isState: IInitialStatePayment,
-    queryKeyIsState: (key: any) => void,
-    listPaymentMethods: any[]
-}
+type Props = {}
 
-const PaymentMethods = ({
-    isState,
-    queryKeyIsState,
-    listPaymentMethods
-}: Props) => {
+const PaymentMethods = ({ }: Props) => {
     const router = useRouter()
+    const { isStatePaymentRental, queryKeyIsStatePaymentRental } = useDataPaymentRental()
+
     const handleChangePayment = (item: any, index: number) => {
-        queryKeyIsState({
+        queryKeyIsStatePaymentRental({
             payment: {
                 idActivePaymentMethod: item.id,
                 indexPaymentMethod: index
             }
         })
+    }
+
+    const handleSubmitPayment = async () => {
+        try {
+            const dataPayment = {
+                payment_mode_id: isStatePaymentRental?.payment?.idActivePaymentMethod,
+                total: isStatePaymentRental?.detailRentalCar?.price?.price_depoist,
+                transaction_id: isStatePaymentRental?.detailRentalCar?.id
+            }
+            const { data } = await postPaymentRentalCar(dataPayment)
+            console.log('data :', data);
+            if (data && data.result) {
+                toastCore.success("Thanh toán cọc thành công!")
+                router.push(`/info-rental-car/${isStatePaymentRental?.detailRentalCar?.id}`)
+            } else {
+                toastCore.error(data.message)
+            }
+        } catch (err) {
+            throw err
+        }
     }
 
     return (
@@ -53,17 +70,17 @@ const PaymentMethods = ({
 
                     <div className='flex flex-col gap-3'>
                         {
-                            listPaymentMethods?.map((item, index) => (
+                            isStatePaymentRental?.listPaymentMode && isStatePaymentRental?.listPaymentMode?.map((item, index) => (
                                 <div
                                     key={`payment-${item.id}`}
-                                    className={`${isState?.payment?.idActivePaymentMethod === item?.id ? "bg-[#F1FCFC] border-2 border-[#2FB9BD]" : "bg-white"} flex-flex-col px-4 py-3 rounded-xl caret-transparent cursor-pointer relative`}
+                                    className={`${isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id ? "bg-[#F1FCFC] border-2 border-[#2FB9BD]" : "bg-white"} flex-flex-col px-4 py-3 rounded-xl caret-transparent cursor-pointer relative`}
                                     onClick={() => handleChangePayment(item, index)}
                                 >
                                     <div className='flex items-center gap-4'>
                                         <div className='w-12 h-12'>
                                             <Image
                                                 alt="logo_payment"
-                                                src={item?.logo ? item?.logo : "/default/default.png"}
+                                                src={item?.image ? item?.image : "/default/default.png"}
                                                 width={100}
                                                 height={100}
                                                 className='w-full h-full object-contain'
@@ -74,7 +91,7 @@ const PaymentMethods = ({
                                         </div>
                                     </div>
                                     {
-                                        isState?.payment?.idActivePaymentMethod === item?.id && item?.type !== "cash" &&
+                                        isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id && item?.type !== 1 &&
                                         <div className='flex flex-col gap-4'>
                                             <div className='flex items-center justify-between pb-3 border-b ml-16'>
                                                 <div className='flex flex-col gap-1 max-w-[80%]'>
@@ -111,7 +128,7 @@ const PaymentMethods = ({
                                         </div>
                                     }
                                     {
-                                        isState?.payment?.idActivePaymentMethod === item?.id &&
+                                        isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id &&
                                         <div className='absolute right-3 top-3'>
                                             <PiCheckCircleFill className='size-6 text-[#2FB9BD]' />
                                         </div>
@@ -131,11 +148,11 @@ const PaymentMethods = ({
                                 </div>
 
                                 <div className='3xl:text-3xl text-2xl text-[#1EAAB1] font-semibold'>
-                                    {FormatNumberDot(649100)}đ
+                                    {FormatNumberDot(isStatePaymentRental?.detailRentalCar?.price?.price_depoist ? +isStatePaymentRental?.detailRentalCar?.price?.price_depoist : 0)}đ
                                 </div>
                             </div>
 
-                            <div className='flex items-center justify-between'>
+                            {/* <div className='flex items-center justify-between'>
                                 <div className='3xl:text-base text-sm text-[#8C93A3]'>
                                     Tiết kiệm:
                                 </div>
@@ -143,7 +160,7 @@ const PaymentMethods = ({
                                 <div className='3xl:text-xl text-lg text-[#B4B8C5] font-medium'>
                                     {FormatNumberDot(300000)}đ
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className='flex flex-col gap-2 mt-4'>
@@ -153,21 +170,22 @@ const PaymentMethods = ({
                             <div className='flex items-center gap-2 mb-4'>
                                 <div className='w-12 h-12'>
                                     <Image
-                                        src={listPaymentMethods[isState.payment.indexPaymentMethod]?.logo ? listPaymentMethods[isState.payment.indexPaymentMethod]?.logo : "/default/default.png"}
+                                        src={isStatePaymentRental?.listPaymentMode?.[isStatePaymentRental.payment.indexPaymentMethod]?.image ? isStatePaymentRental?.listPaymentMode[isStatePaymentRental.payment.indexPaymentMethod]?.image : "/default/default.png"}
                                         alt="method"
-                                        width={100}
-                                        height={100}
+                                        width={200}
+                                        height={200}
                                         className='w-full h-full object-contain'
                                     />
                                 </div>
                                 <div className='3xl:text-base text-sm font-bold'>
                                     {/* Thanh toán qua Momo */}
-                                    {listPaymentMethods[isState.payment.indexPaymentMethod]?.name ? listPaymentMethods[isState.payment.indexPaymentMethod]?.name : ""}
+                                    {isStatePaymentRental?.listPaymentMode[isStatePaymentRental.payment.indexPaymentMethod]?.name ? isStatePaymentRental?.listPaymentMode[isStatePaymentRental.payment.indexPaymentMethod]?.name : ""}
                                 </div>
                             </div>
                             <Button
                                 type="button"
                                 className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                onClick={handleSubmitPayment}
                             >
                                 Thanh toán
                             </Button>
