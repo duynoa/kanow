@@ -43,3 +43,19 @@ export const FormatPhoneNumber = (number: number | string, decimalPlaces?: numbe
 
     return formattedNumber;
 }
+
+// formart trang my trip
+export function FormatCurrency(amount: any) {
+    // Chuyển số tiền sang chuỗi
+    var amountString = amount.toString();
+
+    // Chèn dấu phẩy sau mỗi 3 chữ số từ phải qua trái, trừ chữ số đầu tiên nếu số tiền có hơn 3 chữ số
+    for (var i = amountString.length - 3; i > 0; i -= 3) {
+        amountString = amountString.slice(0, i) + ' ' + amountString.slice(i);
+    }
+
+    // Thêm ký hiệu tiền tệ 'đ' vào cuối chuỗi
+    amountString += 'đ';
+
+    return amountString;
+}

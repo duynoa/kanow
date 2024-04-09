@@ -15,6 +15,7 @@ import apiAccount from '@/services/account/account.services'
 import SessionStarRating from './components/SessionStarRating'
 import useAuthenticationAPI from '@/services/auth/auth.services'
 import { StatePageAccount } from '@/types/Profile/IAccount'
+import Nodata from '@/components/image/Nodata'
 type Props = {}
 
 
@@ -280,7 +281,8 @@ const Account = (props: Props) => {
             <BackgroundUiProfile>
                 <div className=" flex flex-col gap-8">
                     <h1 className='text-[#3E424E] lg:text-2xl text-xl font-semibold '>Danh sách xe</h1>
-                    <Image src={'/card/no_car.png'} alt="logo" width={1280} height={1024} className='w-full h-full object-cover'></Image>
+                    <Nodata type='account' />
+                    {/* <Image src={'/card/no_car.png'} alt="logo" width={1280} height={1024} className='w-full h-full object-cover'></Image> */}
                 </div>
             </BackgroundUiProfile>
             <BackgroundUiProfile>

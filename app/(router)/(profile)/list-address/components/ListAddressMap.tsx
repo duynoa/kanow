@@ -1,6 +1,7 @@
 import Image from "next/image"
 import SkeletonAddress from "./SkeletonAddress"
 import { MdEditLocationAlt } from "react-icons/md"
+import Nodata from "@/components/image/Nodata"
 
 const ListAddressMap = ({ isState, queryKeyIsState }: any) => {
     return <div className="flex flex-col 2xl:gap-6 lg:gap-4 gap-6 bg-white">
@@ -39,7 +40,8 @@ const ListAddressMap = ({ isState, queryKeyIsState }: any) => {
                     </div>
                 )
             }) :
-                <Image src={'/card/no_car.png'} alt="logo" width={1280} height={1024} className='w-full h-full object-cover'></Image>
+                <Nodata type="listAddress" />
+            // <Image src={'/card/no_car.png'} alt="logo" width={1280} height={1024} className='w-full h-full object-cover'></Image>
         }
     </div>
 }

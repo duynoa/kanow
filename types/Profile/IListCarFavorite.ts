@@ -1,6 +1,6 @@
 export interface IListCarFavorite {
     dataDrivingCar: any[];
-    talentedCar: any[];
+    datalentedCar: any[];
     page: number;
     next: any;
     limit: number;

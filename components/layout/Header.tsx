@@ -11,7 +11,7 @@ import { ActionTooltip } from '../tooltip/ActionTooltip';
 
 import { IoCloseSharp } from "react-icons/io5";
 import { Menu } from 'lucide-react';
-import { IoIosArrowDown } from 'react-icons/io';
+import { IoIosArrowDown, IoMdNotificationsOutline } from 'react-icons/io';
 import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
 import { useAuth } from '@/hooks/useAuth';
@@ -20,7 +20,19 @@ import useAuthenticationAPI from '@/services/auth/auth.services';
 import { useCookie } from '@/hooks/useCookie';
 import { Skeleton } from '../ui/skeleton';
 import { useDialogLogin } from '@/hooks/useOpenDialog';
-
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import moment from 'moment';
+import { ScrollArea } from '../ui/scroll-area';
+import { Badge } from '../ui/badge';
+import { useNotification } from '@/hooks/useNotification';
+import DropdownHeaderNotification from '../dropdown/DropdownHeaderNotification';
 const Header = () => {
     // lấy thông tin user
     const router = useRouter()
@@ -35,6 +47,8 @@ const Header = () => {
     const [showActive, setShowActive] = useState<boolean>(false);
     const [activeService, setActiveService] = useState<boolean>(false)
     const [openModalLogin, setOpenModalLogin] = useState<boolean>(false)
+    const { setDataNotification, setOpenNotification, openNotification } = useNotification()
+    console.log("openNotification", openNotification);
 
     const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
 
@@ -74,11 +88,68 @@ const Header = () => {
         },
     ]
 
+    const dataNotice = [
+        {
+            id: uuidv4(),
+            title: "Giới thiệu về Kanow",
+            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            link: '#',
+            time: new Date(),
+        }
+        ,
+        {
+            id: uuidv4(),
+            title: "Giới thiệu về Kanow",
+            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            link: '#',
+            time: new Date(),
+        },
+        {
+            id: uuidv4(),
+            title: "Giới thiệu về Kanow",
+            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            link: '#',
+            time: new Date(),
+        },
+        {
+            id: uuidv4(),
+            title: "Giới thiệu về Kanow",
+            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            link: '#',
+            time: new Date(),
+        }
+        ,
+        {
+            id: uuidv4(),
+            title: "Giới thiệu về Kanow",
+            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            link: '#',
+            time: new Date(),
+        },
+        {
+            id: uuidv4(),
+            title: "Giới thiệu về Kanow",
+            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            link: '#',
+            time: new Date(),
+        },
+        {
+            id: uuidv4(),
+            title: "Giới thiệu về Kanow",
+            desription: "Chào mừng bạn tham gia cộng đồng Mioto, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            link: '#',
+            time: new Date(),
+        }
+    ]
+
+
+
     useEffect(() => {
         setIsMounted(true)
     }, [])
 
     useEffect(() => {
+        setDataNotification(dataNotice)
         const getInfoUser = async () => {
             const { data: information } = await apiInfoUser();
             if (information?.result) {
@@ -172,7 +243,7 @@ const Header = () => {
                 {
                     isVisibleTablet ?
                         // màn hình mobile, tablet
-                        <div className="custom-container 3xl:h-[120px] h-[80px] grid grid-cols-4">
+                        <div className={`grid-cols-4 custom-container 3xl:h-[120px] h-[80px] grid `}>
                             <Link
                                 href="/"
                                 className='col-span-2 flex items-center justify-start'
@@ -188,7 +259,18 @@ const Header = () => {
                                 />
                             </Link>
 
-                            <div className="col-span-2 flex items-center justify-end">
+                            <div className="col-span-2 flex items-center justify-end gap-6">
+                                {
+                                    informationUser &&
+                                    <DropdownHeaderNotification>
+                                        <div className='cursor-pointer size-6 relative' >
+                                            <Image src={'/icon/header/notifications.png'} width={100} height={100} alt='' className='object-contain size-full' />
+                                            <Badge variant="outline" className='absolute top-0 -right-1/2 -translate-x-1/3 -translate-y-1/2 bg-red-500 text-white rounded-full px-[7px] text-[10px] border-white'>
+                                                {dataNotice.length}
+                                            </Badge>
+                                        </div>
+                                    </DropdownHeaderNotification>
+                                }
                                 <button onClick={_ToogleIsShow.bind(this)} className='lg:hidden'>
                                     <Menu className='scale-110' />
                                 </button>
@@ -246,16 +328,14 @@ const Header = () => {
                                                             <Link
                                                                 href={'/account'}
                                                                 onClick={_ToogleIsOff}
-                                                                className={`text-[#0E0E0E]/80 flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                                                className={`text-[#0E0E0E]/80 flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-[17px] xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
                                                                 prefetch={false}
                                                             >
                                                                 <span className='capitalize'>{informationUser?.fullname}</span>
                                                                 <IoIosArrowDown className='2xl:text-2xl text-xl text-[#2FB9BD]' />
                                                             </Link>
                                                         </div>
-                                                        <div className='3xl:min-w-7 3xl:min-h-7 3xl:size-7  min-w-6 min-h-6 size-6' >
-                                                            <Image src={'/icon/header/notifications.png'} width={100} height={100} alt='' className='object-contain size-full' />
-                                                        </div>
+
                                                     </div>
                                                     :
                                                     <div className='flex gap-2 mb-6'>
@@ -328,8 +408,8 @@ const Header = () => {
                                                 }
                                                 {getCookie && informationUser &&
                                                     <Link
-                                                        href={'list-car-autonomous'}
-                                                        className={`${(pathname === 'list-car-autonomous') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#9D9FA6]'} mb-6 text-base w-fit duration-300 transition ease-in-out flex items-center`}
+                                                        href={'/my-trips'}
+                                                        className={`${(pathname === '/my-trips') ? 'text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : 'text-[#9D9FA6]'} mb-6 text-base w-fit duration-300 transition ease-in-out flex items-center`}
                                                         onClick={_ToogleIsOff}
                                                         prefetch={false}
                                                     >
@@ -424,8 +504,8 @@ const Header = () => {
                                 {
                                     getCookie && informationUser &&
                                     <Link
-                                        href={'/list-car-autonomous'}
-                                        className={`${(pathname.includes('/list-car-autonomous')) ? ' text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : ' text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                        href={'/my-trips'}
+                                        className={`${(pathname.includes('/my-trips')) ? ' text-[#0E0E0E] underline underline-offset-8 decoration-4 decoration-[#2FB9BD]' : ' text-[#0E0E0E]/80'} text-center font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
                                         prefetch={false}
                                     >
                                         Chuyến của tôi
@@ -441,10 +521,14 @@ const Header = () => {
                                         <>
                                             {informationUser ?
                                                 <>
-
-                                                    <div className='3xl:min-w-7 3xl:min-h-7 3xl:size-7  min-w-6 min-h-6 size-6' >
-                                                        <Image src={'/icon/header/notifications.png'} width={100} height={100} alt='' className='object-contain size-full' />
-                                                    </div>
+                                                    <DropdownHeaderNotification>
+                                                        <div className='cursor-pointer size-7 relative' >
+                                                            <Image src={'/icon/header/notifications.png'} width={100} height={100} alt='' className='object-contain size-full' />
+                                                            <Badge variant="outline" className='absolute top-0 -right-1/2 -translate-x-1/3 -translate-y-1/2 bg-red-500 text-white rounded-full px-[7px] text-[10px] border-white'>
+                                                                {dataNotice.length}
+                                                            </Badge>
+                                                        </div>
+                                                    </DropdownHeaderNotification>
                                                     <Link
                                                         href={'/account'}
                                                         className='3xl:size-10 3xl:min-w-10 3xl:min-h-10 size-8 min-w-8  min-h-8'
@@ -468,7 +552,7 @@ const Header = () => {
                                                     </Link>
                                                     <Link
                                                         href={'/account'}
-                                                        className={`text-[#0E0E0E]/80 flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-lg xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
+                                                        className={`text-[#0E0E0E]/80 flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-[17px] xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
                                                         prefetch={false}
                                                     >
                                                         <span className='capitalize caret-transparent '>{informationUser?.fullname}</span>
@@ -500,6 +584,7 @@ const Header = () => {
                         </div>
                 }
             </header>
+
         </>
     )
 }
