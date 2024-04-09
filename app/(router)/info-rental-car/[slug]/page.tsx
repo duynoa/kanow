@@ -82,6 +82,8 @@ const InfoRentalCar = ({ params }: Props) => {
         const fetchStepTransaction = async () => {
             const { data } = await getInfoDetailCarTransaction(params?.slug);
 
+            console.log('data : ', data);
+
             if (data && data.data && data.base) {
                 let { customDataInfoRentalCar } = CustomDataInfoRentalCar(data)
 

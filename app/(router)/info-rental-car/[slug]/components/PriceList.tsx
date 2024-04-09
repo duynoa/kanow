@@ -16,6 +16,8 @@ import { IInitialStateInfoRentalCar } from '@/types/Initial/IInitial'
 import { PiShieldCheckFill } from 'react-icons/pi'
 import Link from 'next/link'
 import { useDataInfoRentalCar, useDataPolicy } from '@/hooks/useDataQueryKey'
+import Image from 'next/image'
+import { FaDeleteLeft } from 'react-icons/fa6'
 
 type Props = {
     params: {
@@ -31,6 +33,9 @@ const PriceList = ({
     const { isVisibleTablet } = useResize()
     const { isStateInfoRentalCar } = useDataInfoRentalCar()
     const { isStatePolicy } = useDataPolicy()
+
+    console.log('isStateInfoRentalCar', isStateInfoRentalCar);
+
 
     const handleOpenAlertCancel = () => {
         setOpenAlertCancel(true)
@@ -179,7 +184,7 @@ const PriceList = ({
                 </div>
 
                 {/* Tổng tạm tính */}
-                <div className='flex justify-between gap-2 items-center'>
+                <div className='flex justify-between gap-2 items-center pb-4 border-b'>
                     <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#383A43] font-medium'>
                         Tổng tạm tính:
                     </div>
@@ -187,8 +192,29 @@ const PriceList = ({
                         {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price?.temp_total_amount ? isStateInfoRentalCar?.detailRentalCar?.price?.temp_total_amount : 0)}{isStateInfoRentalCar?.detailRentalCar?.price?.number_day === 1 ? <span>đ/ngày</span> : <span>đ/{isStateInfoRentalCar?.detailRentalCar?.price?.number_day} ngày</span>}
                     </div>
                 </div>
-
-                <div className='border border-[#B4B8C5] w-full' />
+                {/* khuyến mãi */}
+                {
+                    isStateInfoRentalCar?.detailRentalCar?.price?.promotion ?
+                        <div className='flex flex-row items-center justify-between gap-2 w-full pb-4 border-b'>
+                            <div className='flex items-center gap-2'>
+                                <Image
+                                    src='/icon/icon_ticket_discount_green.svg'
+                                    alt="ticket"
+                                    width={80}
+                                    height={80}
+                                    className='3xl:w-6 3xl:max-w-6 3xl:h-6 w-5 max-w-5 h-5 object-contain fill-[#2FB9BD]'
+                                />
+                                <div className='xl:text-base text-sm font-normal'>
+                                    Chương trình khuyến mãi
+                                </div>
+                            </div>
+                            <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
+                                -{FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price?.promotion)}đ
+                            </div>
+                        </div>
+                        :
+                        null
+                }
 
                 {/* Thành tiền */}
                 <div className='flex flex-col gap-2'>
@@ -228,7 +254,7 @@ const PriceList = ({
                             }
                         </div>
 
-                        <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                        <div className='text-[#2FB9BD] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
                             {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price?.price_depoist ? isStateInfoRentalCar?.detailRentalCar?.price?.price_depoist : 0)}<span>đ</span>
                         </div>
                     </div>
@@ -260,7 +286,7 @@ const PriceList = ({
                             }
                         </div>
 
-                        <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                        <div className='text-[#2FB9BD] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
                             {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price?.cash_on_delivery ? isStateInfoRentalCar?.detailRentalCar?.price?.cash_on_delivery : 0)}<span>đ</span>
                         </div>
                     </div>
@@ -296,7 +322,7 @@ const PriceList = ({
                                 <Button
                                     type="button"
                                     onClick={handleOpenAlertCancel}
-                                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-red-500 hover:bg-red-500/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-[#2FB9BD] bg-white border-2 border-[#2FB9BD] hover:bg-[#2FB9BD]/20 transition-all duration-300 font-semibold rounded-xl caret-transparent'
                                 >
                                     Huỷ chuyến
                                 </Button>

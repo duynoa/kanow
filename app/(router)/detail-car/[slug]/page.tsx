@@ -30,7 +30,7 @@ import { getDataDetailCar, getListCarsRelated, postUpdateFavoriteHeartCar } from
 import { CustomDataDetailCar, CustomDataListCars, CustomDataPolicy } from '@/custom/CustomData'
 import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy'
 import { getListPromotions } from '@/services/cars/promotion.services'
-import { useDialogLogin, useDialogPromotion, useDialogReportCar } from '@/hooks/useOpenDialog'
+import { useDialogCalendar, useDialogLogin, useDialogPromotion, useDialogReportCar } from '@/hooks/useOpenDialog'
 import { useCookie } from '@/hooks/useCookie'
 import { DialogReportCar } from '@/components/modals/DialogReportCar'
 import { getListReportCar } from '@/services/cars/report.services'
@@ -52,6 +52,7 @@ const DetailCar = ({ params }: Props) => {
     const { dataPromotions, setDataPromotions } = useDialogPromotion()
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
     const { queryKeyIsStatePolicy } = useDataPolicy()
+    const { numberDay } = useDialogCalendar()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
@@ -61,6 +62,7 @@ const DetailCar = ({ params }: Props) => {
         dataDetailCar: {
             id: "",
             address: "",
+            full_address: "",
             image_car: [],
             car_owner: {
                 avatar: "",
@@ -82,6 +84,7 @@ const DetailCar = ({ params }: Props) => {
                 price_before_promotion: 0,
                 price_after_promotion: 0,
 
+                rent_cost: 0,
                 rent_cost_day: 0,
                 price_insurance_day: 0,
                 temp_total_amount: 0,
@@ -146,6 +149,9 @@ const DetailCar = ({ params }: Props) => {
                 }
             })
             const { data } = await getDataDetailCar(params.slug)
+
+            console.log("data data : ", data);
+
 
             if (data && data.data && data.base.base) {
                 let { customDataDetailCar } = CustomDataDetailCar(data)
@@ -236,6 +242,50 @@ const DetailCar = ({ params }: Props) => {
         fetchListPromotions()
         fetchListReportCar()
     }, [params.slug, getCookie])
+
+    useEffect(() => {
+        if (numberDay) {
+            queryKeyIsState({
+                dataDetailCar: {
+                    ...isState?.dataDetailCar,
+                    price: {
+                        ...isState?.dataDetailCar?.price,
+                        // tổng tạm tính 
+                        temp_total_amount: (isState?.dataDetailCar?.price?.rent_cost_day + isState?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+
+                        // thành tiền
+                        total_amount:
+                            isState?.dataDetailCar?.promotion?.length > 0
+                                ?
+                                ((isState?.dataDetailCar?.price?.rent_cost_day - isState?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1)) + isState?.dataDetailCar?.price?.price_insurance_day
+                                :
+                                (isState?.dataDetailCar?.price?.rent_cost_day + isState?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+
+                        // tiền đặt cọc
+                        price_depoist:
+                            isState?.dataDetailCar?.promotion?.length > 0
+                                ?
+                                ((isState?.dataDetailCar?.price?.rent_cost_day - isState?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) + isState?.dataDetailCar?.price?.price_insurance_day) * (isState?.dataDetailCar?.price?.percent_deposit / 100)
+                                :
+                                (isState?.dataDetailCar?.price?.rent_cost_day + isState?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (isState?.dataDetailCar?.price?.percent_deposit / 100)
+                        ,
+                        // số ngày
+                        // number_day: +isState?.dataDetailCar?.price?.number_day,
+                        number_day: numberDay ? numberDay : 1,
+                        // thanh toán khi nhận xe (Thành tiền - tiền cọc)
+                        cash_on_delivery:
+                            isState?.dataDetailCar?.promotion?.length > 0
+                                ?
+                                (((+isState?.dataDetailCar?.price?.rent_cost_day - +isState?.dataDetailCar?.promotion[0]?.price_promotion) + (+isState?.dataDetailCar?.price?.price_insurance_day)) * (numberDay ? numberDay : 1)) - ((((isState?.dataDetailCar?.price?.rent_cost_day - isState?.dataDetailCar?.promotion[0]?.price_promotion) + isState?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isState?.dataDetailCar?.price?.percent_deposit / 100))
+                                :
+                                ((isState?.dataDetailCar?.price?.rent_cost_day + isState?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - (((isState?.dataDetailCar?.price?.rent_cost_day + isState?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isState?.dataDetailCar?.price?.percent_deposit / 100)),
+
+                    }
+                }
+            })
+        }
+    }, [numberDay])
+
 
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {
         e.stopPropagation()

@@ -60,6 +60,7 @@ interface IAutomaker {
 interface IDataDetailCar {
     id: string;
     address: string;
+    full_address: string;
     image_car: {
         car_id: number;
         created_at: string;
@@ -90,7 +91,9 @@ interface IDataDetailCar {
         // tiền sau khuyến mãi show ra giao diện
         price_after_promotion: number;
 
-        // tiền gốc 
+        // tiền gốc chưa có phí dịch vụ
+        rent_cost: number;
+        // tiền gốc có phí dịch vụ 
         rent_cost_day: number;
         // tiền bảo hiểm
         price_insurance_day: number;
@@ -225,7 +228,11 @@ interface IDetailRentalCar {
         // số ngày
         number_day: number,
         // thành toán khi nhận xe
-        cash_on_delivery: number
+        cash_on_delivery: number,
+        // số km
+        amount_km: number,
+        // khuyến mãi
+        promotion: number,
     },
 }
 

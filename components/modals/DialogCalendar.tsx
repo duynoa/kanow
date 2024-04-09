@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import {
     Dialog,
@@ -26,7 +26,7 @@ import { Check, X } from "lucide-react"
 
 import { useDialogCalendar, useDialogPromotion } from "@/hooks/useOpenDialog";
 import { Calendar } from "../ui/calendar";
-import { addDays, format, isSameDay, isSameMinute } from "date-fns";
+import { addDays, differenceInCalendarDays, differenceInDays, format, isSameDay, isSameMinute } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { Input } from "../ui/input";
 import { v4 as uuidv4 } from 'uuid';
@@ -35,12 +35,17 @@ import { BsFillArrowRightCircleFill } from "react-icons/bs";
 import { Button } from "../ui/button";
 
 import * as SelectPrimitive from "@radix-ui/react-select"
+import { useDataDate } from "@/hooks/useDataQueryKey";
 
 type Props = {
 }
 
 export function DialogCalendar({ }: Props) {
-    const { openDialogCalendar, date, setDate, setOpenDialogCalendar } = useDialogCalendar()
+    const { openDialogCalendar, date, setDate, setOpenDialogCalendar, numberDay, setNumberDay } = useDialogCalendar()
+    const { isStateDate, queryKeyIsStateDate } = useDataDate()
+
+    const [tempDate, setTempDate] = useState<any>()
+    const [tempNumberDate, setTempNumberDate] = useState<any>()
 
     const dataTime = [
         {
@@ -289,26 +294,36 @@ export function DialogCalendar({ }: Props) {
         setOpenDialogCalendar(!openDialogCalendar)
     }
 
+    console.log('date : ', date);
+
+    // change date in calender 
     const handleDateChange = (newDate: any) => {
         console.log('newDate', newDate);
-        setDate(newDate);
-        // if (newDate == undefined) {
-        //     console.log('check lần 1');
-        //     setDate(newDate)
-        // } else if (newDate.from && !newDate.to) {
-        //     console.log('check lần 2');
-        //     setDate(newDate)
-        // } else if (isSameDay(newDate.from, newDate.to)) {
-        //     console.log('check lần 3');
-        //     setDate(newDate)
-        // } else {
-        //     const newTimeTo = format(newDate.to, 'HH:mm');
-        //     handleTimeChange(newTimeTo, 'to')
-        //     console.log('check lần 4', newTimeTo);
-        //     setDate(newDate)
-        // }
+        // Check if new date range is not null
+        if (newDate && newDate.from && newDate.to) {
+            // Check if the new from date is different from the current from date
+            if (!isSameDay(date?.from, newDate.from) && date?.from) {
+                // If it's different, keep the time of the current from date and update the date
+                newDate.from.setHours(date?.from.getHours(), date?.from.getMinutes(), date?.from.getSeconds());
+            }
+            // Check if the new to date is different from the current to date
+            if (!isSameDay(date?.to, newDate.to) && date?.to) {
+                // If it's different, keep the time of the current to date and update the date
+                newDate.to.setHours(date?.to.getHours(), date?.to.getMinutes(), date?.to.getSeconds());
+            }
+            // Update the state with the new date range
+            setDate(newDate);
+            queryKeyIsStateDate({
+                dateReal: newDate
+            })
+            setTempDate(newDate)
+        } else if (newDate && newDate.from) {
+            setDate(newDate);
+            setTempDate(newDate)
+        }
     }
 
+    // change time in calender
     const handleTimeChange = (value: string, type: string) => {
         if (date) {
             if (date.from && type === 'from') {
@@ -326,8 +341,29 @@ export function DialogCalendar({ }: Props) {
 
                 setDate(updatedDate);
             }
+
         }
     };
+
+    useEffect(() => {
+        const daysDifference = differenceInCalendarDays(`${date?.to}`, `${date?.from}`);
+        if (date?.to && date?.from && daysDifference) {
+            console.log("Số ngày thuê:", daysDifference);
+            setNumberDay(daysDifference)
+            setTempNumberDate(daysDifference)
+        } else if (date?.to || date?.from) {
+            setTempNumberDate(1)
+            setNumberDay(1)
+        }
+    }, [date?.from, date?.to])
+
+    console.log('isStateDate : :', isStateDate);
+
+
+    const handleSubmitDateTime = () => {
+        setNumberDay(tempNumberDate)
+        setDate(tempDate)
+    }
 
     return (
         <Dialog modal open={openDialogCalendar} onOpenChange={handleOpenChangeModal}>
@@ -427,12 +463,15 @@ export function DialogCalendar({ }: Props) {
                             {date?.from ? format(date?.from, 'HH:mm, dd/MM') : ""}{date?.to ? ` - ${format(date?.to, 'HH:mm, dd/MM')}` : ''}
                         </div>
                         <div>
-                            Số ngày thuê: 20 ngày
+                            Số ngày thuê: {numberDay} ngày
                         </div>
                     </div>
 
                     <div>
-                        <Button className='xl:px-6 xl:py-3 px-4 py-2 xl:text-base text-sm rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80'>
+                        <Button
+                            onClick={() => handleSubmitDateTime()}
+                            className='xl:px-6 xl:py-3 px-4 py-2 xl:text-base text-sm rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80'
+                        >
                             Áp dụng
                         </Button>
                     </div>

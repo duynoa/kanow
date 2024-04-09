@@ -11,12 +11,27 @@ export const FormatNumberComma = (number: number): string => {
 }
 
 export const FormatNumberDot = (number: number): string => {
-    return number?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    return Math.round(number)?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 }
 
 export const FormatNumberToDecimal = (number: number, decimalPlaces: number): string => {
     const roundedNumber = parseFloat(number.toFixed(decimalPlaces));
     return roundedNumber?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+// export const FormatPointStar = (number: number, decimalPlaces: number): string => {
+//     return number.toString()?.replace(/\B(?=(\d{decimalPlaces})+(?!\d))/g, ".");
+// }
+
+export const FormatPointStar = (number: number, decimalPlaces: number): string => {
+    const stringNumber = number.toString();
+    const decimalIndex = stringNumber.indexOf('.');
+    
+    if (decimalIndex !== -1 && stringNumber.length - decimalIndex - 1 > decimalPlaces) {
+        return stringNumber.slice(0, decimalIndex + decimalPlaces + 1);
+    } else {
+        return stringNumber;
+    }
 }
 
 export const FormatNumberHundred = (number: number, max_number: number): string => {

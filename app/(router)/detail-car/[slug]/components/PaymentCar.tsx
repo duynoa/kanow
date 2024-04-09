@@ -41,7 +41,7 @@ const PaymentCar = ({
     isState,
     queryKeyIsState
 }: Props) => {
-    const { date, setOpenDialogCalendar } = useDialogCalendar()
+    const { date, numberDay, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogPromotion } = useDialogPromotion()
     const { setOpenDialogReportCar } = useDialogReportCar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
@@ -201,7 +201,7 @@ const PaymentCar = ({
                         Thuê tháng giảm 8%
                     </div>
 
-                    <div className='flex flex-col'>
+                    {/* <div className='flex flex-col'>
                         <div className='3xl:text-base text-sm text-[#FA3434] font-medium'>
                             Xe đã được thuê:
                         </div>
@@ -248,10 +248,7 @@ const PaymentCar = ({
                                 </span>
                             </label>
                         </div>
-                        {/* <div className='text-base text-[#FA3434] font-medium'>
-                        Rất tiếc, chủ xe chưa hỗ trợ giao xe tận nơi
                     </div> */}
-                    </div>
                 </div>
 
                 <div className='flex flex-col gap-2'>
@@ -315,7 +312,7 @@ const PaymentCar = ({
                                 }
                             </div>
                             <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                                {FormatNumberDot(isState?.dataDetailCar?.price?.price_insurance_day ? isState?.dataDetailCar?.price?.price_insurance_day : 0)}<span>đ/ngày</span>
+                                {FormatNumberDot(isState?.dataDetailCar?.price?.price_insurance_day ? isState?.dataDetailCar?.price?.price_insurance_day : 0)}đ
                             </div>
                         </div>
                     </div>
@@ -325,7 +322,7 @@ const PaymentCar = ({
                             Tổng tạm tính
                         </div>
                         <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                            {FormatNumberDot(isState?.dataDetailCar?.price?.temp_total_amount)}<span>đ/ngày</span>
+                            {FormatNumberDot(isState?.dataDetailCar?.price?.temp_total_amount)}<span>đ/{numberDay === 1 ? null : numberDay} ngày</span>
                         </div>
                     </div>
                 </div>
@@ -459,7 +456,7 @@ const PaymentCar = ({
                             Thành tiền
                         </div>
                         <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                            {FormatNumberDot(isState?.dataDetailCar?.price?.total_amount ? isState?.dataDetailCar?.price?.total_amount : 0)}<span>đ/ngày</span>
+                            {FormatNumberDot(isState?.dataDetailCar?.price?.total_amount ? isState?.dataDetailCar?.price?.total_amount : 0)}<span>đ/{numberDay === 1 ? null : numberDay} ngày</span>
                         </div>
                     </div>
                 </div>

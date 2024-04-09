@@ -12,7 +12,7 @@ import { useResize } from '@/hooks/useResize'
 
 import Map from '@/components/map/Maps'
 import { Badge } from '@/components/ui/badge'
-import { FormatNumberHundred, FormatNumberToDecimal } from '@/components/format/FormatNumber'
+import { FormatNumberHundred, FormatNumberToDecimal, FormatPointStar } from '@/components/format/FormatNumber'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 import "moment/locale/vi";
@@ -99,21 +99,19 @@ const InformationCar = ({
                             }
                         </div>
 
-                        <div className='flex gap-3 md:items-center items-start caret-transparent'>
-                            {
-                                isState?.dataDetailCar?.total_trip ?
-                                    <div className='flex items-center gap-1'>
-                                        <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
-                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
-                                            {isState?.dataDetailCar?.total_trip ? FormatNumberHundred(isState?.dataDetailCar?.total_trip, 100) : 0} Chuyến
-                                        </div>
+                        {
+                            isState?.dataDetailCar?.total_trip ?
+                                <div className='flex items-center gap-1'>
+                                    <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
+                                    <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                        {isState?.dataDetailCar?.total_trip ? FormatNumberHundred(isState?.dataDetailCar?.total_trip, 100) : 0} Chuyến
                                     </div>
-                                    :
-                                    <div className='3xl:text-sm text-xs text-[#8C93A3]'>
-                                        Chưa có chuyến
-                                    </div>
-                            }
-                        </div>
+                                </div>
+                                :
+                                <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                    Chưa có chuyến
+                                </div>
+                        }
                     </div>
                 </div>
                 <div
@@ -278,27 +276,18 @@ const InformationCar = ({
                             <div className='uppercase text-[#16171B] font-semibold 3xl:text-base text-sm'>
                                 {isState?.dataDetailCar?.car_owner?.fullname ? isState?.dataDetailCar?.car_owner?.fullname : ""}
                             </div>
-                            <div className='flex items-center gap-4'>
-                                {
-                                    isState?.dataDetailCar?.point_star ?
-                                        <div className='flex items-center gap-1'>
-                                            <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
-                                            <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
-                                                {isState?.dataDetailCar?.point_star ? (FormatNumberToDecimal(isState?.dataDetailCar?.point_star, 1)) : 0}
+                            {
+                                isState?.dataDetailCar?.point_star ?
+                                    <div className='flex items-center gap-1'>
+                                        <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
+                                        <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
+                                            {isState?.dataDetailCar?.point_star ? (FormatPointStar(isState?.dataDetailCar?.point_star, 1)) : 0}
 
-                                            </div>
                                         </div>
-                                        :
-                                        null
-                                }
-
-                                {/* <div className='flex items-center gap-1'>
-                                    <FaCircleCheck className='3xl:text-base text-sm text-[#3AC996]' />
-                                    <div className='3xl:text-sm text-xs text-[#484D5C] font-semibold'>
-                                        {FormatNumberHundred(19, 100)} Chuyến
                                     </div>
-                                </div> */}
-                            </div>
+                                    :
+                                    null
+                            }
                         </div>
                     </div>
 
