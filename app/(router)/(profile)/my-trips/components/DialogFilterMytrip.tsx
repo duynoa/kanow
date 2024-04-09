@@ -35,18 +35,18 @@ const DialogFilterMytrip = ({ isState, queryState, handleSubmitFilter }: Props) 
                     </Button>
                 </DialogTrigger>
                 <DialogOverlay />
-                <DialogContent className="lg:w-[425px] w-[90%]">
+                <DialogContent className="lg:w-[425px] w-[90%] p-0">
                     <DialogClose className="3xl:size-10 size-8 border border-[#000000] flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-40"
                     >
                         <X className="size-8 text-[#000000]" />
                         <span className="sr-only">Close</span>
                     </DialogClose>
-                    <DialogHeader className='flex items-center justify-center w-full border-b drop-shadow-sm py-4'>
+                    <DialogHeader className='flex items-center justify-center w-full border-b drop-shadow-sm lg:p-6 p-5'>
                         <DialogTitle className='text-2xl capitalize'>
                             Trạng thái lọc
                         </DialogTitle>
                     </DialogHeader>
-                    <div className="grid gap-4 py-4">
+                    <div className="grid gap-4 lg:px-6 px-5">
                         <Select
                             defaultValue={isState.status_search as string}
                             value={isState.status_search as string}
@@ -74,7 +74,7 @@ const DialogFilterMytrip = ({ isState, queryState, handleSubmitFilter }: Props) 
                             </SelectContent>
                         </Select>
                     </div>
-                    <DialogFooter>
+                    <DialogFooter className="lg:px-6 px-5 lg:pb-6 pb-5 ml-auto">
                         <Button
                             type="button"
                             className='xl:px-6 xl:py-3 px-4 py-2 xl:text-base text-sm rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-fit'
