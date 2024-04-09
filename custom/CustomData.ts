@@ -1,6 +1,7 @@
 import { useDialogCalendar } from "@/hooks/useOpenDialog";
 import { IDataDetailCar, IDetailRentalCar } from "@/types/Cars/ICars";
 import { IInitialStateInfoRentalCar } from "@/types/Initial/IInitial";
+import { IArrayMyTripCar } from "@/types/Profile/IMyTrips";
 
 // custom in list cars
 const CustomDataListCars = (data: any) => {
@@ -63,7 +64,7 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
 
         price: {
             percent_deposit: res?.data?.price?.percent_deposit,
-            // tiền trước khuyến mãi đầu 
+            // tiền trước khuyến mãi đầu
             price_before_promotion: res?.data?.price?.rent_cost_day,
             // tiền sau khuyến mãi đầu (nếu có lấy tiền gốc - tiền khuyến mãi trong mảng lấy cái đầu tiên)
             price_after_promotion:
@@ -217,31 +218,13 @@ const CustomDataPolicy = (res: any) => {
 };
 
 const CustomDataMyTripCar = (data: any) => {
-    let customDataMyTripCar = data?.data?.map((item: any) => ({
-        id: item?.id,
-        address: `${item?.district}, ${item?.province}`,
-        image_car: item?.image_car?.map((image: any) => ({
-            ...image,
-            name: `${data?.base?.base}/${image.name}`,
-        })),
-        car_owner: {
-            avatar: item?.customer?.avatar,
-            fullname: item?.customer?.fullname,
-            id: item?.customer?.id,
+    let customDataMyTripCar = data?.data?.map((i: IArrayMyTripCar) => ({
+        ...i,
+        id: i?.id,
+        car: {
+            ...i?.car,
+            image: `${data?.base?.base}/${i?.car?.image}`,
         },
-        type: {
-            delivery_car: item?.delivery_car === 1,
-            book_car_flash: item?.book_car_flash === 1,
-            mortgage: item?.mortgage === 0,
-            transmission_search: item?.transmission,
-        },
-        favorite_car: item?.favourite_car,
-        name_car: item?.name,
-        point_star: item?.star,
-        total_trip: item?.total_trip,
-        price_before_promotion: item?.rent_cost,
-        price_after_promotion: item?.promotion?.length > 0 ? item?.rent_cost - item?.promotion[0]?.price_promotion : 0,
-        promotion: item?.promotion,
     }));
     return { customDataMyTripCar };
 };

@@ -11,6 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useAlert } from "@/hooks/useAlertDialog"
 import BackgroundUiProfile from "@/themes/profile/BackgroundUiProfile"
 import { IListAddress } from "@/types/Profile/IListAddress"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { useResize } from "@/hooks/useResize"
 
 type Props = {}
 
@@ -39,6 +41,8 @@ const ListAddress = (props: Props) => {
             defaultAddress: false
         }
     })
+
+    const { isVisibleMobile, isVisibleTablet } = useResize()
 
     const valuesForm = form.getValues()
 
@@ -244,8 +248,13 @@ const ListAddress = (props: Props) => {
                     </TabsList>
                 </div>
                 <div>
-                    <TabsContent value="list">
-                        <ListAddressMap isState={isState} queryKeyIsState={queryKeyIsState} />
+                    <TabsContent value="list" className="">
+                        <ScrollArea
+                            // ref={scrollContainerRef}
+                            className={`${isState.listAddress?.length > 0 && isVisibleMobile ? 'h-[1380px]' : isVisibleTablet ? 'h-[1680px]' : 'h-[780px]'} lg:pr-6 pr-3`}
+                        >
+                            <ListAddressMap isState={isState} queryKeyIsState={queryKeyIsState} />
+                        </ScrollArea>
                     </TabsContent>
                     <TabsContent value="add">
                         <FormCreatAddress

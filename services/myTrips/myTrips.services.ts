@@ -11,8 +11,11 @@ const apiMyTrips = () => {
         };
         return axios.get(`/transaction/getListTransaction`, config);
     };
+    const apiListFilterMyTrips = () => {
+        return axios.get(`/transaction/getListStatusTransaction`);
+    };
 
-    return { apiListMyTrips };
+    return { apiListMyTrips, apiListFilterMyTrips };
 };
 
 export default apiMyTrips;

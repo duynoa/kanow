@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import apiListCarFavorite from '@/services/listCarFavorite/listCarFavorite.services'
 import { FormatNumberHundred, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
 import { IListCarFavorite } from '@/types/Profile/IListCarFavorite'
+import Nodata from '@/components/image/Nodata'
 
 type Props = {}
 
@@ -25,7 +26,7 @@ const ListCarFavorite = (props: Props) => {
     const initialData: IListCarFavorite = {
         isLoadingCar: false,
         dataDrivingCar: [],
-        talentedCar: [],
+        datalentedCar: [],
         ///xe tu lai
         page: 1,
         limit: 4,
@@ -392,11 +393,13 @@ const ListCarFavorite = (props: Props) => {
                                         </div>
                                     </div>
                                 )) :
-                                    <div className='h-[472px]'>
-                                        <Image src='/listCarFavorite/nodata.png' alt='' width={1280} height={1024} className='object-cover h-full -w-full' />
-                                    </div>
+                                    // <div className='h-[472px]'>
+                                    //     <Image src='/listCarFavorite/nodata.png' alt='' width={1280} height={1024} className='object-cover h-full -w-full' />
+                                    // </div>
+                                    <Nodata type='list-car-favorite' />
                             }
                         </div>
+
                         {
                             isState?.isLoadingScroll && (
                                 <div className="w-full 3xl:h-[80px] h-[60px] flex justify-center items-center gap-2">
@@ -411,11 +414,12 @@ const ListCarFavorite = (props: Props) => {
                 <TabsContent value="2" className='lg:mt-4 mt-5'>
                     <ScrollArea
                         ref={scrollContainerRef}
-                        className={`${isState.dataDrivingCar?.length > 0 && isVisibleMobile ? 'h-[1380px]' : isVisibleTablet ? 'h-[1680px]' : 'h-[780px]'}`}
+                        className={`${isState.datalentedCar?.length > 0 && isVisibleMobile ? 'h-[1380px]' : isVisibleTablet ? 'h-[1680px]' : 'h-[780px]'} lg:pr-6 pr-3`}
                     >
-                        <div className='h-[472px]'>
+                        {/* <div className='h-[472px]'>
                             <Image src='/listCarFavorite/nodata.png' alt='' width={1280} height={1024} className='object-cover h-full -w-full' />
-                        </div>
+                        </div> */}
+                        <Nodata type='list-car-favorite' />
                     </ScrollArea>
                 </TabsContent>
             </Tabs>
