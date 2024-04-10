@@ -5,36 +5,37 @@ import { Button } from "@/components/ui/button"
 import { IMyTrips } from "@/types/Profile/IMyTrips"
 import { SelectItemNocheck } from "@/components/ui/selectNocheck"
 import { Select, SelectContent, SelectGroup, SelectTrigger, SelectValue, } from "@/components/ui/select"
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogOverlay, DialogTitle, DialogTrigger, } from "@/components/ui/dialog"
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, } from "@/components/ui/dialog"
 
 type Props = {
     children?: React.ReactNode,
     isState: IMyTrips,
     queryState: (key: any) => void,
-    handleSubmitFilter: () => void
+    handleSubmitFilter: () => void,
 }
 
-const DialogFilterMytrip = ({ isState, queryState, handleSubmitFilter }: Props) => {
+const DialogFilterMytrip = ({ isState, queryState, handleSubmitFilter, children }: Props) => {
     return (
-        <>
-            <Dialog
-                modal
-                open={isState.openFilter}
-                onOpenChange={() => {
-                    if (isState.openFilter) {
-                        toastCore.warning('Vui lòng chọn áp dụng')
-                        return
-                    }
-                    queryState({ openFilter: !isState.openFilter, page: 1 })
-                }}>
-                <DialogTrigger asChild>
-                    <Button className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
+        <Dialog
+            modal
+            open={isState.openFilter}
+            onOpenChange={(open) => {
+                if (isState.openFilter) {
+                    toastCore.warning('Vui lòng chọn áp dụng')
+                    return
+                }
+                queryState({ openFilter: !isState.openFilter, page: 1 })
+            }}
+        >
+            <DialogTrigger asChild>
+                <Button className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
                                  px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}
-                    >
-                        Bộ lọc
-                    </Button>
-                </DialogTrigger>
-                <DialogOverlay />
+                >
+                    Bộ lọc
+                </Button>
+            </DialogTrigger>
+            <DialogPortal>
+                <DialogOverlay className="bg-black/60" />
                 <DialogContent className="lg:w-[425px] w-[90%] p-0">
                     <DialogClose className="3xl:size-10 size-8 border border-[#000000] flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-40"
                     >
@@ -83,9 +84,10 @@ const DialogFilterMytrip = ({ isState, queryState, handleSubmitFilter }: Props) 
                             Áp dụng
                         </Button>
                     </DialogFooter>
+
                 </DialogContent>
-            </Dialog>
-        </>
+            </DialogPortal>
+        </Dialog>
     )
 
 

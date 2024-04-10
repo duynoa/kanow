@@ -48,6 +48,7 @@ const PaymentCar = ({
     const { setOpenDialogLogin } = useDialogLogin()
     const { isStatePolicy } = useDataPolicy()
     const { setDataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
+    console.log("isStatePolicy", isStatePolicy);
 
     const { getCookie } = useCookie()
     const { isVisibleTablet } = useResize()

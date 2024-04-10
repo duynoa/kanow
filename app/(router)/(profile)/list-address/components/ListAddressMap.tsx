@@ -6,14 +6,14 @@ import Nodata from "@/components/image/Nodata"
 const ListAddressMap = ({ isState, queryKeyIsState }: any) => {
     return <div className="flex flex-col 2xl:gap-6 lg:gap-4 gap-6 bg-white">
         {isState.isLoadingAddress ?
-            [...Array(4)].map((e: any) => {
-                return <SkeletonAddress key={e} />
+            [...Array(4)].map((e: any, index) => {
+                return <SkeletonAddress key={index} />
             })
             : isState.listAddress?.length > 0 ? isState.listAddress?.map((e: any) => {
                 const images: any = {
-                    1: '/listAddress/home-2.png',
-                    2: '/listAddress/building-4.png',
-                    3: '/listAddress/stickynote.png'
+                    1: '/profile/address/home-2.png',
+                    2: '/profile/address/building-4.png',
+                    3: '/profile/address/stickynote.png'
                 }
                 return (
                     <div
@@ -40,7 +40,7 @@ const ListAddressMap = ({ isState, queryKeyIsState }: any) => {
                     </div>
                 )
             }) :
-                <Nodata type="listAddress" />
+                <Nodata type="address" />
             // <Image src={'/card/no_car.png'} alt="logo" width={1280} height={1024} className='w-full h-full object-cover'></Image>
         }
     </div>

@@ -5,11 +5,11 @@ import { useForm } from 'react-hook-form'
 import { Input } from "@/components/ui/input";
 import { useCookie } from "@/hooks/useCookie";
 import { Button } from "@/components/ui/button";
-import BackgroundUiProfile from "@/themes/profile/BackgroundUiProfile";
 import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
-import useAuthenticationAPI from "@/services/auth/auth.services";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { InitialSate } from "@/types/Profile/IChangePassword";
+import useAuthenticationAPI from "@/services/auth/auth.services";
+import BackgroundUiProfile from "@/themes/profile/BackgroundUiProfile";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 type Props = {}
 
