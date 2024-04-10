@@ -41,7 +41,7 @@ const PaymentCar = ({
     isState,
     queryKeyIsState
 }: Props) => {
-    const { date, numberDay, setOpenDialogCalendar } = useDialogCalendar()
+    const { dateReal, numberDay, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogPromotion } = useDialogPromotion()
     const { setOpenDialogReportCar } = useDialogReportCar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
@@ -177,19 +177,19 @@ const PaymentCar = ({
                             variant={"outline"}
                             className={cn(
                                 `px-4 py-3 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-sm text-xs`,
-                                !date && "text-muted-foreground"
+                                !dateReal && "text-muted-foreground"
                             )}
                             onClick={() => handleOpenDialog('calendar')}
                         >
                             <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
-                            {date?.from ? (
-                                date.to ? (
+                            {dateReal?.from ? (
+                                dateReal.to ? (
                                     <>
-                                        {format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
-                                        {format(date.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                        {format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                        {format(dateReal.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
                                     </>
                                 ) : (
-                                    format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                    format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
                                 )
                             ) : (
                                 <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>

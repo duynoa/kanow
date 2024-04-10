@@ -8,10 +8,17 @@ import { Button } from "@/components/ui/button"
 import { DatePickerWithRange } from '@/components/datePicker/DatePickerWithRange';
 import { useResize } from '@/hooks/useResize';
 import { useRouter } from 'next/navigation';
+import { FaCalendarAlt } from 'react-icons/fa';
+
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { useDialogCalendar } from '@/hooks/useOpenDialog';
+import { vi } from 'date-fns/locale';
 
 const IntroSection = () => {
     const { isVisibleMobile } = useResize()
     const router = useRouter()
+    const { dateReal, numberDay, setOpenDialogCalendar } = useDialogCalendar()
 
     const tabSearch = [
         {
@@ -43,6 +50,12 @@ const IntroSection = () => {
     const handleTabChange = (id: string) => {
         setTabId(id)
     }
+
+    const handleOpenDialog = (type: string) => {
+        if (type === 'calendar') {
+            setOpenDialogCalendar(true)
+        }
+    };
 
     var heroTitle: string = "KANOW - Đồng hành mọi chuyến đi của bạn";
     var heroPerTitle: { letter: string, id: number }[] = heroTitle.split('').map((letter, index) => ({ letter: letter, id: index + 1 }));
@@ -161,7 +174,34 @@ const IntroSection = () => {
                                 <Label className='text-sm text-[#6F7689] w-fit' htmlFor="date">
                                     Thời gian thuê
                                 </Label>
-                                <DatePickerWithRange className='w-full' classNameButton="px-4 py-3" />
+                                {/* <DatePickerWithRange className='w-full' classNameButton="px-4 py-3" /> */}
+
+                                <div className=''>
+                                    <Button
+                                        id="date"
+                                        variant={"outline"}
+                                        className={cn(
+                                            `3xl:py-4 3xl:px-3 px-3 py-3.5 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs`,
+                                            !dateReal && "text-muted-foreground"
+                                        )}
+                                        onClick={() => handleOpenDialog('calendar')}
+                                    >
+                                        <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
+                                        {dateReal?.from ? (
+                                            dateReal.to ? (
+                                                <>
+                                                    {format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                                    {format(dateReal.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                                </>
+                                            ) : (
+                                                format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                            )
+                                        ) : (
+                                            <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
+                                        )}
+                                    </Button>
+                                </div>
+
                             </div>
                             <Button
                                 type='button'

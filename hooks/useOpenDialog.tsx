@@ -36,12 +36,12 @@ export const useDialogPromotion = create<IOpenDialogPromotion>((set) => ({
 
 // dialog calendar
 interface IOpenDialogCalendar {
-    date: DateRange | undefined;
-    setDate: (date: DateRange | undefined) => void;
+    dateReal: DateRange | undefined;
+    setDateReal: (dateReal: DateRange | undefined) => void;
     openDialogCalendar: boolean;
     setOpenDialogCalendar: (key: any) => void
-    numberDay: number | null
-    setNumberDay: (numberDay: number | null) => void;
+    numberDay: number
+    setNumberDay: (numberDay: number) => void;
 }
 
 const defaultDateRange: DateRange = {
@@ -51,11 +51,11 @@ const defaultDateRange: DateRange = {
 
 export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     openDialogCalendar: false,
-    date: defaultDateRange,
-    numberDay: null,
+    dateReal: defaultDateRange,
+    numberDay: 1,
     setOpenDialogCalendar: (key: any) => set((state) => ({ ...state, openDialogCalendar: key })),
-    setDate: (date: DateRange | undefined) => set((state) => ({ ...state, date })),
-    setNumberDay: (numberDay: number | null) => set((state) => ({ numberDay: numberDay })),
+    setDateReal: (dateReal: DateRange | undefined) => set((state) => ({ ...state, dateReal })),
+    setNumberDay: (numberDay: number ) => set((state) => ({ numberDay: numberDay })),
 }))
 
 // dialog filter list car

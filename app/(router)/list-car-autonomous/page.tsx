@@ -34,6 +34,7 @@ import { CustomDataListCars } from '@/custom/CustomData';
 import { useCookie } from '@/hooks/useCookie';
 import SkeletonListCar from './components/SkeletonListCar';
 import { IInitialStateSearchCar } from '@/types/Initial/IInitial';
+import moment from 'moment';
 
 type Props = {}
 
@@ -42,7 +43,7 @@ const SearchCars = (props: Props) => {
     // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
     const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
-    const { date, setOpenDialogCalendar } = useDialogCalendar()
+    const { dateReal, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogFilterListCars } = useDialogFilterListCars()
     const { getCookie } = useCookie()
 
@@ -165,7 +166,8 @@ const SearchCars = (props: Props) => {
                     }
                 })
                 const dataParams = {
-                    date_search: "10/04/2024 11:00:00 - 11/04/2024 12:00:00"
+                    date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`
+                    // date_search: "10/04/2024 11:00:00 - 11/04/2024 12:00:00"
                 }
                 const { data } = await getListCars(isState?.page, isState.limit.limitAllCars, dataParams)
 
@@ -225,7 +227,8 @@ const SearchCars = (props: Props) => {
 
                         const fetchDataListCar = async () => {
                             const query = {
-                                date_search: "10/04/2024 11:00:00 - 11/04/2024 12:00:00",
+                                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
+                                // date_search: "10/04/2024 11:00:00 - 11/04/2024 12:00:00",
                                 company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
                                 type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
                                 transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
@@ -721,18 +724,18 @@ const SearchCars = (props: Props) => {
                                             variant={"outline"}
                                             className={cn(
                                                 `w-full justify-start text-left font-normal rounded-xl bg-inherit border-0 text-xs`,
-                                                !date && "text-muted-foreground"
+                                                !dateReal && "text-muted-foreground"
                                             )}
                                             onClick={() => handleOpenDialog('calendar')}
                                         >
-                                            {date?.from ? (
-                                                date.to ? (
+                                            {dateReal?.from ? (
+                                                dateReal.to ? (
                                                     <>
-                                                        {format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
-                                                        {format(date.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                                        {format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                                        {format(dateReal.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
                                                     </>
                                                 ) : (
-                                                    format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                                    format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
                                                 )
                                             ) : (
                                                 <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
@@ -765,19 +768,19 @@ const SearchCars = (props: Props) => {
                                         variant={"outline"}
                                         className={cn(
                                             `3xl:py-4 3xl:px-3 px-3 py-3.5 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs`,
-                                            !date && "text-muted-foreground"
+                                            !dateReal && "text-muted-foreground"
                                         )}
                                         onClick={() => handleOpenDialog('calendar')}
                                     >
                                         <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
-                                        {date?.from ? (
-                                            date.to ? (
+                                        {dateReal?.from ? (
+                                            dateReal.to ? (
                                                 <>
-                                                    {format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
-                                                    {format(date.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                                    {format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                                    {format(dateReal.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
                                                 </>
                                             ) : (
-                                                format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                                format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
                                             )
                                         ) : (
                                             <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
@@ -868,8 +871,8 @@ const SearchCars = (props: Props) => {
                                     }
                                     <div className='w-full 3xl:h-[230px] xxl:h-auto xl:h-[180px] h-[180px] relative'>
                                         <Image
-                                            width={600}
-                                            height={600}
+                                            width={400}
+                                            height={300}
                                             alt="image_card"
                                             src={card?.image_car?.length > 0 ? card?.image_car[0]?.name : '/default/default.png'}
                                             className='w-full h-full object-cover rounded-xl'

@@ -30,8 +30,13 @@ const getListTypeCars = () => {
 };
 
 // get data detail car
-const getDataDetailCar = (id: string | number) => {
-    return axios.get(`/car/getDetail/${id}`);
+const getDataDetailCar = (id: string | number, param?: any) => {
+    let config: AxiosRequestConfig = {
+        params: {
+            ...param, // Nối các tham số trong param object
+        },
+    };
+    return axios.get(`/car/getDetail/${id}`, config);
 };
 
 // post update favorite heart car
