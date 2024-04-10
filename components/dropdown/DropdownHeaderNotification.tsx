@@ -15,9 +15,16 @@ import moment from "moment"
 import { useNotification } from "@/hooks/useNotification"
 import { Button } from "../ui/button"
 import { useResize } from "@/hooks/useResize"
+import React, { useEffect, useState } from "react"
 const DropdownHeaderNotification = ({ children }: any) => {
     const { isVisibleMobile } = useResize()
+    const [isMounted, setIsMounted] = useState<boolean>(false)
     const { dataNotification: data, setOpenNotification, openNotification } = useNotification()
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+    if (!isMounted) return null
 
     return (
         <DropdownMenu >
@@ -30,9 +37,9 @@ const DropdownHeaderNotification = ({ children }: any) => {
                 <ScrollArea className={`${data?.length > 3 ? "h-[350px]" : "h-auto"}`}>
                     {
                         data && data?.map((item: any, index: any) => (
-                            <>
+                            <React.Fragment key={`key-${item.id}`}>
                                 {index != 0 && <DropdownMenuSeparator />}
-                                <DropdownMenuItem key={item.id}>
+                                <DropdownMenuItem >
                                     <Link
                                         href={item.link}
                                         // onClick={() => setOpenNotification(false)}
@@ -59,7 +66,7 @@ const DropdownHeaderNotification = ({ children }: any) => {
                                         </div>
                                     </Link>
                                 </DropdownMenuItem>
-                            </>
+                            </React.Fragment>
                         ))
                     }
                 </ScrollArea>

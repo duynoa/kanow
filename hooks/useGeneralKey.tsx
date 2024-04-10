@@ -7,6 +7,7 @@ interface GeneralKey {
         onesignal_key: string;
         pusher: string;
         cluster: string;
+        rule_delete_account: string;
     };
     setGeneralKey: (key: any) => void;
 }
@@ -17,7 +18,8 @@ export const useGeneralKey = create<GeneralKey>((set) => ({
         onesignal_id: '',
         onesignal_key: '',
         pusher: '',
-        cluster: ''
+        cluster: '',
+        rule_delete_account: '',
     },
     setGeneralKey: (key: any) => set((state) => ({ generalKey: key })),
 }));

@@ -38,7 +38,7 @@ const FormCreatAddress = ({ form, isState, queryKeyIsState, handleSearchApi, onS
                                                              lg:py-3 py-2 lg:px-8 px-[13px] hover:scale-105 transition-all duration-200 ease-linear  rounded-xl border-2 cursor-pointer flex items-center text-[#16171B] gap-2`}
                                                 htmlFor="1">
                                                 <div className="lg:size-5 size-4">
-                                                    <Image src={'/listAddress/home-2.png'} width={1280} height={1024} className="w-full h-full" alt="" />
+                                                    <Image src={'/profile/address/home-2.png'} width={1280} height={1024} className="w-full h-full" alt="" />
                                                 </div>
                                                 <h5 className="leading-4 lg:text-sm text-xs font-medium">Nhà riêng</h5>
                                             </Label>
@@ -48,7 +48,7 @@ const FormCreatAddress = ({ form, isState, queryKeyIsState, handleSearchApi, onS
                                                              lg:py-3 py-2 lg:px-8 px-[13px] hover:scale-105 transition-all duration-200 ease-linear  rounded-xl border-2 cursor-pointer flex items-center text-[#16171B] gap-2`}
                                                 htmlFor="2">
                                                 <div className="lg:size-5 size-4">
-                                                    <Image src={'/listAddress/building-4.png'} width={1280} height={1024} className="w-full h-full" alt="" />
+                                                    <Image src={'/profile/address/building-4.png'} width={1280} height={1024} className="w-full h-full" alt="" />
                                                 </div>
                                                 <h5 className="leading-4 lg:text-sm text-xs font-medium">Công ty</h5>
                                             </Label>
@@ -58,7 +58,7 @@ const FormCreatAddress = ({ form, isState, queryKeyIsState, handleSearchApi, onS
                                                              lg:py-3 py-2 lg:px-8 px-[13px] hover:scale-105 transition-all duration-200 ease-linear  rounded-xl border-2 cursor-pointer flex items-center text-[#16171B] gap-2`}
                                                 htmlFor="3">
                                                 <div className="lg:size-5 size-4">
-                                                    <Image src={'/listAddress/stickynote.png'} width={1280} height={1024} className="w-full h-full" alt="" />
+                                                    <Image src={'/profile/address/stickynote.png'} width={1280} height={1024} className="w-full h-full" alt="" />
                                                 </div>
                                                 <h5 className="leading-4 lg:text-sm text-xs font-medium">Khác</h5>
                                             </Label>

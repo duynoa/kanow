@@ -57,7 +57,7 @@ const MyTrips = (props: Props) => {
                     dataMyTrips: customDataMyTripCar,
                     page: isState.page + 1,
                     next: data?.links?.next,
-                    totalDrivingCar: data?.meta?.total
+                    totalDrivingCar: data?.meta?.total ?? 0
                 })
             }
 
@@ -132,15 +132,14 @@ const MyTrips = (props: Props) => {
                                         page: isState.page + 1,
                                     })
                                 }
-
-                            } else {
-                                queryState({
-                                    listCardCars: isState.dataMyTrips,
-                                    next: data?.links?.next,
-                                    page: data?.links?.next !== null ? isState.page + 1 : isState.page,
-                                    isLoadingScroll: false,
-                                });
+                                return
                             }
+                            queryState({
+                                listCardCars: isState.dataMyTrips,
+                                next: data?.links?.next,
+                                page: data?.links?.next !== null ? isState.page + 1 : isState.page,
+                                isLoadingScroll: false,
+                            });
                         } catch (error) {
                             throw error
                         } finally {
@@ -209,8 +208,9 @@ const MyTrips = (props: Props) => {
                     }
                     <ScrollArea
                         ref={scrollContainerRef}
-                        id='scroll-container'
-                        className={`${isState.dataMyTrips?.length > 0 && isVisibleMobile ? 'h-[680px]' : isVisibleTablet ? 'h-[980px]' : 'h-[780px]'} lg:pr-6 pr-3`}
+                        className={`${isState.dataMyTrips?.length > 0 &&
+                            isVisibleMobile ? isState.dataMyTrips?.length > 4 ? 'h-[680px]' : 'h-auto' :
+                            isVisibleTablet ? isState.dataMyTrips?.length > 4 ? 'h-[980px]' : 'h-auto' : isState.dataMyTrips?.length >= 3 ? 'h-[780px]' : 'h-[550px]'} lg:pr-6 pr-3`}
                     >
                         <div className='flex flex-col gap-4'>
                             <MyTripSelfDrivingCar isState={isState} />
@@ -229,8 +229,9 @@ const MyTrips = (props: Props) => {
                 <TabsContent value="2" className='lg:mt-4 mt-5'>
                     <ScrollArea
                         // ref={scrollContainerRef}
-                        className={`${isState.dataMyTripsTalented?.length > 0 && isVisibleMobile ? 'h-[680px]' : isVisibleTablet ? 'h-[980px]' : 'h-[780px]'} lg:pr-6 pr-3`}
-                    // className={`${isState.dataMyTripsTalented?.length > 0 && isVisibleMobile ? 'h-[1380px]' : isVisibleTablet ? 'h-[1680px]' : 'h-[780px]'} lg:pr-6 pr-3`}
+                        className={`${isState.dataMyTripsTalented?.length > 0 &&
+                            isVisibleMobile ? isState.dataMyTripsTalented?.length > 4 ? 'h-[680px]' : 'h-auto' :
+                            isVisibleTablet ? isState.dataMyTripsTalented?.length > 4 ? 'h-[980px]' : 'h-auto' : isState.dataMyTripsTalented?.length > 0 ? 'h-[780px]' : 'h-[550px]'} lg:pr-6 pr-3`}
                     >
                         <Nodata type='mytrip' />
                     </ScrollArea>

@@ -7,15 +7,15 @@ import { FaRegQuestionCircle } from 'react-icons/fa'
 
 import { toastCore } from '@/lib/toast'
 import { useAuth } from '@/hooks/useAuth'
+import Nodata from '@/components/image/Nodata'
 import { Button } from "@/components/ui/button"
 import FormPapers from './components/FormPapers'
-import BackgroundUiProfile from '@/themes/profile/BackgroundUiProfile'
 import FormInformation from './components/FormInfomation'
-import apiAccount from '@/services/profile/account/account.services'
+import { StatePageAccount } from '@/types/Profile/IAccount'
 import SessionStarRating from './components/SessionStarRating'
 import useAuthenticationAPI from '@/services/auth/auth.services'
-import { StatePageAccount } from '@/types/Profile/IAccount'
-import Nodata from '@/components/image/Nodata'
+import apiAccount from '@/services/profile/account/account.services'
+import BackgroundUiProfile from '@/themes/profile/BackgroundUiProfile'
 type Props = {}
 
 
@@ -129,10 +129,9 @@ const Account = (props: Props) => {
     const handleClickButtonEdit = (type: string) => {
         if (type === "editInfo") {
             queryState({ editInfo: !isState.editInfo })
-
-        } else {
-            queryState({ editPapers: !isState.editPapers })
+            return
         }
+        queryState({ editPapers: !isState.editPapers })
 
         if (!isState.editInfo || !isState.editPapers) {
             onSetValue(informationUser)
@@ -155,15 +154,17 @@ const Account = (props: Props) => {
             form.append('drivingLiscense[driving_liscense_id]', informationUser.drivingLiscense.id ?? "")
             form.append('drivingLiscense[birthday]', moment(values.datePapers).format('DD/MM/YYYY') ?? null ?? "")
         }
+
+
         const { data: { message, result } } = await apiUpdateInfo(form)
         if (result) {
             toastCore.success(message)
             success = true
             type === 'editInfo' && queryState({ editInfo: !isState.editInfo })
             type === 'editPapers' && queryState({ editPapers: !isState.editPapers })
-        } else {
-            toastCore.error(message)
+            return
         }
+        toastCore.error(message)
         if (success) {
             const { data: information } = await apiInfoUser()
             if (information?.result) {
@@ -174,7 +175,6 @@ const Account = (props: Props) => {
 
     }
     const handlePage = async () => {
-
         let form: any = new FormData();
         form.append('current_page', isState.page)
         form.append('per_page', isState.limit)
@@ -191,13 +191,12 @@ const Account = (props: Props) => {
             }
             queryState({ dataStarRatings: [...isState.dataStarRatings, ...newData] })
             setInformationUser(dataDB)
-        } else {
-            console.log('error');
+            return
         }
+        console.log('error');
     }
     useEffect(() => {
         isState.page != 1 && handlePage()
-
     }, [isState.page])
 
     if (!isMounted) {

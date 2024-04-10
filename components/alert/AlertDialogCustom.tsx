@@ -13,6 +13,10 @@ import { Button } from '../ui/button'
 import { toastCore } from '@/lib/toast'
 import { useAlert } from '@/hooks/useAlertDialog'
 import apiAddress from '@/services/profile/listAddress/listAddress.services'
+import apiDeleteAccount from '@/services/profile/deleteAccount/deleteAccount.services'
+import { useCookie } from '@/hooks/useCookie'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/hooks/useAuth'
 
 type Props = {
 }
@@ -31,8 +35,15 @@ const AlertDialogCustom = (props: Props) => {
         buttonSubmit: '',
         buttonCancel: ''
     }
+    const router = useRouter()
+
+    const { setInformationUser } = useAuth()
 
     const { apiDeleteAddress } = apiAddress()
+
+    const { removeCookie, setCookie } = useCookie()
+
+    const { apiLogAccount } = apiDeleteAccount()
 
 
     const [isTitle, setIsTitle] = useState<ITitle>(title)
@@ -44,36 +55,58 @@ const AlertDialogCustom = (props: Props) => {
         switch (type) {
             case 'deleteAddres':
                 try {
-                    const { data } = await apiDeleteAddress(value)
-                    if (data?.result) {
-                        toastCore.success(data?.message)
+                    const { data: { result, message } } = await apiDeleteAddress(value)
+                    if (result) {
+                        toastCore.success(message)
                         setOnFinally(true)
                         setOpenAlert(false)
-                    } else {
-                        toastCore.error(data?.message)
+                        return
                     }
+                    toastCore.error(message)
                 } catch (error) {
                     throw error
                 }
                 break;
-
+            case 'delete-account':
+                try {
+                    const { data: { result, message } } = await apiLogAccount()
+                    if (result) {
+                        toastCore.success(message)
+                        setOpenAlert(false)
+                        setInformationUser("")
+                        setCookie('token_kanow', 'kanow', { expires: 7 })
+                        return
+                    }
+                    toastCore.error(message)
+                } catch (error) {
+                    throw error
+                } finally {
+                    router.push('/')
+                }
+                break;
             default:
                 break;
         }
     }
 
+    const key: any = {
+        "deleteAddres": {
+            title: 'Bạn có muốn xóa không?',
+            accept: 'Xác nhận xóa',
+            buttonSubmit: 'Xóa',
+            buttonCancel: 'Hủy'
+        },
+        "delete-account": {
+            title: 'Bạn có muốn xóa tài khoản không?',
+            accept: 'Xác nhận xóa tài khoản',
+            buttonSubmit: 'Xóa',
+            buttonCancel: 'Hủy'
+        }
+    }
+
     useEffect(() => {
-        switch (type) {
-            case 'deleteAddres':
-                setIsTitle({
-                    title: 'Bạn có muốn xóa không?',
-                    accept: 'Xác nhận xóa',
-                    buttonSubmit: 'Xóa',
-                    buttonCancel: 'Hủy'
-                })
-                break;
-            default:
-                break;
+        if (type) {
+            setIsTitle(key[type])
         }
     }, [type])
 

@@ -198,7 +198,6 @@ const ListAddress = (props: Props) => {
                 return
             }
             toastCore.error(data?.message)
-
         } catch (error) {
             throw error
         }
@@ -250,8 +249,9 @@ const ListAddress = (props: Props) => {
                 <div>
                     <TabsContent value="list" className="">
                         <ScrollArea
-                            // ref={scrollContainerRef}
-                            className={`${isState.listAddress?.length > 0 && isVisibleMobile ? 'h-[1380px]' : isVisibleTablet ? 'h-[1680px]' : 'h-[780px]'} lg:pr-6 pr-3`}
+                            className={`${isState.listAddress?.length > 0 &&
+                                isVisibleMobile ? (isState.listAddress?.length > 3 ? 'h-[400px]' : 'h-auto') :
+                                isVisibleTablet ? isState.listAddress?.length > 3 ? 'h-[880px]' : 'h-auto' : isState.listAddress?.length >= 4 ? 'h-[780px]' : 'h-[550px]'} lg:pr-6 pr-3`}
                         >
                             <ListAddressMap isState={isState} queryKeyIsState={queryKeyIsState} />
                         </ScrollArea>

@@ -63,7 +63,7 @@ const ListCarFavorite = (props: Props) => {
                     dataDrivingCar: customDataListCars,
                     page: isState.page + 1,
                     next: data?.links?.next,
-                    totalDrivingCar: data?.meta?.total
+                    totalDrivingCar: data?.meta?.total ?? 0
                 })
             }
 
@@ -113,33 +113,16 @@ const ListCarFavorite = (props: Props) => {
                                         page: isState.page + 1,
                                     })
                                 }
-                                // setTimeout(() => {
-                                //     const lastElementId = customDataListCars && customDataListCars.length > 0 ? customDataListCars[customDataListCars.length - 1].id : null;
-                                //     const lastElement = document.getElementById(`card-${lastElementId}`);
-                                //     if (lastElement) {
-                                //         lastElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                                //     }
-
-                                //     const scrollContainer = document.getElementById("scroll-container");
-                                //     if (scrollContainer) {
-                                //         const scrollHeight = scrollContainer.scrollHeight;
-                                //         const clientHeight = scrollContainer.clientHeight;
-                                //         const paddingBottom = Math.max(0, clientHeight - scrollHeight + 50); // Thêm 50px khoảng cách
-                                //         const currentScrollTop = scrollContainer.scrollTop;
-                                //         scrollContainer.scrollTop = currentScrollTop + paddingBottom; // Thay đổi vị trí cuộn
-                                //     }
-                                // }, 100);
-
-                            } else {
-                                queryState({
-                                    listCardCars: isState.dataDrivingCar,
-                                    next: data?.links?.next,
-                                    page: data?.links?.next !== null ? isState.page + 1 : isState.page,
-                                    isLoadingScroll: false,
-                                });
+                                return
                             }
+                            queryState({
+                                listCardCars: isState.dataDrivingCar,
+                                next: data?.links?.next,
+                                page: data?.links?.next !== null ? isState.page + 1 : isState.page,
+                                isLoadingScroll: false,
+                            });
                         } catch (error) {
-                            console.error("Error fetching data:", error);
+                            throw error
                         } finally {
                             queryState({ isLoadingScroll: false });
                         }
@@ -160,12 +143,7 @@ const ListCarFavorite = (props: Props) => {
         return () => {
             scrollCurrent?.removeEventListener(isVisibleMobile ? "touchmove" : "wheel", handleWheel);
         };
-    }, [
-        scrollContainerRef,
-        isState.next,
-        isState.page,
-        isState.isLoadingScroll,
-    ]);
+    }, [scrollContainerRef, isState.next, isState.page, isState.isLoadingScroll,]);
 
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string) => {
         e.stopPropagation()
@@ -181,15 +159,15 @@ const ListCarFavorite = (props: Props) => {
                             dataDrivingCar: customDataListCars,
                             page: 2,
                             next: data?.links?.next,
-                            totalDrivingCar: data?.meta?.total
+                            totalDrivingCar: data?.meta?.total ?? 0
                         })
+                        return
                     } else {
                         console.log(data);
                     }
-                } else {
-                    console.log(dataHeart?.message);
-
+                    return
                 }
+                console.log(dataHeart?.message);
             } catch (err) {
                 throw err
             }
@@ -212,22 +190,22 @@ const ListCarFavorite = (props: Props) => {
                         value="2"
                         className='data-[state=active]:text-[#2FB9BD] text-[#667085] data-[state=active]:border-b-[#2FB9BD]
                                 border-b-2 border-transparent rounded-none pb-[15px] px-0 font-semibold text-sm leading-[17px]'>
-                        Xe có tài (100)
+                        Xe có tài (0)
                     </TabsTrigger>
                 </TabsList>
                 <TabsContent value="1" className='lg:mt-4 mt-5'>
                     <ScrollArea
                         ref={scrollContainerRef}
                         id='scroll-container'
-                        className={`${isState.dataDrivingCar?.length > 0 && isVisibleMobile ? 'h-[1380px]' : isVisibleTablet ? 'h-[1680px]' : 'h-[780px]'} lg:pr-6 pr-3`}
+                        className={`${isState.dataDrivingCar?.length > 0 &&
+                            isVisibleMobile ? isState.dataDrivingCar?.length > 3 ? 'h-[1380px]' : 'h-auto' :
+                            isVisibleTablet ? isState.dataDrivingCar?.length > 3 ? 'h-[1680px]' : 'h-auto' : isState.dataDrivingCar?.length >= 3 ? 'h-[780px]' : 'h-[550px]'} lg: pr-6 pr - 3`}
                     >
                         <div className='flex flex-col gap-4'>
                             {isState.isLoadingCar ?
-                                <>
-                                    {[...Array(3)].map((_, index) => (
-                                        <SkeletonCarFavorite key={index} />
-                                    ))}
-                                </>
+                                [...Array(3)].map((_, index) => (
+                                    <SkeletonCarFavorite key={index} />
+                                ))
                                 :
                                 isState.dataDrivingCar?.length > 0 ? isState.dataDrivingCar.map((card, index) => (
                                     <div
@@ -393,13 +371,9 @@ const ListCarFavorite = (props: Props) => {
                                         </div>
                                     </div>
                                 )) :
-                                    // <div className='h-[472px]'>
-                                    //     <Image src='/listCarFavorite/nodata.png' alt='' width={1280} height={1024} className='object-cover h-full -w-full' />
-                                    // </div>
                                     <Nodata type='list-car-favorite' />
                             }
                         </div>
-
                         {
                             isState?.isLoadingScroll && (
                                 <div className="w-full 3xl:h-[80px] h-[60px] flex justify-center items-center gap-2">
@@ -414,11 +388,10 @@ const ListCarFavorite = (props: Props) => {
                 <TabsContent value="2" className='lg:mt-4 mt-5'>
                     <ScrollArea
                         ref={scrollContainerRef}
-                        className={`${isState.datalentedCar?.length > 0 && isVisibleMobile ? 'h-[1380px]' : isVisibleTablet ? 'h-[1680px]' : 'h-[780px]'} lg:pr-6 pr-3`}
+                        className={`${isState.datalentedCar?.length > 0 &&
+                            isVisibleMobile ? isState.datalentedCar?.length > 3 ? 'h-[1380px]' : 'h-auto' :
+                            isVisibleTablet ? isState.datalentedCar?.length > 3 ? 'h-[1680px]' : 'h-auto' : isState.datalentedCar?.length >= 3 ? 'h-[780px]' : 'h-[550px]'} lg: pr-6 pr - 3`}
                     >
-                        {/* <div className='h-[472px]'>
-                            <Image src='/listCarFavorite/nodata.png' alt='' width={1280} height={1024} className='object-cover h-full -w-full' />
-                        </div> */}
                         <Nodata type='list-car-favorite' />
                     </ScrollArea>
                 </TabsContent>
