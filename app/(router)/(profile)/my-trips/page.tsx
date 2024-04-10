@@ -10,7 +10,7 @@ import { useResize } from '@/hooks/useResize'
 import { IMyTrips } from '@/types/Profile/IMyTrips'
 import { CustomDataMyTripCar } from '@/custom/CustomData'
 
-import apiMyTrips from '@/services/myTrips/myTrips.services'
+import apiMyTrips from '@/services/profile/myTrips/myTrips.services'
 import MyTripSelfDrivingCar from './components/MyTripSelfDrivingCar'
 
 import DialogFilterMytrip from './components/DialogFilterMytrip'

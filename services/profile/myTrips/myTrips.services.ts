@@ -1,4 +1,4 @@
-import axios from "../../utils/axios-customize";
+import axios from "../../../utils/axios-customize";
 import { AxiosRequestConfig } from "axios";
 const apiMyTrips = () => {
     const apiListMyTrips = (page: string | number, limit: string | number, param?: any) => {

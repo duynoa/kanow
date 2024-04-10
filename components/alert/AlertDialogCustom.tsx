@@ -12,7 +12,7 @@ import {
 import { Button } from '../ui/button'
 import { toastCore } from '@/lib/toast'
 import { useAlert } from '@/hooks/useAlertDialog'
-import apiAddress from '@/services/listAddress/listAddress.services'
+import apiAddress from '@/services/profile/listAddress/listAddress.services'
 
 type Props = {
 }
