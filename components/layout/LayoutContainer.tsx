@@ -153,7 +153,9 @@ const LayoutContainer = ({
             const presenceChannel = pusher.subscribe("notification-status");
             //pusher xóa mẫu
             presenceChannel.bind("change-status", (data: any) => {
-                if (data) {
+                if (data && isStateInfoRentalCar?.detailRentalCar) {
+                    console.log('isStateInfoRentalCar :', isStateInfoRentalCar);
+
                     queryKeyIsStateInfoRentalCar({
                         detailRentalCar: {
                             ...isStateInfoRentalCar?.detailRentalCar,
@@ -164,8 +166,9 @@ const LayoutContainer = ({
                             }
                         }
                     })
+                    console.log('data dsadsadsad đá sads: ', data);
+
                 }
-                console.log('data dsadsadsad đá sads: ', data);
             });
 
             return () => {
@@ -174,7 +177,7 @@ const LayoutContainer = ({
                 pusher.disconnect(); // Ngắt kết nối khi component bị unmounted
             };
         }
-    }, [generalKey]);
+    }, [generalKey, isStateInfoRentalCar, queryKeyIsStateInfoRentalCar]);
 
     console.log('isStateInfoRentalCar homne :', isStateInfoRentalCar);
 
