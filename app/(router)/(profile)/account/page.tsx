@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import FormPapers from './components/FormPapers'
 import BackgroundUiProfile from '@/themes/profile/BackgroundUiProfile'
 import FormInformation from './components/FormInfomation'
-import apiAccount from '@/services/account/account.services'
+import apiAccount from '@/services/profile/account/account.services'
 import SessionStarRating from './components/SessionStarRating'
 import useAuthenticationAPI from '@/services/auth/auth.services'
 import { StatePageAccount } from '@/types/Profile/IAccount'

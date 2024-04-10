@@ -33,7 +33,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { SelectItemNocheck } from '../ui/selectNocheck'
 import { useAlertDialogLogout } from '@/hooks/useAlertDialog'
 import AlertDialogLogout from '../alert/AlertDialogLogout'
-import apiAccount from '@/services/account/account.services'
+import apiAccount from '@/services/profile/account/account.services'
 import moment from 'moment'
 import { Skeleton } from '../ui/skeleton'
 
