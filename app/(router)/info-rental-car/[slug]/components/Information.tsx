@@ -36,86 +36,16 @@ const Information = ({
 
     params,
 }: Props) => {
-    const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
-    const { isStateInfoRentalCar } = useDataInfoRentalCar()
     const { isStatePolicy } = useDataPolicy()
-
-    const [expandedItems, setExpandedItems] = useState<boolean>(false);
-
-    const handleToggleExpand = () => {
-        setExpandedItems(!expandedItems);
-    };
-
+    const { isStateInfoRentalCar } = useDataInfoRentalCar()
+    const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isVisibleMobile, isVisibleTablet } = useResize()
+
     const [isMounted, setIsMounted] = useState<boolean>(false)
-    // Sử dụng useState để theo dõi trạng thái của header thứ hai
 
     useEffect(() => {
         setIsMounted(true)
     }, [])
-
-    const featuresCar = [
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_1.svg",
-            name: 'Bản đồ',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_2.svg",
-            name: 'Camera hành trình',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_3.svg",
-            name: 'Cảm biến lốp',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_4.svg",
-            name: 'Cảnh báo tốc độ',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_5.svg",
-            name: 'Bluetooth',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_6.svg",
-            name: 'ETC',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_7.svg",
-            name: 'Khe cắm USB',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_8.svg",
-            name: 'Màn hình DVD',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_9.svg",
-            name: 'Camera lùi',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_10.svg",
-            name: 'Định vị GPS',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_11.svg",
-            name: 'Túi khí an toàn',
-        },
-        {
-            id: uuidv4(),
-            icon: "/icon/iconTest/icon_12.svg",
-            name: 'Cảm biến va chạm',
-        },
-    ]
 
     const listComment = [
         {
@@ -126,25 +56,6 @@ const Information = ({
             rating: 5
         },
     ]
-
-    const listSurcharge = [
-        {
-            id: uuidv4(),
-            title: 'Phí vượt giới hạn',
-            description: "Phụ phí phát sinh nếu lộ trình di chuyển vượt quá 900km khi thuê xe 3 ngày",
-            money: "5k/km"
-        },
-        {
-            id: uuidv4(),
-            title: 'Phụ phí khác',
-            description: "Phụ phí phát sinh nếu trả xe trễ, xe không đảm bảo vệ sinh hoặc bị ám mùi",
-            money: "5k/km"
-        },
-    ]
-
-    const dataMaps = {
-        google_map_link: ""
-    }
 
     if (!isMounted) {
         return null
@@ -178,24 +89,16 @@ const Information = ({
                                 Mã số chuyến: {isStateInfoRentalCar?.detailRentalCar?.car?.reference_no ? isStateInfoRentalCar?.detailRentalCar?.car?.reference_no : ""}
                             </Badge>
                         </div>
-                        <div className='flex items-center gap-4'>
-                            {/* <div className='flex items-center gap-1'>
-                                <FaStar className='3xl:text-base lg:text-sm md:text-base text-sm text-[#FF9900]' />
-                                <div className='3xl:text-sm text-xs text-[#484D5C] font-medium'>
-                                    4.9
-                                </div>
-                            </div> */}
 
-                            <div className='flex items-center gap-1'>
-                                <FaCircleCheck className='3xl:text-base lg:text-sm md:text-base text-sm text-[#3AC996]' />
-                                <div className='3xl:text-sm text-xs text-[#484D5C] font-semibold'>
-                                    {
-                                        isStateInfoRentalCar?.detailRentalCar && isStateInfoRentalCar?.detailRentalCar?.customer?.total_trip !== 0 ?
-                                            `${FormatNumberHundred(isStateInfoRentalCar?.detailRentalCar?.customer?.total_trip, 100)} Chuyến`
-                                            :
-                                            "Chưa có chuyến"
-                                    }
-                                </div>
+                        <div className='flex items-center gap-1'>
+                            <FaCircleCheck className='3xl:text-base lg:text-sm md:text-base text-sm text-[#3AC996]' />
+                            <div className='3xl:text-sm text-xs text-[#484D5C] font-semibold'>
+                                {
+                                    isStateInfoRentalCar?.detailRentalCar && isStateInfoRentalCar?.detailRentalCar?.customer?.total_trip !== 0 ?
+                                        `${FormatNumberHundred(isStateInfoRentalCar?.detailRentalCar?.customer?.total_trip, 100)} Chuyến`
+                                        :
+                                        "Chưa có chuyến"
+                                }
                             </div>
                         </div>
                     </div>

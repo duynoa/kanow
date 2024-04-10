@@ -37,6 +37,7 @@ import { getListReportCar } from '@/services/cars/report.services'
 import { IInitialStateDetailCar } from '@/types/Initial/IInitial'
 import { getDataPolicy } from '@/services/cars/policy.services'
 import { useDataPolicy } from '@/hooks/useDataQueryKey'
+import moment from 'moment'
 
 type Props = {
     params: {
@@ -52,7 +53,7 @@ const DetailCar = ({ params }: Props) => {
     const { dataPromotions, setDataPromotions } = useDialogPromotion()
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
     const { queryKeyIsStatePolicy } = useDataPolicy()
-    const { numberDay } = useDialogCalendar()
+    const { dateReal, numberDay } = useDialogCalendar()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
@@ -148,13 +149,15 @@ const DetailCar = ({ params }: Props) => {
                     onSuccessPage: true
                 }
             })
-            const { data } = await getDataDetailCar(params.slug)
 
-            console.log("data data : ", data);
-
+            let dataParams = {
+                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`
+            }
+            const { data } = await getDataDetailCar(params.slug, dataParams)
 
             if (data && data.data && data.base.base) {
-                let { customDataDetailCar } = CustomDataDetailCar(data)
+                let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
+                console.log('customDataDetailCar', customDataDetailCar);
 
                 queryKeyIsState({
                     dataDetailCar: customDataDetailCar,
@@ -168,10 +171,15 @@ const DetailCar = ({ params }: Props) => {
         }
 
     }
+
+    console.log('numberDay numberDaynumberDaynumberDay: ', numberDay);
+
+
     const fetchDataListCarsRelated = async () => {
         try {
             const dataListCar = {
-                car_id: params.slug
+                car_id: params.slug,
+                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`
             }
 
             const { data } = await getListCarsRelated(dataListCar)

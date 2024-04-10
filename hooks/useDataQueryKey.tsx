@@ -16,7 +16,6 @@ interface IStateRentalCar {
 export const useDataInfoRentalCar = create<IStateRentalCar>((set) => ({
     isStateInfoRentalCar: {
         detailRentalCar: undefined,
-        dataPolicy: undefined
     },
     queryKeyIsStateInfoRentalCar: (key: any) => set((state) => ({
         ...state,

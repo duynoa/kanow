@@ -48,7 +48,6 @@ const Header = () => {
     const [activeService, setActiveService] = useState<boolean>(false)
     const [openModalLogin, setOpenModalLogin] = useState<boolean>(false)
     const { setDataNotification, setOpenNotification, openNotification } = useNotification()
-    console.log("openNotification", openNotification);
 
     const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
 

@@ -213,6 +213,7 @@ interface IDetailRentalCar {
         status: number,
         color: string,
         name: string,
+        note: string
     },
     price: {
         // tiền gốc 

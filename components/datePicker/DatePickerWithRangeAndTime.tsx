@@ -23,7 +23,7 @@ type Props = {
 export function DatePickerWithRangeAndTime({
     className, classNameButton
 }: Props) {
-    const [date, setDate] = React.useState<DateRange | undefined>({
+    const [dateReal, setDateReal] = React.useState<DateRange | undefined>({
         from: new Date(),
         to: addDays(new Date(), 20),
     })
@@ -37,18 +37,18 @@ export function DatePickerWithRangeAndTime({
                         variant={"outline"}
                         className={cn(
                             `${classNameButton} w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-sm text-xs`,
-                            !date && "text-muted-foreground"
+                            !dateReal && "text-muted-foreground"
                         )}
                     >
                         <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
-                        {date?.from ? (
-                            date.to ? (
+                        {dateReal?.from ? (
+                            dateReal.to ? (
                                 <>
-                                    {format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
-                                    {format(date.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                    {format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                    {format(dateReal.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
                                 </>
                             ) : (
-                                format(date.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
                             )
                         ) : (
                             <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
@@ -59,9 +59,9 @@ export function DatePickerWithRangeAndTime({
                     <Calendar
                         initialFocus
                         mode="range"
-                        defaultMonth={date?.from}
-                        selected={date}
-                        onSelect={setDate}
+                        defaultMonth={dateReal?.from}
+                        selected={dateReal}
+                        onSelect={setDateReal}
                         numberOfMonths={2}
                     />
                 </PopoverContent>

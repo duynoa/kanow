@@ -36,12 +36,12 @@ export const useDialogPromotion = create<IOpenDialogPromotion>((set) => ({
 
 // dialog calendar
 interface IOpenDialogCalendar {
-    date: DateRange | undefined;
-    setDate: (date: DateRange | undefined) => void;
+    dateReal: DateRange | undefined;
+    setDateReal: (dateReal: DateRange | undefined) => void;
     openDialogCalendar: boolean;
     setOpenDialogCalendar: (key: any) => void
-    numberDay: number | null
-    setNumberDay: (numberDay: number | null) => void;
+    numberDay: number
+    setNumberDay: (numberDay: number) => void;
 }
 
 const defaultDateRange: DateRange = {
@@ -51,11 +51,11 @@ const defaultDateRange: DateRange = {
 
 export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     openDialogCalendar: false,
-    date: defaultDateRange,
-    numberDay: null,
+    dateReal: defaultDateRange,
+    numberDay: 1,
     setOpenDialogCalendar: (key: any) => set((state) => ({ ...state, openDialogCalendar: key })),
-    setDate: (date: DateRange | undefined) => set((state) => ({ ...state, date })),
-    setNumberDay: (numberDay: number | null) => set((state) => ({ numberDay: numberDay })),
+    setDateReal: (dateReal: DateRange | undefined) => set((state) => ({ ...state, dateReal })),
+    setNumberDay: (numberDay: number ) => set((state) => ({ numberDay: numberDay })),
 }))
 
 // dialog filter list car
@@ -133,4 +133,25 @@ export const useDialogValidate = create<IOpenDialogValidate>((set) => ({
     dataValidate: undefined,
     setOpenDialogValidate: (key: any, type?: string) => set((state) => ({ openDialogValidate: key, type: type })),
     setDataValidate: (key: any) => set((state) => ({ dataValidate: key })),
+}));
+
+// dialog cancel car (huỷ xe)
+interface IOpenDialogCancelCar {
+    openDialogCancelCar: boolean;
+    setOpenDialogCancelCar: (key: any, type?: string) => void;
+    type?: string;
+    dataListReasonsCancel: any[];
+    setDataListReasonsCancel: (dataListReasonsCancel: any[]) => void;
+    dataInfo?: any
+    setDataInfo: (dataInfo?: any) => void;
+}
+
+export const useDialogCancelCar = create<IOpenDialogCancelCar>((set) => ({
+    openDialogCancelCar: false,
+    setOpenDialogCancelCar: (key: any, type?: string) => set((state) => ({ openDialogCancelCar: key, type: type })),
+    type: "",
+    dataListReasonsCancel: [],
+    setDataListReasonsCancel: (key: any[]) => set((state) => ({ dataListReasonsCancel: key })),
+    dataInfo: {},
+    setDataInfo: (key: any) => set((state) => ({ dataInfo: key })),
 }));

@@ -54,7 +54,6 @@ interface IInitialStateDetailCar {
 // initial rental car
 interface IInitialStateInfoRentalCar {
     detailRentalCar?: IDetailRentalCar
-    dataPolicy?: IDataPolicy
 }
 
 // initial payment car

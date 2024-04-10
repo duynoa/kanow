@@ -23,7 +23,7 @@ type Props = {
 export function DatePickerWithRange({
     className, classNameButton
 }: Props) {
-    const [date, setDate] = React.useState<DateRange | undefined>({
+    const [dateReal, setDateReal] = React.useState<DateRange | undefined>({
         from: new Date(2022, 0, 20),
         to: addDays(new Date(2022, 0, 20), 20),
     })
@@ -37,19 +37,19 @@ export function DatePickerWithRange({
                         variant={"outline"}
                         className={cn(
                             `${classNameButton} w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0`,
-                            !date && "text-muted-foreground"
+                            !dateReal && "text-muted-foreground"
                         )}
                     >
                         <FaCalendarAlt className="mr-4 text-lg text-[#1EAAB1]" />
                         {
-                            date?.from ? (
-                                date.to ? (
+                            dateReal?.from ? (
+                                dateReal.to ? (
                                     <>
-                                        {format(date.from, "dd/MM/yyyy", { locale: vi })} -{" "}
-                                        {format(date.to, "dd/MM/yyyy", { locale: vi })}
+                                        {format(dateReal.from, "dd/MM/yyyy", { locale: vi })} -{" "}
+                                        {format(dateReal.to, "dd/MM/yyyy", { locale: vi })}
                                     </>
                                 ) : (
-                                    format(date.from, "dd/MM/yyyy", { locale: vi })
+                                    format(dateReal.from, "dd/MM/yyyy", { locale: vi })
                                 )
                             ) : (
                                 <span className='text-[#B4B8C5] font-medium'>Chọn ngày</span>
@@ -61,9 +61,9 @@ export function DatePickerWithRange({
                     <Calendar
                         initialFocus
                         mode="range"
-                        defaultMonth={date?.from}
-                        selected={date}
-                        onSelect={setDate}
+                        defaultMonth={dateReal?.from}
+                        selected={dateReal}
+                        onSelect={setDateReal}
                         numberOfMonths={2}
                     />
                 </PopoverContent>
