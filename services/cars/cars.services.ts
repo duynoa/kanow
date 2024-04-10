@@ -54,6 +54,8 @@ const postRequestRentalCar = (data: any) => {
     return axios.post(`/transaction/addTransaction`, data)
 }
 
+
+
 export {
     getListCars,
     getListAutomaker,

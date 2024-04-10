@@ -165,9 +165,6 @@ export function DialogReportCar({ isState, queryKeyIsState }: Props) {
 
                                         return (
                                             <FormItem>
-                                                <FormLabel className="3xl:text-base text-sm text-[#49495C] font-medium">
-                                                    Ghi chú
-                                                </FormLabel>
                                                 <div>
                                                     <FormControl>
                                                         <Textarea

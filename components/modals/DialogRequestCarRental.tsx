@@ -89,6 +89,7 @@ export function DialogRequestCarRental({ }: Props) {
                 toastCore.success('Gửi yêu cầu thuê xe thành công!')
                 setOpenDialogRequestCarRental(false)
                 router.push(`/info-rental-car/${data.id}`)
+                setCheckPolicy(false)
             } else {
                 toastCore.error(data.message)
             }
@@ -100,8 +101,8 @@ export function DialogRequestCarRental({ }: Props) {
 
     const handleCloseModal = () => {
         setOpenDialogRequestCarRental(false)
+        setCheckPolicy(false)
     }
-    console.log('dataListRequestCarRental : ', dataListRequestCarRental);
 
     if (!isMounted) {
         return null

@@ -134,3 +134,24 @@ export const useDialogValidate = create<IOpenDialogValidate>((set) => ({
     setOpenDialogValidate: (key: any, type?: string) => set((state) => ({ openDialogValidate: key, type: type })),
     setDataValidate: (key: any) => set((state) => ({ dataValidate: key })),
 }));
+
+// dialog cancel car (huỷ xe)
+interface IOpenDialogCancelCar {
+    openDialogCancelCar: boolean;
+    setOpenDialogCancelCar: (key: any, type?: string) => void;
+    type?: string;
+    dataListReasonsCancel: any[];
+    setDataListReasonsCancel: (dataListReasonsCancel: any[]) => void;
+    dataInfo?: any
+    setDataInfo: (dataInfo?: any) => void;
+}
+
+export const useDialogCancelCar = create<IOpenDialogCancelCar>((set) => ({
+    openDialogCancelCar: false,
+    setOpenDialogCancelCar: (key: any, type?: string) => set((state) => ({ openDialogCancelCar: key, type: type })),
+    type: "",
+    dataListReasonsCancel: [],
+    setDataListReasonsCancel: (key: any[]) => set((state) => ({ dataListReasonsCancel: key })),
+    dataInfo: {},
+    setDataInfo: (key: any) => set((state) => ({ dataInfo: key })),
+}));

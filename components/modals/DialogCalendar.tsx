@@ -294,11 +294,9 @@ export function DialogCalendar({ }: Props) {
         setOpenDialogCalendar(!openDialogCalendar)
     }
 
-    console.log('date : ', date);
 
     // change date in calender 
     const handleDateChange = (newDate: any) => {
-        console.log('newDate', newDate);
         // Check if new date range is not null
         if (newDate && newDate.from && newDate.to) {
             // Check if the new from date is different from the current from date
@@ -356,9 +354,6 @@ export function DialogCalendar({ }: Props) {
             setNumberDay(1)
         }
     }, [date?.from, date?.to])
-
-    console.log('isStateDate : :', isStateDate);
-
 
     const handleSubmitDateTime = () => {
         setNumberDay(tempNumberDate)

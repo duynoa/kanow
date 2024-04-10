@@ -36,6 +36,8 @@ import 'swiper/css/autoplay'
 import "aos/dist/aos.css";
 import '@/styles/globals.scss';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDataInfoRentalCar } from '@/hooks/useDataQueryKey';
+import { DialogCancelCar } from '../modals/DialogCancelCar';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -50,9 +52,9 @@ const LayoutContainer = ({
 }) => {
     const pathname = usePathname()
 
-    const { generalKey, setGeneralKey } = useGeneralKey()
-
     const { getKeySettings } = useAuthenticationAPI()
+    const { generalKey, setGeneralKey } = useGeneralKey()
+    const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
 
     const {
         isVisibleMobile,
@@ -133,9 +135,6 @@ const LayoutContainer = ({
         getKey()
     }, [])
 
-    console.log('generalKey :', generalKey);
-
-
     useEffect(() => {
         if (generalKey && generalKey?.pusher && generalKey?.cluster) {
             const pusher = new Pusher(generalKey?.pusher, {
@@ -154,13 +153,19 @@ const LayoutContainer = ({
             const presenceChannel = pusher.subscribe("notification-status");
             //pusher xóa mẫu
             presenceChannel.bind("change-status", (data: any) => {
-                // if (data) {
-                //     getCounDataTab();
-                //     setPageSussces(data?.type_design);
-                //     setOnSussces(true);
-                // }
+                if (data) {
+                    queryKeyIsStateInfoRentalCar({
+                        detailRentalCar: {
+                            ...isStateInfoRentalCar?.detailRentalCar,
+                            status: {
+                                ...isStateInfoRentalCar?.detailRentalCar?.status,
+                                status: +data.status,
+                                statusCustom: +data.status
+                            }
+                        }
+                    })
+                }
                 console.log('data dsadsadsad đá sads: ', data);
-
             });
 
             return () => {
@@ -170,6 +175,8 @@ const LayoutContainer = ({
             };
         }
     }, [generalKey]);
+
+    console.log('isStateInfoRentalCar homne :', isStateInfoRentalCar);
 
     return (
         <html lang="en">
@@ -186,6 +193,7 @@ const LayoutContainer = ({
                     <DialogValidate />
                     <AlertCancel />
                     <DialogAnswerPolicy />
+                    <DialogCancelCar />
 
                     <AlertDialogCustom />
                 </main>

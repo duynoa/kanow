@@ -60,6 +60,9 @@ const InformationCar = ({
         google_map_link: ""
     }
 
+    console.log('isState : ', isState);
+
+
     if (!isMounted) {
         return null
     }
@@ -210,16 +213,20 @@ const InformationCar = ({
                             :
                             <>
                                 <div className='3xl:text-base text-sm text-[#585F71] group-hover:text-[#585F71]/80 duration-500 transition ease-in-out'>
-                                    <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.describe_car ? isState?.dataDetailCar?.describe_car?.slice(0, 500) : ''}` }} />
+                                    <span dangerouslySetInnerHTML={{ __html: `${isState?.dataDetailCar?.describe_car ? isState?.dataDetailCar?.describe_car?.slice(0, 600) : ''}` }} />
                                 </div>
-                                {isState?.dataDetailCar?.describe_car?.length > 500 && (
-                                    <div
-                                        onClick={() => handleToggleExpand()}
-                                        className='3xl:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out w-fit caret-transparent'
-                                    >
-                                        Xem thêm
-                                    </div>
-                                )}
+                                {
+                                    isState?.dataDetailCar?.describe_car?.length > 600 ? (
+                                        <div
+                                            onClick={() => handleToggleExpand()}
+                                            className='3xl:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out w-fit caret-transparent'
+                                        >
+                                            Xem thêm
+                                        </div>
+                                    )
+                                        :
+                                        null
+                                }
                             </>
                     }
                 </div>

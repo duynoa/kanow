@@ -4,6 +4,7 @@ import { FaRegQuestionCircle } from 'react-icons/fa'
 import {
     useDialogAnswerPolicy,
     useDialogCalendar,
+    useDialogCancelCar,
     useDialogPromotion
 } from '@/hooks/useOpenDialog'
 
@@ -30,15 +31,17 @@ const PriceList = ({
 }: Props) => {
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { setOpenAlertCancel } = useAlertCancel()
+    const { setOpenDialogCancelCar, setDataInfo } = useDialogCancelCar()
     const { isVisibleTablet } = useResize()
     const { isStateInfoRentalCar } = useDataInfoRentalCar()
     const { isStatePolicy } = useDataPolicy()
 
-    console.log('isStateInfoRentalCar', isStateInfoRentalCar);
-
-
     const handleOpenAlertCancel = () => {
-        setOpenAlertCancel(true)
+        setOpenDialogCancelCar(true, "1")
+        setDataInfo({
+            car_id: isStateInfoRentalCar?.detailRentalCar?.id,
+            status: isStateInfoRentalCar?.detailRentalCar?.status?.status
+        })
     }
 
     return (
@@ -92,7 +95,9 @@ const PriceList = ({
 
                         <div className='space-x-1 text-sm text-[#6F7689] font-medium'>
                             <span>Lí do:</span>
-                            <span className='text-[#383A43] font-semibold'>Xe bận</span>
+                            <span className='text-[#383A43] font-semibold'>
+                                {isStateInfoRentalCar?.detailRentalCar?.status?.note}
+                            </span>
                         </div>
                     </div>
 
@@ -322,7 +327,7 @@ const PriceList = ({
                                 <Button
                                     type="button"
                                     onClick={handleOpenAlertCancel}
-                                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-[#2FB9BD] bg-white border-2 border-[#2FB9BD] hover:bg-[#2FB9BD]/20 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-red-500 bg-white border-2 border-red-500 hover:bg-red-100 transition-all duration-300 font-semibold rounded-xl caret-transparent'
                                 >
                                     Huỷ chuyến
                                 </Button>

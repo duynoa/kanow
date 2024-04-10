@@ -164,7 +164,10 @@ const SearchCars = (props: Props) => {
                         onSuccessPage: true
                     }
                 })
-                const { data } = await getListCars(isState?.page, isState.limit.limitAllCars)
+                const dataParams = {
+                    date_search: "10/04/2024 11:00:00 - 11/04/2024 12:00:00"
+                }
+                const { data } = await getListCars(isState?.page, isState.limit.limitAllCars, dataParams)
 
                 if (data && data.data && data.base) {
                     let { customDataListCars } = CustomDataListCars(data)
@@ -222,6 +225,7 @@ const SearchCars = (props: Props) => {
 
                         const fetchDataListCar = async () => {
                             const query = {
+                                date_search: "10/04/2024 11:00:00 - 11/04/2024 12:00:00",
                                 company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
                                 type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
                                 transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
@@ -234,6 +238,9 @@ const SearchCars = (props: Props) => {
                             }
 
                             const { data } = await getListCars(isState.page, isState.limit.limitAllCars, query);
+
+                            console.log('check data : ', data);
+
 
                             if (data && data?.links && data?.data && data?.base) {
                                 let { customDataListCars } = CustomDataListCars(data)

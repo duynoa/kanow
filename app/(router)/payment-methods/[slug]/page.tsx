@@ -39,8 +39,6 @@ const InfoRentalCar = ({ params }: Props) => {
         const fetchListPaymentMode = async () => {
             const { data } = await getListPaymentMode();
 
-            console.log('data : ', data);
-
             if (data && data.data) {
                 queryKeyIsStatePaymentRental({
                     listPaymentMode: data.data,
@@ -55,8 +53,6 @@ const InfoRentalCar = ({ params }: Props) => {
         const fetchPriceWithCar = async () => {
             const { data } = await getInfoDetailCarTransaction(params?.slug);
 
-            console.log('data : ', data);
-
             if (data && data.data && data.base) {
                 let { customDataInfoRentalCar } = CustomDataInfoRentalCar(data)
 
@@ -69,10 +65,6 @@ const InfoRentalCar = ({ params }: Props) => {
         fetchListPaymentMode()
         fetchPriceWithCar()
     }, [params.slug])
-
-    console.log('isStatePaymentRental : ', isStatePaymentRental);
-
-
 
     if (!isMounted) {
         return null

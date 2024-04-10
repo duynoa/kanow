@@ -219,7 +219,6 @@ const LayoutProfile = ({
     }
 
     const handleChangeSidebar = (value: any) => {
-        console.log('value:', value);
         if (value !== '/logout') {
             router.push(value)
         } else {

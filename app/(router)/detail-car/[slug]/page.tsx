@@ -150,9 +150,6 @@ const DetailCar = ({ params }: Props) => {
             })
             const { data } = await getDataDetailCar(params.slug)
 
-            console.log("data data : ", data);
-
-
             if (data && data.data && data.base.base) {
                 let { customDataDetailCar } = CustomDataDetailCar(data)
 
