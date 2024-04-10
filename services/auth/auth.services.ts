@@ -26,7 +26,19 @@ const useAuthenticationAPI = () => {
         return axios.post(`/update_account`, data);
     };
 
-    return { apiLogin, apiInfoUser, apiLogout, apiSignup, apiOtpSignup, apiChangePassword };
+    const getKeySettings = () => {
+        return axios.get(`/get_info_settings`)
+    }
+
+    return {
+        apiLogin,
+        apiInfoUser,
+        apiLogout,
+        apiSignup,
+        apiOtpSignup,
+        apiChangePassword,
+        getKeySettings
+    };
 };
 
 export default useAuthenticationAPI;

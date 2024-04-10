@@ -10,10 +10,10 @@ export default function NotFound() {
                 </div>
                 <div className="text-center flex flex-col gap-4">
                     <h1 className="text-2xl font-bold text-[#2FB9BD] leading-6">
-                        Không tìm thấy trang
+                        Không tìm thấy trang 404
                     </h1>
                     <h5 className="italic text-sm leading-5 font-light">
-                        The page could not be found
+                        The page could not be found 404
                     </h5>
                 </div>
             </div>

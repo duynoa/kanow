@@ -230,7 +230,7 @@ const Information = ({
                                 Từ:
                             </div>
                             <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
-                                {moment(isStateInfoRentalCar?.detailRentalCar?.date_time?.date_start).format("HH[h]MM dd/mm/YYYY")}
+                                {moment(isStateInfoRentalCar?.detailRentalCar?.date_time?.date_start).format("HH[h]mm DD/MM/YYYY")}
                             </div>
                         </div>
                         <div className='pl-7 flex items-center gap-1'>
@@ -238,7 +238,7 @@ const Information = ({
                                 Đến:
                             </div>
                             <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
-                                {moment(isStateInfoRentalCar?.detailRentalCar?.date_time?.date_end).format("HH[h]MM dd/mm/YYYY")}
+                                {moment(isStateInfoRentalCar?.detailRentalCar?.date_time?.date_end).format("HH[h]mm DD/MM/YYYY")}
                             </div>
                         </div>
                     </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import Aos from 'aos';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import Header from './Header';
 import Footer from './Footer';
@@ -9,16 +9,10 @@ import Footer from './Footer';
 import { Be_Vietnam_Pro } from 'next/font/google'
 import { useResize } from '@/hooks/useResize';
 
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/bundle';
-import 'swiper/css/autoplay'
-import "aos/dist/aos.css";
-import '@/styles/globals.scss';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
+
+import Pusher from "pusher-js";
 import ButtonToTop from '../button/ButtonToTop';
+import { ToastContainer } from 'react-toastify';
 import { usePathname } from 'next/navigation';
 
 import AlertDialogLogout from '../alert/AlertDialogLogout';
@@ -29,11 +23,19 @@ import { DialogRequestCarRental } from '../modals/DialogRequestCarRental';
 import { DialogValidate } from '../modals/DialogValidate';
 import AlertCancel from '../alert/AlertCancel';
 import { DialogAnswerPolicy } from '../modals/DialogAnswerPolicy';
-import Script from 'next/script';
-import { useGoogleKey } from '@/hooks/useGoogleKey';
-import apiGoogleKey from '@/services/google/googleKey.services';
+
 import AlertDialogCustom from '../alert/AlertDialogCustom';
-import DropdownHeaderNotification from '../dropdown/DropdownHeaderNotification';
+import useAuthenticationAPI from '@/services/auth/auth.services';
+import { useGeneralKey } from '@/hooks/useGeneralKey';
+
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/bundle';
+import 'swiper/css/autoplay'
+import "aos/dist/aos.css";
+import '@/styles/globals.scss';
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -48,11 +50,18 @@ const LayoutContainer = ({
 }) => {
     const pathname = usePathname()
 
-    const { setGoogleKey } = useGoogleKey()
+    const { generalKey, setGeneralKey } = useGeneralKey()
 
-    const { apiGetGoogleKey } = apiGoogleKey()
+    const { getKeySettings } = useAuthenticationAPI()
 
-    const { isVisibleMobile, onResizeMobile, onCloseResizeMobile, isVisibleTablet, onResizeTablet, onCloseResizeTablet } = useResize()
+    const {
+        isVisibleMobile,
+        isVisibleTablet,
+        onResizeMobile,
+        onResizeTablet,
+        onCloseResizeMobile,
+        onCloseResizeTablet
+    } = useResize()
 
     useEffect(() => {
         const scrollTop = () => {
@@ -97,21 +106,71 @@ const LayoutContainer = ({
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, [isVisibleMobile, onCloseResizeMobile, onCloseResizeTablet, onResizeMobile, onResizeTablet, isVisibleTablet]);
-    // apiGoogleKey
+    }, [
+        isVisibleMobile,
+        isVisibleTablet,
+        onCloseResizeMobile,
+        onCloseResizeTablet,
+        onResizeMobile,
+        onResizeTablet,
+    ]);
+
+    // getKeySettings
     useEffect(() => {
         const getKey = async () => {
             try {
-                // const { data } = await apiGetGoogleKey()
-                // if (data) {
-                //     setGoogleKey(data)
-                // }
+                const { data } = await getKeySettings()
+
+                console.log('data Key: ', data);
+
+                if (data) {
+                    setGeneralKey(data)
+                }
             } catch (error) {
                 throw error
             }
         }
         getKey()
     }, [])
+
+    console.log('generalKey :', generalKey);
+
+
+    useEffect(() => {
+        if (generalKey && generalKey?.pusher && generalKey?.cluster) {
+            const pusher = new Pusher(generalKey?.pusher, {
+                authTransport: "ajax",
+                cluster: generalKey?.cluster,
+            });
+
+            pusher.connection.bind("connected", () => {
+                console.log("Đã kết nối thành công đến Pusher!");
+            });
+
+            pusher.connection.bind("error", (err: any) => {
+                console.error("Lỗi kết nối Pusher:", err);
+            });
+
+            const presenceChannel = pusher.subscribe("notification-status");
+            //pusher xóa mẫu
+            presenceChannel.bind("change-status", (data: any) => {
+                // if (data) {
+                //     getCounDataTab();
+                //     setPageSussces(data?.type_design);
+                //     setOnSussces(true);
+                // }
+                console.log('data dsadsadsad đá sads: ', data);
+
+            });
+
+            return () => {
+                presenceChannel.unbind(); // Unbind sự kiện khi component bị unmounted
+                pusher.unsubscribe("notification-status"); // Unsubscribe channel khi component bị unmounted
+                pusher.disconnect(); // Ngắt kết nối khi component bị unmounted
+            };
+        }
+    }, [generalKey]);
+
     return (
         <html lang="en">
             <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
