@@ -186,7 +186,8 @@ const CustomDataInfoRentalCar = (res: any) => {
             // tiền bảo hiểm
             price_insurance_day: +res?.data?.price?.price_insurance_day,
             // tổng tạm tính
-            temp_total_amount: +res?.data?.price?.total,
+            // temp_total_amount: +res?.data?.price?.total,
+            temp_total_amount: +res?.data?.price?.total_all,
             // thành tiền
             total_amount: +res?.data?.price?.grand_total,
             // tiền đặt cọc

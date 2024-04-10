@@ -33,14 +33,16 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
     }, [type])
 
     // return <div className={`${className}  h-fit  flex flex-col items-center`}>
-    return <div className={`${className}  flex flex-col items-center`}>
-        <div className="h-fit">
-            {/* <div className="lg:h-[472px] h-fit"> */}
-            <Image src={data.image} alt='' width={1280} height={1024} className='object-cover size-full' />
+    return (
+        <div className={`${className}  flex flex-col items-center`}>
+            <div className="h-fit">
+                {/* <div className="lg:h-[472px] h-fit"> */}
+                <Image src={data.image} alt='' width={1280} height={1024} className='object-cover size-full' />
+            </div>
+            <h1 className="text-[#6F7689] lg:text-base text-sm font-normal leading-6">
+                {data.title}
+            </h1>
         </div>
-        <h1 className="text-[#6F7689] lg:text-base text-sm font-normal leading-6">
-            {data.title}
-        </h1>
-    </div>
+    )
 }
 export default Nodata

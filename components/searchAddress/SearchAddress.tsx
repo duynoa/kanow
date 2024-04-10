@@ -1,10 +1,10 @@
 import { useRef } from "react"
-import { useGoogleKey } from "@/hooks/useGoogleKey"
 import { LoadScript, StandaloneSearchBox } from "@react-google-maps/api"
+import { useGeneralKey } from "@/hooks/useGeneralKey"
 
 const SearchAddress = ({ onChange, children }: any) => {
     const refGoogle = useRef<any>(null)
-    const { googleKey } = useGoogleKey()
+    const { generalKey } = useGeneralKey()
     const handleChangeReplace = () => {
         const [place] = refGoogle.current.getPlaces()
         if (place) {
@@ -15,7 +15,7 @@ const SearchAddress = ({ onChange, children }: any) => {
     }
     return (
         <LoadScript
-            googleMapsApiKey={googleKey.google_api_key}
+            googleMapsApiKey={generalKey.google_api_key}
             libraries={["places"]}
         >
             <StandaloneSearchBox
