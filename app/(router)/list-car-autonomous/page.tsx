@@ -43,7 +43,7 @@ const SearchCars = (props: Props) => {
     // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
     const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
-    const { dateReal, setOpenDialogCalendar, setParam } = useDialogCalendar()
+    const { dateReal, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogFilterListCars } = useDialogFilterListCars()
     const { getCookie } = useCookie()
 
