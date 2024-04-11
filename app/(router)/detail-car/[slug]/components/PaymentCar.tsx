@@ -31,6 +31,7 @@ import { FaDeleteLeft } from 'react-icons/fa6'
 import { useCookie } from '@/hooks/useCookie'
 import { IInitialStateDetailCar } from '@/types/Initial/IInitial'
 import { useDataPolicy } from '@/hooks/useDataQueryKey'
+import { usePathname } from 'next/navigation'
 
 type Props = {
     isState: IInitialStateDetailCar,
@@ -45,14 +46,14 @@ const PaymentCar = ({
     queryKeyIsState,
     params
 }: Props) => {
-    const { dateReal, numberDay, setOpenDialogCalendar } = useDialogCalendar()
+    const pathname = usePathname()
+    const { dateReal, dateTemp, numberDay, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogPromotion } = useDialogPromotion()
     const { setOpenDialogReportCar } = useDialogReportCar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { setOpenDialogLogin } = useDialogLogin()
     const { isStatePolicy } = useDataPolicy()
     const { setDataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
-    console.log("isStatePolicy", isStatePolicy);
 
     const { getCookie } = useCookie()
     const { isVisibleTablet } = useResize()
@@ -179,29 +180,56 @@ const PaymentCar = ({
                     </Label>
 
                     <div>
-                        <Button
-                            id="date"
-                            variant={"outline"}
-                            className={cn(
-                                `px-4 py-3 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-sm text-xs`,
-                                !dateReal && "text-muted-foreground"
-                            )}
-                            onClick={() => handleOpenDialog('calendar', 'dateTemp')}
-                        >
-                            <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
-                            {dateReal?.from ? (
-                                dateReal.to ? (
-                                    <>
-                                        {format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
-                                        {format(dateReal.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
-                                    </>
-                                ) : (
-                                    format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
-                                )
-                            ) : (
-                                <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
-                            )}
-                        </Button>
+                        {
+                            dateTemp && pathname.startsWith('/detail-car/') ?
+                                <Button
+                                    id="date"
+                                    variant={"outline"}
+                                    className={cn(
+                                        `px-4 py-3 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-sm text-xs`,
+                                        !dateReal && "text-muted-foreground"
+                                    )}
+                                    onClick={() => handleOpenDialog('calendar', 'dateTemp')}
+                                >
+                                    <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
+                                    {dateTemp?.from ? (
+                                        dateTemp.to ? (
+                                            <>
+                                                {format(dateTemp.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                                {format(dateTemp.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                            </>
+                                        ) : (
+                                            format(dateTemp.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                        )
+                                    ) : (
+                                        <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
+                                    )}
+                                </Button>
+                                :
+                                <Button
+                                    id="date"
+                                    variant={"outline"}
+                                    className={cn(
+                                        `px-4 py-3 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-sm text-xs`,
+                                        !dateReal && "text-muted-foreground"
+                                    )}
+                                    onClick={() => handleOpenDialog('calendar', 'dateTemp')}
+                                >
+                                    <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
+                                    {dateReal?.from ? (
+                                        dateReal.to ? (
+                                            <>
+                                                {format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                                {format(dateReal.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                            </>
+                                        ) : (
+                                            format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                        )
+                                    ) : (
+                                        <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
+                                    )}
+                                </Button>
+                        }
                     </div>
 
                     <div className='flex w-full justify-end text-[#3561FF] 3xl:text-base text-sm font-medium'>

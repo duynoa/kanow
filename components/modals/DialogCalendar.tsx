@@ -26,7 +26,7 @@ import { Check, X } from "lucide-react"
 
 import { useDialogCalendar, useDialogPromotion } from "@/hooks/useOpenDialog";
 import { Calendar } from "../ui/calendar";
-import { addDays, differenceInCalendarDays, differenceInDays, format, isSameDay, isSameMinute } from "date-fns";
+import { addDays, differenceInCalendarDays, differenceInDays, differenceInHours, endOfDay, format, isAfter, isSameDay, isSameMinute, parseISO, startOfDay } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { Input } from "../ui/input";
 import { v4 as uuidv4 } from 'uuid';
@@ -36,6 +36,7 @@ import { Button } from "../ui/button";
 
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { useParams, usePathname } from "next/navigation";
+import { toastCore } from "@/lib/toast";
 
 type Props = {
 }
@@ -43,6 +44,9 @@ type Props = {
 export function DialogCalendar({ }: Props) {
     const pathname = usePathname()
     const slug = useParams();
+
+    const [dateTimeComponent, setDateTimeComponent] = useState<any>()
+    const [numberDayComponent, setNumberDayComponent] = useState<any>()
 
     const {
         dateReal,
@@ -318,9 +322,11 @@ export function DialogCalendar({ }: Props) {
                     newDate.to.setHours(dateTemp?.to.getHours(), dateTemp?.to.getMinutes(), dateTemp?.to.getSeconds());
                 }
                 // Update the state with the new date range
-                setDateTemp(newDate);
+                // setDateTemp(newDate);
+                setDateTimeComponent(newDate);
             } else if (newDate && newDate.from) {
-                setDateTemp(newDate);
+                // setDateTemp(newDate);
+                setDateTimeComponent(newDate);
             }
 
         } else {
@@ -337,88 +343,134 @@ export function DialogCalendar({ }: Props) {
                     newDate.to.setHours(dateReal?.to.getHours(), dateReal?.to.getMinutes(), dateReal?.to.getSeconds());
                 }
                 // Update the state with the new date range
-                setDateReal(newDate);
+                // setDateReal(newDate);
+                setDateTimeComponent(newDate);
             } else if (newDate && newDate.from) {
-                setDateReal(newDate);
+                // setDateReal(newDate);
+                setDateTimeComponent(newDate);
             }
         }
     }
 
     // change time in calender
     const handleTimeChange = (value: string, type: string) => {
-        if (pathname.startsWith('/detail-car/')) {
-            if (dateTemp) {
-                if (dateTemp.from && type === 'from') {
-                    const updatedDate = {
-                        ...dateTemp,
-                        from: new Date(dateTemp?.from.setHours(+value?.split(":")[0], +value.split(":")[1])),
-                    };
+        if (dateTimeComponent) {
+            if (dateTimeComponent.from && type === 'from') {
+                const updatedDate = {
+                    ...dateTimeComponent,
+                    from: new Date(dateTimeComponent?.from.setHours(+value?.split(":")[0], +value.split(":")[1])),
+                };
 
-                    setDateTemp(updatedDate);
-                } else if (dateTemp.to && type === 'to') {
-                    const updatedDate = {
-                        ...dateTemp,
-                        to: new Date(dateTemp?.to.setHours(+value?.split(":")[0], +value.split(":")[1])),
-                    };
+                // setDateTemp(updatedDate);
+                setDateTimeComponent(updatedDate);
+            } else if (dateTimeComponent.to && type === 'to') {
+                const updatedDate = {
+                    ...dateTimeComponent,
+                    to: new Date(dateTimeComponent?.to.setHours(+value?.split(":")[0], +value.split(":")[1])),
+                };
 
-                    setDateTemp(updatedDate);
-                }
-
+                // setDateTemp(updatedDate);
+                setDateTimeComponent(updatedDate);
             }
-        } else {
-            if (dateReal) {
-                if (dateReal.from && type === 'from') {
-                    const updatedDate = {
-                        ...dateReal,
-                        from: new Date(dateReal?.from.setHours(+value?.split(":")[0], +value.split(":")[1])),
-                    };
 
-                    setDateReal(updatedDate);
-                } else if (dateReal.to && type === 'to') {
-                    const updatedDate = {
-                        ...dateReal,
-                        to: new Date(dateReal?.to.setHours(+value?.split(":")[0], +value.split(":")[1])),
-                    };
-
-                    setDateReal(updatedDate);
-                }
-
-            }
         }
+
     };
 
     useEffect(() => {
-        if (pathname.startsWith('/detail-car/')) {
-            const daysDifference = differenceInCalendarDays(`${dateTemp?.to}`, `${dateTemp?.from}`);
-            if (dateTemp?.to && dateTemp?.from && daysDifference) {
-                console.log("Số ngày thuê:", daysDifference);
-                setNumberDay(daysDifference)
-            } else if (dateTemp?.to || dateTemp?.from) {
-                setNumberDay(1)
-            }
-
-
-        } else {
-            const daysDifference = differenceInCalendarDays(`${dateReal?.to}`, `${dateReal?.from}`);
-            if (dateReal?.to && dateReal?.from && daysDifference) {
-                console.log("Số ngày thuê:", daysDifference);
-                setNumberDay(daysDifference)
-            } else if (dateReal?.to || dateReal?.from) {
-                setNumberDay(1)
-            }
+        const daysDifference = differenceInCalendarDays(`${dateTimeComponent?.to}`, `${dateTimeComponent?.from}`);
+        if (dateTimeComponent?.to && dateTimeComponent?.from && daysDifference) {
+            console.log("Số ngày thuê:", daysDifference);
+            // setNumberDay(daysDifference)
+            setNumberDayComponent(daysDifference)
+        } else if (dateTimeComponent?.to || dateTimeComponent?.from) {
+            // setNumberDay(1)
+            setNumberDayComponent(1)
         }
-    }, [slug, dateReal?.from, dateReal?.to, dateTemp?.from, dateTemp?.to])
+    }, [slug, dateTimeComponent?.from, dateTimeComponent?.to])
 
     useEffect(() => {
         setDateTemp(dateReal)
+        setNumberDay(numberDayComponent)
+        setDateTimeComponent(dateReal)
     }, [slug])
 
+    const isSubmitAllowed = (from: Date | string, to: Date | string): boolean => {
+        const fromDate = typeof from === 'string' ? parseISO(from) : from;
+        const toDate = typeof to === 'string' ? parseISO(to) : to;
+
+        // Tính số giờ và số ngày giữa 'from' và 'to'
+        const diffHours = differenceInHours(toDate, fromDate);
+        console.log('diffHours : ', diffHours);
+
+        // số giờ ít hơn 5, không cho phép submit
+        if (diffHours <= 5) {
+            return false;
+        } else {
+            return true;
+        }
+
+    };
 
     const handleSubmitDateTime = () => {
+        const { from, to } = dateTimeComponent;
+        console.log('isSubmitAllowed', isSubmitAllowed(from, to));
 
-    }
 
-    console.log('dateTemp', dateTemp);
+        if (!from || !to) {
+            toastCore.error("Vui lòng chọn cả ngày và giờ trả xe!");
+            return;
+        }
+
+        if (isAfter(from, to)) {
+            toastCore.error("Vui lòng chọn giờ trả xe sau giờ nhận xe trong ngày!");
+            return;
+        }
+
+        if (!isSubmitAllowed(from, to)) {
+            toastCore.error("Giờ nhận xe phải trước giờ trả xe ít nhất 5 giờ!");
+            return;
+        }
+
+        // Nếu tất cả điều kiện đều đúng, tiến hành setDate và setNumberDay
+        if (pathname.startsWith('/detail-car/')) {
+            setDateTemp(dateTimeComponent);
+        } else {
+            setDateReal(dateTimeComponent);
+        }
+        setNumberDay(numberDayComponent);
+    };
+    // const handleSubmitDateTime = () => {
+    //     if (dateTimeComponent.from && dateTimeComponent.to && !isAfter(dateTimeComponent.from, dateTimeComponent.to)) {
+    //         if (isSubmitAllowed(dateTimeComponent.from, dateTimeComponent.to)) {
+    //             if (pathname.startsWith('/detail-car/')) {
+    //                 setDateTemp(dateTimeComponent)
+    //                 setNumberDay(numberDayComponent)
+    //             } else {
+    //                 setDateReal(dateTimeComponent)
+    //                 setNumberDay(numberDayComponent)
+    //             }
+    //         } else {
+    //             toastCore.error("Giờ nhận xe phải trước giờ trả xe ít nhất 5 giờ!");
+    //         }
+    //     } else if (!dateTimeComponent.to) {
+    //         toastCore.error("Vui lòng chọn ngày và giờ trả xe!")
+    //     } else {
+    //         toastCore.error("Vui lòng chọn giờ trả xe lớn hơn giờ nhận xe trong ngày!")
+    //     }
+    // }
+
+    useEffect(() => {
+        if (pathname.startsWith('/detail-car/')) {
+            // setNumberDayComponent(numberDay)
+            setDateTimeComponent(dateTemp)
+        } else {
+            setDateTimeComponent(dateReal)
+        }
+    }, [openDialogCalendar])
+
+
+    console.log('dateTimeComponent', dateTimeComponent);
 
     return (
         <Dialog modal open={openDialogCalendar} onOpenChange={handleOpenChangeModal}>
@@ -443,8 +495,8 @@ export function DialogCalendar({ }: Props) {
                         <Calendar
                             initialFocus
                             mode="range"
-                            defaultMonth={dateTemp && pathname.startsWith('/detail-car/') ? dateTemp?.from : dateReal?.from}
-                            selected={dateTemp && pathname.startsWith('/detail-car/') ? dateTemp : dateReal}
+                            defaultMonth={dateTimeComponent?.from}
+                            selected={dateTimeComponent}
                             onSelect={(newDate: any) => handleDateChange(newDate)}
                             numberOfMonths={2}
                         />
@@ -453,17 +505,9 @@ export function DialogCalendar({ }: Props) {
                         <div className='flex flex-col gap-1 w-[50%]'>
                             <Label>Giờ nhận xe</Label>
                             <Select
-                                value={pathname.startsWith('/detail-car/') ?
-                                    (dateTemp?.from ? format(dateTemp?.from, 'HH:mm') : '')
-                                    :
-                                    (dateReal?.from ? format(dateReal?.from, 'HH:mm') : '')
-                                }
+                                value={(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '')}
                                 onValueChange={(value) => handleTimeChange(value, 'from')}
-                                defaultValue={`${pathname.startsWith('/detail-car/') ?
-                                    (dateTemp?.from ? format(dateTemp?.from, 'HH:mm') : '00:00')
-                                    :
-                                    (dateReal?.from ? format(dateReal?.from, 'HH:mm') : '00:00')}
-                                    `}
+                                defaultValue={`${(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '00:00')}`}
                             >
                                 <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
                                     <SelectValue placeholder="Chọn giờ nhận xe" />
@@ -493,17 +537,9 @@ export function DialogCalendar({ }: Props) {
                         <div className='flex flex-col gap-1 w-[50%]'>
                             <Label>Giờ trả xe</Label>
                             <Select
-                                value={pathname.startsWith('/detail-car/') ?
-                                    (dateTemp?.to ? format(dateTemp?.to, 'HH:mm') : '')
-                                    :
-                                    (dateReal?.to ? format(dateReal?.to, 'HH:mm') : '')
-                                }
+                                value={(dateTimeComponent?.to ? format(dateTimeComponent?.to, 'HH:mm') : '')}
                                 onValueChange={(value) => handleTimeChange(value, 'to')}
-                                defaultValue={`${pathname.startsWith('/detail-car/') ?
-                                    (dateTemp?.to ? format(dateTemp?.to, 'HH:mm') : '00:00')
-                                    :
-                                    (dateReal?.to ? format(dateReal?.to, 'HH:mm') : '00:00')}
-                                    `}
+                                defaultValue={`${(dateTimeComponent?.to ? format(dateTimeComponent?.to, 'HH:mm') : '00:00')}`}
                             >
                                 <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
                                     <SelectValue placeholder="Chọn giờ trả xe" />
@@ -530,18 +566,11 @@ export function DialogCalendar({ }: Props) {
 
                 <div className='flex items-center justify-between border-t drop-shadow-md py-6 px-4 mt-10 bg-white'>
                     <div className='flex flex-col'>
-                        {
-                            pathname.startsWith('/detail-car/') ?
-                                <div className='text-base font-semibold'>
-                                    {dateTemp?.from ? format(dateTemp?.from, 'HH:mm, dd/MM') : ""}{dateTemp?.to ? ` - ${format(dateTemp?.to, 'HH:mm, dd/MM')}` : ''}
-                                </div>
-                                :
-                                <div className='text-base font-semibold'>
-                                    {dateReal?.from ? format(dateReal?.from, 'HH:mm, dd/MM') : ""}{dateReal?.to ? ` - ${format(dateReal?.to, 'HH:mm, dd/MM')}` : ''}
-                                </div>
-                        }
+                        <div className='text-base font-semibold'>
+                            {dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm, dd/MM') : ""}{dateTimeComponent?.to ? ` - ${format(dateTimeComponent?.to, 'HH:mm, dd/MM')}` : ''}
+                        </div>
                         <div>
-                            Số ngày thuê: {numberDay} ngày
+                            Số ngày thuê: {numberDayComponent} ngày
                         </div>
                     </div>
 
