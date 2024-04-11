@@ -43,7 +43,7 @@ const SearchCars = (props: Props) => {
     // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
     const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
-    const { dateReal, setOpenDialogCalendar } = useDialogCalendar()
+    const { dateReal, setOpenDialogCalendar, setParam } = useDialogCalendar()
     const { setOpenDialogFilterListCars } = useDialogFilterListCars()
     const { getCookie } = useCookie()
 
@@ -200,7 +200,6 @@ const SearchCars = (props: Props) => {
                 setIsFilterFixed(true);
             } else if (topOffset <= 60) {
                 setIsFilterFixed(false);
-
             }
         }
 

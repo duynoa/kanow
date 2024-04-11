@@ -34,12 +34,16 @@ import { useDataPolicy } from '@/hooks/useDataQueryKey'
 
 type Props = {
     isState: IInitialStateDetailCar,
-    queryKeyIsState: (key: any) => void
+    queryKeyIsState: (key: any) => void,
+    params: {
+        slug: string
+    },
 }
 
 const PaymentCar = ({
     isState,
-    queryKeyIsState
+    queryKeyIsState,
+    params
 }: Props) => {
     const { dateReal, numberDay, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogPromotion } = useDialogPromotion()
@@ -53,11 +57,13 @@ const PaymentCar = ({
     const { getCookie } = useCookie()
     const { isVisibleTablet } = useResize()
 
-    const handleOpenDialog = async (type: string) => {
+    const handleOpenDialog = async (type: string, typeTime?: string) => {
         if (type === 'custom_promotion') {
             setOpenDialogPromotion(true)
         } else if (type === 'calendar') {
-            setOpenDialogCalendar(true)
+            if (typeTime) {
+                setOpenDialogCalendar(true)
+            }
         }
     }
 
@@ -180,7 +186,7 @@ const PaymentCar = ({
                                 `px-4 py-3 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-sm text-xs`,
                                 !dateReal && "text-muted-foreground"
                             )}
-                            onClick={() => handleOpenDialog('calendar')}
+                            onClick={() => handleOpenDialog('calendar', 'dateTemp')}
                         >
                             <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
                             {dateReal?.from ? (
