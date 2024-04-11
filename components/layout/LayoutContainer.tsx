@@ -161,7 +161,8 @@ const LayoutContainer = ({
                             status: {
                                 ...isStateInfoRentalCar?.detailRentalCar?.status,
                                 status: +data.status,
-                                statusCustom: +data.status
+                                statusCustom: +data.status,
+                                note: data.note_status
                             }
                         }
                     })
@@ -177,6 +178,9 @@ const LayoutContainer = ({
             };
         }
     }, [generalKey, isStateInfoRentalCar, queryKeyIsStateInfoRentalCar]);
+
+    console.log('isState info L', isStateInfoRentalCar);
+
 
     return (
         <html lang="en">
