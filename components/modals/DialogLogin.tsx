@@ -379,7 +379,7 @@ export function DialogLogin({ }: Props) {
                                         </Button>
                                         <div className="flex items-center gap-2">
                                             <h1 className="lg:text-sm text-xs">
-                                                Đăng nhập hoặc đăng ký bằng tài khoản <span className="font-semibold">Google</span>
+                                                Đăng nhập bằng tài khoản <span className="font-semibold">Google</span>
                                             </h1>
                                             <div className="hover:scale-105 transition-all duration-200 ease-linear">
                                                 <GoogleLogin
