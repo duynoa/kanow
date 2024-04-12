@@ -34,19 +34,27 @@ import { FormatPhoneNumber } from "../format/FormatNumber";
 import { useDialogLogin } from "@/hooks/useOpenDialog";
 import { useResize } from "@/hooks/useResize";
 import { usePathname } from "next/navigation";
+import { GoogleLogin, useGoogleLogin, useGoogleOneTapLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 type Props = {};
 
 export function DialogLogin({ }: Props) {
-    const { setCookie, removeCookie } = useCookie()
-    const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
-    const { apiLogin, apiInfoUser, apiSignup, apiOtpSignup } = useAuthenticationAPI();
-    const { setInformationUser } = useAuth()
+    const pathname = usePathname()
     const { isVisibleTablet } = useResize()
+    const { setInformationUser } = useAuth()
+
+    const { setCookie, removeCookie } = useCookie()
+
+    const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
+
+    const { apiLogin, apiInfoUser, apiSignup, apiOtpSignup, apiLoginGoogle } = useAuthenticationAPI();
 
     const [timeOtp, setTimeOtp] = useState(0)
 
-    const pathname = usePathname()
+    const [oauthGoogle, setOauthGoogle] = useState<any>({})
 
     const [checkPolicy, setCheckPolicy] = useState<boolean>(false);
 
@@ -67,6 +75,33 @@ export function DialogLogin({ }: Props) {
     const password = form.watch("password", "");
 
     const isLoading = form.formState.isSubmitting;
+
+
+    const handleLoginGoogle = async (token: any) => {
+        let formData = new FormData();
+        const hasToken: any = jwtDecode(token)
+        setOauthGoogle({
+            token,
+            hasToken
+        })
+        formData.append("id_google", hasToken.sub as string);
+        formData.append("idToken", token);
+        const { data } = await apiLoginGoogle(formData);
+        if (data?.result) {
+            if (data?.event == 'sign_up') {
+                setStatusModal("accuracyGoogle")
+                form.setValue("fullName", hasToken.name ?? "")
+            } else {
+                setCookie("token_kanow", data?.token, { expires: 7 });
+                toastCore.success(data?.message);
+                setOpenDialogLogin(false)
+            }
+        } else {
+            removeCookie("token_kanow")
+        }
+
+
+    }
 
     const onSubmit = async (values: any, type: any) => {
         let formData = new FormData();
@@ -94,7 +129,7 @@ export function DialogLogin({ }: Props) {
                 removeCookie("token_kanow")
                 toastCore.error(data?.message);
             }
-        } else if (type == 'signup') {
+        } else if (type == 'signup' || type == 'accuracyGoogle') {
             //api đăng ký thì sẽ gửi otp
             formData.append("phone", values.phoneNumber);
             const { data } = await apiOtpSignup(formData)
@@ -106,9 +141,17 @@ export function DialogLogin({ }: Props) {
             }
         } else if (type == 'otp') {
             //api nhập mã otp xong thì đăng ký
+            /// nếu đăng nhập bằng google thì truyền
+            if (oauthGoogle?.token) {
+                formData.append("sign_up_with", 'google');
+                formData.append("avatar", oauthGoogle?.hasToken?.picture ?? "");
+                formData.append("email", oauthGoogle?.hasToken?.email ?? "");
+                formData.append("id_sign_up", oauthGoogle?.hasToken?.sub ?? "");
+            } else {
+                formData.append("password", values.password);
+            }
             formData.append("phone", values.phoneNumber);
             formData.append("fullname", values.fullName);
-            formData.append("password", values.password);
             formData.append("key_code", values.promoCode);
             const { data: dataSigup } = await apiSignup(formData);
             if (dataSigup?.token) {
@@ -120,7 +163,6 @@ export function DialogLogin({ }: Props) {
                 toastCore.error(dataSigup?.message);
             }
         }
-
 
     };
 
@@ -180,20 +222,29 @@ export function DialogLogin({ }: Props) {
     }, [timeOtp]); // Đảm bảo useEffect chỉ chạy khi timeLeft thay đổi
 
     const handleOpenChangeModal = (type: string) => {
-        if (type === 'login') {
-            setOpenDialogLogin(!openDialogLogin)
+        // if (type === 'login') {
+        //     setOpenDialogLogin(!openDialogLogin)
 
-            // dùng setTimeout để quản lí flow modal 
-            setTimeout(() => {
-                setStatusModal('login')
-            }, 200);
-        } else if (type === 'signup') {
-            setOpenDialogLogin(!openDialogLogin)
-            setTimeout(() => {
-                setStatusModal('login')
-            }, 200);
-        }
+        //     // dùng setTimeout để quản lí flow modal 
+        //     setTimeout(() => {
+        //         setStatusModal('login')
+        //     }, 200);
+        // } else if (type === 'signup') {
+        //     setOpenDialogLogin(!openDialogLogin)
+        //     setTimeout(() => {
+        //         setStatusModal('login')
+        //     }, 200);
+        // }
+        setOpenDialogLogin(!openDialogLogin)
+        // dùng setTimeout để quản lí flow modal 
+        setTimeout(() => {
+            setStatusModal('login')
+        }, 200);
     }
+
+
+
+
 
     return (
         <Dialog modal open={openDialogLogin} onOpenChange={() => handleOpenChangeModal(statusModal)}>
@@ -212,6 +263,7 @@ export function DialogLogin({ }: Props) {
                         {statusModal === "login" && "Đăng nhập"}
                         {statusModal === "signup" && "Đăng ký"}
                         {statusModal === "otp" && "Nhập mã OTP"}
+                        {statusModal === "accuracyGoogle" && "Nhập thông tin"}
                     </DialogTitle>
                 </DialogHeader>
 
@@ -315,6 +367,8 @@ export function DialogLogin({ }: Props) {
                                             Quên mật khẩu?
                                         </div>
                                     </div>
+
+
                                     <div className="flex flex-col items-center gap-2">
                                         <Button
                                             type="submit"
@@ -323,6 +377,27 @@ export function DialogLogin({ }: Props) {
                                         >
                                             Đăng nhập
                                         </Button>
+                                        <div className="flex items-center gap-2">
+                                            <h1 className="lg:text-sm text-xs">
+                                                Đăng nhập hoặc đăng ký bằng tài khoản <span className="font-semibold">Google</span>
+                                            </h1>
+                                            <div className="hover:scale-105 transition-all duration-200 ease-linear">
+                                                <GoogleLogin
+                                                    onSuccess={(credentialResponse: any) => handleLoginGoogle(credentialResponse.credential)}
+                                                    onError={() => {
+                                                        toastCore.error('Vui lòng thử lại với tài khoản Google!');
+                                                    }}
+                                                    theme="filled_blue"
+                                                    logo_alignment="center"
+                                                    text={undefined}
+                                                    shape="circle"
+                                                    type="icon"
+                                                    useOneTap
+                                                    ux_mode="popup"
+
+                                                />
+                                            </div>
+                                        </div>
                                         <div className="flex items-center gap-1 text-sm">
                                             <span>Bạn chưa là thành viên?</span>
                                             <span
@@ -332,6 +407,7 @@ export function DialogLogin({ }: Props) {
                                                 Đăng ký ngay
                                             </span>
                                         </div>
+
                                     </div>
                                 </>
                             )
@@ -622,6 +698,101 @@ export function DialogLogin({ }: Props) {
                                         className="3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full 3xl:py-3 py-2 rounded-xl"
                                     >
                                         Xác nhận
+                                    </Button>
+                                </>
+                            )
+                        }
+                        {
+                            statusModal == 'accuracyGoogle' && (
+                                <>
+                                    <div className="flex items-center justify-center">
+                                        <Avatar className="size-32 border-4 border-[#2FB9BD]">
+                                            <AvatarImage width={1280} height={1024} src={oauthGoogle?.hasToken?.picture} alt="@shadcn" className="size-full p-1 rounded-full" />
+                                            {/* <AvatarFallback>CN</AvatarFallback> */}
+                                        </Avatar>
+                                    </div>
+                                    <div className="text-gray-400 text-sm"> Vui lòng nhập và kiểm tra tài khoản của bạn.</div>
+                                    <FormField
+                                        control={form.control}
+                                        name="fullName"
+                                        rules={{
+                                            required: "Nhập họ và tên!",
+                                        }}
+                                        render={({ field, fieldState }) => {
+                                            return (
+                                                <FormItem>
+                                                    <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
+                                                        Họ và tên
+                                                        <span className="text-[#F15A5A]">*</span>
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            disabled={isLoading}
+                                                            className={`${fieldState?.invalid && fieldState?.error
+                                                                ? "border rounded-lg border-[#F15A5A]"
+                                                                : "border-b rounded-lg border-[#D8DAE5]"
+                                                                } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
+                                                            placeholder="Nhập họ và tên"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+
+                                                    {fieldState?.invalid && fieldState?.error && (
+                                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                    )}
+                                                </FormItem>
+                                            );
+                                        }}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="phoneNumber"
+                                        rules={{
+                                            required: "Vui lòng nhập số điện thoại!",
+                                            minLength: {
+                                                value: 10,
+                                                message: "Số điện thoại phải có ít nhất 10 số!"
+                                            },
+                                            maxLength: {
+                                                value: 10,
+                                                message: "Số điện thoại không được dài hơn 10 số!"
+                                            }
+                                        }}
+                                        render={({ field, fieldState }) => {
+                                            return (
+                                                <FormItem>
+                                                    <div className="flex-col gap-2">
+                                                        <FormLabel className="text-sm font-semibold text-gray-400 dark:text-secondary/70">
+                                                            Nhập số điện thoại  <span className="text-[#F15A5A]">*</span>
+                                                        </FormLabel>
+                                                    </div>
+                                                    <FormControl className="">
+                                                        <Input
+                                                            type="number"
+                                                            disabled={isLoading}
+                                                            className={`${fieldState?.invalid && fieldState?.error
+                                                                ? "border rounded-lg border-[#F15A5A]"
+                                                                : "border-b rounded-lg border-[#D8DAE5]"
+                                                                } bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 3xl:py-3 py-2`}
+                                                            placeholder="Nhập số điện thoại"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+
+                                                    {fieldState?.invalid && fieldState?.error && (
+                                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                    )}
+                                                </FormItem>
+                                            );
+                                        }}
+                                    />
+
+                                    <Button
+                                        type="submit"
+                                        className="3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full 3xl:py-3 py-2 rounded-xl"
+                                    >
+                                        Gửi OTP
                                     </Button>
                                 </>
                             )

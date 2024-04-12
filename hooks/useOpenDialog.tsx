@@ -161,3 +161,33 @@ export const useDialogCancelCar = create<IOpenDialogCancelCar>((set) => ({
     dataInfo: {},
     setDataInfo: (key: any) => set((state) => ({ dataInfo: key })),
 }));
+
+// dialog address
+interface IOpenDialogAddress {
+    openDialogAddress: boolean;
+    setOpenDialogAddress: (key: any) => void;
+    vehicleHanding: any;
+    setVehicleHanding: (data: any) => void;
+    valueAddress: any,
+
+    setValueAddress: (value: any) => void
+    latitude: Number,
+    longitude: Number,
+    setLatitude: (value: any) => void
+    setLongitude: (value: any) => void
+}
+
+
+export const useDialogAddress = create<IOpenDialogAddress>((set) => ({
+    openDialogAddress: false,
+    setOpenDialogAddress: (key: any) => set((state) => ({ openDialogAddress: key })),
+    vehicleHanding: {},
+    setVehicleHanding: (data: any) => set((state) => ({ vehicleHanding: data })),
+    valueAddress: "",
+    setValueAddress: (value: any) => set((state) => ({ valueAddress: value })),
+    latitude: 0,
+    longitude: 0,
+    setLatitude: (value: any) => set((state) => ({ latitude: value })),
+    setLongitude: (value: any) => set((state) => ({ longitude: value })),
+
+}));

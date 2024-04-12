@@ -39,6 +39,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useDataInfoRentalCar } from '@/hooks/useDataQueryKey';
 import { DialogCancelCar } from '../modals/DialogCancelCar';
 import { useParams } from 'next/navigation';
+import { DialogFilterAddress } from '../modals/DialogFilterAddress';
+import { useDialogAddress } from '@/hooks/useOpenDialog';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -52,7 +54,7 @@ const LayoutContainer = ({
     children: React.ReactNode
 }) => {
     const pathname = usePathname()
-
+    const { setLatitude, setLongitude } = useDialogAddress()
     const { getKeySettings } = useAuthenticationAPI()
     const { generalKey, setGeneralKey } = useGeneralKey()
     const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
@@ -134,7 +136,20 @@ const LayoutContainer = ({
             }
         }
         getKey()
+
     }, [])
+
+
+    // if (navigator.geolocation) {
+    //     navigator.geolocation.watchPosition((position) => {
+    //         console.log("position", position);
+
+    //         setLatitude(position.coords.latitude)
+    //         setLongitude(position.coords.longitude)
+    //     })
+    // }
+
+
 
     useEffect(() => {
         if (generalKey && generalKey?.pusher && generalKey?.cluster) {
@@ -198,6 +213,7 @@ const LayoutContainer = ({
                     <AlertCancel />
                     <DialogAnswerPolicy />
                     <DialogCancelCar />
+                    <DialogFilterAddress />
 
                     <AlertDialogCustom />
                 </main>

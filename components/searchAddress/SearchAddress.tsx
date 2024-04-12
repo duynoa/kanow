@@ -13,10 +13,13 @@ const SearchAddress = ({ onChange, children }: any) => {
             onChange(place.formatted_address)
         }
     }
+
     return (
         <LoadScript
             googleMapsApiKey={generalKey.google_api_key}
+            // googleMapsApiKey={generalKey.google_api_key}
             libraries={["places"]}
+
         >
             <StandaloneSearchBox
                 onLoad={ref => refGoogle.current = ref}

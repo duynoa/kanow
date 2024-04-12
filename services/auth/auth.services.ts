@@ -4,6 +4,9 @@ const useAuthenticationAPI = () => {
     const apiLogin = (data: any) => {
         return axios.post(`/login`, data);
     };
+    const apiLoginGoogle = (data: any) => {
+        return axios.post(`/sign_up_to_google`, data);
+    };
 
     const apiInfoUser = () => {
         return axios.post(`/get_info_account`);
@@ -27,8 +30,8 @@ const useAuthenticationAPI = () => {
     };
 
     const getKeySettings = () => {
-        return axios.get(`/get_info_settings`)
-    }
+        return axios.get(`/get_info_settings`);
+    };
 
     return {
         apiLogin,
@@ -37,7 +40,8 @@ const useAuthenticationAPI = () => {
         apiSignup,
         apiOtpSignup,
         apiChangePassword,
-        getKeySettings
+        getKeySettings,
+        apiLoginGoogle,
     };
 };
 

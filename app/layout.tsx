@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import LayoutContainer from '@/components/layout/LayoutContainer';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 
 export const metadata: Metadata = {
@@ -14,10 +15,11 @@ export default function RootLayout({
 }) {
     return (
         <>
-            <LayoutContainer>
-                {children}
-            </LayoutContainer>
-
+            <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>
+                <LayoutContainer>
+                    {children}
+                </LayoutContainer>
+            </GoogleOAuthProvider>
         </>
     )
 }

@@ -12,13 +12,14 @@ import { FaCalendarAlt } from 'react-icons/fa';
 
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { useDialogCalendar } from '@/hooks/useOpenDialog';
+import { useDialogAddress, useDialogCalendar } from '@/hooks/useOpenDialog';
 import { vi } from 'date-fns/locale';
 
 const IntroSection = () => {
     const { isVisibleMobile } = useResize()
     const router = useRouter()
     const { dateReal, numberDay, setOpenDialogCalendar } = useDialogCalendar()
+    const { setOpenDialogAddress, valueAddress } = useDialogAddress()
 
     const tabSearch = [
         {
@@ -159,15 +160,17 @@ const IntroSection = () => {
                                     Địa điểm
                                 </Label>
                                 <div className="relative">
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-4">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                                         <TiLocation className="text-xl text-[#1EAAB1]" />
                                     </span>
-                                    <Input
+                                    <div
                                         id="place"
-                                        type='text'
-                                        placeholder='Nhập địa điểm'
-                                        className='pl-12 py-3 rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#B4B8C5] placeholder:font-medium' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
-                                    />
+                                        onClick={() => setOpenDialogAddress(true)}
+                                        className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                        focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                    >
+                                        {valueAddress ? valueAddress : 'Chọn địa điểm'}
+                                    </div>
                                 </div>
                             </div>
                             <div className='flex flex-col gap-2'>
