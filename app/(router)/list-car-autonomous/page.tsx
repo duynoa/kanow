@@ -202,7 +202,6 @@ const SearchCars = (props: Props) => {
                 setIsFilterFixed(true);
             } else if (topOffset <= 60) {
                 setIsFilterFixed(false);
-
             }
         }
 

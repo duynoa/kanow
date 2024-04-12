@@ -26,7 +26,7 @@ import { Check, X } from "lucide-react"
 
 import { useDialogCalendar, useDialogPromotion } from "@/hooks/useOpenDialog";
 import { Calendar } from "../ui/calendar";
-import { addDays, differenceInCalendarDays, differenceInDays, format, isSameDay, isSameMinute } from "date-fns";
+import { addDays, differenceInCalendarDays, differenceInDays, differenceInHours, endOfDay, format, isAfter, isSameDay, isSameMinute, parseISO, startOfDay } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { Input } from "../ui/input";
 import { v4 as uuidv4 } from 'uuid';
@@ -35,17 +35,29 @@ import { BsFillArrowRightCircleFill } from "react-icons/bs";
 import { Button } from "../ui/button";
 
 import * as SelectPrimitive from "@radix-ui/react-select"
-import { useDataDate } from "@/hooks/useDataQueryKey";
+import { useParams, usePathname } from "next/navigation";
+import { toastCore } from "@/lib/toast";
 
 type Props = {
 }
 
 export function DialogCalendar({ }: Props) {
-    const { openDialogCalendar, dateReal, setDateReal, setOpenDialogCalendar, numberDay, setNumberDay } = useDialogCalendar()
-    const { isStateDate, queryKeyIsStateDate } = useDataDate()
+    const pathname = usePathname()
+    const slug = useParams();
 
-    const [tempDate, setTempDate] = useState<any>()
-    const [tempNumberDate, setTempNumberDate] = useState<any>()
+    const [dateTimeComponent, setDateTimeComponent] = useState<any>()
+    const [numberDayComponent, setNumberDayComponent] = useState<any>()
+
+    const {
+        dateReal,
+        dateTemp,
+        numberDay,
+        openDialogCalendar,
+        setDateReal,
+        setDateTemp,
+        setOpenDialogCalendar,
+        setNumberDay
+    } = useDialogCalendar()
 
     const dataTime = [
         {
@@ -294,71 +306,171 @@ export function DialogCalendar({ }: Props) {
         setOpenDialogCalendar(!openDialogCalendar)
     }
 
-
     // change date in calender 
     const handleDateChange = (newDate: any) => {
-        // Check if new date range is not null
-        if (newDate && newDate.from && newDate.to) {
-            // Check if the new from date is different from the current from date
-            if (!isSameDay(dateReal?.from, newDate.from) && dateReal?.from) {
-                // If it's different, keep the time of the current from date and update the date
-                newDate.from.setHours(dateReal?.from.getHours(), dateReal?.from.getMinutes(), dateReal?.from.getSeconds());
+        if (pathname.startsWith('/detail-car/')) {
+            // Check if new date range is not null
+            if (newDate && newDate.from && newDate.to) {
+                // Check if the new from date is different from the current from date
+                if (!isSameDay(dateTemp?.from, newDate.from) && dateTemp?.from) {
+                    // If it's different, keep the time of the current from date and update the date
+                    newDate.from.setHours(dateTemp?.from.getHours(), dateTemp?.from.getMinutes(), dateTemp?.from.getSeconds());
+                }
+                // Check if the new to date is different from the current to date
+                if (!isSameDay(dateTemp?.to, newDate.to) && dateTemp?.to) {
+                    // If it's different, keep the time of the current to dateTemp and update the dateTemp
+                    newDate.to.setHours(dateTemp?.to.getHours(), dateTemp?.to.getMinutes(), dateTemp?.to.getSeconds());
+                }
+                // Update the state with the new date range
+                // setDateTemp(newDate);
+                setDateTimeComponent(newDate);
+            } else if (newDate && newDate.from) {
+                // setDateTemp(newDate);
+                setDateTimeComponent(newDate);
             }
-            // Check if the new to date is different from the current to date
-            if (!isSameDay(dateReal?.to, newDate.to) && dateReal?.to) {
-                // If it's different, keep the time of the current to dateReal and update the dateReal
-                newDate.to.setHours(dateReal?.to.getHours(), dateReal?.to.getMinutes(), dateReal?.to.getSeconds());
+
+        } else {
+            // Check if new date range is not null
+            if (newDate && newDate.from && newDate.to) {
+                // Check if the new from date is different from the current from date
+                if (!isSameDay(dateReal?.from, newDate.from) && dateReal?.from) {
+                    // If it's different, keep the time of the current from date and update the date
+                    newDate.from.setHours(dateReal?.from.getHours(), dateReal?.from.getMinutes(), dateReal?.from.getSeconds());
+                }
+                // Check if the new to date is different from the current to date
+                if (!isSameDay(dateReal?.to, newDate.to) && dateReal?.to) {
+                    // If it's different, keep the time of the current to dateReal and update the dateReal
+                    newDate.to.setHours(dateReal?.to.getHours(), dateReal?.to.getMinutes(), dateReal?.to.getSeconds());
+                }
+                // Update the state with the new date range
+                // setDateReal(newDate);
+                setDateTimeComponent(newDate);
+            } else if (newDate && newDate.from) {
+                // setDateReal(newDate);
+                setDateTimeComponent(newDate);
             }
-            // Update the state with the new date range
-            setDateReal(newDate);
-            queryKeyIsStateDate({
-                dateReal: newDate
-            })
-            setTempDate(newDate)
-        } else if (newDate && newDate.from) {
-            setDateReal(newDate);
-            setTempDate(newDate)
         }
     }
 
     // change time in calender
     const handleTimeChange = (value: string, type: string) => {
-        if (dateReal) {
-            if (dateReal.from && type === 'from') {
+        if (dateTimeComponent) {
+            if (dateTimeComponent.from && type === 'from') {
                 const updatedDate = {
-                    ...dateReal,
-                    from: new Date(dateReal?.from.setHours(+value?.split(":")[0], +value.split(":")[1])),
+                    ...dateTimeComponent,
+                    from: new Date(dateTimeComponent?.from.setHours(+value?.split(":")[0], +value.split(":")[1])),
                 };
 
-                setDateReal(updatedDate);
-            } else if (dateReal.to && type === 'to') {
+                // setDateTemp(updatedDate);
+                setDateTimeComponent(updatedDate);
+            } else if (dateTimeComponent.to && type === 'to') {
                 const updatedDate = {
-                    ...dateReal,
-                    to: new Date(dateReal?.to.setHours(+value?.split(":")[0], +value.split(":")[1])),
+                    ...dateTimeComponent,
+                    to: new Date(dateTimeComponent?.to.setHours(+value?.split(":")[0], +value.split(":")[1])),
                 };
 
-                setDateReal(updatedDate);
+                // setDateTemp(updatedDate);
+                setDateTimeComponent(updatedDate);
             }
 
         }
+
     };
 
     useEffect(() => {
-        const daysDifference = differenceInCalendarDays(`${dateReal?.to}`, `${dateReal?.from}`);
-        if (dateReal?.to && dateReal?.from && daysDifference) {
+        const daysDifference = differenceInCalendarDays(`${dateTimeComponent?.to}`, `${dateTimeComponent?.from}`);
+        if (dateTimeComponent?.to && dateTimeComponent?.from && daysDifference) {
             console.log("Số ngày thuê:", daysDifference);
-            setNumberDay(daysDifference)
-            setTempNumberDate(daysDifference)
-        } else if (dateReal?.to || dateReal?.from) {
-            setTempNumberDate(1)
-            setNumberDay(1)
+            // setNumberDay(daysDifference)
+            setNumberDayComponent(daysDifference)
+        } else if (dateTimeComponent?.to || dateTimeComponent?.from) {
+            // setNumberDay(1)
+            setNumberDayComponent(1)
         }
-    }, [dateReal?.from, dateReal?.to])
+    }, [slug, dateTimeComponent?.from, dateTimeComponent?.to])
+
+    useEffect(() => {
+        setDateTemp(dateReal)
+        setNumberDay(numberDayComponent)
+        setDateTimeComponent(dateReal)
+    }, [slug])
+
+    const isSubmitAllowed = (from: Date | string, to: Date | string): boolean => {
+        const fromDate = typeof from === 'string' ? parseISO(from) : from;
+        const toDate = typeof to === 'string' ? parseISO(to) : to;
+
+        // Tính số giờ và số ngày giữa 'from' và 'to'
+        const diffHours = differenceInHours(toDate, fromDate);
+        console.log('diffHours : ', diffHours);
+
+        // số giờ ít hơn 5, không cho phép submit
+        if (diffHours <= 5) {
+            return false;
+        } else {
+            return true;
+        }
+
+    };
 
     const handleSubmitDateTime = () => {
-        setNumberDay(tempNumberDate)
-        setDateReal(tempDate)
-    }
+        const { from, to } = dateTimeComponent;
+        console.log('isSubmitAllowed', isSubmitAllowed(from, to));
+
+
+        if (!from || !to) {
+            toastCore.error("Vui lòng chọn cả ngày và giờ trả xe!");
+            return;
+        }
+
+        if (isAfter(from, to)) {
+            toastCore.error("Vui lòng chọn giờ trả xe sau giờ nhận xe trong ngày!");
+            return;
+        }
+
+        if (!isSubmitAllowed(from, to)) {
+            toastCore.error("Giờ nhận xe phải trước giờ trả xe ít nhất 5 giờ!");
+            return;
+        }
+
+        // Nếu tất cả điều kiện đều đúng, tiến hành setDate và setNumberDay
+        if (pathname.startsWith('/detail-car/')) {
+            setDateTemp(dateTimeComponent);
+        } else {
+            setDateReal(dateTimeComponent);
+        }
+        setNumberDay(numberDayComponent);
+    };
+    // const handleSubmitDateTime = () => {
+    //     if (dateTimeComponent.from && dateTimeComponent.to && !isAfter(dateTimeComponent.from, dateTimeComponent.to)) {
+    //         if (isSubmitAllowed(dateTimeComponent.from, dateTimeComponent.to)) {
+    //             if (pathname.startsWith('/detail-car/')) {
+    //                 setDateTemp(dateTimeComponent)
+    //                 setNumberDay(numberDayComponent)
+    //             } else {
+    //                 setDateReal(dateTimeComponent)
+    //                 setNumberDay(numberDayComponent)
+    //             }
+    //         } else {
+    //             toastCore.error("Giờ nhận xe phải trước giờ trả xe ít nhất 5 giờ!");
+    //         }
+    //     } else if (!dateTimeComponent.to) {
+    //         toastCore.error("Vui lòng chọn ngày và giờ trả xe!")
+    //     } else {
+    //         toastCore.error("Vui lòng chọn giờ trả xe lớn hơn giờ nhận xe trong ngày!")
+    //     }
+    // }
+
+    useEffect(() => {
+        if (pathname.startsWith('/detail-car/')) {
+            // setNumberDayComponent(numberDay)
+            setDateTimeComponent(dateTemp)
+        } else {
+            setDateTimeComponent(dateReal)
+        }
+    }, [openDialogCalendar])
+
+
+    console.log('dateTimeComponent', dateTimeComponent);
 
     return (
         <Dialog modal open={openDialogCalendar} onOpenChange={handleOpenChangeModal}>
@@ -383,8 +495,8 @@ export function DialogCalendar({ }: Props) {
                         <Calendar
                             initialFocus
                             mode="range"
-                            defaultMonth={dateReal?.from}
-                            selected={dateReal}
+                            defaultMonth={dateTimeComponent?.from}
+                            selected={dateTimeComponent}
                             onSelect={(newDate: any) => handleDateChange(newDate)}
                             numberOfMonths={2}
                         />
@@ -393,9 +505,9 @@ export function DialogCalendar({ }: Props) {
                         <div className='flex flex-col gap-1 w-[50%]'>
                             <Label>Giờ nhận xe</Label>
                             <Select
-                                value={dateReal?.from ? format(dateReal?.from, 'HH:mm') : ''}
+                                value={(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '')}
                                 onValueChange={(value) => handleTimeChange(value, 'from')}
-                                defaultValue={`${dateReal?.from ? format(dateReal?.from, 'HH:mm') : '00:00'}`}
+                                defaultValue={`${(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '00:00')}`}
                             >
                                 <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
                                     <SelectValue placeholder="Chọn giờ nhận xe" />
@@ -425,9 +537,9 @@ export function DialogCalendar({ }: Props) {
                         <div className='flex flex-col gap-1 w-[50%]'>
                             <Label>Giờ trả xe</Label>
                             <Select
-                                value={dateReal?.to ? format(dateReal?.to, 'HH:mm') : ''}
+                                value={(dateTimeComponent?.to ? format(dateTimeComponent?.to, 'HH:mm') : '')}
                                 onValueChange={(value) => handleTimeChange(value, 'to')}
-                                defaultValue={`${dateReal?.to ? format(dateReal?.to, 'HH:mm') : '00:00'}`}
+                                defaultValue={`${(dateTimeComponent?.to ? format(dateTimeComponent?.to, 'HH:mm') : '00:00')}`}
                             >
                                 <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
                                     <SelectValue placeholder="Chọn giờ trả xe" />
@@ -455,10 +567,10 @@ export function DialogCalendar({ }: Props) {
                 <div className='flex items-center justify-between border-t drop-shadow-md py-6 px-4 mt-10 bg-white'>
                     <div className='flex flex-col'>
                         <div className='text-base font-semibold'>
-                            {dateReal?.from ? format(dateReal?.from, 'HH:mm, dd/MM') : ""}{dateReal?.to ? ` - ${format(dateReal?.to, 'HH:mm, dd/MM')}` : ''}
+                            {dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm, dd/MM') : ""}{dateTimeComponent?.to ? ` - ${format(dateTimeComponent?.to, 'HH:mm, dd/MM')}` : ''}
                         </div>
                         <div>
-                            Số ngày thuê: {numberDay} ngày
+                            Số ngày thuê: {numberDayComponent} ngày
                         </div>
                     </div>
 

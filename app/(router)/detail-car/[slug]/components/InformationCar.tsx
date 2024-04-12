@@ -60,8 +60,6 @@ const InformationCar = ({
         google_map_link: ""
     }
 
-    console.log('isState : ', isState);
-
 
     if (!isMounted) {
         return null

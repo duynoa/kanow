@@ -37,10 +37,13 @@ export const useDialogPromotion = create<IOpenDialogPromotion>((set) => ({
 // dialog calendar
 interface IOpenDialogCalendar {
     dateReal: DateRange | undefined;
-    setDateReal: (dateReal: DateRange | undefined) => void;
-    openDialogCalendar: boolean;
-    setOpenDialogCalendar: (key: any) => void
+    dateTemp: DateRange | undefined;
     numberDay: number
+    openDialogCalendar: boolean;
+    type: string;
+    setDateReal: (dateReal: DateRange | undefined) => void;
+    setDateTemp: (dateTemp: DateRange | undefined) => void;
+    setOpenDialogCalendar: (key: any, type?: string) => void
     setNumberDay: (numberDay: number) => void;
 }
 
@@ -52,10 +55,13 @@ const defaultDateRange: DateRange = {
 export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     openDialogCalendar: false,
     dateReal: defaultDateRange,
+    dateTemp: undefined,
     numberDay: 1,
-    setOpenDialogCalendar: (key: any) => set((state) => ({ ...state, openDialogCalendar: key })),
+    type: "",
+    setOpenDialogCalendar: (key: any, type?: string) => set((state) => ({ ...state, openDialogCalendar: key, type: type })),
     setDateReal: (dateReal: DateRange | undefined) => set((state) => ({ ...state, dateReal })),
-    setNumberDay: (numberDay: number) => set((state) => ({ numberDay: numberDay })),
+    setDateTemp: (dateTemp: DateRange | undefined) => set((state) => ({ ...state, dateTemp })),
+    setNumberDay: (numberDay: number) => set((state) => ({ ...state, numberDay: numberDay })),
 }))
 
 // dialog filter list car

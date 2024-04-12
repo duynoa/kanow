@@ -172,9 +172,6 @@ const DetailCar = ({ params }: Props) => {
 
     }
 
-    console.log('numberDay numberDaynumberDaynumberDay: ', numberDay);
-
-
     const fetchDataListCarsRelated = async () => {
         try {
             const dataListCar = {
@@ -537,6 +534,7 @@ const DetailCar = ({ params }: Props) => {
                 <PaymentCar
                     isState={isState}
                     queryKeyIsState={queryKeyIsState}
+                    params={params}
                 />
             </div>
 

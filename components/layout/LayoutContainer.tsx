@@ -40,6 +40,7 @@ import { useDataInfoRentalCar } from '@/hooks/useDataQueryKey';
 import { DialogCancelCar } from '../modals/DialogCancelCar';
 import { DialogFilterAddress } from '../modals/DialogFilterAddress';
 import { useDialogAddress } from '@/hooks/useOpenDialog';
+import { useParams } from 'next/navigation';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -169,15 +170,14 @@ const LayoutContainer = ({
             //pusher xóa mẫu
             presenceChannel.bind("change-status", (data: any) => {
                 if (data && isStateInfoRentalCar?.detailRentalCar) {
-                    console.log('isStateInfoRentalCar :', isStateInfoRentalCar);
-
                     queryKeyIsStateInfoRentalCar({
                         detailRentalCar: {
                             ...isStateInfoRentalCar?.detailRentalCar,
                             status: {
                                 ...isStateInfoRentalCar?.detailRentalCar?.status,
                                 status: +data.status,
-                                statusCustom: +data.status
+                                statusCustom: +data.status,
+                                note: data.note_status
                             }
                         }
                     })
@@ -194,7 +194,8 @@ const LayoutContainer = ({
         }
     }, [generalKey, isStateInfoRentalCar, queryKeyIsStateInfoRentalCar]);
 
-    console.log('isStateInfoRentalCar homne :', isStateInfoRentalCar);
+    console.log('isState info L', isStateInfoRentalCar);
+
 
     return (
         <html lang="en">
