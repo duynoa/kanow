@@ -10,6 +10,7 @@ import { InitialSate } from "@/types/Profile/IChangePassword";
 import useAuthenticationAPI from "@/services/auth/auth.services";
 import BackgroundUiProfile from "@/themes/profile/BackgroundUiProfile";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useAuth } from "@/hooks/useAuth";
 
 type Props = {}
 
@@ -17,6 +18,8 @@ type Props = {}
 const ChangePassWord = (props: Props) => {
 
     const { setCookie } = useCookie()
+
+    const { informationUser, setInformationUser } = useAuth()
 
     const { apiChangePassword } = useAuthenticationAPI()
 
@@ -42,10 +45,20 @@ const ChangePassWord = (props: Props) => {
 
     const onSubmit = async (value: any) => {
         let formData = new FormData()
-        formData.append('password', value.oldPassword)
-        formData.append('password_old', value.newPassword)
+        if (!informationUser.password) {
+            formData.append('password', value.newPassword ?? "")
+        } else {
+            formData.append('password', value.oldPassword ?? "")
+            formData.append('password_old', value.newPassword ?? "")
+        }
         const { data } = await apiChangePassword(formData)
         if (data?.result) {
+            setInformationUser(
+                {
+                    ...informationUser,
+                    password: true
+                }
+            )
             toastCore.success(data?.message)
             setCookie("token_kanow", data?.token, { expires: 7 })
             form.reset()
@@ -88,48 +101,50 @@ const ChangePassWord = (props: Props) => {
             </div>
             <Form {...form}>
                 <div className=' flex flex-col lg:gap-5 md:gap-4 gap-3'>
-                    <FormField
-                        control={form.control}
-                        name="oldPassword"
-                        rules={{
-                            required: {
-                                value: true,
-                                message: 'Vui lòng nhập mật khẩu cũ',
-                            },
-                            minLength: {
-                                value: 8,
-                                message: "Mật khẩu phải có ít nhất 8 ký tự",
-                            },
-                        }}
-                        render={({ field, fieldState }) => {
-                            return (
-                                <FormItem>
-                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                        Mật khẩu cũ <span className="text-red-500">*</span>
-                                    </FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Input
-                                                className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
+                    {informationUser.password &&
+                        <FormField
+                            control={form.control}
+                            name="oldPassword"
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'Vui lòng nhập mật khẩu cũ',
+                                },
+                                minLength: {
+                                    value: 8,
+                                    message: "Mật khẩu phải có ít nhất 8 ký tự",
+                                },
+                            }}
+                            render={({ field, fieldState }) => {
+                                return (
+                                    <FormItem>
+                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                            Mật khẩu cũ <span className="text-red-500">*</span>
+                                        </FormLabel>
+                                        <FormControl>
+                                            <div className="relative">
+                                                <Input
+                                                    className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
                                                  focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
-                                                placeholder="Mật khẩu cũ"
-                                                type={isState.showOldPassword ? "text" : "password"}
-                                                {...field}
-                                            />
-                                            <IconInput
-                                                onClick={() => queryKeyIsState({ showOldPassword: !isState.showOldPassword })}
-                                                show={isState.showOldPassword}
-                                            />
-                                        </div>
-                                    </FormControl>
+                                                    placeholder="Mật khẩu cũ"
+                                                    type={isState.showOldPassword ? "text" : "password"}
+                                                    {...field}
+                                                />
+                                                <IconInput
+                                                    onClick={() => queryKeyIsState({ showOldPassword: !isState.showOldPassword })}
+                                                    show={isState.showOldPassword}
+                                                />
+                                            </div>
+                                        </FormControl>
 
-                                    {fieldState?.invalid && fieldState?.error && (
-                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                    )}
-                                </FormItem>
-                            );
-                        }}
-                    />
+                                        {fieldState?.invalid && fieldState?.error && (
+                                            <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                        )}
+                                    </FormItem>
+                                );
+                            }}
+                        />
+                    }
                     <FormField
                         control={form.control}
                         name="newPassword"

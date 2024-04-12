@@ -22,7 +22,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
 import { useResize } from '@/hooks/useResize';
 
-import { useDialogCalendar, useDialogFilterListCars, useDialogLogin } from '@/hooks/useOpenDialog';
+import { useDialogAddress, useDialogCalendar, useDialogFilterListCars, useDialogLogin } from '@/hooks/useOpenDialog';
 import { DialogCalendar } from '@/components/modals/DialogCalendar';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -40,6 +40,8 @@ type Props = {}
 
 const SearchCars = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
+    const { setOpenDialogAddress, valueAddress } = useDialogAddress()
+
     // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
     const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
@@ -715,8 +717,12 @@ const SearchCars = (props: Props) => {
                         isVisibleMobile ?
                             <div className='flex items-center justify-between'>
                                 <div className='flex flex-col p-1'>
-                                    <div className='text-sm font-semibold'>
-                                        12 hồ hoàn kiếm, Hà Nội
+                                    <div
+                                        id="place"
+                                        onClick={() => setOpenDialogAddress(true)}
+                                        className='w-full text-xs truncate cursor-pointer text-[#16171B] rounded-xl border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 ' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                    >
+                                        {valueAddress ? valueAddress : 'Chọn địa điểm'}
                                     </div>
                                     <div>
                                         <Button
@@ -754,12 +760,19 @@ const SearchCars = (props: Props) => {
                                     <span className="absolute inset-y-0 left-0 flex items-center pl-4">
                                         <TiLocation className="3xl:text-2xl text-xl text-[#1EAAB1]" />
                                     </span>
-                                    <Input
+                                    {/* <Input
                                         id="place"
                                         type='text'
                                         placeholder='Nhập địa điểm'
                                         className='3xl:py-[18px] p-3 pl-12 text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#B4B8C5] placeholder:font-medium' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
-                                    />
+                                    /> */}
+                                    <div
+                                        id="place"
+                                        onClick={() => setOpenDialogAddress(true)}
+                                        className='3xl:py-4 py-3.5 pl-11 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate cursor-pointer text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 ' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                    >
+                                        {valueAddress ? valueAddress : 'Chọn địa điểm'}
+                                    </div>
                                 </div>
 
                                 <div className='col-span-5'>

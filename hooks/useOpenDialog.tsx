@@ -55,7 +55,7 @@ export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     numberDay: 1,
     setOpenDialogCalendar: (key: any) => set((state) => ({ ...state, openDialogCalendar: key })),
     setDateReal: (dateReal: DateRange | undefined) => set((state) => ({ ...state, dateReal })),
-    setNumberDay: (numberDay: number ) => set((state) => ({ numberDay: numberDay })),
+    setNumberDay: (numberDay: number) => set((state) => ({ numberDay: numberDay })),
 }))
 
 // dialog filter list car
@@ -154,4 +154,34 @@ export const useDialogCancelCar = create<IOpenDialogCancelCar>((set) => ({
     setDataListReasonsCancel: (key: any[]) => set((state) => ({ dataListReasonsCancel: key })),
     dataInfo: {},
     setDataInfo: (key: any) => set((state) => ({ dataInfo: key })),
+}));
+
+// dialog address
+interface IOpenDialogAddress {
+    openDialogAddress: boolean;
+    setOpenDialogAddress: (key: any) => void;
+    vehicleHanding: any;
+    setVehicleHanding: (data: any) => void;
+    valueAddress: any,
+
+    setValueAddress: (value: any) => void
+    latitude: Number,
+    longitude: Number,
+    setLatitude: (value: any) => void
+    setLongitude: (value: any) => void
+}
+
+
+export const useDialogAddress = create<IOpenDialogAddress>((set) => ({
+    openDialogAddress: false,
+    setOpenDialogAddress: (key: any) => set((state) => ({ openDialogAddress: key })),
+    vehicleHanding: {},
+    setVehicleHanding: (data: any) => set((state) => ({ vehicleHanding: data })),
+    valueAddress: "",
+    setValueAddress: (value: any) => set((state) => ({ valueAddress: value })),
+    latitude: 0,
+    longitude: 0,
+    setLatitude: (value: any) => set((state) => ({ latitude: value })),
+    setLongitude: (value: any) => set((state) => ({ longitude: value })),
+
 }));
