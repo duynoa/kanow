@@ -199,6 +199,21 @@ const Account = (props: Props) => {
         isState.page != 1 && handlePage()
     }, [isState.page])
 
+
+    const handleClickOptionsButton = (type: string) => {
+        const checkKey: any = {
+            editInfo: isState.editInfo,
+            editPapers: isState.editPapers
+        }
+        if (checkKey[type]) {
+            form.handleSubmit((values) => onSubmit(values, `${type}`))()
+            return
+        }
+        handleClickButtonEdit(`${type}`)
+        form.clearErrors()
+    }
+
+
     if (!isMounted) {
         return null;
     }
@@ -210,14 +225,7 @@ const Account = (props: Props) => {
                 <div className="flex md:flex-row flex-col justify-between">
                     <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Thông tin tài khoản</h1>
                     <div className='flex items-center gap-5 md:my-0 my-5'>
-                        <Button onClick={() => {
-                            if (isState.editInfo) {
-                                form.handleSubmit((values) => onSubmit(values, 'editInfo'))()
-                            } else {
-                                handleClickButtonEdit('editInfo')
-                            }
-                        }
-                        }
+                        <Button onClick={() => handleClickOptionsButton('editInfo')}
                             className={`${isState.editInfo ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full text-sm lg:px-8
                                  px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
                             {isState.editInfo ? 'Cập nhật' : "Chỉnh sửa"}
@@ -252,14 +260,7 @@ const Account = (props: Props) => {
                             </div>
                         </div>
                         <div className='flex items-center gap-5 md:my-0 my-5'>
-                            <Button onClick={() => {
-                                if (isState.editPapers) {
-                                    form.handleSubmit((values) => onSubmit(values, 'editPapers'))()
-                                } else {
-                                    handleClickButtonEdit('editPapers')
-                                }
-                            }
-                            }
+                            <Button onClick={() => handleClickOptionsButton('editPapers')}
                                 className={`${isState.editPapers ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full text-sm
                                  lg:px-8 px-5 xl:py-3 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
                                 {isState.editPapers ? 'Cập nhật' : "Chỉnh sửa"}
