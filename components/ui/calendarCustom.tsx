@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
-import { format, isWithinInterval } from 'date-fns';
+import { format, isSameDay, isWithinInterval } from 'date-fns';
 import { DateFormatter, DayPicker, Modifiers, Months } from 'react-day-picker';
 import { vi } from "date-fns/locale";
 import { FormatNumberToThousands } from "../format/FormatNumber";
@@ -20,21 +20,22 @@ function CalendarCustom({
     className,
     classNames,
     showOutsideDays = true,
-    dateStart,
-    dateEnd,
     ...props
-}: CalendarProps & { priceData: any[] } & { dateStart: any, dateEnd: any }) {
+}: CalendarProps & { priceData: any[] }) {
     const {
         dateReal,
         dateTemp,
+        dateStart,
+        dateEnd,
         numberDay,
         openDialogCalendar,
         setDateReal,
         setDateTemp,
+        setDateStart,
+        setDateEnd,
         setOpenDialogCalendar,
         setNumberDay
     } = useDialogCalendar()
-
 
     const data = [
         {
@@ -1165,15 +1166,6 @@ function CalendarCustom({
     // Component Day tùy chỉnh
     const CustomDay = ({ date, dataAll, dayOfWeek, ...props }: any) => {
         // const dayData = data.flatMap(item => item.price_detail).find(d => new Date(d.date).toDateString() === date.toDateString());
-        const dayData = data.flatMap(item => item.price_detail).find(d => d.date === date.toISOString().split('T')[0]);
-
-        const dateStartYear = dateStart?.getFullYear();
-        const dateStartMonth = dateStart?.getMonth();
-        const dateStartDay = dateStart?.getDate();
-
-        const dateEndYear = dateEnd?.getFullYear();
-        const dateEndMonth = dateEnd?.getMonth();
-        const dateEndDay = dateEnd?.getDate();
 
         const daysBetweenDates = (startDate: Date, endDate: Date): number => {
             const oneDay = 24 * 60 * 60 * 1000;
@@ -1190,6 +1182,7 @@ function CalendarCustom({
             for (let i = 1; i < numberOfDays; i++) {
                 const date = new Date(startDate);
                 date.setDate(startDate.getDate() + i);
+                date.setHours(0, 0, 0, 0);
                 dates.push(date);
             }
 
@@ -1197,15 +1190,15 @@ function CalendarCustom({
         };
 
         const checkDateInBetween = (dateToCheck: Date, datesInBetween: Date[]): boolean => {
+            console.log('check : datesInBetween', datesInBetween);
+            console.log('check : dateToCheck', dateToCheck);
+
+
+
             return datesInBetween.some((date) => {
                 return dateToCheck.getTime() === date.getTime();
             });
         };
-
-        // const handleClickChangeDate = (item: any) => {
-        //     console.log('item :', item);
-
-        // }
 
         const handleClickChangeDate = (item: any) => {
             const date = new Date(Number(item?.year), Number(item?.month) - 1, item?.day);
@@ -1222,8 +1215,15 @@ function CalendarCustom({
             const dateEndMonth = dateEnd ? dateEnd?.getMonth() : 0;
             const dateEndDay = dateEnd ? dateEnd?.getDate() : 0;
 
+            console.log('dateStartDay', dateStartDay);
             console.log('date', date);
 
+
+
+            // Check if the new from date is different from the current from date
+
+            // Update the state with the new date range
+            // setDateReal(newDate);
 
             // if (!dateStart) {
             //     setDateStart(date);
@@ -1234,16 +1234,40 @@ function CalendarCustom({
             //         setDateEnd(date);
             //     }
             // } else if (dateStart && dateEnd) {
-            //     setDateStart(date);
-            //     setDateEnd(null);
-            // } else {
-            // }
-        };
 
+            //     if (!isSameDay(dateStart, date) && dateStart) {
+            //         // If it's different, keep the time of the current from date and update the date
+            //         dateStart.setHours(dateStart.getHours(), dateStart.getMinutes(), dateStart.getSeconds());
+            //     }
+            //     // Check if the new to date is different from the current to date
+            //     if (!isSameDay(dateEnd, date) && dateEnd) {
+            //         // If it's different, keep the time of the current to dateReal and update the dateReal
+            //         dateEnd.setHours(dateEnd.getHours(), dateEnd.getMinutes(), dateEnd.getSeconds());
+            //     }
+            //     setDateStart(date);
+            //     setDateEnd(undefined);
+            // }
+
+
+            if (!dateStart) {
+                setDateStart(date);
+            } else if (!dateEnd) {
+                if (dateYear < dateStartYear || (dateYear === dateStartYear && dateMonth < dateStartMonth) || (dateYear === dateStartYear && dateMonth === dateStartMonth && dateDay < dateStartDay)) {
+                    setDateStart(date);
+                } else {
+                    setDateEnd(date);
+                }
+            } else if (dateStart && dateEnd) {
+                setDateStart(date);
+                setDateEnd(undefined);
+            } else {
+            }
+        };
 
         const datesInBetween = dateStart && dateEnd ? datesBetweenDates(dateStart, dateEnd) : [];
 
         const firstDate = new Date(Number(dataAll?.year), Number(dataAll?.month) - 1, dataAll.day)
+        const dayData = data.flatMap(item => item.price_detail).find(d => d.date == date.toISOString().split('T')[0]);
 
         const secondDate = new Date();
         const firstYear = firstDate.getFullYear();
@@ -1252,6 +1276,15 @@ function CalendarCustom({
         const secondYear = secondDate.getFullYear();
         const secondMonth = secondDate.getMonth();
         const secondDay = secondDate.getDate();
+
+
+        const dateStartYear = dateStart?.getFullYear();
+        const dateStartMonth = dateStart?.getMonth();
+        const dateStartDay = dateStart?.getDate();
+
+        const dateEndYear = dateEnd?.getFullYear();
+        const dateEndMonth = dateEnd?.getMonth();
+        const dateEndDay = dateEnd?.getDate();
 
         // ngày phía trước
         const isEarlier = dataAll?.day !== -1 ?
@@ -1264,25 +1297,31 @@ function CalendarCustom({
 
         // điều kiện vẫn còn lỗi!(đã chọn)
         const isPicked = dataAll?.day !== -1 ?
-            (firstYear === dateStartYear || firstYear === dateEndYear) &&
-            (firstMonth === dateStartMonth || firstMonth === dateEndMonth) &&
-            (firstDay === dateStartDay || firstDay === dateEndDay)
+            (firstYear == dateStartYear || firstYear == dateEndYear) &&
+            (firstMonth == dateStartMonth || firstMonth == dateEndMonth) &&
+            (firstDay == dateStartDay || firstDay == dateEndDay)
             :
             false;
 
         // ngày trùng khi click chọn 1 ngày
         const isMatched = dataAll?.day !== -1 ?
-            firstYear === dateStartYear &&
-            firstYear === dateEndYear &&
-            firstMonth === dateStartMonth &&
-            firstMonth === dateEndMonth &&
-            firstDay === dateStartDay &&
-            firstDay === dateEndDay
+            firstYear == dateStartYear &&
+            firstYear == dateEndYear &&
+            firstMonth == dateStartMonth &&
+            firstMonth == dateEndMonth &&
+            firstDay == dateStartDay &&
+            firstDay == dateEndDay
             :
             false;
 
         // ngày trong khoảng cách
-        const isInRange = checkDateInBetween(firstDate, datesInBetween);
+        const isInRange = dataAll?.day !== -1 && (dateStart && dateEnd) && (
+            (firstDate >= dateStart && firstDate <= dateEnd) ||
+            (secondDate >= dateStart && secondDate <= dateEnd) ||
+            (firstDate <= dateStart && secondDate >= dateEnd)
+        ) && checkDateInBetween(firstDate, datesInBetween);
+
+        console.log('check??', isInRange);
 
 
         if (dayData) {
@@ -1290,9 +1329,11 @@ function CalendarCustom({
                 <div
                     onClick={isEarlier ? () => { } : () => handleClickChangeDate(dataAll)}
                     className={`
-                    ${isPicked && "bg-[#2FB9BD] text-white hover:bg-[#2FB9BD]/80 cursor-pointer"} 
+                    ${isPicked && !isInRange && "bg-[#2FB9BD] text-white hover:bg-[#2FB9BD]/80 cursor-pointer"} 
                     ${isEarlier && "text-slate-400 cursor-default"} 
                     ${!isPicked && !isEarlier && "hover:bg-[#F5F5F4] cursor-pointer"}
+                    ${(!isPicked && isInRange) && "bg-[#C2F9F9]"}
+                    ${(isPicked && isInRange) && "bg-[#C2F9F9]"}
                      rounded-sm flex flex-col justify-center items-center w-10 h-10 p-2 m-1`
                     }
                 >
@@ -1301,7 +1342,13 @@ function CalendarCustom({
                     </div>
                     {
                         !isEarlier ?
-                            <div className={`${isPicked ? "text-white" : "text-[#2FB9BD]"} text-[10px] font-normal`}>
+                            <div className={`
+                                ${isPicked && !isInRange && "text-white"}
+                                ${isPicked && isInRange && "text-[#2FB9BD]"}
+                                text-[#2FB9BD]
+                                text-[10px] font-normal
+                                 `}
+                            >
                                 {FormatNumberToThousands(dayData.price)}
                             </div>
                             :

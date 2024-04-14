@@ -38,11 +38,15 @@ export const useDialogPromotion = create<IOpenDialogPromotion>((set) => ({
 interface IOpenDialogCalendar {
     dateReal: DateRange | undefined;
     dateTemp: DateRange | undefined;
+    dateStart: Date | undefined;
+    dateEnd: Date | undefined;
     numberDay: number
     openDialogCalendar: boolean;
     type: string;
     setDateReal: (dateReal: DateRange | undefined) => void;
     setDateTemp: (dateTemp: DateRange | undefined) => void;
+    setDateStart: (dateStart: Date | undefined) => void;
+    setDateEnd: (dateEnd: Date | undefined) => void;
     setOpenDialogCalendar: (key: any, type?: string) => void
     setNumberDay: (numberDay: number) => void;
 }
@@ -56,11 +60,15 @@ export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     openDialogCalendar: false,
     dateReal: defaultDateRange,
     dateTemp: undefined,
+    dateStart: defaultDateRange.from,
+    dateEnd: defaultDateRange.to,
     numberDay: 1,
     type: "",
     setOpenDialogCalendar: (key: any, type?: string) => set((state) => ({ ...state, openDialogCalendar: key, type: type })),
     setDateReal: (dateReal: DateRange | undefined) => set((state) => ({ ...state, dateReal })),
     setDateTemp: (dateTemp: DateRange | undefined) => set((state) => ({ ...state, dateTemp })),
+    setDateStart: (dateStart: Date | undefined) => set((state) => ({ ...state, dateStart: dateStart })),
+    setDateEnd: (dateEnd: Date | undefined) => set((state) => ({ ...state, dateEnd: dateEnd })),
     setNumberDay: (numberDay: number) => set((state) => ({ ...state, numberDay: numberDay })),
 }))
 

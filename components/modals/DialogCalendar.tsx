@@ -51,10 +51,14 @@ export function DialogCalendar({ }: Props) {
     const {
         dateReal,
         dateTemp,
+        dateStart,
+        dateEnd,
         numberDay,
         openDialogCalendar,
         setDateReal,
         setDateTemp,
+        setDateStart,
+        setDateEnd,
         setOpenDialogCalendar,
         setNumberDay
     } = useDialogCalendar()
@@ -1211,24 +1215,39 @@ export function DialogCalendar({ }: Props) {
     }
 
     // change time in calender
+    // const handleTimeChange = (value: string, type: string) => {
+    //     if (dateTimeComponent) {
+    //         if (dateTimeComponent.from && type === 'from') {
+    //             const updatedDate = {
+    //                 ...dateTimeComponent,
+    //                 from: new Date(dateTimeComponent?.from.setHours(+value?.split(":")[0], +value.split(":")[1])),
+    //             };
+
+    //             // setDateTemp(updatedDate);
+    //             setDateTimeComponent(updatedDate);
+    //         } else if (dateTimeComponent.to && type === 'to') {
+    //             const updatedDate = {
+    //                 ...dateTimeComponent,
+    //                 to: new Date(dateTimeComponent?.to.setHours(+value?.split(":")[0], +value.split(":")[1])),
+    //             };
+
+    //             // setDateTemp(updatedDate);
+    //             setDateTimeComponent(updatedDate);
+    //         }
+
+    //     }
+
+    // };
+
     const handleTimeChange = (value: string, type: string) => {
-        if (dateTimeComponent) {
-            if (dateTimeComponent.from && type === 'from') {
-                const updatedDate = {
-                    ...dateTimeComponent,
-                    from: new Date(dateTimeComponent?.from.setHours(+value?.split(":")[0], +value.split(":")[1])),
-                };
-
+        if (dateStart && dateEnd) {
+            if (dateStart && type === 'from') {
+                const updatedDateStart: any = new Date(dateStart.setHours(+value?.split(":")[0], +value.split(":")[1]))
                 // setDateTemp(updatedDate);
-                setDateTimeComponent(updatedDate);
-            } else if (dateTimeComponent.to && type === 'to') {
-                const updatedDate = {
-                    ...dateTimeComponent,
-                    to: new Date(dateTimeComponent?.to.setHours(+value?.split(":")[0], +value.split(":")[1])),
-                };
-
-                // setDateTemp(updatedDate);
-                setDateTimeComponent(updatedDate);
+                setDateStart(updatedDateStart);
+            } else if (dateEnd && type === 'to') {
+                const updatedDateEnd = new Date(dateEnd.setHours(+value?.split(":")[0], +value.split(":")[1]))
+                setDateEnd(updatedDateEnd);
             }
 
         }
@@ -1236,16 +1255,16 @@ export function DialogCalendar({ }: Props) {
     };
 
     useEffect(() => {
-        const daysDifference = differenceInCalendarDays(`${dateTimeComponent?.to}`, `${dateTimeComponent?.from}`);
-        if (dateTimeComponent?.to && dateTimeComponent?.from && daysDifference) {
+        const daysDifference = differenceInCalendarDays(`${dateEnd}`, `${dateStart}`);
+        if (dateEnd && dateStart && daysDifference) {
             console.log("Số ngày thuê:", daysDifference);
             // setNumberDay(daysDifference)
             setNumberDayComponent(daysDifference)
-        } else if (dateTimeComponent?.to || dateTimeComponent?.from) {
+        } else if (dateEnd || dateStart) {
             // setNumberDay(1)
             setNumberDayComponent(1)
         }
-    }, [slug, dateTimeComponent?.from, dateTimeComponent?.to])
+    }, [slug, dateStart, dateEnd])
 
     useEffect(() => {
         setDateTemp(dateReal)
@@ -1335,8 +1354,8 @@ export function DialogCalendar({ }: Props) {
                             initialFocus
                             priceData={data}
                             mode="range"
-                            dateStart={dateTimeComponent?.from}
-                            dateEnd={dateTimeComponent?.to}
+                            // dateStart={dateTimeComponent?.from}
+                            // dateEnd={dateTimeComponent?.to}
                             defaultMonth={dateTimeComponent?.from}
                             selected={dateTimeComponent}
                             onSelect={(newDate: any) => handleDateChange(newDate)}
@@ -1346,9 +1365,9 @@ export function DialogCalendar({ }: Props) {
                         <div className='flex flex-col gap-1 w-[50%]'>
                             <Label>Giờ nhận xe</Label>
                             <Select
-                                value={(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '')}
+                                value={(dateStart ? format(dateStart, 'HH:mm') : '')}
                                 onValueChange={(value) => handleTimeChange(value, 'from')}
-                                defaultValue={`${(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '00:00')}`}
+                                defaultValue={`${(dateStart ? format(dateStart, 'HH:mm') : '00:00')}`}
                             >
                                 <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
                                     <SelectValue placeholder="Chọn giờ nhận xe" />
@@ -1378,9 +1397,9 @@ export function DialogCalendar({ }: Props) {
                         <div className='flex flex-col gap-1 w-[50%]'>
                             <Label>Giờ trả xe</Label>
                             <Select
-                                value={(dateTimeComponent?.to ? format(dateTimeComponent?.to, 'HH:mm') : '')}
+                                value={(dateEnd ? format(dateEnd, 'HH:mm') : '')}
                                 onValueChange={(value) => handleTimeChange(value, 'to')}
-                                defaultValue={`${(dateTimeComponent?.to ? format(dateTimeComponent?.to, 'HH:mm') : '00:00')}`}
+                                defaultValue={`${(dateEnd ? format(dateEnd, 'HH:mm') : '00:00')}`}
                             >
                                 <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
                                     <SelectValue placeholder="Chọn giờ trả xe" />
@@ -1408,7 +1427,7 @@ export function DialogCalendar({ }: Props) {
                 <div className='flex items-center justify-between border-t drop-shadow-md py-6 px-4 mt-10 bg-white'>
                     <div className='flex flex-col'>
                         <div className='text-base font-semibold'>
-                            {dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm, dd/MM') : ""}{dateTimeComponent?.to ? ` - ${format(dateTimeComponent?.to, 'HH:mm, dd/MM')}` : ''}
+                            {dateStart ? format(dateStart, 'HH:mm, dd/MM') : ""}{dateEnd ? ` - ${format(dateEnd, 'HH:mm, dd/MM')}` : ''}
                         </div>
                         <div>
                             Số ngày thuê: {numberDayComponent} ngày
