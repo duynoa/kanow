@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 .disable-selection {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -210,4 +209,39 @@
 /// nút tìm kiếm địa chỉ
 .pac-container:after {
     content: none !important;
+}
+.pac-container {
+    border-radius: 16px;
+    margin-top: 4px;
+    font-family: "Be Vietnam Pro", sans-serif;
+    font-weight: 500;
+    -webkit-box-shadow: 0;
+    box-shadow: unset;
+    border: 2px solid #e6e8ec;
+    .pac-item:first-child {
+        border-top: 0;
+    }
+    .pac-item {
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 10px 7px;
+        .pac-item-query {
+            font-weight: 600;
+        }
+        .pac-icon {
+            color: #1eaab1;
+            background-image: url("/address/location.png");
+            background-repeat: no-repeat;
+            width: 18px;
+            height: 18px;
+            margin: 0 8px 0 0;
+        }
+        .pac-icon-marker {
+            background-position: center;
+            background-size: contain;
+            // background-position: -16px -161px;
+        }
+    }
 }
