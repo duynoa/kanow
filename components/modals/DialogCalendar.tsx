@@ -24,7 +24,7 @@ import {
 
 import { Check, X } from "lucide-react"
 
-import { useDialogCalendar, useDialogPromotion } from "@/hooks/useOpenDialog";
+import { useDialogCalendar } from "@/hooks/useOpenDialog";
 import { addDays, differenceInCalendarDays, differenceInDays, differenceInHours, endOfDay, format, isAfter, isSameDay, isSameMinute, parseISO, startOfDay } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { Input } from "../ui/input";
@@ -1167,7 +1167,7 @@ export function DialogCalendar({ }: Props) {
 
     // change date in calender 
     const handleDateChange = (newDate: any) => {
-        console.log('newDate', newDate);
+        // console.log('newDate', newDate);
 
 
         if (pathname.startsWith('/detail-car/')) {
@@ -1257,7 +1257,7 @@ export function DialogCalendar({ }: Props) {
     useEffect(() => {
         const daysDifference = differenceInCalendarDays(`${dateEnd}`, `${dateStart}`);
         if (dateEnd && dateStart && daysDifference) {
-            console.log("Số ngày thuê:", daysDifference);
+            // console.log("Số ngày thuê:", daysDifference);
             // setNumberDay(daysDifference)
             setNumberDayComponent(daysDifference)
         } else if (dateEnd || dateStart) {
@@ -1328,7 +1328,7 @@ export function DialogCalendar({ }: Props) {
     }, [openDialogCalendar])
 
 
-    console.log('dateTimeComponent', dateTimeComponent);
+    // console.log('dateTimeComponent', dateTimeComponent);
 
     return (
         <Dialog modal open={openDialogCalendar} onOpenChange={handleOpenChangeModal}>
@@ -1354,8 +1354,6 @@ export function DialogCalendar({ }: Props) {
                             initialFocus
                             priceData={data}
                             mode="range"
-                            // dateStart={dateTimeComponent?.from}
-                            // dateEnd={dateTimeComponent?.to}
                             defaultMonth={dateTimeComponent?.from}
                             selected={dateTimeComponent}
                             onSelect={(newDate: any) => handleDateChange(newDate)}

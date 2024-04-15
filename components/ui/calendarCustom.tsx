@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
-import { format, isSameDay, isWithinInterval } from 'date-fns';
+import { differenceInDays, format, getMonth, getYear, isAfter, isBefore, isSameDay, isSameMonth, isSameYear, isWithinInterval } from 'date-fns';
 import { DateFormatter, DayPicker, Modifiers, Months } from 'react-day-picker';
 import { vi } from "date-fns/locale";
 import { FormatNumberToThousands } from "../format/FormatNumber";
@@ -1020,6 +1020,7 @@ function CalendarCustom({
                             date={currentDate}
                             dataAll={dayData}
                             dayOfWeek={dayOfWeek}
+                            index={i}
                         />
                     </div>
                 );
@@ -1059,68 +1060,6 @@ function CalendarCustom({
                 </SwiperSlide>
             );
         });
-        // const monthComponents = customDataDate.map((monthItem, index) => {
-        //     const month: any = monthItem.month; // Tháng
-        //     const daysInMonth = monthItem.price_detail.length; // Số ngày trong tháng
-
-        //     // Tạo các component cho từng ngày trong tháng
-        //     const dayComponents: any[] = [];
-        //     const daysOfWeek = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
-        //     // Tìm thứ của ngày đầu tiên trong tháng
-        //     const firstDayOfMonth = new Date(currentYear, month - 1, 1).getDay(); // Lưu ý: month phải trừ đi 1 vì months trong JavaScript bắt đầu từ 0 (tháng 1 là tháng 0)
-
-
-        //     // Thêm các ngày trống vào trước ngày đầu tiên của tháng
-        //     for (let i = 0; i < firstDayOfMonth - 1; i++) { // Trừ đi 1 vì mảng daysOfWeek bắt đầu từ index 0, không phải index 1
-        //         dayComponents.push(
-        //             <div key={`empty-${i}`} className='col-span-1' />
-        //         );
-        //     }
-
-
-        //     monthItem.price_detail.forEach((dayData, i) => {
-        //         const currentDate = new Date(dayData.date);
-        //         const dayOfWeek = currentDate.getDay();
-        //         // console.log('currentDate', currentDate);
-
-        //         dayComponents.push(
-        //             <div key={`date-${i}`} className='col-span-1'>
-        //                 <CustomDay
-        //                     date={currentDate}
-        //                     dataAll={dayData}
-        //                     dayOfWeek={dayOfWeek}
-        //                 />
-        //             </div>
-        //         );
-        //     });
-
-
-        //     console.log('firstDayOfMonth', firstDayOfMonth);
-
-
-        //     return (
-        //         <SwiperSlide key={index} className="flex flex-col gap-2 p-0 max-w-[400px]">
-        //             <div className="w-full text-center text-base font-bold mt-4 mb-2">
-        //                 Tháng {month}, {currentYear}
-        //             </div>
-        //             <div className="Month-grid grid grid-cols-7 text-center text-sm font-semibold">
-        //                 {/* Render các ngày trong tuần */}
-        //                 {
-        //                     daysOfWeek.map((item, index) => (
-        //                         <div key={`index-week-${index}`}>
-        //                             {item}
-        //                         </div>
-        //                     ))
-        //                 }
-        //             </div>
-        //             {/* Render các ngày trong tháng */}
-        //             <div className='grid grid-cols-7 items-center'>
-        //                 {dayComponents}
-        //             </div>
-        //         </SwiperSlide>
-        //     );
-        // });
-
         return (
             <>
                 <Swiper
@@ -1164,7 +1103,7 @@ function CalendarCustom({
         );
     };
     // Component Day tùy chỉnh
-    const CustomDay = ({ date, dataAll, dayOfWeek, ...props }: any) => {
+    const CustomDay = ({ date, dataAll, dayOfWeek, index, ...props }: any) => {
         // const dayData = data.flatMap(item => item.price_detail).find(d => new Date(d.date).toDateString() === date.toDateString());
 
         const daysBetweenDates = (startDate: Date, endDate: Date): number => {
@@ -1190,17 +1129,12 @@ function CalendarCustom({
         };
 
         const checkDateInBetween = (dateToCheck: Date, datesInBetween: Date[]): boolean => {
-            console.log('check : datesInBetween', datesInBetween);
-            console.log('check : dateToCheck', dateToCheck);
-
-
-
             return datesInBetween.some((date) => {
                 return dateToCheck.getTime() === date.getTime();
             });
         };
 
-        const handleClickChangeDate = (item: any) => {
+        const handleChangeDate = (item: any) => {
             const date = new Date(Number(item?.year), Number(item?.month) - 1, item?.day);
 
             const dateYear = date ? date?.getFullYear() : 0;
@@ -1215,52 +1149,113 @@ function CalendarCustom({
             const dateEndMonth = dateEnd ? dateEnd?.getMonth() : 0;
             const dateEndDay = dateEnd ? dateEnd?.getDate() : 0;
 
-            console.log('dateStartDay', dateStartDay);
-            console.log('date', date);
-
-
+            const dayDifferenceDateStart = differenceInDays(date, dateStart ? dateStart : "");
 
             // Check if the new from date is different from the current from date
 
             // Update the state with the new date range
-            // setDateReal(newDate);
+
+
+            // dateYear === dateStartYear ||
+            //     (dateYear === dateStartYear && dateMonth === dateStartMonth) ||
+            //     (dateYear === dateStartYear && dateMonth === dateStartMonth && dateDay > dateStartDay)
+
+
+            // Check if the new to date is different from the current to date
+            // console.log('dateYear', dateYear);
+            // console.log('dateStartYear', dateStartYear);
+            // console.log('dateMonth', dateMonth);
+            // console.log('dateStartMonth', dateStartMonth);
+            // console.log('dateDay', dateDay);
+            // console.log('dateStartDay', dateStartDay);
+            console.log('dateStart', dateStart);
+            console.log('dateEnd', dateEnd);
+
+            // kiểm tra nếu cùng ngày hoặc ngày sau ngày dateStart
+            // cùng tháng và sau ngày dateStart
+            // lớn hơn tháng và sau ngày dateStart
+            const isSameInSameYearAndMonth = (date: any, compareDate: any) => {
+                return (
+                    isSameYear(date, compareDate) &&
+                    isSameMonth(date, compareDate) &&
+                    isSameDay(date, compareDate)
+                )
+            };
+            const isAfterInSameYearAndMonth = (date: any, compareDate: any) => {
+                return (
+                    (isSameYear(date, compareDate) || (getYear(date) > getYear(compareDate))) &&
+                    ((isSameMonth(date, compareDate) || (getMonth(date) > getMonth(compareDate))) &&
+                        isAfter(date, compareDate))
+                )
+            };
+            const isBeforeInSameYearAndMonth = (date: any, compareDate: any) => {
+                return (
+                    (isSameYear(date, compareDate) || (getYear(date) < getYear(compareDate))) &&
+                    ((isSameMonth(date, compareDate) || (getMonth(date) < getMonth(compareDate))) &&
+                        isBefore(date, compareDate))
+                )
+            };
+
 
             // if (!dateStart) {
             //     setDateStart(date);
+
+            //     console.log('date 11123', date);
+
+
             // } else if (!dateEnd) {
-            //     if (dateYear < dateStartYear || (dateYear === dateStartYear && dateMonth < dateStartMonth) || (dateYear === dateStartYear && dateMonth === dateStartMonth && dateDay < dateStartDay)) {
+            //     if (dateYear < dateStartYear ||
+            //         (dateYear == dateStartYear && dateMonth < dateStartMonth) ||
+            //         (dateYear == dateStartYear && dateMonth == dateStartMonth && dateDay < dateStartDay)
+            //     ) {
+            //         if (!isSameDay(dateStart ? dateStart : "", date) && dateStart) {
+            //             // If it's different, keep the time of the current to dateReal and update the dateReal
+            //             date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+            //         }
             //         setDateStart(date);
+            //         console.log('date 2', date);
             //     } else {
             //         setDateEnd(date);
+            //         console.log('date 3', date);
             //     }
             // } else if (dateStart && dateEnd) {
-
             //     if (!isSameDay(dateStart, date) && dateStart) {
             //         // If it's different, keep the time of the current from date and update the date
-            //         dateStart.setHours(dateStart.getHours(), dateStart.getMinutes(), dateStart.getSeconds());
+            //         date.setHours(dateStart.getHours(), dateStart.getMinutes(), dateStart.getSeconds());
             //     }
-            //     // Check if the new to date is different from the current to date
-            //     if (!isSameDay(dateEnd, date) && dateEnd) {
-            //         // If it's different, keep the time of the current to dateReal and update the dateReal
-            //         dateEnd.setHours(dateEnd.getHours(), dateEnd.getMinutes(), dateEnd.getSeconds());
-            //     }
+            //     console.log('date 4', date);
+
             //     setDateStart(date);
             //     setDateEnd(undefined);
             // }
 
 
-            if (!dateStart) {
-                setDateStart(date);
-            } else if (!dateEnd) {
-                if (dateYear < dateStartYear || (dateYear === dateStartYear && dateMonth < dateStartMonth) || (dateYear === dateStartYear && dateMonth === dateStartMonth && dateDay < dateStartDay)) {
-                    setDateStart(date);
+            if (dateStart && dateEnd) {
+                if (isAfterInSameYearAndMonth(date, dateStart) && !isSameDay(dateEnd ? dateEnd : "", date) && dayDifferenceDateStart > 2 && dayDifferenceDateStart > 0) {
+                    // If it's different, keep the time of the current to dateReal and update the dateReal
+                    date.setHours(dateEnd?.getHours(), dateEnd?.getMinutes(), dateEnd?.getSeconds());
+                    setDateEnd(date)
                 } else {
-                    setDateEnd(date);
+                    // If it's different, keep the time of the current to dateReal and update the dateReal
+                    date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+                    if (isSameDay(date, dateStart) || isSameDay(date, dateEnd)) {
+                        setDateStart(date)
+                        setDateEnd(undefined)
+                    } else {
+                        setDateStart(date)
+                    }
                 }
-            } else if (dateStart && dateEnd) {
-                setDateStart(date);
-                setDateEnd(undefined);
+            } else if (dateStart && !dateEnd) {
+                date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+                if (isBeforeInSameYearAndMonth(date, dateStart)) {
+                    setDateStart(date)
+                } else if (isAfterInSameYearAndMonth(date, dateStart)) {
+                    setDateEnd(date)
+                } else {
+                    setDateEnd(date)
+                }
             } else {
+                console.log('check123');
             }
         };
 
@@ -1294,14 +1289,14 @@ function CalendarCustom({
             :
             false;
 
-
-        // điều kiện vẫn còn lỗi!(đã chọn)
-        const isPicked = dataAll?.day !== -1 ?
-            (firstYear == dateStartYear || firstYear == dateEndYear) &&
-            (firstMonth == dateStartMonth || firstMonth == dateEndMonth) &&
-            (firstDay == dateStartDay || firstDay == dateEndDay)
-            :
-            false;
+        const isPicked = dataAll?.day !== -1 ? (
+            (firstYear === dateStartYear && firstMonth === dateStartMonth && firstDay === dateStartDay) ||
+            (firstYear === dateEndYear && firstMonth === dateEndMonth && firstDay === dateEndDay) ||
+            ((dateStartYear && dateEndYear && dateStartMonth && dateEndMonth && dateStartDay && dateEndDay) &&
+                (firstYear === dateStartYear && firstYear === dateEndYear &&
+                    firstMonth === dateStartMonth && firstMonth === dateEndMonth &&
+                    firstDay >= dateStartDay && firstDay <= dateEndDay))
+        ) : false;
 
         // ngày trùng khi click chọn 1 ngày
         const isMatched = dataAll?.day !== -1 ?
@@ -1321,44 +1316,62 @@ function CalendarCustom({
             (firstDate <= dateStart && secondDate >= dateEnd)
         ) && checkDateInBetween(firstDate, datesInBetween);
 
-        console.log('check??', isInRange);
+        console.log('dataAll', dataAll);
 
 
         if (dayData) {
             return (
                 <div
-                    onClick={isEarlier ? () => { } : () => handleClickChangeDate(dataAll)}
+                    onClick={isEarlier ? () => { } : () => handleChangeDate(dataAll)}
                     className={`
-                    ${isPicked && !isInRange && "bg-[#2FB9BD] text-white hover:bg-[#2FB9BD]/80 cursor-pointer"} 
-                    ${isEarlier && "text-slate-400 cursor-default"} 
-                    ${!isPicked && !isEarlier && "hover:bg-[#F5F5F4] cursor-pointer"}
-                    ${(!isPicked && isInRange) && "bg-[#C2F9F9]"}
-                    ${(isPicked && isInRange) && "bg-[#C2F9F9]"}
-                     rounded-sm flex flex-col justify-center items-center w-10 h-10 p-2 m-1`
-                    }
+                         ${isPicked ? "bg-[#2FB9BD] text-white hover:bg-[#2FB9BD]/80 hover:text-white cursor-pointer" : ""}
+                        ${isEarlier ? "text-slate-400 !cursor-default" : ""}
+                        ${isInRange ? "bg-[#C2F9F9] !text-[#2FB9BD]" : ""}
+                        ${dataAll?.status === 0 && !isEarlier && isInRange ? "border-2 border-[#C2F9F9] !bg-[#F6F6F7] !text-[#D3D3D3] hover:!text-[#D3D3D3]" : ""}
+                        ${dataAll?.status === 0 && !isEarlier && !isPicked ? "!bg-[#F6F6F7] !text-[#D3D3D3] hover:!bg-[#F6F6F7]/80 hover:!text-[#D3D3D3]" : ""}
+                        ${dataAll?.status === 0 && !isEarlier && isPicked ? "border-2 border-[#2FB9BD] !bg-[#F6F6F7] !text-[#D3D3D3] hover:!bg-[#F6F6F7]/80 hover:!text-[#D3D3D3]" : ""}
+                        hover:bg-[#2FB9BD]/80 hover:text-white rounded-sm flex flex-col justify-center items-center w-10 h-10 p-2 m-1 cursor-pointer group
+                `}
+
+                // className={`
+                // ${isPicked && "bg-[#2FB9BD] text-white hover:bg-[#2FB9BD]/80 hover:text-white cursor-pointer"} 
+                // ${isEarlier && "text-slate-400 !cursor-default"} 
+                // ${isInRange && "bg-[#C2F9F9] !text-[#2FB9BD]"}
+                // ${dataAll?.status == 0 && !isEarlier && isInRange && "border-2 border-[#C2F9F9] !bg-[#F6F6F7] !text-[#D3D3D3] hover:!text-[#D3D3D3]"}
+                // ${dataAll?.status == 0 && !isEarlier && !isPicked && " !bg-[#F6F6F7] !text-[#D3D3D3] hover:!bg-[#F6F6F7]/80 hover:!text-[#D3D3D3]"}
+                // ${dataAll?.status == 0 && !isEarlier && isPicked && "border-2 border-[#2FB9BD] !bg-[#F6F6F7] !text-[#D3D3D3] hover:!bg-[#F6F6F7]/80 hover:!text-[#D3D3D3]"}
+                // hover:bg-[#2FB9BD]/80 hover:text-white rounded-sm flex flex-col justify-center items-center w-10 h-10 p-2 m-1 cursor-pointer group`
+                // }
                 >
                     <div className='3xl:text-[15px] text-sm font-medium'>
                         {dayData.day}
                     </div>
                     {
-                        !isEarlier ?
-                            <div className={`
-                                ${isPicked && !isInRange && "text-white"}
-                                ${isPicked && isInRange && "text-[#2FB9BD]"}
-                                text-[#2FB9BD]
+                        isEarlier || dataAll?.status == 0 && !isEarlier || dataAll?.status == 0 && !isEarlier && isInRange ?
+                            null
+                            :
+                            <div
+                                className={`
+                                ${isPicked && "text-white group-hover:!text-white"}
+                                ${isInRange && "!text-[#2FB9BD]"}
+                                ${dataAll?.status === 0 && !isEarlier && " !text-[#D3D3D3] group-hover:!text-[#D3D3D3]"}
+                                text-[#2FB9BD] group-hover:bg-[#2FB9BD]/80 group-hover:text-white
                                 text-[10px] font-normal
-                                 `}
+                            `}
+                            // className={`
+                            //     ${isPicked && "text-white group-hover:!text-white"}
+                            //     ${isInRange && "!text-[#2FB9BD]"}
+                            //     ${dataAll?.status == 0 && !isEarlier && " !text-[#D3D3D3] group-hover:!text-[#D3D3D3]"}
+                            //     text-[#2FB9BD] group-hover:bg-[#2FB9BD]/80 group-hover:text-white
+                            //     text-[10px] font-normal
+                            //      `}
                             >
                                 {FormatNumberToThousands(dayData.price)}
                             </div>
-                            :
-                            null
                     }
                 </div>
             );
         }
-        console.log('date', date);
-
 
         return (
             <div>

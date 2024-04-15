@@ -24,14 +24,14 @@ const SectionSignUpVehicleOwner = (props: Props) => {
             icon: '/icon/vehicleOwner/icon_laptop.png',
             step: "Bước 2",
             title: "Xác nhận thông tin",
-            description: "Nhân viên Mioto liên hệ chủ xe tư vấn thủ tục & quy trình cho thuê xe trong vòng 1 ngày sau khi nhận được thông tin.",
+            description: "Nhân viên Kanow liên hệ chủ xe tư vấn thủ tục & quy trình cho thuê xe trong vòng 1 ngày sau khi nhận được thông tin.",
         },
         {
             id: uuidv4(),
             icon: '/icon/vehicleOwner/icon_like.png',
             step: "Bước 3",
             title: "Duyệt xe",
-            description: "Bắt đầu cho thuê xe trên Mioto sau khi nhận thông báo xe đã được phê duyệt.",
+            description: "Bắt đầu cho thuê xe trên Kanow sau khi nhận thông báo xe đã được phê duyệt.",
         }
     ]
 

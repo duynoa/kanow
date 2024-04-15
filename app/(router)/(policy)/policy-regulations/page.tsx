@@ -57,19 +57,19 @@ const PolicyRegulations = (props: Props) => {
 
             <div className='flex flex-col gap-2'>
                 <div className='2xl:text-2xl text-xl  text-[#000000] font-medium'>
-                    2. Trách nhiệm của Mioto trong các trường hợp xảy ra sự cố ngoài ý muốn như xe bị cầm cố, thế chấp, bị bắt giữ khi được dùng để vận chuyển ma túy, hàng quốc cấm, hoặc gây tai nạn
+                    2. Trách nhiệm của Kanow trong các trường hợp xảy ra sự cố ngoài ý muốn như xe bị cầm cố, thế chấp, bị bắt giữ khi được dùng để vận chuyển ma túy, hàng quốc cấm, hoặc gây tai nạn
                 </div>
                 <div className='2xl:text-base text-sm  text-[#000000] font-light space-y-2'>
                     <div>
-                        Hiện tại, Mioto chỉ đóng vai trò là sàn giao dịch thương mại điện tử về cho thuê xe ô tô, là cầu nối giữa các chủ xe và khách hàng có nhu cầu thuê xe. Về cơ bản, mọi thủ tục và toàn bộ các vấn đề phát sinh liên quan đến giao dịch cho thuê xe giữa chủ xe và khách thuê sẽ do hai bên tự thỏa thuận, kí hợp đồng và chịu trách nhiệm với nhau.
+                        Hiện tại, Kanow chỉ đóng vai trò là sàn giao dịch thương mại điện tử về cho thuê xe ô tô, là cầu nối giữa các chủ xe và khách hàng có nhu cầu thuê xe. Về cơ bản, mọi thủ tục và toàn bộ các vấn đề phát sinh liên quan đến giao dịch cho thuê xe giữa chủ xe và khách thuê sẽ do hai bên tự thỏa thuận, kí hợp đồng và chịu trách nhiệm với nhau.
                         <br />
-                        Trong trường hợp có xảy ra sự cố ngoài ý muốn như xe bị cầm cố, thế chấp, bị bắt khi được dùng để vận chuyển ma túy, hàng quốc cấm hoặc gây ra tai nạn, Mioto sẽ cố gắng hỗ trợ tốt nhất các chủ xe trong khả năng của mình, giới hạn ở việc hướng dẫn chủ xe các thủ tục cần thiết để trình báo với cơ quan công an và các cơ quan có thẩm quyền, cung cấp các thông tin nếu có liên quan đến thành viên thuê xe hoặc các thông tin khác nếu có yêu cầu từ cơ quan chức năng, và tiến hành khóa vĩnh viễn tài khoản thành viên vi phạm.
+                        Trong trường hợp có xảy ra sự cố ngoài ý muốn như xe bị cầm cố, thế chấp, bị bắt khi được dùng để vận chuyển ma túy, hàng quốc cấm hoặc gây ra tai nạn, Kanow sẽ cố gắng hỗ trợ tốt nhất các chủ xe trong khả năng của mình, giới hạn ở việc hướng dẫn chủ xe các thủ tục cần thiết để trình báo với cơ quan công an và các cơ quan có thẩm quyền, cung cấp các thông tin nếu có liên quan đến thành viên thuê xe hoặc các thông tin khác nếu có yêu cầu từ cơ quan chức năng, và tiến hành khóa vĩnh viễn tài khoản thành viên vi phạm.
                         <br />
-                        Để bảo vệ tốt nhất tài sản của mình và giảm thiểu tối đa các rủi ro có thể xảy ra, các chủ xe cần ràng buộc chặt chẽ về mặt pháp lí bằng việc giao kết bằng văn bản &quot;Hợp đồng cho thuê xe tự lái&quot;, &quot;Biên bản bàn giao xe&quot; (có thể tham khảo sử dụng mẫu hợp đồng và biên bản bàn giao do Mioto đề xuất hoặc có thể sử dụng mẫu riêng của nhà xe), xác minh đầy đủ thông tin và các giấy tờ cá nhân của khách thuê, giữ lại tài sản đặt cọc và các giấy tờ cần thiết (và tuyệt đối không giao cà vẹt xe bản chính cho khách thuê). Các chủ xe cũng cần trang bị cho xe thiết bị định vị GPS để có thể theo dõi và kiểm tra vị trí xe thường xuyên nhằm có các phương án xử lí kịp thời.
+                        Để bảo vệ tốt nhất tài sản của mình và giảm thiểu tối đa các rủi ro có thể xảy ra, các chủ xe cần ràng buộc chặt chẽ về mặt pháp lí bằng việc giao kết bằng văn bản &quot;Hợp đồng cho thuê xe tự lái&quot;, &quot;Biên bản bàn giao xe&quot; (có thể tham khảo sử dụng mẫu hợp đồng và biên bản bàn giao do Kanow đề xuất hoặc có thể sử dụng mẫu riêng của nhà xe), xác minh đầy đủ thông tin và các giấy tờ cá nhân của khách thuê, giữ lại tài sản đặt cọc và các giấy tờ cần thiết (và tuyệt đối không giao cà vẹt xe bản chính cho khách thuê). Các chủ xe cũng cần trang bị cho xe thiết bị định vị GPS để có thể theo dõi và kiểm tra vị trí xe thường xuyên nhằm có các phương án xử lí kịp thời.
                         <br />
-                        Thời gian tới, nhằm bảo vệ một cách toàn diện nhất quyền lợi của các chủ xe cũng như khách thuê, Mioto đang xúc tiến làm việc với các đối tác bảo hiểm để triển khai các sản phẩm bảo hiểm đối với dịch vụ thuê xe tự lái theo ngày, áp dụng cho tất cả các giao dịch cho thuê được thực hiện thông qua ứng dụng Mioto.
+                        Thời gian tới, nhằm bảo vệ một cách toàn diện nhất quyền lợi của các chủ xe cũng như khách thuê, Kanow đang xúc tiến làm việc với các đối tác bảo hiểm để triển khai các sản phẩm bảo hiểm đối với dịch vụ thuê xe tự lái theo ngày, áp dụng cho tất cả các giao dịch cho thuê được thực hiện thông qua ứng dụng Kanow.
                         <br />
-                        Mioto hy vọng sẽ sớm hoàn thiện và triển khai gói giải pháp này trong thời gian sớm nhất
+                        Kanow hy vọng sẽ sớm hoàn thiện và triển khai gói giải pháp này trong thời gian sớm nhất
                     </div>
                 </div>
             </div>
@@ -82,9 +82,9 @@ const PolicyRegulations = (props: Props) => {
                     <div>
                         A. Dành cho khách thuê xe
                         <br />
-                        Bạn là khách thuê xe, sau khi đã đặt cọc và đặt xe thành công, bạn có thể hủy chuyến đi đã đặt bằng cách gửi “Yêu cầu hủy chuyến” thông qua trang web mioto.vn hoặc ứng dụng Mioto, và lựa chọn lý do hủy chuyến.
+                        Bạn là khách thuê xe, sau khi đã đặt cọc và đặt xe thành công, bạn có thể hủy chuyến đi đã đặt bằng cách gửi “Yêu cầu hủy chuyến” thông qua trang web kanow.vn hoặc ứng dụng Kanow, và lựa chọn lý do hủy chuyến.
                         <br />
-                        Nếu thật sự muốn hủy chuyến, bạn nên lưu ý thực hiện việc này càng sớm càng tốt vì Mioto sẽ tiến hành hoàn trả số tiền đặt cọc cho bạn tùy thuộc vào thời điểm bạn gửi yêu cầu hủy chuyến. Số tiền đặt cọc Mioto sẽ hoàn trả cho bạn được tính như sau
+                        Nếu thật sự muốn hủy chuyến, bạn nên lưu ý thực hiện việc này càng sớm càng tốt vì Kanow sẽ tiến hành hoàn trả số tiền đặt cọc cho bạn tùy thuộc vào thời điểm bạn gửi yêu cầu hủy chuyến. Số tiền đặt cọc Kanow sẽ hoàn trả cho bạn được tính như sau
                         <br />
                         <div className='border border-[#C6C6C6] rounded-xl my-4'>
                             <div className='grid grid-cols-3 grid-rows-4'>
@@ -125,7 +125,7 @@ const PolicyRegulations = (props: Props) => {
                                     0% Tiền cọc
                                 </div>
                                 <div className='col-span-3 row-span-1 p-3 text-sm font-normal'>
-                                    {"Trường hợp phát sinh Phí hủy chuyến, Mioto sẽ trừ vào tiền đặt cọc của Quý khách hàng và sẽ thanh toán lại khoản tiền này cho Đối tác chủ xe (và ngược lại, trường hợp Đối tác chủ xe hủy chuyến được đến phát sinh Phí hủy chuyến, Mioto sẽ hoàn trả lại 100% tiền cọc và tiền phí hủy chuyến được đền bù cho Quý khách trong 1 - 3 ngày làm việc)."}
+                                    {"Trường hợp phát sinh Phí hủy chuyến, Kanow sẽ trừ vào tiền đặt cọc của Quý khách hàng và sẽ thanh toán lại khoản tiền này cho Đối tác chủ xe (và ngược lại, trường hợp Đối tác chủ xe hủy chuyến được đến phát sinh Phí hủy chuyến, Kanow sẽ hoàn trả lại 100% tiền cọc và tiền phí hủy chuyến được đền bù cho Quý khách trong 1 - 3 ngày làm việc)."}
                                 </div>
                             </div>
                         </div>
@@ -133,9 +133,9 @@ const PolicyRegulations = (props: Props) => {
                     <div>
                         B. Dành cho Chủ xe
                         <br />
-                        Nếu bạn là chủ xe, trong trường hợp bạn muốn hủy chuyến sau khi khách hàng đã đặt xe thành công, bạn có thể thực hiện thao tác hủy chuyến trên ứng dụng Mioto.
+                        Nếu bạn là chủ xe, trong trường hợp bạn muốn hủy chuyến sau khi khách hàng đã đặt xe thành công, bạn có thể thực hiện thao tác hủy chuyến trên ứng dụng Kanow.
                         <br />
-                        Nhằm gia tăng sự cam kết của chủ xe cũng như đảm bảo quyền lợi của khách thuê, trường hợp chủ xe hủy chuyến (vì lí do không giao đúng xe / không giao xe đúng thời gian), nếu như không thỏa thuận được hoặc không có sự đồng ý từ phía khách thuê, thì chủ xe phải bồi thường phí hủy chuyến cho khách thuê số tiền bằng đúng số tiền mà khách thuê đã đặt cọc thông qua Công ty Cổ phần Mioto Asia.
+                        Nhằm gia tăng sự cam kết của chủ xe cũng như đảm bảo quyền lợi của khách thuê, trường hợp chủ xe hủy chuyến (vì lí do không giao đúng xe / không giao xe đúng thời gian), nếu như không thỏa thuận được hoặc không có sự đồng ý từ phía khách thuê, thì chủ xe phải bồi thường phí hủy chuyến cho khách thuê số tiền bằng đúng số tiền mà khách thuê đã đặt cọc thông qua Công ty Cổ phần Kanow Asia.
                         <br />
                         <div className='border border-[#C6C6C6] rounded-xl my-4'>
                             <div className='grid grid-cols-3 grid-rows-4'>
@@ -176,15 +176,15 @@ const PolicyRegulations = (props: Props) => {
                                     0% Tiền cọc
                                 </div>
                                 <div className='col-span-3 row-span-1 p-3 text-sm font-normal'>
-                                    {"Trường hợp phát sinh Phí hủy chuyến, Mioto sẽ trừ vào tài khoản của Quý đối tác và sẽ thanh toán lại khoản tiền này cho khách hàng (và ngược lại, trường hợp khách hàng hủy chuyến dẫn đến phát sinh Phí hủy chuyến, Mioto sẽ cộng tiền phí vào tài khoản Quý đối tác)."}
+                                    {"Trường hợp phát sinh Phí hủy chuyến, Kanow sẽ trừ vào tài khoản của Quý đối tác và sẽ thanh toán lại khoản tiền này cho khách hàng (và ngược lại, trường hợp khách hàng hủy chuyến dẫn đến phát sinh Phí hủy chuyến, Kanow sẽ cộng tiền phí vào tài khoản Quý đối tác)."}
                                 </div>
                             </div>
                         </div>
-                        Phí hủy chuyến sẽ được trừ vào tài khoản của bạn trên Mioto. Trong trường hợp số dư tài khoản của bạn nhỏ hơn số tiền phí hủy chuyến, phần chênh lệch sẽ được ghi âm vào tài khoản và sẽ cấn trừ vào thu nhập của bạn cho các chuyến xe tiếp theo.
+                        Phí hủy chuyến sẽ được trừ vào tài khoản của bạn trên Kanow. Trong trường hợp số dư tài khoản của bạn nhỏ hơn số tiền phí hủy chuyến, phần chênh lệch sẽ được ghi âm vào tài khoản và sẽ cấn trừ vào thu nhập của bạn cho các chuyến xe tiếp theo.
                         <br />
-                        Bên cạnh việc chịu phí, các chủ xe thực hiện hủy chuyến nhiều lần sẽ bị tạm khóa tài khoản thành viên trên ứng dụng Mioto.
+                        Bên cạnh việc chịu phí, các chủ xe thực hiện hủy chuyến nhiều lần sẽ bị tạm khóa tài khoản thành viên trên ứng dụng Kanow.
                         <br />
-                        {"Bộ phận CSKH của Mioto sẽ liên hệ với khách thuê xe thông báo về tình hình chuyến đi bị hủy, và tiến hành hoàn trả lại 100% tiền cọc và tiền phí hủy chuyến được đền bù (nếu có) cho khách thuê."}
+                        {"Bộ phận CSKH của Kanow sẽ liên hệ với khách thuê xe thông báo về tình hình chuyến đi bị hủy, và tiến hành hoàn trả lại 100% tiền cọc và tiền phí hủy chuyến được đền bù (nếu có) cho khách thuê."}
                     </div>
                 </div>
             </div>
@@ -197,17 +197,17 @@ const PolicyRegulations = (props: Props) => {
                     <div>
                         A. Dành cho khách thuê xe
                         <br />
-                        Trên ứng dụng Mioto, mỗi dòng xe sẽ được cho thuê tại các mức giá khác nhau tùy thuộc vào sự quyết định của các chủ xe và được niêm yết công khai.
+                        Trên ứng dụng Kanow, mỗi dòng xe sẽ được cho thuê tại các mức giá khác nhau tùy thuộc vào sự quyết định của các chủ xe và được niêm yết công khai.
                         <br />
                         Về cơ bản, cơ cấu giá của một chuyến đi được tính bao gồm các thành phần:
                         <br />
-                        - Đơn giá thuê: Là giá thuê niêm yết bởi chủ xe mà bạn dễ dàng nhìn thấy trong phần thông tin xe. Giá thuê trên Mioto được tính theo đơn vị nhỏ nhất là ngày. Chủ xe có thể điều chỉnh giá thuê khác nhau cho từng ngày, chính vì vậy, chi phí thuê xe của bạn có thể tăng hoặc giảm tùy vào thời điểm bạn thuê xe. Thông thường, giá thuê sẽ cao hơn trong dịp cuối tuần và các ngày lễ, tết.
+                        - Đơn giá thuê: Là giá thuê niêm yết bởi chủ xe mà bạn dễ dàng nhìn thấy trong phần thông tin xe. Giá thuê trên Kanow được tính theo đơn vị nhỏ nhất là ngày. Chủ xe có thể điều chỉnh giá thuê khác nhau cho từng ngày, chính vì vậy, chi phí thuê xe của bạn có thể tăng hoặc giảm tùy vào thời điểm bạn thuê xe. Thông thường, giá thuê sẽ cao hơn trong dịp cuối tuần và các ngày lễ, tết.
                         <br />
                         - Chiết khấu: một số chủ xe có chính sách chiết khấu cho các chuyến xe kéo dài 1 tuần hoặc 1 tháng (mức chiết khấu bình quân từ 5-20% tùy vào quyết định của chủ xe). Vì thế, nếu bạn có nhu cầu thuê xe du lịch hay công tác dài ngày, hãy ưu tiên lựa chọn các chủ xe này để có được mức giá tốt hơn.
                         <br />
                         - Chi phí vận chuyển: nếu bạn không có nhiều thời gian để đến trực tiếp địa diểm của chủ xe để nhận xe, bạn có thể lựa chọn các chủ xe có cung cấp thêm dịch vụ giao xe tận nơi. Chi phí giao nhận xe bình quân từ 5,000-15,000VND/km tùy vào quyết định của chủ xe được thể hiện tại phần thông tin xe và sẽ được cộng vào chi phí thuê xe của bạn.
                         <br />
-                        - Mã khuyến mãi: là mã giảm giá mà Mioto gửi tặng đến các thành viên của mình cho trong các đợt khuyến mãi, hoặc dành cho các thành viên thân thiết giao dịch thường xuyên trên ứng dụng Mioto. Mã khuyến mãi này sẽ được trừ trực tiếp vào chi phí thuê xe của bạn.
+                        - Mã khuyến mãi: là mã giảm giá mà Kanow gửi tặng đến các thành viên của mình cho trong các đợt khuyến mãi, hoặc dành cho các thành viên thân thiết giao dịch thường xuyên trên ứng dụng Kanow. Mã khuyến mãi này sẽ được trừ trực tiếp vào chi phí thuê xe của bạn.
                         <br />
                         Bảng tóm tắt:
                         <br />
@@ -231,9 +231,9 @@ const PolicyRegulations = (props: Props) => {
                     <div>
                         B. Dành cho Chủ xe
                         <br />
-                        Các chủ xe của Mioto được quyền thiết lập giá thuê xe hàng ngày cho tháng hiện hành và tối đa 3 tháng kế tiếp. Bạn có thể sử dụng giá đề xuất của Mioto hoặc có thể tùy chỉnh giá cho thuê theo mong muốn của bạn.
+                        Các chủ xe của Kanow được quyền thiết lập giá thuê xe hàng ngày cho tháng hiện hành và tối đa 3 tháng kế tiếp. Bạn có thể sử dụng giá đề xuất của Kanow hoặc có thể tùy chỉnh giá cho thuê theo mong muốn của bạn.
                         <br />
-                        - Giá đề xuất của Mioto: được định vị thấp hơn 10% so với giá thuê xe bình quân trên thị trường. Mức giá này được tiến hành khảo sát hàng tháng bởi bộ phận phát triển thị trường của Mioto đối với từng dòng xe khác nhau.
+                        - Giá đề xuất của Kanow: được định vị thấp hơn 10% so với giá thuê xe bình quân trên thị trường. Mức giá này được tiến hành khảo sát hàng tháng bởi bộ phận phát triển thị trường của Kanow đối với từng dòng xe khác nhau.
                     </div>
                 </div>
             </div>
@@ -244,7 +244,7 @@ const PolicyRegulations = (props: Props) => {
                 </div>
                 <div className='2xl:text-base text-sm  text-[#000000] font-light space-y-2'>
                     <div>
-                        Sau khi nhận được sự đồng ý cho thuê xe từ phía chủ xe, tại bước cuối cùng, bạn cần phải đặt cọc trước cho Mioto 30% tổng chi phí chuyến đi. Bạn có thể chọn lựa hình thức thanh toán chuyển khoản qua ngân hàng trực tuyến hoặc sử dụng thẻ Visa.
+                        Sau khi nhận được sự đồng ý cho thuê xe từ phía chủ xe, tại bước cuối cùng, bạn cần phải đặt cọc trước cho Kanow 30% tổng chi phí chuyến đi. Bạn có thể chọn lựa hình thức thanh toán chuyển khoản qua ngân hàng trực tuyến hoặc sử dụng thẻ Visa.
                         Phần còn lại 70% bạn có thể thanh toán trực tiếp cho chủ xe ngay khi nhận được xe.
                     </div>
                 </div>
@@ -267,7 +267,7 @@ const PolicyRegulations = (props: Props) => {
                 </div>
                 <div className='2xl:text-base text-sm  text-[#000000] font-light space-y-2'>
                     <div>
-                        Trong trường hợp bạn muốn kết thúc sớm chuyến đi của mình khi vẫn chưa đến thời hạn trả xe, để có thể được hoàn lại tiền cho các ngày chưa sử dụng, bạn nên trao đổi trước với chủ xe và cần phải nhận được sự đồng ý từ phía chủ xe. Số tiền được hoàn lại sẽ do bạn và chủ xe tự thỏa thuận với nhau. Lưu ý rằng, bạn sẽ không được hoàn lại số tiền bạn đã đặt cọc cho Mioto.
+                        Trong trường hợp bạn muốn kết thúc sớm chuyến đi của mình khi vẫn chưa đến thời hạn trả xe, để có thể được hoàn lại tiền cho các ngày chưa sử dụng, bạn nên trao đổi trước với chủ xe và cần phải nhận được sự đồng ý từ phía chủ xe. Số tiền được hoàn lại sẽ do bạn và chủ xe tự thỏa thuận với nhau. Lưu ý rằng, bạn sẽ không được hoàn lại số tiền bạn đã đặt cọc cho Kanow.
                     </div>
                 </div>
             </div>

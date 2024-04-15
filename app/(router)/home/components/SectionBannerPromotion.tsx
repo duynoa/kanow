@@ -16,23 +16,23 @@ const SectionBannerPromotion = (props: Props) => {
     const dataBanner = [
         {
             id: uuidv4(),
-            image: '/other/banner/banner1.png',
+            image: '/other/banner/banner4.png',
         },
         {
             id: uuidv4(),
-            image: '/other/banner/banner2.png',
+            image: '/other/banner/banner4.png',
         },
         {
             id: uuidv4(),
-            image: '/other/banner/banner2.png',
+            image: '/other/banner/banner4.png',
         },
         {
             id: uuidv4(),
-            image: '/other/banner/banner1.png',
+            image: '/other/banner/banner3.png',
         },
         {
             id: uuidv4(),
-            image: '/other/banner/banner1.png',
+            image: '/other/banner/banner3.png',
         },
     ]
     const { isVisibleMobile } = useResize()
