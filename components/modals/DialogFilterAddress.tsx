@@ -162,7 +162,8 @@ export function DialogFilterAddress({ }: Props) {
                                                     <div className="relative">
                                                         <TiLocation className="text-xl text-[#1EAAB1] absolute top-1/2 -translate-y-1/2 left-1" />
                                                         <SearchAddress onChange={(e: any) => {
-                                                            field.onChange(e.split(',').slice(1).join(','))
+                                                            field.onChange(e)
+                                                            // field.onChange(e.split(',').slice(1).join(','))
                                                         }}
                                                         >
                                                             <Input
