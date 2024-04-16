@@ -2,10 +2,12 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { IoArrowForwardOutline } from 'react-icons/io5'
 import Link from 'next/link'
+import { useDialogRegisterOwnerDriver } from '@/hooks/useOpenDialog'
 
 type Props = {}
 
 const DriverArticle = (props: Props) => {
+    const { setOpenDialogRegisterOwnerDriver } = useDialogRegisterOwnerDriver();
 
     const handleItemClick = (itemId: number | string) => {
         // Tìm phần tử có id tương ứng
@@ -30,6 +32,8 @@ const DriverArticle = (props: Props) => {
                 </div>
                 <div className=''>
                     <Button
+                        type='button'
+                        onClick={() => setOpenDialogRegisterOwnerDriver(true)}
                         size="readMore"
                         className='xl:px-8 xl:py-4 px-6 py-3 flex items-center gap-2 font-bold text-[#000000] bg-[#9DF2EE] hover:bg-[#9DF2EE]/90 group-hover:translate-x-2'
                     >
