@@ -1,10 +1,10 @@
 import { AxiosRequestConfig } from "axios";
 import axios from "../../utils/axios-customize";
 
-const getListReasonsCancel = (car_id: any) => {
+const getListCalendarPriceMonth = (param: any) => {
     let config: AxiosRequestConfig = {
         params: {
-            car_id, // Nối các tham số trong param object
+            ...param, // Nối các tham số trong param object
         },
     };
 
@@ -12,5 +12,5 @@ const getListReasonsCancel = (car_id: any) => {
 }
 
 export {
-    getListReasonsCancel
+    getListCalendarPriceMonth
 }

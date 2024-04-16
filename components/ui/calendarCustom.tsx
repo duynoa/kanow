@@ -21,7 +21,7 @@ function CalendarCustom({
     classNames,
     showOutsideDays = true,
     ...props
-}: CalendarProps & { priceData: any[] }) {
+}: CalendarProps) {
     const {
         dateReal,
         dateTemp,
@@ -34,8 +34,14 @@ function CalendarCustom({
         setDateStart,
         setDateEnd,
         setOpenDialogCalendar,
-        setNumberDay
+        setNumberDay,
+        dataCalendar,
+        setDataCalendar,
+        statusDate,
+        setStatusDate
     } = useDialogCalendar()
+
+
 
     const data = [
         {
@@ -959,11 +965,11 @@ function CalendarCustom({
         const currentYear = currentDate.getFullYear(); // Lấy năm hiện tại
 
         // Tạo dữ liệu cho các tháng từ data
-        const monthData = data.filter(item => +item.year === currentYear);
+        const monthData = dataCalendar.filter(item => +item.year === currentYear);
 
         const customDataDate = monthData.map((item) => ({
             ...item,
-            price_detail: item.price_detail.map((itemDate) => ({
+            price_detail: item.price_detail.map((itemDate: any) => ({
                 ...itemDate,
                 month: item.month,
                 year: item.year
@@ -1008,7 +1014,7 @@ function CalendarCustom({
             }
 
             // Render các ngày trong tháng
-            monthItem.price_detail.forEach((dayData, i) => {
+            monthItem.price_detail.forEach((dayData: any, i: any) => {
                 const currentDate = new Date(dayData.date);
                 const dayOfWeek = currentDate.getDay();
                 // console.log('currentDate', currentDate);
@@ -1064,7 +1070,7 @@ function CalendarCustom({
             <>
                 <Swiper
                     slidesPerView={2}
-                    spaceBetween={30}
+                    spaceBetween={35}
                     modules={[Pagination, A11y]}
                     breakpoints={{
                         320: {
@@ -1104,8 +1110,6 @@ function CalendarCustom({
     };
     // Component Day tùy chỉnh
     const CustomDay = ({ date, dataAll, dayOfWeek, index, ...props }: any) => {
-        // const dayData = data.flatMap(item => item.price_detail).find(d => new Date(d.date).toDateString() === date.toDateString());
-
         const daysBetweenDates = (startDate: Date, endDate: Date): number => {
             const oneDay = 24 * 60 * 60 * 1000;
             const firstDate = new Date(startDate);
@@ -1113,7 +1117,6 @@ function CalendarCustom({
             const diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / oneDay));
             return diffDays;
         };
-
         const datesBetweenDates = (startDate: Date, endDate: Date): Date[] => {
             const dates: Date[] = [];
             const numberOfDays = daysBetweenDates(startDate, endDate);
@@ -1150,16 +1153,7 @@ function CalendarCustom({
             const dateEndDay = dateEnd ? dateEnd?.getDate() : 0;
 
             const dayDifferenceDateStart = differenceInDays(date, dateStart ? dateStart : "");
-
-            // Check if the new from date is different from the current from date
-
-            // Update the state with the new date range
-
-
-            // dateYear === dateStartYear ||
-            //     (dateYear === dateStartYear && dateMonth === dateStartMonth) ||
-            //     (dateYear === dateStartYear && dateMonth === dateStartMonth && dateDay > dateStartDay)
-
+            const dayDifferenceDateStartAnDateEnd = differenceInDays(dateStart ? dateStart : "", dateEnd ? dateEnd : "");
 
             // Check if the new to date is different from the current to date
             // console.log('dateYear', dateYear);
@@ -1168,8 +1162,8 @@ function CalendarCustom({
             // console.log('dateStartMonth', dateStartMonth);
             // console.log('dateDay', dateDay);
             // console.log('dateStartDay', dateStartDay);
-            console.log('dateStart', dateStart);
-            console.log('dateEnd', dateEnd);
+            // console.log('dateStart', dateStart);
+            // console.log('dateEnd', dateEnd);
 
             // kiểm tra nếu cùng ngày hoặc ngày sau ngày dateStart
             // cùng tháng và sau ngày dateStart
@@ -1195,43 +1189,10 @@ function CalendarCustom({
                         isBefore(date, compareDate))
                 )
             };
-
-
-            // if (!dateStart) {
-            //     setDateStart(date);
-
-            //     console.log('date 11123', date);
-
-
-            // } else if (!dateEnd) {
-            //     if (dateYear < dateStartYear ||
-            //         (dateYear == dateStartYear && dateMonth < dateStartMonth) ||
-            //         (dateYear == dateStartYear && dateMonth == dateStartMonth && dateDay < dateStartDay)
-            //     ) {
-            //         if (!isSameDay(dateStart ? dateStart : "", date) && dateStart) {
-            //             // If it's different, keep the time of the current to dateReal and update the dateReal
-            //             date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
-            //         }
-            //         setDateStart(date);
-            //         console.log('date 2', date);
-            //     } else {
-            //         setDateEnd(date);
-            //         console.log('date 3', date);
-            //     }
-            // } else if (dateStart && dateEnd) {
-            //     if (!isSameDay(dateStart, date) && dateStart) {
-            //         // If it's different, keep the time of the current from date and update the date
-            //         date.setHours(dateStart.getHours(), dateStart.getMinutes(), dateStart.getSeconds());
-            //     }
-            //     console.log('date 4', date);
-
-            //     setDateStart(date);
-            //     setDateEnd(undefined);
-            // }
-
+            setStatusDate(dataAll.status)
 
             if (dateStart && dateEnd) {
-                if (isAfterInSameYearAndMonth(date, dateStart) && !isSameDay(dateEnd ? dateEnd : "", date) && dayDifferenceDateStart > 2 && dayDifferenceDateStart > 0) {
+                if (isAfterInSameYearAndMonth(date, dateStart) && !isSameDay(dateEnd ? dateEnd : "", date)) {
                     // If it's different, keep the time of the current to dateReal and update the dateReal
                     date.setHours(dateEnd?.getHours(), dateEnd?.getMinutes(), dateEnd?.getSeconds());
                     setDateEnd(date)
@@ -1262,7 +1223,7 @@ function CalendarCustom({
         const datesInBetween = dateStart && dateEnd ? datesBetweenDates(dateStart, dateEnd) : [];
 
         const firstDate = new Date(Number(dataAll?.year), Number(dataAll?.month) - 1, dataAll.day)
-        const dayData = data.flatMap(item => item.price_detail).find(d => d.date == date.toISOString().split('T')[0]);
+        const dayData = dataCalendar.flatMap(item => item.price_detail).find(d => d.date == date.toISOString().split('T')[0]);
 
         const secondDate = new Date();
         const firstYear = firstDate.getFullYear();
@@ -1316,55 +1277,36 @@ function CalendarCustom({
             (firstDate <= dateStart && secondDate >= dateEnd)
         ) && checkDateInBetween(firstDate, datesInBetween);
 
-        console.log('dataAll', dataAll);
-
-
         if (dayData) {
             return (
                 <div
                     onClick={isEarlier ? () => { } : () => handleChangeDate(dataAll)}
                     className={`
-                         ${isPicked ? "bg-[#2FB9BD] text-white hover:bg-[#2FB9BD]/80 hover:text-white cursor-pointer" : ""}
-                        ${isEarlier ? "text-slate-400 !cursor-default" : ""}
-                        ${isInRange ? "bg-[#C2F9F9] !text-[#2FB9BD]" : ""}
-                        ${dataAll?.status === 0 && !isEarlier && isInRange ? "border-2 border-[#C2F9F9] !bg-[#F6F6F7] !text-[#D3D3D3] hover:!text-[#D3D3D3]" : ""}
-                        ${dataAll?.status === 0 && !isEarlier && !isPicked ? "!bg-[#F6F6F7] !text-[#D3D3D3] hover:!bg-[#F6F6F7]/80 hover:!text-[#D3D3D3]" : ""}
-                        ${dataAll?.status === 0 && !isEarlier && isPicked ? "border-2 border-[#2FB9BD] !bg-[#F6F6F7] !text-[#D3D3D3] hover:!bg-[#F6F6F7]/80 hover:!text-[#D3D3D3]" : ""}
-                        hover:bg-[#2FB9BD]/80 hover:text-white rounded-sm flex flex-col justify-center items-center w-10 h-10 p-2 m-1 cursor-pointer group
-                `}
-
-                // className={`
-                // ${isPicked && "bg-[#2FB9BD] text-white hover:bg-[#2FB9BD]/80 hover:text-white cursor-pointer"} 
-                // ${isEarlier && "text-slate-400 !cursor-default"} 
-                // ${isInRange && "bg-[#C2F9F9] !text-[#2FB9BD]"}
-                // ${dataAll?.status == 0 && !isEarlier && isInRange && "border-2 border-[#C2F9F9] !bg-[#F6F6F7] !text-[#D3D3D3] hover:!text-[#D3D3D3]"}
-                // ${dataAll?.status == 0 && !isEarlier && !isPicked && " !bg-[#F6F6F7] !text-[#D3D3D3] hover:!bg-[#F6F6F7]/80 hover:!text-[#D3D3D3]"}
-                // ${dataAll?.status == 0 && !isEarlier && isPicked && "border-2 border-[#2FB9BD] !bg-[#F6F6F7] !text-[#D3D3D3] hover:!bg-[#F6F6F7]/80 hover:!text-[#D3D3D3]"}
-                // hover:bg-[#2FB9BD]/80 hover:text-white rounded-sm flex flex-col justify-center items-center w-10 h-10 p-2 m-1 cursor-pointer group`
-                // }
+                ${isPicked && !isInRange && "bg-[#2FB9BD] text-white hover:bg-[#2FB9BD]/80 hover:text-white cursor-pointer"} 
+                ${isEarlier && "text-slate-400 cursor-default hover:bg-transparent  hover:text-slate-400 "} 
+                ${isInRange && "bg-[#C2F9F9] text-[#2FB9BD]"}
+                ${(dataAll?.status == 2 || dataAll?.status == 3) && isInRange && "border-2 border-[#C2F9F9] bg-[#F6F6F7] text-[#D3D3D3] hover:text-[#D3D3D3]"}
+                ${(dataAll?.status == 2 || dataAll?.status == 3) && !isEarlier && isInRange && "border-2 border-[#C2F9F9] bg-[#F6F6F7] text-[#D3D3D3] hover:text-[#D3D3D3]"}
+                ${(dataAll?.status == 2 || dataAll?.status == 3) && !isEarlier && !isPicked && "bg-[#F6F6F7] text-[#D3D3D3] hover:bg-[#F6F6F7]/80 hover:text-[#D3D3D3]"}
+                ${(dataAll?.status == 2 || dataAll?.status == 3) && !isEarlier && isPicked && "border-2 border-[#2FB9BD] bg-[#F6F6F7] text-[#D3D3D3] hover:bg-[#F6F6F7]/80 hover:text-[#D3D3D3]"}
+                hover:bg-[#2FB9BD]/80 hover:text-white rounded-[2px] flex flex-col justify-center items-center w-full h-12 p-2 cursor-pointer group
+            `}
                 >
                     <div className='3xl:text-[15px] text-sm font-medium'>
                         {dayData.day}
                     </div>
                     {
-                        isEarlier || dataAll?.status == 0 && !isEarlier || dataAll?.status == 0 && !isEarlier && isInRange ?
+                        isEarlier || (dataAll?.status == 2 && !isEarlier) || (dataAll?.status == 2 && !isEarlier && isInRange) ?
                             null
                             :
                             <div
                                 className={`
-                                ${isPicked && "text-white group-hover:!text-white"}
-                                ${isInRange && "!text-[#2FB9BD]"}
-                                ${dataAll?.status === 0 && !isEarlier && " !text-[#D3D3D3] group-hover:!text-[#D3D3D3]"}
-                                text-[#2FB9BD] group-hover:bg-[#2FB9BD]/80 group-hover:text-white
+                                ${isPicked && !isInRange && "text-white group-hover:text-white"}
+                                ${isInRange && "text-[#2FB9BD]"}
+                                ${(dataAll?.status == 2 || dataAll?.status == 3) && !isEarlier && " text-[#D3D3D3] group-hover:text-[#D3D3D3]"}
+                                text-[#2FB9BD] group-hover:text-white
                                 text-[10px] font-normal
-                            `}
-                            // className={`
-                            //     ${isPicked && "text-white group-hover:!text-white"}
-                            //     ${isInRange && "!text-[#2FB9BD]"}
-                            //     ${dataAll?.status == 0 && !isEarlier && " !text-[#D3D3D3] group-hover:!text-[#D3D3D3]"}
-                            //     text-[#2FB9BD] group-hover:bg-[#2FB9BD]/80 group-hover:text-white
-                            //     text-[10px] font-normal
-                            //      `}
+                                 `}
                             >
                                 {FormatNumberToThousands(dayData.price)}
                             </div>
