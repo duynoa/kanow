@@ -52,28 +52,28 @@ const LayoutMyCar = ({
             icon_active: '',
             icon_no_active: "",
             name: 'Danh sách xe',
-            link: '/list-my-car'
+            link: '/list-my-car/my-car'
         },
         {
             id: "2",
             icon_active: '',
             icon_no_active: "",
             name: 'Hợp đồng mẫu',
-            link: '/contract'
+            link: '/list-my-car/contract'
         },
         {
             id: "3",
             icon_active: '',
             icon_no_active: "",
             name: 'Ví của tôi',
-            link: '/my-wallet'
+            link: '/list-my-car/my-wallet'
         },
         {
             id: "4",
             icon_active: '',
             icon_no_active: "",
             name: 'Đăng ký xe',
-            link: '/vehicle-registration'
+            link: '/list-my-car/vehicle-registration'
         }
     ]
 
@@ -89,13 +89,13 @@ const LayoutMyCar = ({
         <div className='bg-[#F6F6F8] flex flex-col gap-4'>
             <h1 className='text-[#3E424E] p-5 lg:text-2xl text-xl  font-semibold bg-white rounded-xl'>Xe của tôi</h1>
             <div className="flex flex-col">
-                <div className="flex gap-[2px] items-center bg-white/0">
+                <div className="flex gap-[2px] items-center bg-white/0 md:overflow-hidden overflow-auto">
                     {
                         tab && tab.map((e) => (
                             <Link
                                 href={e.link}
                                 key={e.id}
-                                className={`${e.link == pathname ? "bg-white" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} caret-transparent flex items-center gap-2 xl:px-6 xl:py-3 px-4 py-2 rounded-t-xl cursor-pointer`}
+                                className={`${e.link == pathname ? "bg-white" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} caret-transparent flex items-center gap-2 xl:px-6 xl:py-3 px-4 py-3 rounded-t-xl cursor-pointer`}
                             >
                                 <div className='relative flex gap-1 items-center w-fit'>
                                     {/* <div className='w-5 h-full'>
@@ -107,7 +107,7 @@ const LayoutMyCar = ({
                                         className="w-full h-full object-contain"
                                     />
                                 </div> */}
-                                    <div className='text-sm text-[#585F71] font-medium'>
+                                    <div className='text-sm text-[#585F71] font-medium truncate'>
                                         {e.name ? e.name : ""}
                                     </div>
 
