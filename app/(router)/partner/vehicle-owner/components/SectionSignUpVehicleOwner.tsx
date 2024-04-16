@@ -4,12 +4,14 @@ import Image from 'next/image'
 import React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { MdArrowOutward } from "react-icons/md";
+import { useDialogRegisterOwnerDriver } from '@/hooks/useOpenDialog'
 
 
 type Props = {}
 
 const SectionSignUpVehicleOwner = (props: Props) => {
     const { isVisibleMobile, isVisibleTablet } = useResize()
+    const { setOpenDialogRegisterOwnerDriver } = useDialogRegisterOwnerDriver();
 
     const dataProcessSignUp = [
         {
@@ -111,7 +113,7 @@ const SectionSignUpVehicleOwner = (props: Props) => {
                                 <MdArrowOutward className='size-5 min-w-[20px] text-[#FF9900]' />
                             </div>
                             <div className='w-full flex justify-center'>
-                                <Button className='md:w-fit w-full 3xl:text-lg text-base px-9 py-3 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 uppercase transition-all overflow-hidden bg-[#2FB9BD] text-white uppercases'>
+                                <Button type='button' onClick={() => setOpenDialogRegisterOwnerDriver(true)} className='md:w-fit w-full 3xl:text-lg text-base px-9 py-3 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105 hover:bg-[#2FB9BD]/80 uppercase transition-all overflow-hidden bg-[#2FB9BD] text-white uppercases'>
                                     Đăng ký ngay
                                 </Button>
                             </div>
@@ -155,7 +157,7 @@ const SectionSignUpVehicleOwner = (props: Props) => {
                         </div>
 
                         <div className='w-full'>
-                            <Button className='md:w-fit w-full 3xl:text-lg text-base 3xl:px-12 3xl:py-4 px-10 py-3 3xl:gap-2 gap-1 rounded-xl cursor-pointer uppercase hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white'>
+                            <Button type='button' onClick={() => setOpenDialogRegisterOwnerDriver(true)} className='md:w-fit w-full 3xl:text-lg text-base 3xl:px-12 3xl:py-4 px-10 py-3 3xl:gap-2 gap-1 rounded-xl cursor-pointer uppercase hover:scale-105 hover:bg-[#2FB9BD]/80 transition-all overflow-hidden bg-[#2FB9BD] text-white'>
                                 Đăng ký ngay
                             </Button>
                         </div>

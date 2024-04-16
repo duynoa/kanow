@@ -41,6 +41,7 @@ import { DialogCancelCar } from '../modals/DialogCancelCar';
 import { DialogFilterAddress } from '../modals/DialogFilterAddress';
 import { useDialogAddress } from '@/hooks/useOpenDialog';
 import { useParams } from 'next/navigation';
+import { DialogRegisterOwnerDriver } from '../modals/DialogRegisterOwnerDriver';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -54,7 +55,6 @@ const LayoutContainer = ({
     children: React.ReactNode
 }) => {
     const pathname = usePathname()
-    const { setLatitude, setLongitude } = useDialogAddress()
     const { getKeySettings } = useAuthenticationAPI()
     const { generalKey, setGeneralKey } = useGeneralKey()
     const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
@@ -216,6 +216,7 @@ const LayoutContainer = ({
                     <DialogFilterAddress />
 
                     <AlertDialogCustom />
+                    <DialogRegisterOwnerDriver />
                 </main>
                 {pathname !== "/list-car-autonomous" && <Footer />}
                 <ToastContainer
