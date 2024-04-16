@@ -85,7 +85,7 @@ const LayoutProfile = ({
             name: 'Xe của tôi',
             icon_inactive: '/icon/account/inactive/driving.png',
             icon_active: '/icon/account/active/driving.png',
-            link: "/list-my-car",
+            link: "/list-my-car/my-car",
         },
         {
             id: 4,
@@ -147,7 +147,7 @@ const LayoutProfile = ({
             name: 'Xe của tôi',
             icon_inactive: '/icon/account/inactive/driving.png',
             icon_active: '/icon/account/active/driving.png',
-            link: "/list-my-car",
+            link: "/list-my-car/my-car",
         },
         {
             id: 4,
@@ -192,6 +192,7 @@ const LayoutProfile = ({
             link: "/logout",
         },
     ]
+
 
     useEffect(() => {
         setIsMounted(true)
@@ -362,10 +363,10 @@ const LayoutProfile = ({
                                                                             height={100}
                                                                             alt="@kanow"
                                                                             className='w-full h-full'
-                                                                            src={pathname === item.link ? item.icon_active : item.icon_inactive}
+                                                                            src={pathname.startsWith('/list-my-car') && item.id == 3 ? item.icon_active : pathname === item.link ? item.icon_active : item.icon_inactive}
                                                                         />
                                                                     </div>
-                                                                    <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
+                                                                    <div className={`${pathname.startsWith('/list-my-car') && item.id == 3 ? 'text-[#1EAAB1]' : pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
                                                                         {item.name}
                                                                     </div>
                                                                 </div>
@@ -403,10 +404,10 @@ const LayoutProfile = ({
                                                                 height={100}
                                                                 alt="@kanow"
                                                                 className='w-full h-full'
-                                                                src={pathname === item.link ? item.icon_active : item.icon_inactive}
+                                                                src={pathname.startsWith('/list-my-car') && item.id == 3 ? item.icon_active : pathname === item.link ? item.icon_active : item.icon_inactive}
                                                             />
                                                         </div>
-                                                        <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
+                                                        <div className={`${pathname.startsWith('/list-my-car') && item.id == 3 ? 'text-[#1EAAB1]' : pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
                                                             {item.name}
                                                         </div>
                                                     </Link>
