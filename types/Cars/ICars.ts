@@ -164,6 +164,24 @@ interface IDataDetailCar {
             surcharge_car_id: number;
         };
     }[];
+    hour_back_car: {
+        car_id: number,
+        created_at: string,
+        hour_end: string,
+        hour_start: string,
+        id: number,
+        type: number,
+        updated_at: string,
+    }[],
+    hour_receive_car: {
+        car_id: number,
+        created_at: string,
+        hour_end: string,
+        hour_start: string,
+        id: number,
+        type: number,
+        updated_at: string,
+    }[]
 }
 
 // detail rental car

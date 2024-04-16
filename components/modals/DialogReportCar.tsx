@@ -32,14 +32,13 @@ import { postReportCar } from "@/services/cars/report.services";
 import { toastCore } from "@/lib/toast";
 
 import { IInitialStateDetailCar } from "@/types/Initial/IInitial";
+import { useDataDetailCar } from "@/hooks/useDataQueryKey";
 
-type Props = {
-    isState: IInitialStateDetailCar,
-    queryKeyIsState: (key: any) => void
-}
+type Props = {}
 
-export function DialogReportCar({ isState, queryKeyIsState }: Props) {
+export function DialogReportCar({ }: Props) {
     const { openDialogReportCar, setOpenDialogReportCar } = useDialogReportCar()
+    const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
 
     const form = useForm({
         defaultValues: {
@@ -49,9 +48,9 @@ export function DialogReportCar({ isState, queryKeyIsState }: Props) {
 
     const handleOpenChangeModal = () => {
         setOpenDialogReportCar(!openDialogReportCar)
-        queryKeyIsState({
+        queryKeyIsStateDetailCar({
             reportCar: {
-                ...isState?.reportCar,
+                ...isStateDetailCar?.reportCar,
                 selectReportCar: ""
             }
         })
@@ -59,9 +58,9 @@ export function DialogReportCar({ isState, queryKeyIsState }: Props) {
     }
 
     const handleChangeSelectReport = (value: string) => {
-        queryKeyIsState({
+        queryKeyIsStateDetailCar({
             reportCar: {
-                ...isState?.reportCar,
+                ...isStateDetailCar?.reportCar,
                 selectReportCar: value,
             }
         })
@@ -71,8 +70,8 @@ export function DialogReportCar({ isState, queryKeyIsState }: Props) {
         try {
             let dataReport = {
                 content: values?.content ? values?.content : "",
-                report_id: isState?.reportCar?.selectReportCar,
-                car_id: isState?.dataDetailCar?.id
+                report_id: isStateDetailCar?.reportCar?.selectReportCar,
+                car_id: isStateDetailCar?.dataDetailCar?.id
             }
 
             const { data } = await postReportCar(dataReport)
@@ -81,9 +80,9 @@ export function DialogReportCar({ isState, queryKeyIsState }: Props) {
                 toastCore?.success(data?.message)
                 setOpenDialogReportCar(false)
                 form.reset()
-                queryKeyIsState({
+                queryKeyIsStateDetailCar({
                     reportCar: {
-                        ...isState?.reportCar,
+                        ...isStateDetailCar?.reportCar,
                         selectReportCar: ""
                     }
                 })
@@ -94,7 +93,7 @@ export function DialogReportCar({ isState, queryKeyIsState }: Props) {
         } catch (err) {
             throw err
         }
-    }    
+    }
 
     return (
         <Dialog modal open={openDialogReportCar} onOpenChange={handleOpenChangeModal}>
@@ -120,7 +119,7 @@ export function DialogReportCar({ isState, queryKeyIsState }: Props) {
                             <div className='flex flex-col gap-2 pb-6 border border-b border-x-0 border-t-0'>
                                 <Label className='text-base text-[#000000] font-semibold'>Lý do báo xấu</Label>
                                 <Select
-                                    value={isState?.reportCar?.selectReportCar}
+                                    value={isStateDetailCar?.reportCar?.selectReportCar}
                                     onValueChange={(value) => handleChangeSelectReport(value)}
                                 >
                                     <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
@@ -129,7 +128,7 @@ export function DialogReportCar({ isState, queryKeyIsState }: Props) {
                                     <SelectContent>
                                         <SelectGroup>
                                             {
-                                                isState?.reportCar?.listReportCar && isState?.reportCar?.listReportCar.map((item) => (
+                                                isStateDetailCar?.reportCar?.listReportCar && isStateDetailCar?.reportCar?.listReportCar.map((item) => (
                                                     <SelectItem
                                                         key={item.id}
                                                         value={`${item.id}`}
@@ -155,9 +154,9 @@ export function DialogReportCar({ isState, queryKeyIsState }: Props) {
                                             e: React.ChangeEvent<HTMLTextAreaElement>
                                         ) => {
                                             field.onChange(e);
-                                            // queryKeyIsState({
+                                            // queryKeyIsStateDetailCar({
                                             //     reportCar: {
-                                            //         ...isState?.reportCar,
+                                            //         ...isStateDetailCar?.reportCar,
                                             //         contentReportCar: e.target.value
                                             //     }
                                             // })

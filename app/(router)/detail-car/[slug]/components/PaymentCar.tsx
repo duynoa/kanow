@@ -30,22 +30,12 @@ import { useResize } from '@/hooks/useResize'
 import { FaDeleteLeft } from 'react-icons/fa6'
 import { useCookie } from '@/hooks/useCookie'
 import { IInitialStateDetailCar } from '@/types/Initial/IInitial'
-import { useDataPolicy } from '@/hooks/useDataQueryKey'
+import { useDataDetailCar, useDataPolicy } from '@/hooks/useDataQueryKey'
 import { usePathname } from 'next/navigation'
 
-type Props = {
-    isState: IInitialStateDetailCar,
-    queryKeyIsState: (key: any) => void,
-    params: {
-        slug: string
-    },
-}
+type Props = {}
 
-const PaymentCar = ({
-    isState,
-    queryKeyIsState,
-    params
-}: Props) => {
+const PaymentCar = ({ }: Props) => {
     const pathname = usePathname()
     const { dateReal, dateTemp, numberDay, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogPromotion } = useDialogPromotion()
@@ -54,6 +44,7 @@ const PaymentCar = ({
     const { setOpenDialogLogin } = useDialogLogin()
     const { isStatePolicy } = useDataPolicy()
     const { setDataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
+    const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
 
     const { getCookie } = useCookie()
     const { isVisibleTablet } = useResize()
@@ -69,15 +60,16 @@ const PaymentCar = ({
     }
 
     const handleChangePromotions = () => {
-        queryKeyIsState({
+        queryKeyIsStateDetailCar({
             infoPromotion: {
+                ...isStateDetailCar?.infoPromotion,
                 selectPromotion: "0"
             },
             dataDetailCar: {
-                ...isState?.dataDetailCar,
+                ...isStateDetailCar?.dataDetailCar,
                 price: {
-                    ...isState?.dataDetailCar?.price,
-                    total_amount: isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion
+                    ...isStateDetailCar?.dataDetailCar?.price,
+                    total_amount: isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion
                 }
             }
         })
@@ -86,15 +78,15 @@ const PaymentCar = ({
     const handleRemoveDiscount = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event?.preventDefault()
 
-        if (isState?.dataDetailCar?.promotion?.length > 0) {
-            queryKeyIsState({
+        if (isStateDetailCar?.dataDetailCar?.promotion?.length > 0) {
+            queryKeyIsStateDetailCar({
                 dataDetailCar: {
-                    ...isState?.dataDetailCar,
+                    ...isStateDetailCar?.dataDetailCar,
                     price: {
-                        ...isState?.dataDetailCar?.price,
-                        total_amount: isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion,
-                        price_depoist: (isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion) * (isState?.dataDetailCar?.price?.percent_deposit / 100),
-                        cash_on_delivery: ((isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion)) - ((isState?.dataDetailCar?.price?.temp_total_amount - isState?.dataDetailCar?.promotion[0]?.price_promotion) * (isState?.dataDetailCar?.price?.percent_deposit / 100)),
+                        ...isStateDetailCar?.dataDetailCar?.price,
+                        total_amount: isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion,
+                        price_depoist: (isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100),
+                        cash_on_delivery: ((isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion)) - ((isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)),
                     }
                 },
                 infoPromotion: {
@@ -103,14 +95,14 @@ const PaymentCar = ({
                 }
             })
         } else {
-            queryKeyIsState({
+            queryKeyIsStateDetailCar({
                 dataDetailCar: {
-                    ...isState?.dataDetailCar,
+                    ...isStateDetailCar?.dataDetailCar,
                     price: {
-                        ...isState?.dataDetailCar?.price,
-                        total_amount: isState?.dataDetailCar?.price?.temp_total_amount,
-                        price_depoist: (isState?.dataDetailCar?.price?.temp_total_amount) * (isState?.dataDetailCar?.price?.percent_deposit / 100),
-                        cash_on_delivery: ((isState?.dataDetailCar?.price?.temp_total_amount)) - ((isState?.dataDetailCar?.price?.temp_total_amount) * (isState?.dataDetailCar?.price?.percent_deposit / 100)),
+                        ...isStateDetailCar?.dataDetailCar?.price,
+                        total_amount: isStateDetailCar?.dataDetailCar?.price?.temp_total_amount,
+                        price_depoist: (isStateDetailCar?.dataDetailCar?.price?.temp_total_amount) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100),
+                        cash_on_delivery: ((isStateDetailCar?.dataDetailCar?.price?.temp_total_amount)) - ((isStateDetailCar?.dataDetailCar?.price?.temp_total_amount) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)),
                     }
                 },
                 infoPromotion: {
@@ -124,7 +116,7 @@ const PaymentCar = ({
 
     const handleSubmitCar = () => {
         if (getCookie !== "kanow" && getCookie !== undefined) {
-            setDataListRequestCarRental(isState)
+            setDataListRequestCarRental(isStateDetailCar)
             setOpenDialogRequestCarRental(true)
         } else {
             setOpenDialogLogin(true)
@@ -154,16 +146,16 @@ const PaymentCar = ({
             <div className='flex flex-col 3xl:gap-6 gap-4 xl:p-6 p-4 bg-white border rounded-2xl'>
                 <div className='flex items-center gap-1'>
                     {
-                        isState?.dataDetailCar?.promotion?.length > 0 ?
+                        isStateDetailCar?.dataDetailCar?.promotion?.length > 0 ?
                             <div className='3xl:text-4xl md:text-3xl text-2xl text-[#D7D9E0] font-medium line-through'>
-                                {isState?.dataDetailCar?.price?.price_before_promotion ? FormatNumberToThousands(isState?.dataDetailCar?.price?.price_before_promotion) : ""}
+                                {isStateDetailCar?.dataDetailCar?.price?.price_before_promotion ? FormatNumberToThousands(isStateDetailCar?.dataDetailCar?.price?.price_before_promotion) : ""}
                             </div>
                             :
                             null
                     }
                     <div className='flex'>
                         <span className='3xl:text-4xl md:text-3xl text-2xl text-[#1AC5CA] font-bold'>
-                            {isState?.dataDetailCar?.price?.price_after_promotion ? FormatNumberToThousands(isState?.dataDetailCar?.price?.price_after_promotion) : ""}
+                            {isStateDetailCar?.dataDetailCar?.price?.price_after_promotion ? FormatNumberToThousands(isStateDetailCar?.dataDetailCar?.price?.price_after_promotion) : ""}
                         </span>
                         <span className='3xl:text-base md:text-sm text-xs text-[#585F71] flex justify-start font-semibold capitalize'>
                             /ngày
@@ -187,7 +179,7 @@ const PaymentCar = ({
                                     variant={"outline"}
                                     className={cn(
                                         `px-4 py-3 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-sm text-xs`,
-                                        !dateReal && "text-muted-foreground"
+                                        !dateTemp && "text-muted-foreground"
                                     )}
                                     onClick={() => handleOpenDialog('calendar', 'dateTemp')}
                                 >
@@ -316,7 +308,7 @@ const PaymentCar = ({
                             </div>
 
                             <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                                {FormatNumberDot(isState?.dataDetailCar?.price?.rent_cost_day ? isState?.dataDetailCar?.price?.rent_cost_day : 0)}<span>đ/ngày</span>
+                                {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.rent_cost_day ? isStateDetailCar?.dataDetailCar?.price?.rent_cost_day : 0)}<span>đ/ngày</span>
                             </div>
                         </div>
 
@@ -347,7 +339,7 @@ const PaymentCar = ({
                                 }
                             </div>
                             <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                                {FormatNumberDot(isState?.dataDetailCar?.price?.price_insurance_day ? isState?.dataDetailCar?.price?.price_insurance_day : 0)}đ
+                                {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.price_insurance_day ? isStateDetailCar?.dataDetailCar?.price?.price_insurance_day : 0)}đ
                             </div>
                         </div>
                     </div>
@@ -357,7 +349,7 @@ const PaymentCar = ({
                             Tổng tạm tính
                         </div>
                         <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                            {FormatNumberDot(isState?.dataDetailCar?.price?.temp_total_amount)}<span>đ/{numberDay === 1 ? null : numberDay} ngày</span>
+                            {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.temp_total_amount)}<span>đ/{numberDay === 1 ? null : numberDay} ngày</span>
                         </div>
                     </div>
                 </div>
@@ -370,15 +362,15 @@ const PaymentCar = ({
 
                         <RadioGroup
                             className='flex flex-col gap-3'
-                            value={isState?.infoPromotion?.selectPromotion}
+                            value={isStateDetailCar?.infoPromotion?.selectPromotion}
                         >
                             {
-                                isState?.dataDetailCar?.promotion?.length > 0 ?
+                                isStateDetailCar?.dataDetailCar?.promotion?.length > 0 ?
                                     <div className="flex items-center space-x-2 caret-transparent">
                                         <RadioGroupItem
                                             id="0"
-                                            value={isState?.infoPromotion?.selectPromotion}
-                                            checked={isState?.infoPromotion?.selectPromotion === "0" ? true : false}
+                                            value={isStateDetailCar?.infoPromotion?.selectPromotion}
+                                            checked={isStateDetailCar?.infoPromotion?.selectPromotion === "0" ? true : false}
                                             onClick={() => handleChangePromotions()}
                                             className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD]'
                                         />
@@ -397,13 +389,13 @@ const PaymentCar = ({
                                                     </div>
                                                 </div>
                                                 <div className='text-[#6F7689] 3xl:text-base xl:text-sm text-xs'>
-                                                    Giảm {FormatNumberDot(isState?.dataDetailCar?.promotion[0]?.price_promotion ? isState?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ trên đơn giá
+                                                    Giảm {FormatNumberDot(isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion ? isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ trên đơn giá
                                                 </div>
                                             </div>
                                             {
-                                                isState?.infoPromotion?.selectPromotion === "0" ?
+                                                isStateDetailCar?.infoPromotion?.selectPromotion === "0" ?
                                                     <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
-                                                        -{FormatNumberDot(isState?.dataDetailCar?.promotion[0]?.price_promotion ? isState?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ
+                                                        -{FormatNumberDot(isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion ? isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion : 0)}đ
                                                     </div>
                                                     :
                                                     null
@@ -415,11 +407,11 @@ const PaymentCar = ({
                             }
                             <div className="flex items-center space-x-2 caret-transparent">
                                 {
-                                    isState?.infoPromotion?.activePromotion ?
+                                    isStateDetailCar?.infoPromotion?.activePromotion ?
                                         <>
                                             <RadioGroupItem
-                                                value={isState?.infoPromotion?.selectPromotion}
-                                                checked={isState?.infoPromotion?.selectPromotion === "1" ? true : false}
+                                                value={isStateDetailCar?.infoPromotion?.selectPromotion}
+                                                checked={isStateDetailCar?.infoPromotion?.selectPromotion === "1" ? true : false}
                                                 className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD]'
                                             />
                                             <Label className='flex flex-row items-center justify-between gap-2 w-full cursor-pointer'>
@@ -434,7 +426,7 @@ const PaymentCar = ({
                                                         />
                                                         <div className='w-[90%] max-w-[90%] flex items-center gap-2'>
                                                             <div className='xl:text-base text-sm'>
-                                                                <span className='font-normal'>Mã</span> <span className='font-semibold uppercase'>{isState?.infoPromotion?.activePromotion?.code}</span>
+                                                                <span className='font-normal'>Mã</span> <span className='font-semibold uppercase'>{isStateDetailCar?.infoPromotion?.activePromotion?.code}</span>
                                                             </div>
                                                             <div onClick={(event) => handleRemoveDiscount(event)}>
                                                                 <FaDeleteLeft className="size-5 text-rose-500" />
@@ -443,13 +435,13 @@ const PaymentCar = ({
                                                     </div>
                                                 </div>
                                                 {
-                                                    isState?.infoPromotion?.activePromotion?.percent !== 0 ?
+                                                    isStateDetailCar?.infoPromotion?.activePromotion?.percent !== 0 ?
                                                         <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
-                                                            -{FormatNumberDot(isState?.dataDetailCar?.price?.max_money_discount ? isState?.dataDetailCar?.price?.max_money_discount : 0)}đ
+                                                            -{FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.max_money_discount ? isStateDetailCar?.dataDetailCar?.price?.max_money_discount : 0)}đ
                                                         </div>
                                                         :
                                                         <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
-                                                            -{FormatNumberDot(isState?.infoPromotion?.activePromotion?.cash ? isState?.infoPromotion?.activePromotion?.cash : 0)}đ
+                                                            -{FormatNumberDot(isStateDetailCar?.infoPromotion?.activePromotion?.cash ? isStateDetailCar?.infoPromotion?.activePromotion?.cash : 0)}đ
                                                         </div>
                                                 }
                                             </Label>
@@ -458,8 +450,8 @@ const PaymentCar = ({
                                         <>
                                             <RadioGroupItem
                                                 id="1"
-                                                value={isState?.infoPromotion?.selectPromotion}
-                                                checked={isState?.infoPromotion?.selectPromotion === "1" ? true : false}
+                                                value={isStateDetailCar?.infoPromotion?.selectPromotion}
+                                                checked={isStateDetailCar?.infoPromotion?.selectPromotion === "1" ? true : false}
                                                 onClick={() => handleOpenDialog('custom_promotion')}
                                                 className='w-5 h-5 border-[#D7D9E0] data-[state=checked]:text-[#2FB9BD] data-[state=checked]:border-[#2FB9BD]'
                                             />
@@ -491,7 +483,7 @@ const PaymentCar = ({
                             Thành tiền
                         </div>
                         <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                            {FormatNumberDot(isState?.dataDetailCar?.price?.total_amount ? isState?.dataDetailCar?.price?.total_amount : 0)}<span>đ/{numberDay === 1 ? null : numberDay} ngày</span>
+                            {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.total_amount ? isStateDetailCar?.dataDetailCar?.price?.total_amount : 0)}<span>đ/{numberDay === 1 ? null : numberDay} ngày</span>
                         </div>
                     </div>
                 </div>

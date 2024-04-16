@@ -36,7 +36,7 @@ import { DialogReportCar } from '@/components/modals/DialogReportCar'
 import { getListReportCar } from '@/services/cars/report.services'
 import { IInitialStateDetailCar } from '@/types/Initial/IInitial'
 import { getDataPolicy } from '@/services/cars/policy.services'
-import { useDataPolicy } from '@/hooks/useDataQueryKey'
+import { useDataDetailCar, useDataPolicy } from '@/hooks/useDataQueryKey'
 import moment from 'moment'
 import { getListCalendarPriceMonth } from '@/services/cars/calendar.services'
 
@@ -53,92 +53,95 @@ const DetailCar = ({ params }: Props) => {
     const { isVisibleMobile, isVisibleTablet } = useResize()
     const { dataPromotions, setDataPromotions } = useDialogPromotion()
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
+
+    const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
+
     const { queryKeyIsStatePolicy } = useDataPolicy()
-    const { dateReal, numberDay, setDataCalendar } = useDialogCalendar()
+    const { dateReal, dateTemp, numberDay, setDataCalendar } = useDialogCalendar()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [slug, setSlug] = useState(params.slug);
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
     const [showSecondHeader, setShowSecondHeader] = useState(false);
 
-    const initialState: IInitialStateDetailCar = {
-        dataDetailCar: {
-            id: "",
-            address: "",
-            full_address: "",
-            image_car: [],
-            car_owner: {
-                avatar: "",
-                fullname: "",
-                id: "",
-            },
-            type: {
-                delivery_car: false,
-                book_car_flash: false,
-                mortgage: false,
-                transmission_search: "",
-            },
-            favorite_car: false,
-            name_car: "",
-            point_star: 0,
-            total_trip: 0,
-            price: {
-                percent_deposit: 0,
-                price_before_promotion: 0,
-                price_after_promotion: 0,
+    // const initialState: IInitialStateDetailCar = {
+    //     dataDetailCar: {
+    //         id: "",
+    //         address: "",
+    //         full_address: "",
+    //         image_car: [],
+    //         car_owner: {
+    //             avatar: "",
+    //             fullname: "",
+    //             id: "",
+    //         },
+    //         type: {
+    //             delivery_car: false,
+    //             book_car_flash: false,
+    //             mortgage: false,
+    //             transmission_search: "",
+    //         },
+    //         favorite_car: false,
+    //         name_car: "",
+    //         point_star: 0,
+    //         total_trip: 0,
+    //         price: {
+    //             percent_deposit: 0,
+    //             price_before_promotion: 0,
+    //             price_after_promotion: 0,
 
-                rent_cost: 0,
-                rent_cost_day: 0,
-                price_insurance_day: 0,
-                temp_total_amount: 0,
-                total_amount: 0,
+    //             rent_cost: 0,
+    //             rent_cost_day: 0,
+    //             price_insurance_day: 0,
+    //             temp_total_amount: 0,
+    //             total_amount: 0,
 
-                max_money_discount: 0,
-                // tiền đặt cọc
-                price_depoist: 0,
-                // số ngày
-                number_day: 0,
-                // thanh toán khi nhận xe
-                cash_on_delivery: 0
-            },
-            promotion: [],
-            trait_car: {
-                number_seat: 0,
-                number_car: "",
-                type_fuel: "",
-                year_manu: "",
-            },
-            describe_car: "",
-            other_amenities_car: [],
-            info_review_car: {
-                review_car: [],
-                star: 0,
-                total_review_car: 0,
-            },
-            collateral_car: {
-                mortgage: 0,
-                mortgage_policy_car: "",
-                note_mortgage: "",
-            },
-            surcharge_car: [],
-        },
-        infoPromotion: {
-            selectPromotion: "0",
-            activePromotion: null,
-        },
-        listCarsRelated: [],
-        reportCar: {
-            listReportCar: [],
-            selectReportCar: "",
-            contentReportCar: ""
-        },
-        onSuccess: {
-            onSuccessPage: false
-        },
-    };
+    //             max_money_discount: 0,
+    //             // tiền đặt cọc
+    //             price_depoist: 0,
+    //             // số ngày
+    //             number_day: 0,
+    //             // thanh toán khi nhận xe
+    //             cash_on_delivery: 0
+    //         },
+    //         promotion: [],
+    //         trait_car: {
+    //             number_seat: 0,
+    //             number_car: "",
+    //             type_fuel: "",
+    //             year_manu: "",
+    //         },
+    //         describe_car: "",
+    //         other_amenities_car: [],
+    //         info_review_car: {
+    //             review_car: [],
+    //             star: 0,
+    //             total_review_car: 0,
+    //         },
+    //         collateral_car: {
+    //             mortgage: 0,
+    //             mortgage_policy_car: "",
+    //             note_mortgage: "",
+    //         },
+    //         surcharge_car: [],
+    //     },
+    //     infoPromotion: {
+    //         selectPromotion: "0",
+    //         activePromotion: null,
+    //     },
+    //     listCarsRelated: [],
+    //     reportCar: {
+    //         listReportCar: [],
+    //         selectReportCar: "",
+    //         contentReportCar: ""
+    //     },
+    //     onSuccess: {
+    //         onSuccessPage: false
+    //     },
+    // };
 
-    const [isState, setIsState] = useState<IInitialStateDetailCar>(initialState)
-    const queryKeyIsState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
+    // const [isStateDetailCar, setIsState] = useState<IInitialStateDetailCar>(initialState)
+    // const queryKeyIsStateDetailCar = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
     useEffect(() => {
         setIsMounted(true)
@@ -146,14 +149,14 @@ const DetailCar = ({ params }: Props) => {
 
     const fetchDataDetailCar = async () => {
         try {
-            queryKeyIsState({
+            queryKeyIsStateDetailCar({
                 onSuccess: {
                     onSuccessPage: true
                 }
             })
 
             let dataParams = {
-                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`
+                date_search: `${dateTemp ? `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}` : `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`} `
             }
             const { data } = await getDataDetailCar(params.slug, dataParams)
 
@@ -161,7 +164,7 @@ const DetailCar = ({ params }: Props) => {
                 let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
                 console.log('customDataDetailCar', customDataDetailCar);
 
-                queryKeyIsState({
+                queryKeyIsStateDetailCar({
                     dataDetailCar: customDataDetailCar,
                     onSuccess: {
                         onSuccessPage: false
@@ -186,7 +189,7 @@ const DetailCar = ({ params }: Props) => {
             if (data && data.data && data.base.base) {
                 let { customDataListCars } = CustomDataListCars(data)
 
-                queryKeyIsState({
+                queryKeyIsStateDetailCar({
                     listCarsRelated: customDataListCars,
                 })
             }
@@ -213,6 +216,11 @@ const DetailCar = ({ params }: Props) => {
     }
 
     useEffect(() => {
+        fetchDataDetailCar()
+    }, [slug, getCookie, dateTemp, dateReal])
+
+
+    useEffect(() => {
         const fetchListPromotions = async () => {
             if (dataPromotions.length === 0) {
                 try {
@@ -235,9 +243,9 @@ const DetailCar = ({ params }: Props) => {
                     const { data } = await getListReportCar();
 
                     if (data && data.data) {
-                        queryKeyIsState({
+                        queryKeyIsStateDetailCar({
                             reportCar: {
-                                ...isState?.reportCar,
+                                ...isStateDetailCar?.reportCar,
                                 listReportCar: data.data
                             }
                         })
@@ -260,9 +268,9 @@ const DetailCar = ({ params }: Props) => {
             }
         }
 
+        // fetchDataDetailCar()
         fetchDataListCalendarPriceMonth()
         fetchDataPolicy()
-        fetchDataDetailCar()
         fetchDataListCarsRelated()
         fetchListPromotions()
         fetchListReportCar()
@@ -270,40 +278,40 @@ const DetailCar = ({ params }: Props) => {
 
     useEffect(() => {
         if (numberDay) {
-            queryKeyIsState({
+            queryKeyIsStateDetailCar({
                 dataDetailCar: {
-                    ...isState?.dataDetailCar,
+                    ...isStateDetailCar?.dataDetailCar,
                     price: {
-                        ...isState?.dataDetailCar?.price,
+                        ...isStateDetailCar?.dataDetailCar?.price,
                         // tổng tạm tính 
-                        temp_total_amount: (isState?.dataDetailCar?.price?.rent_cost_day + isState?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+                        temp_total_amount: (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
 
                         // thành tiền
                         total_amount:
-                            isState?.dataDetailCar?.promotion?.length > 0
+                            isStateDetailCar?.dataDetailCar?.promotion?.length > 0
                                 ?
-                                ((isState?.dataDetailCar?.price?.rent_cost_day - isState?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1)) + isState?.dataDetailCar?.price?.price_insurance_day
+                                ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1)) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day
                                 :
-                                (isState?.dataDetailCar?.price?.rent_cost_day + isState?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+                                (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
 
                         // tiền đặt cọc
                         price_depoist:
-                            isState?.dataDetailCar?.promotion?.length > 0
+                            isStateDetailCar?.dataDetailCar?.promotion?.length > 0
                                 ?
-                                ((isState?.dataDetailCar?.price?.rent_cost_day - isState?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) + isState?.dataDetailCar?.price?.price_insurance_day) * (isState?.dataDetailCar?.price?.percent_deposit / 100)
+                                ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
                                 :
-                                (isState?.dataDetailCar?.price?.rent_cost_day + isState?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (isState?.dataDetailCar?.price?.percent_deposit / 100)
+                                (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
                         ,
                         // số ngày
-                        // number_day: +isState?.dataDetailCar?.price?.number_day,
+                        // number_day: +isStateDetailCar?.dataDetailCar?.price?.number_day,
                         number_day: numberDay ? numberDay : 1,
                         // thanh toán khi nhận xe (Thành tiền - tiền cọc)
                         cash_on_delivery:
-                            isState?.dataDetailCar?.promotion?.length > 0
+                            isStateDetailCar?.dataDetailCar?.promotion?.length > 0
                                 ?
-                                (((+isState?.dataDetailCar?.price?.rent_cost_day - +isState?.dataDetailCar?.promotion[0]?.price_promotion) + (+isState?.dataDetailCar?.price?.price_insurance_day)) * (numberDay ? numberDay : 1)) - ((((isState?.dataDetailCar?.price?.rent_cost_day - isState?.dataDetailCar?.promotion[0]?.price_promotion) + isState?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isState?.dataDetailCar?.price?.percent_deposit / 100))
+                                (((+isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - +isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + (+isStateDetailCar?.dataDetailCar?.price?.price_insurance_day)) * (numberDay ? numberDay : 1)) - ((((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100))
                                 :
-                                ((isState?.dataDetailCar?.price?.rent_cost_day + isState?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - (((isState?.dataDetailCar?.price?.rent_cost_day + isState?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isState?.dataDetailCar?.price?.percent_deposit / 100)),
+                                ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - (((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)),
 
                     }
                 }
@@ -321,7 +329,7 @@ const DetailCar = ({ params }: Props) => {
             try {
                 const dataParams = {
                     car_id: car_id,
-                    status: isState?.listCarsRelated[index]?.favorite_car ? 0 : 1
+                    status: isStateDetailCar?.listCarsRelated[index]?.favorite_car ? 0 : 1
                 }
 
                 const { data } = await postUpdateFavoriteHeartCar(dataParams)
@@ -340,7 +348,7 @@ const DetailCar = ({ params }: Props) => {
             try {
                 const dataParams = {
                     car_id: params.slug,
-                    status: isState?.dataDetailCar?.favorite_car ? 0 : 1
+                    status: isStateDetailCar?.dataDetailCar?.favorite_car ? 0 : 1
                 }
 
                 const { data } = await postUpdateFavoriteHeartCar(dataParams)
@@ -408,10 +416,8 @@ const DetailCar = ({ params }: Props) => {
     const handleOpenReviewImage = (id: number | string, index: number) => {
         setOpenDialogReview(true)
         setIndexImage(index)
-        setDataImage(isState?.dataDetailCar?.image_car)
+        setDataImage(isStateDetailCar?.dataDetailCar?.image_car)
     }
-
-
 
     if (!isMounted) {
         return null
@@ -477,7 +483,7 @@ const DetailCar = ({ params }: Props) => {
                         className='custom-swiper-detail-car w-full md:h-[380px] h-[240px] lg:px-2'
                     >
                         {
-                            isState?.dataDetailCar && isState?.dataDetailCar?.image_car && isState?.dataDetailCar?.image_car.map((carDetail: any, index: number) => (
+                            isStateDetailCar?.dataDetailCar && isStateDetailCar?.dataDetailCar?.image_car && isStateDetailCar?.dataDetailCar?.image_car.map((carDetail: any, index: number) => (
                                 <SwiperSlide
                                     key={`carDetail-${carDetail.id}`}
                                     onClick={() => handleOpenReviewImage(carDetail.id, index)}
@@ -527,7 +533,7 @@ const DetailCar = ({ params }: Props) => {
                             className='custom-swiper-detail-car w-full 3xl:h-[330px] xl:h-[280px] lg:h-[240px] md:h-[380px] h-[240px] lg:px-2'
                         >
                             {
-                                isState?.dataDetailCar && isState?.dataDetailCar?.image_car && isState?.dataDetailCar?.image_car?.map((carDetail: any, index: number) => (
+                                isStateDetailCar?.dataDetailCar && isStateDetailCar?.dataDetailCar?.image_car && isStateDetailCar?.dataDetailCar?.image_car?.map((carDetail: any, index: number) => (
                                     <SwiperSlide key={`carDetail-${carDetail.id}`} onClick={() => handleOpenReviewImage(carDetail.id, index)}>
                                         <div className='w-full 3xl:h-[300px] xl:h-[240px] lg:h-[200px] md:h-[380px] h-[240px] cursor-pointer'>
                                             <Image
@@ -546,18 +552,9 @@ const DetailCar = ({ params }: Props) => {
             }
 
             <div className='custom-container 3xl:mt-8 mt-4 flex lg:flex-row flex-col gap-6'>
-                <InformationCar
-                    isState={isState}
-                    queryKeyIsState={queryKeyIsState}
-                    params={params}
-                    handleClickFavorite={handleClickFavorite}
-                />
+                <InformationCar handleClickFavorite={handleClickFavorite} />
 
-                <PaymentCar
-                    isState={isState}
-                    queryKeyIsState={queryKeyIsState}
-                    params={params}
-                />
+                <PaymentCar />
             </div>
 
             <div className='bg-[#F6F6F8] md:py-20 py-10'>
@@ -590,7 +587,7 @@ const DetailCar = ({ params }: Props) => {
                                 className='custom-swiper-intro w-full h-[420px]'
                             >
                                 {
-                                    isState?.listCarsRelated && isState?.listCarsRelated.map((card, index) => (
+                                    isStateDetailCar?.listCarsRelated && isStateDetailCar?.listCarsRelated.map((card, index) => (
                                         <SwiperSlide key={`carDetail-${card.id}`}>
                                             <Link
                                                 key={card.id}
@@ -747,7 +744,7 @@ const DetailCar = ({ params }: Props) => {
                             :
                             <div className='grid xxl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-8 gap-6 justify-start w-full h-full'>
                                 {
-                                    isState?.listCarsRelated && isState?.listCarsRelated?.map((card, index) => (
+                                    isStateDetailCar?.listCarsRelated && isStateDetailCar?.listCarsRelated?.map((card, index) => (
                                         <Link
                                             key={card.id}
                                             id={`card-${card.id}`}
@@ -902,14 +899,8 @@ const DetailCar = ({ params }: Props) => {
                     }
                 </div>
             </div>
-            <DialogPromotion
-                isState={isState}
-                queryKeyIsState={queryKeyIsState}
-            />
-            <DialogReportCar
-                isState={isState}
-                queryKeyIsState={queryKeyIsState}
-            />
+            <DialogPromotion />
+            <DialogReportCar />
         </>
     )
 }
