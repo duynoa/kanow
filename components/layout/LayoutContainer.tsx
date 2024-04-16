@@ -39,8 +39,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useDataInfoRentalCar } from '@/hooks/useDataQueryKey';
 import { DialogCancelCar } from '../modals/DialogCancelCar';
 import { DialogFilterAddress } from '../modals/DialogFilterAddress';
-import { useDialogAddress } from '@/hooks/useOpenDialog';
+import { useDialogAddress, useDialogRegisterOwnerDriver } from '@/hooks/useOpenDialog';
 import { useParams } from 'next/navigation';
+import { DialogRegisterOwnerDriver } from '../modals/DialogRegisterOwnerDriver';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -54,10 +55,16 @@ const LayoutContainer = ({
     children: React.ReactNode
 }) => {
     const pathname = usePathname()
-    const { setLatitude, setLongitude } = useDialogAddress()
+
     const { getKeySettings } = useAuthenticationAPI()
+
     const { generalKey, setGeneralKey } = useGeneralKey()
+
     const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
+
+    const { openDialogAddress, } = useDialogAddress()
+
+    const { openDialogRegisterOwnerDriver } = useDialogRegisterOwnerDriver();
 
     const {
         isVisibleMobile,
@@ -139,7 +146,14 @@ const LayoutContainer = ({
 
     }, [])
 
-
+    ///check chặn scroll của model lọc vị trí và model trở thành đối tác
+    useEffect(() => {
+        if (openDialogAddress || openDialogRegisterOwnerDriver) {
+            document.body.style.overflow = "hidden";
+            return
+        }
+        document.body.style.overflow = "unset";
+    }, [openDialogAddress, openDialogRegisterOwnerDriver])
     // if (navigator.geolocation) {
     //     navigator.geolocation.watchPosition((position) => {
     //         console.log("position", position);
@@ -213,6 +227,7 @@ const LayoutContainer = ({
                     <DialogFilterAddress />
 
                     <AlertDialogCustom />
+                    <DialogRegisterOwnerDriver />
                 </main>
                 {pathname !== "/list-car-autonomous" && <Footer />}
                 <ToastContainer

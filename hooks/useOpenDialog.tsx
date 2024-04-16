@@ -216,3 +216,17 @@ export const useDialogAddress = create<IOpenDialogAddress>((set) => ({
     valueAddress: "",
     setValueAddress: (value: any) => set((state) => ({ valueAddress: value })),
 }));
+
+
+// Đăng ký xe cho thuê ở trang menu dropdow
+interface IOpenDialogRegisterOwnerDriver {
+    type?: string
+    openDialogRegisterOwnerDriver: boolean;
+    setOpenDialogRegisterOwnerDriver: (key: any, type?: string) => void;
+}
+
+export const useDialogRegisterOwnerDriver = create<IOpenDialogRegisterOwnerDriver>((set) => ({
+    openDialogRegisterOwnerDriver: false,
+    setOpenDialogRegisterOwnerDriver: (key: any, type?: string) => set((state) => ({ openDialogRegisterOwnerDriver: key, type: type })),
+    type: "",
+}));

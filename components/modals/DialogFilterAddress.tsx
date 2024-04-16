@@ -20,9 +20,9 @@ import { useEffect, useState } from "react";
 import { useGeneralKey } from "@/hooks/useGeneralKey";
 import { useDialogAddress } from "@/hooks/useOpenDialog";
 import SearchAddress from "../searchAddress/SearchAddress";
-import useGoogleApi from "@/services/google/google.services";
+import useGoogleApi from "@/services/filter/google/google.services";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
-import useAirportCarDeliveryApi from "@/services/filter/airportCarDelivery.services";
+import useAirportCarDeliveryApi from "@/services/filter/listAirport/airportCarDelivery.services";
 
 
 type Props = {
@@ -122,12 +122,8 @@ export function DialogFilterAddress({ }: Props) {
                 return
             }
             form.reset()
-            document.body.style.overflow = "hidden";
             return
         }
-        document.body.style.overflow = "unset";
-
-
     }, [openDialogAddress])
 
 
