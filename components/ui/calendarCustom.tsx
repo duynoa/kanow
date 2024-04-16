@@ -1014,8 +1014,8 @@ function CalendarCustom({
             }
 
             // Render các ngày trong tháng
-            monthItem.price_detail.forEach((dayData: any, i: any) => {
-                const currentDate = new Date(dayData.date);
+            monthItem.price_detail.forEach((dayDataApi: any, i: any) => {
+                const currentDate = new Date(dayDataApi.date);
                 const dayOfWeek = currentDate.getDay();
                 // console.log('currentDate', currentDate);
 
@@ -1024,7 +1024,7 @@ function CalendarCustom({
                     <div key={`current-${i}`} className='col-span-1'>
                         <CustomDay
                             date={currentDate}
-                            dataAll={dayData}
+                            dayDataApi={dayDataApi}
                             dayOfWeek={dayOfWeek}
                             index={i}
                         />
@@ -1109,7 +1109,7 @@ function CalendarCustom({
         );
     };
     // Component Day tùy chỉnh
-    const CustomDay = ({ date, dataAll, dayOfWeek, index, ...props }: any) => {
+    const CustomDay = ({ date, dayDataApi, dayOfWeek, index, ...props }: any) => {
         const daysBetweenDates = (startDate: Date, endDate: Date): number => {
             const oneDay = 24 * 60 * 60 * 1000;
             const firstDate = new Date(startDate);
@@ -1189,7 +1189,8 @@ function CalendarCustom({
                         isBefore(date, compareDate))
                 )
             };
-            setStatusDate(dataAll.status)
+
+            setStatusDate(dayDataApi.status)
 
             if (dateStart && dateEnd) {
                 if (isAfterInSameYearAndMonth(date, dateStart) && !isSameDay(dateEnd ? dateEnd : "", date)) {
@@ -1218,11 +1219,14 @@ function CalendarCustom({
             } else {
                 console.log('check123');
             }
+
+            console.log('date : ', date);
+
         };
 
         const datesInBetween = dateStart && dateEnd ? datesBetweenDates(dateStart, dateEnd) : [];
 
-        const firstDate = new Date(Number(dataAll?.year), Number(dataAll?.month) - 1, dataAll.day)
+        const firstDate = new Date(Number(dayDataApi?.year), Number(dayDataApi?.month) - 1, dayDataApi.day)
         const dayData = dataCalendar.flatMap(item => item.price_detail).find(d => d.date == date.toISOString().split('T')[0]);
 
         const secondDate = new Date();
@@ -1243,24 +1247,15 @@ function CalendarCustom({
         const dateEndDay = dateEnd?.getDate();
 
         // ngày phía trước
-        const isEarlier = dataAll?.day !== -1 ?
+        const isEarlier = dayDataApi?.day !== -1 ?
             firstYear < secondYear ||
             (firstYear === secondYear && firstMonth < secondMonth) ||
             (firstYear === secondYear && firstMonth === secondMonth && firstDay < secondDay)
             :
             false;
 
-        const isPicked = dataAll?.day !== -1 ? (
-            (firstYear === dateStartYear && firstMonth === dateStartMonth && firstDay === dateStartDay) ||
-            (firstYear === dateEndYear && firstMonth === dateEndMonth && firstDay === dateEndDay) ||
-            ((dateStartYear && dateEndYear && dateStartMonth && dateEndMonth && dateStartDay && dateEndDay) &&
-                (firstYear === dateStartYear && firstYear === dateEndYear &&
-                    firstMonth === dateStartMonth && firstMonth === dateEndMonth &&
-                    firstDay >= dateStartDay && firstDay <= dateEndDay))
-        ) : false;
-
         // ngày trùng khi click chọn 1 ngày
-        const isMatched = dataAll?.day !== -1 ?
+        const isMatched = dayDataApi?.day !== -1 ?
             firstYear == dateStartYear &&
             firstYear == dateEndYear &&
             firstMonth == dateStartMonth &&
@@ -1271,43 +1266,46 @@ function CalendarCustom({
             false;
 
         // ngày trong khoảng cách
-        const isInRange = dataAll?.day !== -1 && (dateStart && dateEnd) && (
-            (firstDate >= dateStart && firstDate <= dateEnd) ||
-            (secondDate >= dateStart && secondDate <= dateEnd) ||
-            (firstDate <= dateStart && secondDate >= dateEnd)
-        ) && checkDateInBetween(firstDate, datesInBetween);
+        const isInRange =
+            dayDataApi?.day !== -1 && // Đảm bảo dayDataApi không phải là ngày trống
+            (dateStart && dateEnd) && // Đảm bảo đã chọn cả ngày bắt đầu và ngày kết thúc
+            (
+                (firstDate >= dateStart && firstDate <= dateEnd) || // firstDate nằm trong khoảng thời gian từ dateStart đến dateEnd
+                (secondDate >= dateStart && secondDate <= dateEnd) || // secondDate nằm trong khoảng thời gian từ dateStart đến dateEnd
+                (firstDate <= dateStart && secondDate >= dateEnd) // Khoảng thời gian từ firstDate đến secondDate chứa trong khoảng thời gian từ dateStart đến dateEnd
+            ) &&
+            checkDateInBetween(firstDate, datesInBetween);
+
+        const isPicked = dayDataApi?.day !== -1 ?
+            ((firstYear === dateStartYear && firstMonth === dateStartMonth && firstDay === dateStartDay) ||
+                (firstYear === dateEndYear && firstMonth === dateEndMonth && firstDay === dateEndDay)) &&
+            !isInRange
+            :
+            false;
 
         if (dayData) {
             return (
                 <div
-                    onClick={isEarlier ? () => { } : () => handleChangeDate(dataAll)}
+                    onClick={isEarlier ? () => { } : () => handleChangeDate(dayDataApi)}
                     className={`
-                ${isPicked && !isInRange && "bg-[#2FB9BD] text-white hover:bg-[#2FB9BD]/80 hover:text-white cursor-pointer"} 
-                ${isEarlier && "text-slate-400 cursor-default hover:bg-transparent  hover:text-slate-400 "} 
-                ${isInRange && "bg-[#C2F9F9] text-[#2FB9BD]"}
-                ${(dataAll?.status == 2 || dataAll?.status == 3) && isInRange && "border-2 border-[#C2F9F9] bg-[#F6F6F7] text-[#D3D3D3] hover:text-[#D3D3D3]"}
-                ${(dataAll?.status == 2 || dataAll?.status == 3) && !isEarlier && isInRange && "border-2 border-[#C2F9F9] bg-[#F6F6F7] text-[#D3D3D3] hover:text-[#D3D3D3]"}
-                ${(dataAll?.status == 2 || dataAll?.status == 3) && !isEarlier && !isPicked && "bg-[#F6F6F7] text-[#D3D3D3] hover:bg-[#F6F6F7]/80 hover:text-[#D3D3D3]"}
-                ${(dataAll?.status == 2 || dataAll?.status == 3) && !isEarlier && isPicked && "border-2 border-[#2FB9BD] bg-[#F6F6F7] text-[#D3D3D3] hover:bg-[#F6F6F7]/80 hover:text-[#D3D3D3]"}
-                hover:bg-[#2FB9BD]/80 hover:text-white rounded-[2px] flex flex-col justify-center items-center w-full h-12 p-2 cursor-pointer group
-            `}
+                 ${isPicked && (dayDataApi?.status != 2 || dayDataApi?.status != 3) && "bg-[#2FB9BD]  hover:bg-[#2FB9BD]/80 text-white hover:text-white cursor-pointer"} 
+                 ${isPicked && (dayDataApi?.status == 2 || dayDataApi?.status == 3) && " !text-[#D3D3D3] border-2 border-[#2FB9BD] hover:!text-[#D3D3D3] bg-[#F6F6F7] hover:bg-[#F6F6F7]/80"}
+                ${isInRange && (dayDataApi?.status != 2 || dayDataApi?.status != 3) && " bg-[#C2F9F9] text-[#2FB9BD] hover:bg-[#2FB9BD] hover:text-white"}
+                ${isInRange && (dayDataApi?.status == 2 || dayDataApi?.status == 3) && " text-[#D3D3D3] hover:!text-[#D3D3D3] border-2 border-[#C2F9F9] bg-[#F6F6F7] hover:!bg-[#F6F6F7]/80"}
+                ${!isInRange && (dayDataApi?.status == 2 || dayDataApi?.status == 3) && " text-[#D3D3D3] hover:text-[#D3D3D3] bg-[#F6F6F7]"}
+                ${isEarlier && !isInRange && (dayDataApi?.status != 2 || dayDataApi?.status != 3) && "!cursor-default text-slate-400"}
+                ${!isEarlier && !isInRange && (dayDataApi?.status != 2 || dayDataApi?.status != 3) && "hover:bg-[#2FB9BD]/80 hover:text-white"}
+                ${!isEarlier && !isInRange && (dayDataApi?.status == 2 || dayDataApi?.status == 3) && "text-[#D3D3D3] bg-[#F6F6F7] hover:!text-[#D3D3D3] hover:!bg-[#F6F6F7]"}
+                rounded-[2px] flex flex-col justify-center items-center w-full h-12 p-2 cursor-pointer group`}
                 >
                     <div className='3xl:text-[15px] text-sm font-medium'>
                         {dayData.day}
                     </div>
                     {
-                        isEarlier || (dataAll?.status == 2 && !isEarlier) || (dataAll?.status == 2 && !isEarlier && isInRange) ?
+                        isEarlier || (dayDataApi?.status == 2 && !isEarlier) || (dayDataApi?.status == 2 && isEarlier && isInRange) ?
                             null
                             :
-                            <div
-                                className={`
-                                ${isPicked && !isInRange && "text-white group-hover:text-white"}
-                                ${isInRange && "text-[#2FB9BD]"}
-                                ${(dataAll?.status == 2 || dataAll?.status == 3) && !isEarlier && " text-[#D3D3D3] group-hover:text-[#D3D3D3]"}
-                                text-[#2FB9BD] group-hover:text-white
-                                text-[10px] font-normal
-                                 `}
-                            >
+                            <div className={` text-[10px] font-normal`}>
                                 {FormatNumberToThousands(dayData.price)}
                             </div>
                     }

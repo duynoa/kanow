@@ -152,6 +152,10 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
             note_mortgage: res?.data?.note_mortgage,
         },
         surcharge_car: res?.data?.surcharge_car,
+
+        // giờ nhận xe và giờ trả xe
+        hour_back_car: res?.data?.hour_back_car,
+        hour_receive_car: res?.data?.hour_receive_car
     };
     return { customDataDetailCar };
 };

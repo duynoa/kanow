@@ -38,6 +38,7 @@ import { useParams, usePathname } from "next/navigation";
 import { toastCore } from "@/lib/toast";
 import { CalendarCustom } from "../ui/calendarCustom";
 import { getListCalendarPriceMonth } from "@/services/cars/calendar.services";
+import { useDataDetailCar } from "@/hooks/useDataQueryKey";
 
 type Props = {
 }
@@ -48,6 +49,8 @@ export function DialogCalendar({ }: Props) {
 
     const [dateTimeComponent, setDateTimeComponent] = useState<any>()
     const [numberDayComponent, setNumberDayComponent] = useState<any>()
+
+    const { isStateDetailCar } = useDataDetailCar()
 
     const {
         dateReal,
@@ -415,14 +418,37 @@ export function DialogCalendar({ }: Props) {
 
     console.log('statusDate', statusDate);
 
-
     useEffect(() => {
+        function filterDatesByRange(dataCalendar: any[], startDate: any, endDate: any) {
+            return dataCalendar.filter((item: any) => {
+                return item.price_detail.some((detail: any) => {
+                    const date = new Date(detail.date);
+                    return date >= startDate && date <= endDate;
+                });
+            });
+        }
 
+        // Hàm kiểm tra xem có ngày nào trong khoảng thời gian có status là 2 hoặc 3 không
+        function validateDates(dataCalendar: any[], startDate: any, endDate: any) {
+            const filteredDates = filterDatesByRange(dataCalendar, startDate, endDate);
+            return !filteredDates.some((item: any) => {
+                return item.price_detail.some((detail: any) => {
+                    return detail.status == 2 || detail.status == 3;
+                });
+            });
+        }
+        const isValid = validateDates(dataCalendar, dateStart, dateEnd);
+        console.log('isValid', isValid);
 
         setDateTemp(dateReal)
         setNumberDay(numberDayComponent)
         setDateTimeComponent(dateReal)
     }, [slug])
+
+    useEffect(() => {
+      
+    }, [dateStart,dateEnd])
+    
 
     const isSubmitAllowed = (from: Date | string, to: Date | string): boolean => {
         const fromDate = typeof from === 'string' ? parseISO(from) : from;
@@ -485,7 +511,7 @@ export function DialogCalendar({ }: Props) {
     return (
         <Dialog modal open={openDialogCalendar} onOpenChange={handleOpenChangeModal}>
             <DialogOverlay />
-            <DialogContent className="px-0 pb-0 lg:max-w-[800px] md:max-w-[480px] w-fit max-h-[90vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
+            <DialogContent className="px-0 pb-0 lg:max-w-[800px] md:max-w-[480px] w-fit max-h-[95vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
                 <DialogClose
                     onClick={handleOpenChangeModal}
                     className="3xl:size-10 size-8 border border-[#000000] flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-40"
@@ -511,6 +537,7 @@ export function DialogCalendar({ }: Props) {
                         // dataPrice={}
                         />
                     </div>
+
                     <div className='flex flex-row items-center gap-2 px-2 w-full'>
                         <div className='flex flex-col gap-1 w-[50%]'>
                             <Label>Giờ nhận xe</Label>
@@ -570,8 +597,46 @@ export function DialogCalendar({ }: Props) {
                                 </SelectContent>
                             </Select>
                         </div>
-
                     </div>
+
+                    {
+                        isStateDetailCar?.dataDetailCar?.hour_receive_car && isStateDetailCar?.dataDetailCar?.hour_receive_car.length > 0 &&
+                            isStateDetailCar?.dataDetailCar?.hour_back_car && isStateDetailCar?.dataDetailCar?.hour_back_car.length > 0 ?
+                            <div className='px-2 mt-4'>
+                                <div className='bg-[#EDEDED]/40 flex flex-col p-3 rounded-lg'>
+                                    <div className='flex items-center justify-between w-full'>
+                                        <div className='3xl:text-base text-sm text-[#000000] font-light'>
+                                            Thời gian nhận xe
+                                        </div>
+                                        <div className='3xl:text-base text-sm text-[#000000] font-medium'>
+                                            {isStateDetailCar?.dataDetailCar?.hour_receive_car[0]?.hour_start} - {isStateDetailCar?.dataDetailCar?.hour_receive_car[0]?.hour_end}
+                                        </div>
+                                    </div>
+                                    <div className='flex items-center justify-between w-full'>
+                                        <div className='3xl:text-base text-sm text-[#000000] font-light'>
+                                            Thời gian trả xe
+                                        </div>
+                                        <div className='3xl:text-base text-sm text-[#000000] font-medium'>
+                                            {isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_start} - {isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_end}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            :
+                            null
+                    }
+
+                    {
+                        statusDate == 2 || statusDate == 3 ?
+                            <div className='px-2 mt-4'>
+                                <div className='3xl:text-base text-sm font-normal text-[#FF0000]'>
+                                    * Xe bận trong khoảng thời gian trên. Vui lòng đặt xe khác hoặc thay đổi lịch trình thích hợp.
+                                </div>
+                            </div>
+                            :
+                            null
+                    }
+
                 </div>
 
                 <div className='flex items-center justify-between border-t drop-shadow-md py-6 px-4 mt-10 bg-white'>
@@ -593,7 +658,7 @@ export function DialogCalendar({ }: Props) {
                         </Button>
                     </div>
                 </div>
-            </DialogContent>
-        </Dialog>
+            </DialogContent >
+        </Dialog >
     )
 }

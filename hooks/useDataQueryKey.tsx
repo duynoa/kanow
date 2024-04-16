@@ -1,4 +1,5 @@
 import {
+    IInitialStateDetailCar,
     IInitialStateInfoRentalCar,
     IInitialStatePayment,
     IInitialStatePolicy
@@ -6,6 +7,101 @@ import {
 import { addDays, setHours, setMinutes } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 import { create } from 'zustand';
+
+// data detail car tự lái
+interface IStateDetailCar {
+    isStateDetailCar: IInitialStateDetailCar;
+    queryKeyIsStateDetailCar: (key: Partial<IInitialStateDetailCar>) => void;
+}
+
+const isStateDetailCar: IInitialStateDetailCar = {
+    dataDetailCar: {
+        id: "",
+        address: "",
+        full_address: "",
+        image_car: [],
+        car_owner: {
+            avatar: "",
+            fullname: "",
+            id: "",
+        },
+        type: {
+            delivery_car: false,
+            book_car_flash: false,
+            mortgage: false,
+            transmission_search: "",
+        },
+        favorite_car: false,
+        name_car: "",
+        point_star: 0,
+        total_trip: 0,
+        price: {
+            percent_deposit: 0,
+            price_before_promotion: 0,
+            price_after_promotion: 0,
+
+            rent_cost: 0,
+            rent_cost_day: 0,
+            price_insurance_day: 0,
+            temp_total_amount: 0,
+            total_amount: 0,
+
+            max_money_discount: 0,
+            // tiền đặt cọc
+            price_depoist: 0,
+            // số ngày
+            number_day: 0,
+            // thanh toán khi nhận xe
+            cash_on_delivery: 0
+        },
+        promotion: [],
+        trait_car: {
+            number_seat: 0,
+            number_car: "",
+            type_fuel: "",
+            year_manu: "",
+        },
+        describe_car: "",
+        other_amenities_car: [],
+        info_review_car: {
+            review_car: [],
+            star: 0,
+            total_review_car: 0,
+        },
+        collateral_car: {
+            mortgage: 0,
+            mortgage_policy_car: "",
+            note_mortgage: "",
+        },
+        surcharge_car: [],
+        hour_back_car: [],
+        hour_receive_car: []
+    },
+    infoPromotion: {
+        selectPromotion: "0",
+        activePromotion: null,
+    },
+    listCarsRelated: [],
+    reportCar: {
+        listReportCar: [],
+        selectReportCar: "",
+        contentReportCar: ""
+    },
+    onSuccess: {
+        onSuccessPage: false
+    },
+};
+
+export const useDataDetailCar = create<IStateDetailCar>((set) => ({
+    isStateDetailCar,
+    queryKeyIsStateDetailCar: (key) => set((state) => ({
+        isStateDetailCar: {
+            ...state.isStateDetailCar,
+            ...key
+        }
+    }
+    )),
+}));
 
 // data request rental Car
 interface IStateRentalCar {
