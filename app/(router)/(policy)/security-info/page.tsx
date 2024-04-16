@@ -15,11 +15,11 @@ const SecurityInfo = (props: Props) => {
                 <div className='2xl:text-base text-sm text-[#000000] font-light space-y-2'>
                     <div className='flex flex-col gap-2'>
                         <span>
-                            Chào mừng bạn đến với nền tảng Mioto.vn (bao gồm website và ứng dụng di động) được được vận hành bởi Công ty Cổ Phần Mioto Asia. Mioto thông báo đến bạn và cần sự đồng ý và cho phép của bạn để xử lý, thu thập và lưu trữ dữ liệu của bạn nhằm mục đích cung cấp các dịch vụ cho bạn trong suốt quá trình sử dụng Website và Ứng dụng di động, chúng tôi cam kết nghiêm túc thực hiện trách nhiệm của mình liên quan đến bảo mật thông tin cá nhân và tôn trọng quyền riêng tư của tất cả người dùng trên nền tảng.
+                            Chào mừng bạn đến với nền tảng Kanow.vn (bao gồm website và ứng dụng di động) được được vận hành bởi Công ty Cổ Phần Kanow Asia. Kanow thông báo đến bạn và cần sự đồng ý và cho phép của bạn để xử lý, thu thập và lưu trữ dữ liệu của bạn nhằm mục đích cung cấp các dịch vụ cho bạn trong suốt quá trình sử dụng Website và Ứng dụng di động, chúng tôi cam kết nghiêm túc thực hiện trách nhiệm của mình liên quan đến bảo mật thông tin cá nhân và tôn trọng quyền riêng tư của tất cả người dùng trên nền tảng.
                         </span>
 
                         <span>
-                            Mioto là một sàn giao dịch thương mại điện tử (“Sàn TMĐT) đã được đăng ký với Bộ Công Thương. Người dùng trên sàn bao gồm người bán (chủ xe), người mua (khách thuê) và các bên khác sử dụng dịch vụ của chúng tôi.
+                            Kanow là một sàn giao dịch thương mại điện tử (“Sàn TMĐT) đã được đăng ký với Bộ Công Thương. Người dùng trên sàn bao gồm người bán (chủ xe), người mua (khách thuê) và các bên khác sử dụng dịch vụ của chúng tôi.
                         </span>
 
                         <span>
@@ -55,7 +55,7 @@ const SecurityInfo = (props: Props) => {
 
             <div className='flex flex-col gap-2'>
                 <div className='2xl:text-2xl text-xl text-[#000000] font-medium'>
-                    2. Khi nào Mioto sẽ thu thập dữ liệu cá nhân?
+                    2. Khi nào Kanow sẽ thu thập dữ liệu cá nhân?
                 </div>
                 <div className='2xl:text-base text-sm text-[#000000] font-light space-y-2'>
                     <div className='flex flex-col gap-2'>
@@ -70,7 +70,7 @@ const SecurityInfo = (props: Props) => {
                                 <li>Khi bạn ký kết bất kỳ thỏa thuận nào hoặc cung cấp các tài liệu hoặc thông tin khác liên quan đến tương tác giữa bạn với chúng tôi/khách hàng của chúng tôi, hoặc khi bạn sử dụng các sản phẩm và dịch vụ của chúng tôi</li>
                                 <li>Khi bạn tương tác với chúng tôi, chẳng hạn như thông qua các cuộc gọi điện thoại (có thể được ghi âm lại), thư từ, fax, gặp gỡ trực tiếp, các nền ứng dụng truyền thông xã hội và email</li>
                                 <li>Khi bạn sử dụng các dịch vụ điện tử của chúng tôi, hoặc tương tác với chúng tôi qua Nền tảng hoặc Trang Web hoặc Các Dịch Vụ của chúng tôi. Trường hợp này bao gồm thông qua tập tin cookie mà chúng tôi có thể triển khai khi bạn tương tác với các Nền tảng hoặc Trang Web của chúng tôi</li>
-                                <li>Khi bạn liên kết tài khoản Mioto với tài khoản mạng xã hội của bạn hoặc các tài khoản bên ngoài khác hoặc sử dụng các tính năng mạng xã hội khác, phù hợp với các chính sách của nhà cung cấp</li>
+                                <li>Khi bạn liên kết tài khoản Kanow với tài khoản mạng xã hội của bạn hoặc các tài khoản bên ngoài khác hoặc sử dụng các tính năng mạng xã hội khác, phù hợp với các chính sách của nhà cung cấp</li>
                                 <li>Khi bạn thực hiện các giao dịch thông qua Dịch vụ của chúng tôi</li>
                                 <li>Khi bạn cung cấp ý kiến phản hồi hoặc gửi khiếu nại cho chúng tôi</li>
                                 <li>Khi bạn đăng ký tham gia một cuộc thi</li>
@@ -105,7 +105,7 @@ const SecurityInfo = (props: Props) => {
                         </div>
 
                         <div>
-                            Các thành viên sẽ tự chịu trách nhiệm về bảo mật và lưu giữ mọi hoạt động sử dụng dịch vụ dưới tên đăng ký, mật khẩu và hộp thư điện tử của mình. Ngoài ra, thành viên có trách nhiệm thông báo kịp thời cho Mioto về những hành vi sử dụng trái phép, lạm dụng, vi phạm bảo mật, lưu giữ tên đăng ký và mật khẩu của bên thứ ba để có biện pháp giải quyết phù hợp.
+                            Các thành viên sẽ tự chịu trách nhiệm về bảo mật và lưu giữ mọi hoạt động sử dụng dịch vụ dưới tên đăng ký, mật khẩu và hộp thư điện tử của mình. Ngoài ra, thành viên có trách nhiệm thông báo kịp thời cho Kanow về những hành vi sử dụng trái phép, lạm dụng, vi phạm bảo mật, lưu giữ tên đăng ký và mật khẩu của bên thứ ba để có biện pháp giải quyết phù hợp.
                         </div>
 
                         <div>
@@ -124,7 +124,7 @@ const SecurityInfo = (props: Props) => {
                         </div>
 
                         <div>
-                            Mioto thu thập thông tin thành viên để:
+                            Kanow thu thập thông tin thành viên để:
                         </div>
 
                         <div>
@@ -134,14 +134,14 @@ const SecurityInfo = (props: Props) => {
                                 <li>Hỗ trợ việc đặt xe và cung cấp xe cho Khách hàng</li>
                                 <li>Cung cấp các dịch vụ đến thành viên</li>
                                 <li>Để xử lý các đơn đặt hàng bạn gửi qua Nền tảng</li>
-                                <li>Gửi các thông báo về các hoạt động trao đổi thông tin giữa thành viên và Mioto bao gồm nhưng không giới hạn: chương trình khuyến mại, khảo sát ý kiến, tiếp thị và quảng cáo sản phẩm</li>
+                                <li>Gửi các thông báo về các hoạt động trao đổi thông tin giữa thành viên và Kanow bao gồm nhưng không giới hạn: chương trình khuyến mại, khảo sát ý kiến, tiếp thị và quảng cáo sản phẩm</li>
                                 <li>Liên lạc với bạn để xử lý và trả lời các truy vấn, phản hồi, khiếu nại hoặc tranh chấp của bạn, cho dù trực tiếp hoặc thông qua bất kỳ nhà cung cấp dịch vụ khách hàng được thuê ở bên ngoài nào</li>
                                 <li>Để lập số liệu thống kê và nghiên cứu đáp ứng yêu cầu báo cáo và/hoặc duy trì sổ sách nội bộ hoặc theo quy định</li>
                                 <li>Để thực hiện quy trình tìm hiểu và xác minh hoặc các hoạt động sàng lọc khác (bao gồm nhưng không giới hạn kiểm tra lý lịch) tuân thủ các nghĩa vụ theo quy định pháp luật hoặc cơ quan nhà nước có thẩm quyền hoặc các thủ tục kiểm soát rủi ro của chúng tôi, có thể được pháp luật yêu cầu hoặc có thể đã được chúng tôi áp dụng</li>
                                 <li>Ngăn ngừa các hoạt động phá hủy tài khoản người dùng của thành viên hoặc các hoạt động giả mạo thành viên</li>
                                 <li>Để ngăn chặn hoặc điều tra bất kỳ hoạt động gian lận thực tế hoặc bị nghi ngờ nào đối với Điều khoản dịch vụ của chúng tôi, gian lận, các hành vi phi pháp, thiếu sót hay hành vi sai trái nào, cho dù có liên quan đến việc bạn sử dụng Các Dịch Vụ của chúng tôi hay không hay bất kỳ vấn đề nào phát sinh từ quan hệ của bạn với chúng tôi;Phạm vi sử dụng thông tin</li>
                                 <li>Để bảo vệ quyền lợi của công ty và những đối tác của công ty: Chúng tôi chỉ đưa ra những thông tin cá nhân của khách hàng khi chắc chắn rằng những thông tin đó có thể bảo vệ được quyền lợi, tài sản của công ty chúng tôi và những đối tác liên quan. Những thông tin này sẽ được tiết lộ một cách hợp pháp theo Pháp luật Việt Nam.</li>
-                                <li>Trong trường hợp có yêu cầu của pháp luật: Mioto có trách nhiệm hợp tác cung cấp thông tin cá nhân thành viên khi có yêu cầu từ cơ quan tư pháp bao gồm: Viện kiểm sát, tòa án, cơ quan thuế, cơ quan công an điều tra liên quan đến hành vi vi phạm pháp luật nào đó của thành viên. Ngoài ra, không ai có quyền xâm phạm vào thông tin cá nhân của thành viên.</li>
+                                <li>Trong trường hợp có yêu cầu của pháp luật: Kanow có trách nhiệm hợp tác cung cấp thông tin cá nhân thành viên khi có yêu cầu từ cơ quan tư pháp bao gồm: Viện kiểm sát, tòa án, cơ quan thuế, cơ quan công an điều tra liên quan đến hành vi vi phạm pháp luật nào đó của thành viên. Ngoài ra, không ai có quyền xâm phạm vào thông tin cá nhân của thành viên.</li>
                             </ul>
                             <span>
                                 Các trường hợp trên không nhằm mục đích liệt kê đầy đủ các trường hợp và chỉ đưa ra một số trường hợp phổ biến về thời điểm dữ liệu cá nhân của bạn có thể bị thu thập.

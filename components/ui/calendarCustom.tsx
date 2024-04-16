@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
-import { format, isWithinInterval } from 'date-fns';
+import { differenceInDays, format, getMonth, getYear, isAfter, isBefore, isSameDay, isSameMonth, isSameYear, isWithinInterval } from 'date-fns';
 import { DateFormatter, DayPicker, Modifiers, Months } from 'react-day-picker';
 import { vi } from "date-fns/locale";
 import { FormatNumberToThousands } from "../format/FormatNumber";
@@ -20,20 +20,27 @@ function CalendarCustom({
     className,
     classNames,
     showOutsideDays = true,
-    dateStart,
-    dateEnd,
     ...props
-}: CalendarProps & { priceData: any[] } & { dateStart: any, dateEnd: any }) {
+}: CalendarProps) {
     const {
         dateReal,
         dateTemp,
+        dateStart,
+        dateEnd,
         numberDay,
         openDialogCalendar,
         setDateReal,
         setDateTemp,
+        setDateStart,
+        setDateEnd,
         setOpenDialogCalendar,
-        setNumberDay
+        setNumberDay,
+        dataCalendar,
+        setDataCalendar,
+        statusDate,
+        setStatusDate
     } = useDialogCalendar()
+
 
 
     const data = [
@@ -958,11 +965,11 @@ function CalendarCustom({
         const currentYear = currentDate.getFullYear(); // Lấy năm hiện tại
 
         // Tạo dữ liệu cho các tháng từ data
-        const monthData = data.filter(item => +item.year === currentYear);
+        const monthData = dataCalendar.filter(item => +item.year === currentYear);
 
         const customDataDate = monthData.map((item) => ({
             ...item,
-            price_detail: item.price_detail.map((itemDate) => ({
+            price_detail: item.price_detail.map((itemDate: any) => ({
                 ...itemDate,
                 month: item.month,
                 year: item.year
@@ -1007,7 +1014,7 @@ function CalendarCustom({
             }
 
             // Render các ngày trong tháng
-            monthItem.price_detail.forEach((dayData, i) => {
+            monthItem.price_detail.forEach((dayData: any, i: any) => {
                 const currentDate = new Date(dayData.date);
                 const dayOfWeek = currentDate.getDay();
                 // console.log('currentDate', currentDate);
@@ -1019,6 +1026,7 @@ function CalendarCustom({
                             date={currentDate}
                             dataAll={dayData}
                             dayOfWeek={dayOfWeek}
+                            index={i}
                         />
                     </div>
                 );
@@ -1058,73 +1066,11 @@ function CalendarCustom({
                 </SwiperSlide>
             );
         });
-        // const monthComponents = customDataDate.map((monthItem, index) => {
-        //     const month: any = monthItem.month; // Tháng
-        //     const daysInMonth = monthItem.price_detail.length; // Số ngày trong tháng
-
-        //     // Tạo các component cho từng ngày trong tháng
-        //     const dayComponents: any[] = [];
-        //     const daysOfWeek = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
-        //     // Tìm thứ của ngày đầu tiên trong tháng
-        //     const firstDayOfMonth = new Date(currentYear, month - 1, 1).getDay(); // Lưu ý: month phải trừ đi 1 vì months trong JavaScript bắt đầu từ 0 (tháng 1 là tháng 0)
-
-
-        //     // Thêm các ngày trống vào trước ngày đầu tiên của tháng
-        //     for (let i = 0; i < firstDayOfMonth - 1; i++) { // Trừ đi 1 vì mảng daysOfWeek bắt đầu từ index 0, không phải index 1
-        //         dayComponents.push(
-        //             <div key={`empty-${i}`} className='col-span-1' />
-        //         );
-        //     }
-
-
-        //     monthItem.price_detail.forEach((dayData, i) => {
-        //         const currentDate = new Date(dayData.date);
-        //         const dayOfWeek = currentDate.getDay();
-        //         // console.log('currentDate', currentDate);
-
-        //         dayComponents.push(
-        //             <div key={`date-${i}`} className='col-span-1'>
-        //                 <CustomDay
-        //                     date={currentDate}
-        //                     dataAll={dayData}
-        //                     dayOfWeek={dayOfWeek}
-        //                 />
-        //             </div>
-        //         );
-        //     });
-
-
-        //     console.log('firstDayOfMonth', firstDayOfMonth);
-
-
-        //     return (
-        //         <SwiperSlide key={index} className="flex flex-col gap-2 p-0 max-w-[400px]">
-        //             <div className="w-full text-center text-base font-bold mt-4 mb-2">
-        //                 Tháng {month}, {currentYear}
-        //             </div>
-        //             <div className="Month-grid grid grid-cols-7 text-center text-sm font-semibold">
-        //                 {/* Render các ngày trong tuần */}
-        //                 {
-        //                     daysOfWeek.map((item, index) => (
-        //                         <div key={`index-week-${index}`}>
-        //                             {item}
-        //                         </div>
-        //                     ))
-        //                 }
-        //             </div>
-        //             {/* Render các ngày trong tháng */}
-        //             <div className='grid grid-cols-7 items-center'>
-        //                 {dayComponents}
-        //             </div>
-        //         </SwiperSlide>
-        //     );
-        // });
-
         return (
             <>
                 <Swiper
                     slidesPerView={2}
-                    spaceBetween={30}
+                    spaceBetween={35}
                     modules={[Pagination, A11y]}
                     breakpoints={{
                         320: {
@@ -1163,18 +1109,7 @@ function CalendarCustom({
         );
     };
     // Component Day tùy chỉnh
-    const CustomDay = ({ date, dataAll, dayOfWeek, ...props }: any) => {
-        // const dayData = data.flatMap(item => item.price_detail).find(d => new Date(d.date).toDateString() === date.toDateString());
-        const dayData = data.flatMap(item => item.price_detail).find(d => d.date === date.toISOString().split('T')[0]);
-
-        const dateStartYear = dateStart?.getFullYear();
-        const dateStartMonth = dateStart?.getMonth();
-        const dateStartDay = dateStart?.getDate();
-
-        const dateEndYear = dateEnd?.getFullYear();
-        const dateEndMonth = dateEnd?.getMonth();
-        const dateEndDay = dateEnd?.getDate();
-
+    const CustomDay = ({ date, dataAll, dayOfWeek, index, ...props }: any) => {
         const daysBetweenDates = (startDate: Date, endDate: Date): number => {
             const oneDay = 24 * 60 * 60 * 1000;
             const firstDate = new Date(startDate);
@@ -1182,7 +1117,6 @@ function CalendarCustom({
             const diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / oneDay));
             return diffDays;
         };
-
         const datesBetweenDates = (startDate: Date, endDate: Date): Date[] => {
             const dates: Date[] = [];
             const numberOfDays = daysBetweenDates(startDate, endDate);
@@ -1190,6 +1124,7 @@ function CalendarCustom({
             for (let i = 1; i < numberOfDays; i++) {
                 const date = new Date(startDate);
                 date.setDate(startDate.getDate() + i);
+                date.setHours(0, 0, 0, 0);
                 dates.push(date);
             }
 
@@ -1202,12 +1137,7 @@ function CalendarCustom({
             });
         };
 
-        // const handleClickChangeDate = (item: any) => {
-        //     console.log('item :', item);
-
-        // }
-
-        const handleClickChangeDate = (item: any) => {
+        const handleChangeDate = (item: any) => {
             const date = new Date(Number(item?.year), Number(item?.month) - 1, item?.day);
 
             const dateYear = date ? date?.getFullYear() : 0;
@@ -1222,28 +1152,78 @@ function CalendarCustom({
             const dateEndMonth = dateEnd ? dateEnd?.getMonth() : 0;
             const dateEndDay = dateEnd ? dateEnd?.getDate() : 0;
 
-            console.log('date', date);
+            const dayDifferenceDateStart = differenceInDays(date, dateStart ? dateStart : "");
+            const dayDifferenceDateStartAnDateEnd = differenceInDays(dateStart ? dateStart : "", dateEnd ? dateEnd : "");
 
+            // Check if the new to date is different from the current to date
+            // console.log('dateYear', dateYear);
+            // console.log('dateStartYear', dateStartYear);
+            // console.log('dateMonth', dateMonth);
+            // console.log('dateStartMonth', dateStartMonth);
+            // console.log('dateDay', dateDay);
+            // console.log('dateStartDay', dateStartDay);
+            // console.log('dateStart', dateStart);
+            // console.log('dateEnd', dateEnd);
 
-            // if (!dateStart) {
-            //     setDateStart(date);
-            // } else if (!dateEnd) {
-            //     if (dateYear < dateStartYear || (dateYear === dateStartYear && dateMonth < dateStartMonth) || (dateYear === dateStartYear && dateMonth === dateStartMonth && dateDay < dateStartDay)) {
-            //         setDateStart(date);
-            //     } else {
-            //         setDateEnd(date);
-            //     }
-            // } else if (dateStart && dateEnd) {
-            //     setDateStart(date);
-            //     setDateEnd(null);
-            // } else {
-            // }
+            // kiểm tra nếu cùng ngày hoặc ngày sau ngày dateStart
+            // cùng tháng và sau ngày dateStart
+            // lớn hơn tháng và sau ngày dateStart
+            const isSameInSameYearAndMonth = (date: any, compareDate: any) => {
+                return (
+                    isSameYear(date, compareDate) &&
+                    isSameMonth(date, compareDate) &&
+                    isSameDay(date, compareDate)
+                )
+            };
+            const isAfterInSameYearAndMonth = (date: any, compareDate: any) => {
+                return (
+                    (isSameYear(date, compareDate) || (getYear(date) > getYear(compareDate))) &&
+                    ((isSameMonth(date, compareDate) || (getMonth(date) > getMonth(compareDate))) &&
+                        isAfter(date, compareDate))
+                )
+            };
+            const isBeforeInSameYearAndMonth = (date: any, compareDate: any) => {
+                return (
+                    (isSameYear(date, compareDate) || (getYear(date) < getYear(compareDate))) &&
+                    ((isSameMonth(date, compareDate) || (getMonth(date) < getMonth(compareDate))) &&
+                        isBefore(date, compareDate))
+                )
+            };
+            setStatusDate(dataAll.status)
+
+            if (dateStart && dateEnd) {
+                if (isAfterInSameYearAndMonth(date, dateStart) && !isSameDay(dateEnd ? dateEnd : "", date)) {
+                    // If it's different, keep the time of the current to dateReal and update the dateReal
+                    date.setHours(dateEnd?.getHours(), dateEnd?.getMinutes(), dateEnd?.getSeconds());
+                    setDateEnd(date)
+                } else {
+                    // If it's different, keep the time of the current to dateReal and update the dateReal
+                    date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+                    if (isSameDay(date, dateStart) || isSameDay(date, dateEnd)) {
+                        setDateStart(date)
+                        setDateEnd(undefined)
+                    } else {
+                        setDateStart(date)
+                    }
+                }
+            } else if (dateStart && !dateEnd) {
+                date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+                if (isBeforeInSameYearAndMonth(date, dateStart)) {
+                    setDateStart(date)
+                } else if (isAfterInSameYearAndMonth(date, dateStart)) {
+                    setDateEnd(date)
+                } else {
+                    setDateEnd(date)
+                }
+            } else {
+                console.log('check123');
+            }
         };
-
 
         const datesInBetween = dateStart && dateEnd ? datesBetweenDates(dateStart, dateEnd) : [];
 
         const firstDate = new Date(Number(dataAll?.year), Number(dataAll?.month) - 1, dataAll.day)
+        const dayData = dataCalendar.flatMap(item => item.price_detail).find(d => d.date == date.toISOString().split('T')[0]);
 
         const secondDate = new Date();
         const firstYear = firstDate.getFullYear();
@@ -1253,6 +1233,15 @@ function CalendarCustom({
         const secondMonth = secondDate.getMonth();
         const secondDay = secondDate.getDate();
 
+
+        const dateStartYear = dateStart?.getFullYear();
+        const dateStartMonth = dateStart?.getMonth();
+        const dateStartDay = dateStart?.getDate();
+
+        const dateEndYear = dateEnd?.getFullYear();
+        const dateEndMonth = dateEnd?.getMonth();
+        const dateEndDay = dateEnd?.getDate();
+
         // ngày phía trước
         const isEarlier = dataAll?.day !== -1 ?
             firstYear < secondYear ||
@@ -1261,57 +1250,70 @@ function CalendarCustom({
             :
             false;
 
-
-        // điều kiện vẫn còn lỗi!(đã chọn)
-        const isPicked = dataAll?.day !== -1 ?
-            (firstYear === dateStartYear || firstYear === dateEndYear) &&
-            (firstMonth === dateStartMonth || firstMonth === dateEndMonth) &&
-            (firstDay === dateStartDay || firstDay === dateEndDay)
-            :
-            false;
+        const isPicked = dataAll?.day !== -1 ? (
+            (firstYear === dateStartYear && firstMonth === dateStartMonth && firstDay === dateStartDay) ||
+            (firstYear === dateEndYear && firstMonth === dateEndMonth && firstDay === dateEndDay) ||
+            ((dateStartYear && dateEndYear && dateStartMonth && dateEndMonth && dateStartDay && dateEndDay) &&
+                (firstYear === dateStartYear && firstYear === dateEndYear &&
+                    firstMonth === dateStartMonth && firstMonth === dateEndMonth &&
+                    firstDay >= dateStartDay && firstDay <= dateEndDay))
+        ) : false;
 
         // ngày trùng khi click chọn 1 ngày
         const isMatched = dataAll?.day !== -1 ?
-            firstYear === dateStartYear &&
-            firstYear === dateEndYear &&
-            firstMonth === dateStartMonth &&
-            firstMonth === dateEndMonth &&
-            firstDay === dateStartDay &&
-            firstDay === dateEndDay
+            firstYear == dateStartYear &&
+            firstYear == dateEndYear &&
+            firstMonth == dateStartMonth &&
+            firstMonth == dateEndMonth &&
+            firstDay == dateStartDay &&
+            firstDay == dateEndDay
             :
             false;
 
         // ngày trong khoảng cách
-        const isInRange = checkDateInBetween(firstDate, datesInBetween);
-
+        const isInRange = dataAll?.day !== -1 && (dateStart && dateEnd) && (
+            (firstDate >= dateStart && firstDate <= dateEnd) ||
+            (secondDate >= dateStart && secondDate <= dateEnd) ||
+            (firstDate <= dateStart && secondDate >= dateEnd)
+        ) && checkDateInBetween(firstDate, datesInBetween);
 
         if (dayData) {
             return (
                 <div
-                    onClick={isEarlier ? () => { } : () => handleClickChangeDate(dataAll)}
+                    onClick={isEarlier ? () => { } : () => handleChangeDate(dataAll)}
                     className={`
-                    ${isPicked && "bg-[#2FB9BD] text-white hover:bg-[#2FB9BD]/80 cursor-pointer"} 
-                    ${isEarlier && "text-slate-400 cursor-default"} 
-                    ${!isPicked && !isEarlier && "hover:bg-[#F5F5F4] cursor-pointer"}
-                     rounded-sm flex flex-col justify-center items-center w-10 h-10 p-2 m-1`
-                    }
+                ${isPicked && !isInRange && "bg-[#2FB9BD] text-white hover:bg-[#2FB9BD]/80 hover:text-white cursor-pointer"} 
+                ${isEarlier && "text-slate-400 cursor-default hover:bg-transparent  hover:text-slate-400 "} 
+                ${isInRange && "bg-[#C2F9F9] text-[#2FB9BD]"}
+                ${(dataAll?.status == 2 || dataAll?.status == 3) && isInRange && "border-2 border-[#C2F9F9] bg-[#F6F6F7] text-[#D3D3D3] hover:text-[#D3D3D3]"}
+                ${(dataAll?.status == 2 || dataAll?.status == 3) && !isEarlier && isInRange && "border-2 border-[#C2F9F9] bg-[#F6F6F7] text-[#D3D3D3] hover:text-[#D3D3D3]"}
+                ${(dataAll?.status == 2 || dataAll?.status == 3) && !isEarlier && !isPicked && "bg-[#F6F6F7] text-[#D3D3D3] hover:bg-[#F6F6F7]/80 hover:text-[#D3D3D3]"}
+                ${(dataAll?.status == 2 || dataAll?.status == 3) && !isEarlier && isPicked && "border-2 border-[#2FB9BD] bg-[#F6F6F7] text-[#D3D3D3] hover:bg-[#F6F6F7]/80 hover:text-[#D3D3D3]"}
+                hover:bg-[#2FB9BD]/80 hover:text-white rounded-[2px] flex flex-col justify-center items-center w-full h-12 p-2 cursor-pointer group
+            `}
                 >
                     <div className='3xl:text-[15px] text-sm font-medium'>
                         {dayData.day}
                     </div>
                     {
-                        !isEarlier ?
-                            <div className={`${isPicked ? "text-white" : "text-[#2FB9BD]"} text-[10px] font-normal`}>
+                        isEarlier || (dataAll?.status == 2 && !isEarlier) || (dataAll?.status == 2 && !isEarlier && isInRange) ?
+                            null
+                            :
+                            <div
+                                className={`
+                                ${isPicked && !isInRange && "text-white group-hover:text-white"}
+                                ${isInRange && "text-[#2FB9BD]"}
+                                ${(dataAll?.status == 2 || dataAll?.status == 3) && !isEarlier && " text-[#D3D3D3] group-hover:text-[#D3D3D3]"}
+                                text-[#2FB9BD] group-hover:text-white
+                                text-[10px] font-normal
+                                 `}
+                            >
                                 {FormatNumberToThousands(dayData.price)}
                             </div>
-                            :
-                            null
                     }
                 </div>
             );
         }
-        console.log('date', date);
-
 
         return (
             <div>

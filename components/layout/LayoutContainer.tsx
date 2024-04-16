@@ -194,9 +194,6 @@ const LayoutContainer = ({
         }
     }, [generalKey, isStateInfoRentalCar, queryKeyIsStateInfoRentalCar]);
 
-    console.log('isState info L', isStateInfoRentalCar);
-
-
     return (
         <html lang="en">
             <body className={`${inter.className} w-full bg-[#FCFDFD]`}>

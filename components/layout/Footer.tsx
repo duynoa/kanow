@@ -139,17 +139,17 @@ const Footer = () => {
                         <div className='text-[#B4B8C5] 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal'>
                             Tổng đài hỗ trợ
                         </div>
-                        <div className='text-[#383A43] 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal'>
-                            {FormatPhoneNumber('0843999999')}
-                        </div>
+                        <Link href="tel:1900252228" className='text-[#383A43] hover:text-[#383A43]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal'>
+                            {FormatPhoneNumber('1900252228')}
+                        </Link>
                     </div>
                     <div className='mt-1'>
                         <div className='text-[#B4B8C5] 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal'>
                             Hòm thư
                         </div>
-                        <div className='text-[#383A43] 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal'>
-                            kanow.vn@gmail.com
-                        </div>
+                        <Link href="mailto:contact@kanow.vn" className='text-[#383A43] hover:text-[#383A43]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal'>
+                            contact@kanow.vn
+                        </Link>
                     </div>
                 </div>
                 <div className='col-span-1' />
@@ -226,13 +226,13 @@ const Footer = () => {
             </div>
             <div className='custom-container grid lg:grid-cols-12 grid-cols-1 lg:gap-2 gap-6 pt-6 items-center'>
                 <div className='lg:col-span-2 col-span-1 w-full flex flex-col 2xl:gap-5 gap-3'>
-                    <Image
+                    {/* <Image
                         alt='logo'
                         src="/logo/logo_register.png"
                         width={800}
                         height={600}
                         className='w-full h-auto object-contain'
-                    />
+                    /> */}
                 </div>
                 <div className='col-span-1' />
                 <div className='lg:col-span-5 col-span-1 w-full flex flex-col'>

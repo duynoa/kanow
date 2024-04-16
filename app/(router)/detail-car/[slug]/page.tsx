@@ -38,6 +38,7 @@ import { IInitialStateDetailCar } from '@/types/Initial/IInitial'
 import { getDataPolicy } from '@/services/cars/policy.services'
 import { useDataPolicy } from '@/hooks/useDataQueryKey'
 import moment from 'moment'
+import { getListCalendarPriceMonth } from '@/services/cars/calendar.services'
 
 type Props = {
     params: {
@@ -53,9 +54,10 @@ const DetailCar = ({ params }: Props) => {
     const { dataPromotions, setDataPromotions } = useDialogPromotion()
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
     const { queryKeyIsStatePolicy } = useDataPolicy()
-    const { dateReal, numberDay } = useDialogCalendar()
+    const { dateReal, numberDay, setDataCalendar } = useDialogCalendar()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
+    const [slug, setSlug] = useState(params.slug);
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
     const [showSecondHeader, setShowSecondHeader] = useState(false);
 
@@ -193,6 +195,23 @@ const DetailCar = ({ params }: Props) => {
         }
     }
 
+    // fetch lịch detail
+    const fetchDataListCalendarPriceMonth = async () => {
+        try {
+            let dataCar = {
+                car_id: params.slug
+            }
+
+            const { data } = await getListCalendarPriceMonth(dataCar)
+
+            if (data && data.data) {
+                setDataCalendar(data.data)
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
     useEffect(() => {
         const fetchListPromotions = async () => {
             if (dataPromotions.length === 0) {
@@ -241,12 +260,13 @@ const DetailCar = ({ params }: Props) => {
             }
         }
 
+        fetchDataListCalendarPriceMonth()
         fetchDataPolicy()
         fetchDataDetailCar()
         fetchDataListCarsRelated()
         fetchListPromotions()
         fetchListReportCar()
-    }, [params.slug, getCookie])
+    }, [slug, getCookie])
 
     useEffect(() => {
         if (numberDay) {
@@ -390,6 +410,8 @@ const DetailCar = ({ params }: Props) => {
         setIndexImage(index)
         setDataImage(isState?.dataDetailCar?.image_car)
     }
+
+
 
     if (!isMounted) {
         return null

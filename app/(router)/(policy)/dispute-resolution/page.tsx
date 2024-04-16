@@ -17,7 +17,7 @@ const DisputeResolution = (props: Props) => {
 
                         <div className='space-x-1'>
                             <span className='font-semibold'>Bước 1:</span>
-                            <span>Khách hàng khiếu nại về dịch vụ qua số điện thoại 1900 9217 hoặc gửi mail cho Bộ phận Chăm sóc Khách hàng tại địa chỉ support@mioto.vn. Thời gian để Công ty tiếp nhận khiếu nại là 3 ngày kể từ ngày sử dụng dịch vụ hoặc từ ngày phát sinh sự việc.</span>
+                            <span>Khách hàng khiếu nại về dịch vụ qua số điện thoại 1900 9217 hoặc gửi mail cho Bộ phận Chăm sóc Khách hàng tại địa chỉ support@Kanow.vn. Thời gian để Công ty tiếp nhận khiếu nại là 3 ngày kể từ ngày sử dụng dịch vụ hoặc từ ngày phát sinh sự việc.</span>
                         </div>
 
                         <div className='flex flex-col'>
@@ -53,7 +53,7 @@ const DisputeResolution = (props: Props) => {
                                     3b. Chuyển các vấn đề có liên quan cho Chủ xe giải quyết.
                                 </div>
                                 <div>
-                                    Trong thời hạn ba (3) ngày làm việc kể từ khi tiếp nhận thông báo về khiếu nại, Chủ xe có trách nhiệm phối hợp với Mioto để giải quyết, xử lý khiếu nại. Chủ xe sẽ thông báo cho Khách hàng biện pháp xử lý hoặc ủy quyền thông báo cho Công ty.
+                                    Trong thời hạn ba (3) ngày làm việc kể từ khi tiếp nhận thông báo về khiếu nại, Chủ xe có trách nhiệm phối hợp với Kanow để giải quyết, xử lý khiếu nại. Chủ xe sẽ thông báo cho Khách hàng biện pháp xử lý hoặc ủy quyền thông báo cho Công ty.
                                 </div>
                             </div>
                         </div>
