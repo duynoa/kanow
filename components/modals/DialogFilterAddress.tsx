@@ -12,7 +12,6 @@ import { useForm } from "react-hook-form";
 
 import { Badge } from "../ui/badge";
 import { Input } from "../ui/input";
-import { uuidv4 } from "@/lib/uuid";
 import { Button } from "../ui/button";
 import { LuPlane } from "react-icons/lu";
 import { TiLocation } from "react-icons/ti";
@@ -23,13 +22,20 @@ import { useDialogAddress } from "@/hooks/useOpenDialog";
 import SearchAddress from "../searchAddress/SearchAddress";
 import useGoogleApi from "@/services/google/google.services";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
+import useAirportCarDeliveryApi from "@/services/filter/airportCarDelivery.services";
 
 
 type Props = {
 }
 interface IPlace {
-    id: string
-    name: string
+    address: string;
+    created_at: string;
+    id: number;
+    latitude: number;
+    longitude: number;
+    name: string;
+    name_location: string;
+    updated_at: string
 }
 
 export function DialogFilterAddress({ }: Props) {
@@ -37,15 +43,14 @@ export function DialogFilterAddress({ }: Props) {
 
     const { apiGetAddress } = useGoogleApi()
 
+    const { apiGetListAirportCarDelivery } = useAirportCarDeliveryApi()
+
     const {
         openDialogAddress,
         valueAddress,
         setOpenDialogAddress,
         setValueAddress,
-        latitude,
-        longitude,
-        setLatitude,
-        setLongitude } = useDialogAddress()
+        coordinates, setCoordinates, setOnSubmitFilter } = useDialogAddress()
 
     const form = useForm({
         defaultValues: {
@@ -53,46 +58,36 @@ export function DialogFilterAddress({ }: Props) {
         },
     })
 
-    const initialData = [
-        {
-            id: uuidv4(),
-            name: 'Tân sơn nhất',
-        },
-        {
-            id: uuidv4(),
-            name: 'Nội bài',
-        },
-        {
-            id: uuidv4(),
-            name: 'Đà nẵng',
-        },
-        {
-            id: uuidv4(),
-            name: 'Cam ranh',
-        },
-        {
-            id: uuidv4(),
-            name: 'Phú quốc',
-        },
-        {
-            id: uuidv4(),
-            name: 'Liên khương',
-        }
-
-    ]
-
-    const [dataPlane, setDataPlane] = useState<IPlace[]>(initialData)
+    const [dataPlane, setDataPlane] = useState<IPlace[]>([])
 
     const onSubmit = async (data: any) => {
         setValueAddress(data.valueAddres)
         setOpenDialogAddress(false)
+        setOnSubmitFilter(true)
+        console.log("data", data);
+
     }
 
     const handleAddressCurent = async () => await fetchLocationName()
 
+    // lấy danh sách giao xe sân bay
+    const fetchAirportCarDelivery = async () => {
+        try {
+            const { data: { data } } = await apiGetListAirportCarDelivery()
+            if (data) {
+                setDataPlane(data)
+            }
+        } catch (error) {
+            throw error
+        }
+    };
+
+
+
+    // lấy địa chỉ theo vị trí hiên tại của google
     const fetchLocationName = async () => {
         try {
-            const response = await apiGetAddress(latitude, longitude, generalKey.google_api_key)
+            const response = await apiGetAddress(coordinates.defaultLat, coordinates.defaultLng, generalKey.google_api_key)
             const data = response.data;
             if (data.status === 'OK') {
                 const address = data.results[0].formatted_address.split(',').slice(1).join(',');
@@ -110,11 +105,18 @@ export function DialogFilterAddress({ }: Props) {
     };
     //lấy định vị tọa độ hiện tại
     useEffect(() => {
-        if (openDialogAddress) {
+        if (navigator.geolocation) {
             navigator.geolocation.watchPosition((position) => {
-                setLatitude(position.coords.latitude)
-                setLongitude(position.coords.longitude)
+                setCoordinates({
+                    defaultLat: position.coords.latitude,
+                    defaultLng: position.coords.longitude,
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                })
             })
+        }
+        if (openDialogAddress) {
+            fetchAirportCarDelivery()
             if (valueAddress) {
                 form.setValue("valueAddres", valueAddress)
                 return
@@ -124,6 +126,8 @@ export function DialogFilterAddress({ }: Props) {
             return
         }
         document.body.style.overflow = "unset";
+
+
     }, [openDialogAddress])
 
 
@@ -163,12 +167,16 @@ export function DialogFilterAddress({ }: Props) {
                                                         <TiLocation className="text-xl text-[#1EAAB1] absolute top-1/2 -translate-y-1/2 left-1" />
                                                         <SearchAddress onChange={(e: any) => {
                                                             field.onChange(e.split(',').slice(1).join(','))
-                                                        }}>
+                                                        }}
+                                                        >
                                                             <Input
                                                                 type="text"
                                                                 className={`disabled:bg-[#E6E8EC] lg:text-base text-sm  disabled:border-gray-300 disabled:border-2  focus:border-[#2FB9BD]
                                                             w-full border-[#E6E8EC] !pl-7 !pr-[38px] border-2 lg:py-3 py-2 rounded-2xl   px-3 focus-visible:ring-0 text-black font-medium focus-visible:ring-offset-0 `}
                                                                 placeholder="Nhập địa điểm"
+                                                                onKeyUp={() => {
+                                                                    setCoordinates({ lat: 0, lng: 0 })
+                                                                }}
                                                                 {...field}
                                                             />
                                                         </SearchAddress>
@@ -202,9 +210,12 @@ export function DialogFilterAddress({ }: Props) {
                                                         {dataPlane.map(e => {
                                                             return (
                                                                 <Badge key={e.id}
-                                                                    onClick={() => field.onChange(e.name)}
+                                                                    onClick={() => {
+                                                                        field.onChange(e.address)
+                                                                        setCoordinates({ lat: e.latitude, lng: e.longitude })
+                                                                    }}
                                                                     variant="outline"
-                                                                    className={`${field.value == e.name ? "border-[#2FB9BD]" : "border-[#E6E8EC]"} font-medium py-2 px-4 cursor-pointer hover:bg-gray-100 hover:border-[#2FB9BD] border-2 flex items-center gap-1 lg:text-base text-sm`}>
+                                                                    className={`${field.value == e.address ? "border-[#2FB9BD]" : "border-[#E6E8EC]"} font-medium py-2 px-4 cursor-pointer hover:bg-gray-100 hover:border-[#2FB9BD] border-2 flex items-center gap-1 lg:text-base text-sm`}>
                                                                     <LuPlane className="" />
                                                                     <span className="capitalize">{e.name}</span>
                                                                 </Badge>

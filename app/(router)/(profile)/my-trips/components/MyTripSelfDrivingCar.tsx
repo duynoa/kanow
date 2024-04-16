@@ -36,7 +36,7 @@ const MyTripSelfDrivingCar = ({ isState }: any) => {
                         >
                             <Link
                                 prefetch={false}
-                                href={`#`}
+                                href={`/info-rental-car/${e.id}`}
                                 // href={`/detail-car/${e.id}?${ConvertToSlug(e?.car.name)}`}
                                 className='w-[43%] h-[112px] relative overflow-hidden rounded-xl'>
                                 <Image
@@ -109,7 +109,7 @@ const MyTripSelfDrivingCar = ({ isState }: any) => {
                         >
                             <Link
                                 prefetch={false}
-                                href={`#`}
+                                href={`/info-rental-car/${e.id}`}
                                 // href={`/detail-car/${e.id}?${ConvertToSlug(e?.car.name)}`}
                                 className='lg:w-[20%] w-[35%] h-[170px] relative overflow-hidden rounded-xl'>
                                 <Image

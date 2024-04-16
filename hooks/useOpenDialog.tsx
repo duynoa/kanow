@@ -182,28 +182,37 @@ export const useDialogCancelCar = create<IOpenDialogCancelCar>((set) => ({
 interface IOpenDialogAddress {
     openDialogAddress: boolean;
     setOpenDialogAddress: (key: any) => void;
-    vehicleHanding: any;
-    setVehicleHanding: (data: any) => void;
     valueAddress: any,
-
     setValueAddress: (value: any) => void
-    latitude: Number,
-    longitude: Number,
-    setLatitude: (value: any) => void
-    setLongitude: (value: any) => void
+    coordinates: {
+        defaultLat: Number,
+        defaultLng: Number,
+        lat: Number,
+        lng: Number,
+    },
+    setCoordinates: (value: any) => void
+    onSubmitFilter: boolean,
+    setOnSubmitFilter: (value: any) => void
 }
 
 
 export const useDialogAddress = create<IOpenDialogAddress>((set) => ({
+    coordinates: {
+        defaultLat: 0,
+        defaultLng: 0,
+        lat: 0,
+        lng: 0,
+    },
+    onSubmitFilter: false,
+    setOnSubmitFilter: (value: boolean) => set((state) => ({ onSubmitFilter: value })),
+    setCoordinates: (value: any) => set((state) => ({
+        coordinates: {
+            ...state.coordinates,
+            ...value
+        }
+    })),
     openDialogAddress: false,
     setOpenDialogAddress: (key: any) => set((state) => ({ openDialogAddress: key })),
-    vehicleHanding: {},
-    setVehicleHanding: (data: any) => set((state) => ({ vehicleHanding: data })),
     valueAddress: "",
     setValueAddress: (value: any) => set((state) => ({ valueAddress: value })),
-    latitude: 0,
-    longitude: 0,
-    setLatitude: (value: any) => set((state) => ({ latitude: value })),
-    setLongitude: (value: any) => set((state) => ({ longitude: value })),
-
 }));

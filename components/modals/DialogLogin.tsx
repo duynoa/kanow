@@ -4,63 +4,93 @@ import {
     Dialog,
     DialogClose,
     DialogContent,
-    DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogOverlay,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 
 import { X } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
-import { Checkbox } from "../ui/checkbox";
-import useAuthenticationAPI from "@/services/auth/auth.services";
-import { useAuth } from "@/hooks/useAuth";
-import { toastCore } from "@/lib/toast";
-import { useCookie } from "@/hooks/useCookie";
 import { Label } from "../ui/label";
+import { toastCore } from "@/lib/toast";
+import { Checkbox } from "../ui/checkbox";
+import { useForm } from "react-hook-form";
+import { useAuth } from "@/hooks/useAuth";
+import { useCookie } from "@/hooks/useCookie";
+import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
+import useAuthenticationAPI from "@/services/auth/auth.services";
 import {
     InputOTP,
     InputOTPGroup,
-    InputOTPSeparator,
     InputOTPSlot,
 } from "@/components/ui/input-otp"
-import { FormatPhoneNumber } from "../format/FormatNumber";
-import { useDialogLogin } from "@/hooks/useOpenDialog";
-import { useResize } from "@/hooks/useResize";
-import { usePathname } from "next/navigation";
-import { GoogleLogin, useGoogleLogin, useGoogleOneTapLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
-import axios from "axios";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { usePathname } from "next/navigation";
+import { GoogleLogin } from "@react-oauth/google";
+import { Avatar, AvatarImage } from "../ui/avatar";
+import { useDialogLogin } from "@/hooks/useOpenDialog";
+import { FormatPhoneNumber } from "../format/FormatNumber";
 
 type Props = {};
 
+interface UserDataHasToken {
+    aud: string;
+    azp: string;
+    email: string;
+    email_verified: boolean;
+    exp: number;
+    family_name: string;
+    given_name: string;
+    iat: number;
+    iss: string;
+    jti: string;
+    name: string;
+    nbf: number;
+    picture: string;
+    sub: string;
+}
+
 export function DialogLogin({ }: Props) {
     const pathname = usePathname()
-    const { isVisibleTablet } = useResize()
+
     const { setInformationUser } = useAuth()
-
-    const { setCookie, removeCookie } = useCookie()
-
-    const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
-
-    const { apiLogin, apiInfoUser, apiSignup, apiOtpSignup, apiLoginGoogle } = useAuthenticationAPI();
 
     const [timeOtp, setTimeOtp] = useState(0)
 
-    const [oauthGoogle, setOauthGoogle] = useState<any>({})
+    const { setCookie, removeCookie } = useCookie()
 
     const [checkPolicy, setCheckPolicy] = useState<boolean>(false);
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     const [showPasswordConfirm, setShowPasswordConfirm] = useState<boolean>(false);
+
+    const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
+
+    const { apiLogin, apiInfoUser, apiSignup, apiOtpSignup, apiLoginGoogle } = useAuthenticationAPI();
+
+    const [oauthGoogle, setOauthGoogle] = useState<{ token: string, hasToken: UserDataHasToken }>(
+        {
+            token: '',
+            hasToken: {
+                aud: "",
+                azp: "",
+                email: "",
+                email_verified: false,
+                exp: 0,
+                family_name: "",
+                given_name: "",
+                iat: 0,
+                iss: "",
+                jti: "",
+                name: "",
+                nbf: 0,
+                picture: "",
+                sub: ""
+            }
+        })
 
     const form = useForm({
         defaultValues: {
@@ -77,9 +107,9 @@ export function DialogLogin({ }: Props) {
     const isLoading = form.formState.isSubmitting;
 
 
-    const handleLoginGoogle = async (token: any) => {
+    const handleLoginGoogle = async (token: string) => {
         let formData = new FormData();
-        const hasToken: any = jwtDecode(token)
+        const hasToken: UserDataHasToken = jwtDecode(token)
         setOauthGoogle({
             token,
             hasToken
@@ -96,11 +126,9 @@ export function DialogLogin({ }: Props) {
                 toastCore.success(data?.message);
                 setOpenDialogLogin(false)
             }
-        } else {
-            removeCookie("token_kanow")
+            return
         }
-
-
+        removeCookie("token_kanow")
     }
 
     const onSubmit = async (values: any, type: any) => {
@@ -110,7 +138,6 @@ export function DialogLogin({ }: Props) {
             formData.append("phone", values.phoneNumber);
             formData.append("password", values.password);
             const { data } = await apiLogin(formData);
-
             if (data?.token) {
                 if (pathname === "/list-car-autonomous") {
                     window.location.reload()
@@ -125,10 +152,10 @@ export function DialogLogin({ }: Props) {
                     setInformationUser(information?.info);
                 }
                 setOpenDialogLogin(false)
-            } else {
-                removeCookie("token_kanow")
-                toastCore.error(data?.message);
+                return
             }
+            removeCookie("token_kanow")
+            toastCore.error(data?.message);
         } else if (type == 'signup' || type == 'accuracyGoogle') {
             //api đăng ký thì sẽ gửi otp
             formData.append("phone", values.phoneNumber);
@@ -174,12 +201,12 @@ export function DialogLogin({ }: Props) {
             if (data?.result) {
                 setTimeOtp(data?.time)
                 toastCore.error(data?.message);
-            } else {
-                toastCore.error(data?.message);
+                return
             }
-        } else {
-            toastCore.error("Vui lòng chờ sau" + " " + timeOtp + " " + "giây để gửi lại OTP");
+            toastCore.error(data?.message);
+            return
         }
+        toastCore.error("Vui lòng chờ sau" + " " + timeOtp + " " + "giây để gửi lại OTP");
     }
 
     useEffect(() => {
@@ -189,19 +216,14 @@ export function DialogLogin({ }: Props) {
     const handleShowPassword = (type: string) => {
         if (type === "password") {
             setShowPassword(!showPassword);
-        } else {
-            setShowPasswordConfirm(!showPasswordConfirm);
+            return
         }
+        setShowPasswordConfirm(!showPasswordConfirm);
     };
 
     const handleChangeStatus = () => {
-        if (statusModal === "login") {
-            setStatusModal("signup");
-            setShowPassword(false);
-            setShowPasswordConfirm(false);
-            form.reset();
-        } else if (statusModal === "signup") {
-            setStatusModal("login");
+        if (['login', 'signup'].includes(statusModal)) {
+            setStatusModal(statusModal === "signup" ? "login" : "signup");
             setShowPassword(false);
             setShowPasswordConfirm(false);
             form.reset();
@@ -222,34 +244,20 @@ export function DialogLogin({ }: Props) {
     }, [timeOtp]); // Đảm bảo useEffect chỉ chạy khi timeLeft thay đổi
 
     const handleOpenChangeModal = (type: string) => {
-        // if (type === 'login') {
-        //     setOpenDialogLogin(!openDialogLogin)
-
-        //     // dùng setTimeout để quản lí flow modal 
-        //     setTimeout(() => {
-        //         setStatusModal('login')
-        //     }, 200);
-        // } else if (type === 'signup') {
-        //     setOpenDialogLogin(!openDialogLogin)
-        //     setTimeout(() => {
-        //         setStatusModal('login')
-        //     }, 200);
-        // }
-        setOpenDialogLogin(!openDialogLogin)
         // dùng setTimeout để quản lí flow modal 
-        setTimeout(() => {
-            setStatusModal('login')
-        }, 200);
+        if (['login', 'signup', 'accuracyGoogle', 'otp'].includes(type)) {
+            setOpenDialogLogin(!openDialogLogin)
+            setTimeout(() => {
+                setStatusModal('login')
+            }, 200);
+        }
     }
-
-
-
 
 
     return (
         <Dialog modal open={openDialogLogin} onOpenChange={() => handleOpenChangeModal(statusModal)}>
             <DialogOverlay />
-            <DialogContent className={`${statusModal == 'otp' ? 'lg:max-w-[400px] max-w-[45%]' : "lg:max-w-[520px] max-w-[95%]"} max-h-[90vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
+            <DialogContent className={`${statusModal == 'otp' ? 'lg:max-w-[400px] max-w-[95%]' : "lg:max-w-[520px] max-w-[95%]"} max-h-[90vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
                 <DialogClose
                     onClick={() => handleOpenChangeModal(statusModal)}
                     className="size-8 border flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
@@ -386,6 +394,7 @@ export function DialogLogin({ }: Props) {
                                                     onSuccess={(credentialResponse: any) => handleLoginGoogle(credentialResponse.credential)}
                                                     onError={() => {
                                                         toastCore.error('Vui lòng thử lại với tài khoản Google!');
+                                                        removeCookie("token_kanow")
                                                     }}
                                                     theme="filled_blue"
                                                     logo_alignment="center"
