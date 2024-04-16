@@ -30,13 +30,13 @@ const MyTripSelfDrivingCar = ({ isState }: any) => {
             isState.dataMyTrips?.length > 0 ? isState.dataMyTrips.map((e: IArrayMyTripCar, index: number) => {
                 return <React.Fragment key={e.id}>
                     {isVisibleMobile ?
-                        <div
+                        <Link
+                            prefetch={false}
+                            href={`/info-rental-car/${e.id}`}
                             id={`card-${e.id}`}
                             className={`flex flex-wrap gap-2 group bg-white border-[#D7D9E0] ${index === isState.dataMyTrips?.length - 1 ? 'border-b-0' : 'border-b'} pb-4 w-full relative z-0`}
                         >
-                            <Link
-                                prefetch={false}
-                                href={`/info-rental-car/${e.id}`}
+                            <div
                                 // href={`/detail-car/${e.id}?${ConvertToSlug(e?.car.name)}`}
                                 className='w-[43%] h-[112px] relative overflow-hidden rounded-xl'>
                                 <Image
@@ -51,7 +51,7 @@ const MyTripSelfDrivingCar = ({ isState }: any) => {
                                 }} className={`w-full py-1 absolute top-0 text-center mx-auto text-[#FFFFFF] font-semibold text-xs rounded-tl-xl rounded-tr-xl`}>
                                     {e.status.name ? e.status.name : ""}
                                 </div>
-                            </Link>
+                            </div>
                             <div className='w-[53%] flex flex-col justify-between '>
                                 <div className='text-base truncate text-[#1D1D1D] font-bold uppercase'>
                                     {e.car.name ? e.car.name : ''}
@@ -102,14 +102,16 @@ const MyTripSelfDrivingCar = ({ isState }: any) => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                         :
-                        <div id={`card-${e.id}`}
-                            className={`flex lg:items-center lg:flex-nowrap group items-start flex-wrap lg:gap-6 gap-3  bg-white border-[#D7D9E0] ${index === isState.dataMyTrips?.length - 1 ? 'border-b-0' : 'border-b'} pb-6 w-full relative z-0`}
+                        <Link
+                            prefetch={false}
+                            href={`/info-rental-car/${e.id}`}
+                            id={`card-${e.id}`}
+                            className={`flex lg:items-center lg:flex-nowrap group items-start flex-wrap lg:gap-6 gap-3  bg-white border-[#D7D9E0]  ${index === isState.dataMyTrips?.length - 1 ? 'border-b-0' : 'border-b'}  w-full relative z-0`}
                         >
-                            <Link
-                                prefetch={false}
-                                href={`/info-rental-car/${e.id}`}
+                            <div
+
                                 // href={`/detail-car/${e.id}?${ConvertToSlug(e?.car.name)}`}
                                 className='lg:w-[20%] w-[35%] h-[170px] relative overflow-hidden rounded-xl'>
                                 <Image
@@ -124,7 +126,7 @@ const MyTripSelfDrivingCar = ({ isState }: any) => {
                                 }} className={`w-full py-2 absolute top-0 text-center mx-auto text-[#FFFFFF] font-semibold text-sm rounded-tl-xl rounded-tr-xl`}>
                                     {e.status.name ? e.status.name : ""}
                                 </div>
-                            </Link>
+                            </div>
                             <div className='lg:w-[35%] w-[60%] flex flex-col 3xl:gap-2 xxl:gap-2.5 2xl:gap-2 xl:gap-2 lg:gap-2 gap-3'>
                                 <div className='3xl:text-lg text-base text-[#1D1D1D] font-bold uppercase'>
                                     {e.car.name ? e.car.name : ''}
@@ -177,7 +179,7 @@ const MyTripSelfDrivingCar = ({ isState }: any) => {
                                     </h1>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     }
 
                 </React.Fragment>

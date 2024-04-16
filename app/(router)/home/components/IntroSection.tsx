@@ -33,13 +33,14 @@ const IntroSection = () => {
             name: "Xe có tài xế",
             icon_active: "/icon/home/icon_car_active_2.png",
             icon_no_active: "/icon/home/icon_car_no_active_2.png",
-        },
-        {
-            id: "5454",
-            name: "Tìm tài xế",
-            icon_active: "/icon/home/icon_car_active_3.png",
-            icon_no_active: "/icon/home/icon_car_no_active_3.png",
-        },
+        }
+        // ,
+        // {
+        //     id: "5454",
+        //     name: "Tìm tài xế",
+        //     icon_active: "/icon/home/icon_car_active_3.png",
+        //     icon_no_active: "/icon/home/icon_car_no_active_3.png",
+        // },
     ]
 
     const [tabId, setTabId] = useState<string>("")
