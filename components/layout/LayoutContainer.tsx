@@ -75,6 +75,26 @@ const LayoutContainer = ({
         onCloseResizeTablet
     } = useResize()
 
+
+    // if (typeof document !== 'undefined') {
+    //     document.addEventListener('visibilitychange', () => {
+    //         if (document.visibilityState === 'hidden') {
+    //             console.log('Tab không được nhìn thấy');
+    //         } else {
+    //             navigator.geolocation.getCurrentPosition((position) => {
+    //                 console.log('position', position);
+
+    //                 // setCoordinates({
+    //                 //     defaultLat: position.coords.latitude,
+    //                 //     defaultLng: position.coords.longitude,
+    //                 //     lat: position.coords.latitude,
+    //                 //     lng: position.coords.longitude
+    //                 // })
+    //             })
+    //         }
+    //     });
+    // }
+
     useEffect(() => {
         const scrollTop = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
