@@ -179,7 +179,7 @@ const PaymentCar = ({ }: Props) => {
                                     variant={"outline"}
                                     className={cn(
                                         `px-4 py-3 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-sm text-xs`,
-                                        !dateReal && "text-muted-foreground"
+                                        !dateTemp && "text-muted-foreground"
                                     )}
                                     onClick={() => handleOpenDialog('calendar', 'dateTemp')}
                                 >

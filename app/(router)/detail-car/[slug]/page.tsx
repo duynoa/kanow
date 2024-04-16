@@ -57,7 +57,7 @@ const DetailCar = ({ params }: Props) => {
     const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
 
     const { queryKeyIsStatePolicy } = useDataPolicy()
-    const { dateReal, numberDay, setDataCalendar } = useDialogCalendar()
+    const { dateReal, dateTemp, numberDay, setDataCalendar } = useDialogCalendar()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [slug, setSlug] = useState(params.slug);
@@ -156,7 +156,7 @@ const DetailCar = ({ params }: Props) => {
             })
 
             let dataParams = {
-                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`
+                date_search: `${dateTemp ? `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}` : `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`} `
             }
             const { data } = await getDataDetailCar(params.slug, dataParams)
 
@@ -216,6 +216,11 @@ const DetailCar = ({ params }: Props) => {
     }
 
     useEffect(() => {
+        fetchDataDetailCar()
+    }, [slug, getCookie, dateTemp, dateReal])
+
+
+    useEffect(() => {
         const fetchListPromotions = async () => {
             if (dataPromotions.length === 0) {
                 try {
@@ -263,9 +268,9 @@ const DetailCar = ({ params }: Props) => {
             }
         }
 
+        // fetchDataDetailCar()
         fetchDataListCalendarPriceMonth()
         fetchDataPolicy()
-        fetchDataDetailCar()
         fetchDataListCarsRelated()
         fetchListPromotions()
         fetchListReportCar()
@@ -413,8 +418,6 @@ const DetailCar = ({ params }: Props) => {
         setIndexImage(index)
         setDataImage(isStateDetailCar?.dataDetailCar?.image_car)
     }
-
-
 
     if (!isMounted) {
         return null

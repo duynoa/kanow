@@ -47,7 +47,7 @@ export function DialogRequestCarRental({ }: Props) {
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isStatePolicy } = useDataPolicy()
     const { openDialogRequestCarRental, dataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
-    const { dateReal, numberDay } = useDialogCalendar()
+    const { dateReal, numberDay, dateTemp } = useDialogCalendar()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [checkPolicy, setCheckPolicy] = useState<boolean>(false)
@@ -70,8 +70,8 @@ export function DialogRequestCarRental({ }: Props) {
             const dataRequest: any = {
                 data: {
                     car_id: dataListRequestCarRental?.dataDetailCar?.id,
-                    date_start: moment(dateReal?.from).format("YYYY-MM-DD HH:mm"),
-                    date_end: moment(dateReal?.to).format("YYYY-MM-DD HH:mm"),
+                    date_start: dateTemp ? moment(dateTemp?.from).format("YYYY-MM-DD HH:mm") : moment(dateReal?.from).format("YYYY-MM-DD HH:mm"),
+                    date_end: dateTemp ? moment(dateTemp?.to).format("YYYY-MM-DD HH:mm") : moment(dateReal?.from).format("YYYY-MM-DD HH:mm"),
                     rent_cost: dataListRequestCarRental?.dataDetailCar?.price?.rent_cost,
                     quantity: numberDay,
                     promotion_car_id: !dataListRequestCarRental?.infoPromotion?.activePromotion && dataListRequestCarRental?.dataDetailCar?.promotion && dataListRequestCarRental?.dataDetailCar?.promotion?.length > 0 ? dataListRequestCarRental?.dataDetailCar?.promotion[0]?.id : 0,
@@ -215,7 +215,7 @@ export function DialogRequestCarRental({ }: Props) {
                                                     Từ:
                                                 </div>
                                                 <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
-                                                    {moment(dateReal?.from).format("HH[h]mm DD/MM/YYYY")}
+                                                    {dateTemp ? moment(dateTemp?.from).format("HH[h]mm DD/MM/YYYY") : moment(dateReal?.from).format("HH[h]mm DD/MM/YYYY")}
                                                 </div>
                                             </div>
                                             <div className='pl-7 flex items-center gap-1'>
@@ -223,7 +223,7 @@ export function DialogRequestCarRental({ }: Props) {
                                                     Đến:
                                                 </div>
                                                 <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium">
-                                                    {moment(dateReal?.to).format("HH[h]mm DD/MM/YYYY")}
+                                                    {dateTemp ? moment(dateTemp?.to).format("HH[h]mm DD/MM/YYYY") : moment(dateReal?.to).format("HH[h]mm DD/MM/YYYY")}
                                                 </div>
                                             </div>
                                         </div>

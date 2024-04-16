@@ -38,7 +38,9 @@ function CalendarCustom({
         dataCalendar,
         setDataCalendar,
         statusDate,
-        setStatusDate
+        setStatusDate,
+        validateDateSubmit,
+        setValidateDateSubmit
     } = useDialogCalendar()
 
 
@@ -1139,32 +1141,6 @@ function CalendarCustom({
 
         const handleChangeDate = (item: any) => {
             const date = new Date(Number(item?.year), Number(item?.month) - 1, item?.day);
-
-            const dateYear = date ? date?.getFullYear() : 0;
-            const dateMonth = date ? date?.getMonth() : 0;
-            const dateDay = date ? date?.getDate() : 0;
-
-            const dateStartYear = dateStart ? dateStart?.getFullYear() : 0;
-            const dateStartMonth = dateStart ? dateStart?.getMonth() : 0;
-            const dateStartDay = dateStart ? dateStart?.getDate() : 0;
-
-            const dateEndYear = dateEnd ? dateEnd?.getFullYear() : 0;
-            const dateEndMonth = dateEnd ? dateEnd?.getMonth() : 0;
-            const dateEndDay = dateEnd ? dateEnd?.getDate() : 0;
-
-            const dayDifferenceDateStart = differenceInDays(date, dateStart ? dateStart : "");
-            const dayDifferenceDateStartAnDateEnd = differenceInDays(dateStart ? dateStart : "", dateEnd ? dateEnd : "");
-
-            // Check if the new to date is different from the current to date
-            // console.log('dateYear', dateYear);
-            // console.log('dateStartYear', dateStartYear);
-            // console.log('dateMonth', dateMonth);
-            // console.log('dateStartMonth', dateStartMonth);
-            // console.log('dateDay', dateDay);
-            // console.log('dateStartDay', dateStartDay);
-            // console.log('dateStart', dateStart);
-            // console.log('dateEnd', dateEnd);
-
             // kiểm tra nếu cùng ngày hoặc ngày sau ngày dateStart
             // cùng tháng và sau ngày dateStart
             // lớn hơn tháng và sau ngày dateStart
@@ -1216,12 +1192,7 @@ function CalendarCustom({
                 } else {
                     setDateEnd(date)
                 }
-            } else {
-                console.log('check123');
             }
-
-            console.log('date : ', date);
-
         };
 
         const datesInBetween = dateStart && dateEnd ? datesBetweenDates(dateStart, dateEnd) : [];

@@ -6,6 +6,7 @@ interface GeneralKey {
         onesignal_id: string;
         onesignal_key: string;
         pusher: string;
+        hour_min_car: string;
         cluster: string;
         rule_delete_account: string;
     };
@@ -16,6 +17,7 @@ export const useGeneralKey = create<GeneralKey>((set) => ({
     generalKey: {
         google_api_key: '',
         onesignal_id: '',
+        hour_min_car: '',
         onesignal_key: '',
         pusher: '',
         cluster: '',
