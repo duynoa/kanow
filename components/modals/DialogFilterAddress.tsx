@@ -58,6 +58,8 @@ export function DialogFilterAddress({ }: Props) {
         },
     })
 
+    const [valueMount, setValueMount] = useState('')
+
     const [dataPlane, setDataPlane] = useState<IPlace[]>([])
 
     const onSubmit = async (data: any) => {
@@ -68,7 +70,12 @@ export function DialogFilterAddress({ }: Props) {
 
     }
 
-    const handleAddressCurent = async () => await fetchLocationName()
+    const handleAddressCurent = async () => {
+        // await fetchLocationName()
+        // form.setValue("valueAddres", valueMount)
+
+        await fetchLocationName()
+    }
 
     // lấy danh sách giao xe sân bay
     const fetchAirportCarDelivery = async () => {
@@ -95,6 +102,7 @@ export function DialogFilterAddress({ }: Props) {
                 //     return ["street_number", "route", 'plus_code'].includes(e.types[0]) ? undefined : e.long_name;
                 // }).filter(Boolean).join(', ')
                 form.setValue("valueAddres", address);
+                // setValueMount(address)
                 // form.setValue("valueAddres", address.split(',').slice(1).join(','));
                 return
             }
@@ -103,9 +111,11 @@ export function DialogFilterAddress({ }: Props) {
             console.error('Đã xảy ra lỗi:', error);
         }
     };
+
+
     //lấy định vị tọa độ hiện tại
     useEffect(() => {
-        if (navigator.geolocation) {
+        if (generalKey.google_api_key) {
             navigator.geolocation.watchPosition((position) => {
                 setCoordinates({
                     defaultLat: position.coords.latitude,
@@ -124,7 +134,15 @@ export function DialogFilterAddress({ }: Props) {
             form.reset()
             return
         }
-    }, [openDialogAddress])
+    }, [openDialogAddress, generalKey.google_api_key])
+
+
+
+    // useEffect(() => {
+    //     if (generalKey.google_api_key && openDialogAddress && !valueMount && coordinates.defaultLat && coordinates.defaultLng) {
+    //         fetchLocationName()
+    //     }
+    // }, [generalKey.google_api_key, openDialogAddress])
 
 
     return (

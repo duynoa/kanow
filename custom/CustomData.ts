@@ -155,7 +155,7 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
 
         // giờ nhận xe và giờ trả xe
         hour_back_car: res?.data?.hour_back_car,
-        hour_receive_car: res?.data?.hour_receive_car
+        hour_receive_car: res?.data?.hour_receive_car,
     };
     return { customDataDetailCar };
 };
@@ -250,15 +250,33 @@ const CustomDataMyTripCar = (data: any) => {
 };
 
 const CustomDataMyCar = (data: any) => {
-    let customDataMyCar = data?.data?.map((i: any) => ({
-        ...i,
-        id: i?.id,
-        image_car: i?.image_car.map((i: any) => {
-            return {
-                ...i,
-                name: `${data?.base?.base}/${i?.name}`,
-            };
-        }),
+    let customDataMyCar = data?.data?.map((item: any) => ({
+        id: item?.id,
+        address: `${item?.district}, ${item?.province}`,
+        image_car: item?.image_car?.map((image: any) => ({
+            ...image,
+            name: `${data?.base?.base}/${image.name}`,
+        })),
+        car_owner: {
+            avatar: item?.customer?.avatar,
+            fullname: item?.customer?.fullname,
+            id: item?.customer?.id,
+        },
+        type: {
+            delivery_car: item?.delivery_car === 1,
+            book_car_flash: item?.book_car_flash === 1,
+            // thế chấp bị ngược với các tag bình thường thế chấp là 0 còn lại là 1
+            mortgage: item?.mortgage === 0,
+            transmission_search: item?.transmission,
+        },
+        favorite_car: item?.favourite_car,
+        name_car: item?.name,
+        point_star: item?.star,
+        total_trip: item?.total_trip,
+        price_before_promotion: item?.rent_cost,
+        price: item?.price,
+        price_after_promotion: item?.promotion?.length > 0 ? item?.rent_cost - item?.promotion[0]?.price_promotion : 0,
+        promotion: item?.promotion,
     }));
     return { customDataMyCar };
 };

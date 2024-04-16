@@ -10,6 +10,10 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import Link from "next/link"
 import Image from "next/image"
 import { IMyCar } from "@/types/Profile/mycar/IMyCar"
+import { TiLocation } from "react-icons/ti"
+import { FaCircleCheck } from "react-icons/fa6"
+import { FaStar } from "react-icons/fa"
+import { FormatNumberHundred, FormatNumberToDecimal, FormatNumberToThousands } from "@/components/format/FormatNumber"
 
 type Props = {
 
@@ -47,8 +51,7 @@ const MyCar = (props: Props) => {
             if (data && data.data && data.base) {
                 const { customDataMyCar } = CustomDataMyCar(data)
                 queryState({
-                    dataMyCar: [],
-                    // dataMyCar: customDataMyCar,
+                    dataMyCar: customDataMyCar,
                     page: isState.page + 1,
                     next: data?.links?.next,
                 })
@@ -87,13 +90,12 @@ const MyCar = (props: Props) => {
                     <DialogFilterMyCar handleSubmitFilter={handleSubmitFilter} isState={isState} queryState={queryState} />
                 </div>
             </div>
-            <UnderDevelopment />
             <ScrollArea
                 ref={scrollContainerRef}
                 id='scroll-container'
-            // className={`${isState.dataMyCar?.length > 0 &&
-            //     isVisibleMobile ? isState.dataMyCar?.length > 3 ? 'h-[1380px]' : 'h-auto' :
-            //     isVisibleTablet ? isState.dataMyCar?.length > 3 ? 'h-[1680px]' : 'h-auto' : isState.dataMyCar?.length >= 3 ? 'h-[780px]' : 'h-[550px]'} lg: pr-6 pr - 3`}
+                className={`${isState.dataMyCar?.length > 0 &&
+                    isVisibleMobile ? isState.dataMyCar?.length > 3 ? 'h-[1380px]' : 'h-auto' :
+                    isVisibleTablet ? isState.dataMyCar?.length > 3 ? 'h-[1680px]' : 'h-auto' : isState.dataMyCar?.length >= 3 ? 'h-[780px]' : 'h-[550px]'} lg: pr-6 pr - 3`}
             >
                 <div className='flex flex-col gap-4'>
                     {isState.isLoadingCar ?
@@ -164,16 +166,16 @@ const MyCar = (props: Props) => {
                                         {card.name_car ? card.name_car : ''}
                                     </div>
                                     <div className='flex gap-1 items-center'>
-                                        {/* <TiLocation className='text-base text-[#FA3434] w-[16px] max-w-[16px]' />
+                                        <TiLocation className='text-base text-[#FA3434] w-[16px] max-w-[16px]' />
                                         <div className='3xl:text-sm text-xs text-[#8C93A3] font-medium w-[90%] max-w-[90%]'>
                                             {card.address ? card.address : ''}
-                                        </div> */}
+                                        </div>
                                     </div>
                                     <div className='border-b lg:hidden block border-[#D7D9E0]/50 w-full col-span-12' />
                                     <div className={`flex lg:flex-col xl:justify-start lg:justify-center md:justify-between ${card.total_trip ? 'justify-between ' : 'justify-between px-3'} lg:px-0 px-2  flex-row 3xl:gap-2 2xl:gap-2 xxl:gap-2.5 xl:gap-2 lg:gap-2 gap-2  lg:bg-transparent lg:py-0 lg:rounded-none
                                                      rounded-md py-3 bg-[#F2FCF7] `}>
                                         <div className='flex lg:flex-col flex-row lg:items-start items-center gap-2'>
-                                            {/* {
+                                            {
                                                 card.point_star ?
                                                     <div className='flex items-center gap-1'>
                                                         <div className='flex items-center gap-1'>
@@ -201,34 +203,20 @@ const MyCar = (props: Props) => {
                                                     <div className='3xl:text-sm text-xs text-[#8C93A3]'>
                                                         Chưa có chuyến
                                                     </div>
-                                            } */}
+                                            }
                                         </div>
                                         <div className='flex items-center gap-1 3xl:mt-4 2xl:mt-3 xxl:mt-2 xl:mt-2'>
-                                            {/* {
-                                                card?.promotion?.length > 0 ?
-                                                    <>
-                                                        <div className='3xl:text-[32px] xxl:text-2xl 2xl:text-[28px] xl:text-[18px] lg:text-xl text-base text-[#D7D9E0] font-medium line-through'>
-                                                            {card.price_before_promotion ? FormatNumberToThousands(card.price_before_promotion) : 0}
-                                                        </div>
-                                                        <div className='flex'>
-                                                            <span className='3xl:text-[32px] xxl:text-2xl 2xl:text-[28px] xl:text-[18px] lg:text-xl text-base text-[#1AC5CA] font-medium'>
-                                                                {card.price_after_promotion ? FormatNumberToThousands(card.price_after_promotion) : 0}
-                                                            </span>
-                                                            <span className='xxl:text-[14px] 2xl:text-[16px] xl:text-[14px] text-xs text-[#585F71] flex justify-start font-bold capitalize'>
-                                                                /ngày
-                                                            </span>
-                                                        </div>
-                                                    </>
-                                                    :
-                                                    <div className='flex'>
-                                                        <span className='3xl:text-[32px] xxl:text-2xl 2xl:text-[28px] xl:text-[18px] text-[#1AC5CA] font-medium'>
-                                                            {card.price_before_promotion ? FormatNumberToThousands(card.price_before_promotion) : 0}
-                                                        </span>
-                                                        <span className='xxl:text-[14px] 2xl:text-[16px] xl:text-[14px] text-xs text-[#585F71] flex justify-start font-semibold capitalize'>
-                                                            /ngày
-                                                        </span>
-                                                    </div>
-                                            } */}
+                                            <span className='3xl:text-[32px] xxl:text-2xl 2xl:text-[28px] xl:text-[18px] text-gray-400 font-medium'>
+                                                Giá tự lái:
+                                            </span>
+                                            <div className='flex'>
+                                                <span className='3xl:text-[32px] xxl:text-2xl 2xl:text-[28px] xl:text-[18px] lg:text-xl text-base text-[#1AC5CA] font-medium'>
+                                                    {card.price.rent_cost ? FormatNumberToThousands(card.price.rent_cost) : 0}
+                                                </span>
+                                                <span className='xxl:text-[14px] 2xl:text-[16px] xl:text-[14px] text-xs text-[#585F71] flex justify-start font-bold capitalize'>
+                                                    /ngày
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
