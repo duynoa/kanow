@@ -31,6 +31,7 @@ const CustomDataListCars = (data: any) => {
         price_before_promotion: item?.rent_cost,
         price_after_promotion: item?.promotion?.length > 0 ? item?.rent_cost - item?.promotion[0]?.price_promotion : 0,
         promotion: item?.promotion,
+        location: item?.location,
     }));
     return { customDataListCars };
 };
