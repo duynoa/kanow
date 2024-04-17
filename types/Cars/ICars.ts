@@ -156,7 +156,7 @@ interface IDataDetailCar {
         id: number;
         name: string;
         note: string;
-        value: string;
+        value: number;
         created_at: string;
         updated_at: string;
         pivot: {

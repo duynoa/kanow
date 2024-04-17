@@ -9,6 +9,8 @@ interface GeneralKey {
         hour_min_car: string;
         cluster: string;
         rule_delete_account: string;
+        hour_start_car: string,
+        hour_end_car: string,
     };
     setGeneralKey: (key: any) => void;
 }
@@ -22,6 +24,8 @@ export const useGeneralKey = create<GeneralKey>((set) => ({
         pusher: '',
         cluster: '',
         rule_delete_account: '',
+        hour_start_car: '',
+        hour_end_car: '',
     },
     setGeneralKey: (key: any) => set((state) => ({ generalKey: key })),
 }));

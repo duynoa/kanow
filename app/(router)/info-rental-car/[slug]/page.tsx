@@ -141,12 +141,17 @@ const InfoRentalCar = ({ params }: Props) => {
                                         <div key={step.id} className='flex items-center md:gap-3 gap-2'>
                                             <div className={`
                                         ${isStateInfoRentalCar?.detailRentalCar && index < isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "bg-[#2FB9BD] text-white"}
-                                         ${isStateInfoRentalCar?.detailRentalCar && step.status === isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "border-2 border-[#2FB9BD] bg-[#F1FCFC] text-[#2FB9BD]"} 
+                                         ${isStateInfoRentalCar?.detailRentalCar && step.status !== 4 && (isStateInfoRentalCar?.detailRentalCar && step.status === isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom) && "border-2 border-[#2FB9BD] bg-[#F1FCFC] text-[#2FB9BD]"} 
+                                         ${isStateInfoRentalCar?.detailRentalCar && step.status === 4 && (isStateInfoRentalCar?.detailRentalCar && step.status === isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom) && "bg-[#2FB9BD] text-white"} 
                                          ${isStateInfoRentalCar?.detailRentalCar && step.status > isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "border-2 border-[#B4B8C5] bg-[#F6F6F8] text-[#B4B8C5]"} 
                                         flex justify-center items-center size-6 max-w-6 p-5 rounded-full`}
                                             >
                                                 <div className='3xl:text-base text-sm'>
-                                                    {isStateInfoRentalCar?.detailRentalCar && index < isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom ? step.icon : index + 1}
+                                                    {
+                                                        (isStateInfoRentalCar?.detailRentalCar?.status?.status === 4) || (isStateInfoRentalCar?.detailRentalCar && (index < isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom)) ?
+                                                            step.icon
+                                                            :
+                                                            index + 1}
                                                 </div>
                                             </div>
 

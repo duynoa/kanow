@@ -188,8 +188,8 @@ const CustomDataInfoRentalCar = (res: any) => {
         address: {
             district: res?.data?.district,
             province: res?.data?.province,
-            full_address: res?.data?.address,
-            // full_address: `${res?.data?.district}, ${res?.data?.province}`,
+            // full_address: res?.data?.address,
+            full_address: `${res?.data?.district}, ${res?.data?.province}`,
         },
         surcharge_car: res?.data?.surcharge_car,
         status: {

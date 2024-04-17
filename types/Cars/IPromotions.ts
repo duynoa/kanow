@@ -13,6 +13,7 @@ interface IInfoPromotion {
     note: string;
     percent: number;
     type_car: number;
+    number_day: number;
 }
 
 export type { IInfoPromotion };

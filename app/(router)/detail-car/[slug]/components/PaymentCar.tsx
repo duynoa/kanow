@@ -37,7 +37,7 @@ type Props = {}
 
 const PaymentCar = ({ }: Props) => {
     const pathname = usePathname()
-    const { dateReal, dateTemp, numberDay, setOpenDialogCalendar } = useDialogCalendar()
+    const { dateReal, dateTemp, numberDay, validateDateSubmit, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogPromotion } = useDialogPromotion()
     const { setOpenDialogReportCar } = useDialogReportCar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
@@ -178,7 +178,7 @@ const PaymentCar = ({ }: Props) => {
                                     id="date"
                                     variant={"outline"}
                                     className={cn(
-                                        `px-4 py-3 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-sm text-xs`,
+                                        `${validateDateSubmit ? "border border-red-500" : "border-0 "}  px-4 py-3 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70  3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-sm text-xs`,
                                         !dateTemp && "text-muted-foreground"
                                     )}
                                     onClick={() => handleOpenDialog('calendar', 'dateTemp')}
@@ -224,9 +224,17 @@ const PaymentCar = ({ }: Props) => {
                         }
                     </div>
 
-                    <div className='flex w-full justify-end text-[#3561FF] 3xl:text-base text-sm font-medium'>
-                        Thuê tháng giảm 8%
-                    </div>
+                    {
+                        validateDateSubmit ?
+                            // validateDateSubmit || statusDate == 2 || statusDate == 3 ?
+                            <div className='px-2 mt-4'>
+                                <div className='3xl:text-base text-sm font-normal text-[#FF0000]'>
+                                    * Xe bận trong khoảng thời gian trên. Vui lòng đặt xe khác hoặc thay đổi lịch trình thích hợp.
+                                </div>
+                            </div>
+                            :
+                            null
+                    }
 
                     {/* <div className='flex flex-col'>
                         <div className='3xl:text-base text-sm text-[#FA3434] font-medium'>
@@ -339,7 +347,7 @@ const PaymentCar = ({ }: Props) => {
                                 }
                             </div>
                             <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                                {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.price_insurance_day ? isStateDetailCar?.dataDetailCar?.price?.price_insurance_day : 0)}đ
+                                {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.price_insurance_day ? isStateDetailCar?.dataDetailCar?.price?.price_insurance_day : 0)}đ/ngày
                             </div>
                         </div>
                     </div>
@@ -349,7 +357,7 @@ const PaymentCar = ({ }: Props) => {
                             Tổng tạm tính
                         </div>
                         <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                            {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.temp_total_amount)}<span>đ/{numberDay === 1 ? null : numberDay} ngày</span>
+                            {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.temp_total_amount)}{numberDay && numberDay === 1 ? <span>đ/ngày</span> : <span>đ/{numberDay} ngày</span>}
                         </div>
                     </div>
                 </div>
@@ -483,7 +491,7 @@ const PaymentCar = ({ }: Props) => {
                             Thành tiền
                         </div>
                         <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                            {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.total_amount ? isStateDetailCar?.dataDetailCar?.price?.total_amount : 0)}<span>đ/{numberDay === 1 ? null : numberDay} ngày</span>
+                            {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.total_amount ? isStateDetailCar?.dataDetailCar?.price?.total_amount : 0)}{numberDay === 1 ? <span>đ/ngày</span> : <span>đ/{numberDay} ngày</span>}
                         </div>
                     </div>
                 </div>

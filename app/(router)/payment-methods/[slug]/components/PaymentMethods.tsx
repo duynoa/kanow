@@ -71,69 +71,75 @@ const PaymentMethods = ({ }: Props) => {
                     <div className='flex flex-col gap-3'>
                         {
                             isStatePaymentRental?.listPaymentMode && isStatePaymentRental?.listPaymentMode?.map((item, index) => (
-                                <div
-                                    key={`payment-${item.id}`}
-                                    className={`${isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id ? "bg-[#F1FCFC] border-2 border-[#2FB9BD]" : "bg-white"} flex-flex-col px-4 py-3 rounded-xl caret-transparent cursor-pointer relative`}
-                                    onClick={() => handleChangePayment(item, index)}
-                                >
-                                    <div className='flex items-center gap-4'>
-                                        <div className='w-12 h-12'>
-                                            <Image
-                                                alt="logo_payment"
-                                                src={item?.image ? item?.image : "/default/default.png"}
-                                                width={100}
-                                                height={100}
-                                                className='w-full h-full object-contain'
-                                            />
-                                        </div>
-                                        <div className='3xl:text-base text-sm font-semibold text-[#3E424E]'>
-                                            {item?.name ? item?.name : ""}
-                                        </div>
-                                    </div>
+                                <React.Fragment key={`payment-${item.id}`} >
                                     {
-                                        isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id && item?.type !== 1 &&
-                                        <div className='flex flex-col gap-4'>
-                                            <div className='flex items-center justify-between pb-3 border-b ml-16'>
-                                                <div className='flex flex-col gap-1 max-w-[80%]'>
-                                                    <div className='3xl:text-base text-sm text-[#585F71] font-semibold'>
-                                                        Lưu thông tin thẻ
+                                        item.type === 1 ?
+                                            <div
+                                                className={`${isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id ? "bg-[#F1FCFC] border-2 border-[#2FB9BD]" : "bg-white"} flex-flex-col px-4 py-3 rounded-xl caret-transparent cursor-pointer relative`}
+                                                onClick={() => handleChangePayment(item, index)}
+                                            >
+                                                <div className='flex items-center gap-4'>
+                                                    <div className='w-12 h-12'>
+                                                        <Image
+                                                            alt="logo_payment"
+                                                            src={item?.image ? item?.image : "/default/default.png"}
+                                                            width={100}
+                                                            height={100}
+                                                            className='w-full h-full object-contain'
+                                                        />
                                                     </div>
-                                                    <div className='3xl:text-base text-sm text-[#50777E] font-medium space-x-1'>
-                                                        <span>Lưu ý: Một số Ngân hàng sẽ</span>
-                                                        <span className='text-red-500'>không cho phép</span>
-                                                        <span>lưu thông tin thẻ ATM</span>
+                                                    <div className='3xl:text-base text-sm font-semibold text-[#3E424E]'>
+                                                        {item?.name ? item?.name : ""}
                                                     </div>
                                                 </div>
-                                                <div className='max-w-[20%]'>
-                                                    <Switch id="airplane-mode" className='data-[state=checked]:bg-[#2FB9BD]' />
-                                                </div>
-                                            </div>
+                                                {
+                                                    isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id && item?.type !== 1 &&
+                                                    <div className='flex flex-col gap-4'>
+                                                        <div className='flex items-center justify-between pb-3 border-b ml-16'>
+                                                            <div className='flex flex-col gap-1 max-w-[80%]'>
+                                                                <div className='3xl:text-base text-sm text-[#585F71] font-semibold'>
+                                                                    Lưu thông tin thẻ
+                                                                </div>
+                                                                <div className='3xl:text-base text-sm text-[#50777E] font-medium space-x-1'>
+                                                                    <span>Lưu ý: Một số Ngân hàng sẽ</span>
+                                                                    <span className='text-red-500'>không cho phép</span>
+                                                                    <span>lưu thông tin thẻ ATM</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className='max-w-[20%]'>
+                                                                <Switch id="airplane-mode" className='data-[state=checked]:bg-[#2FB9BD]' />
+                                                            </div>
+                                                        </div>
 
-                                            <div className='flex items-center justify-between ml-16'>
-                                                <div className='max-w-[50%]'>
-                                                    <div className='3xl:text-base text-sm text-[#50777E] font-medium space-x-1'>
-                                                        Thêm thông tin thẻ của bạn
-                                                    </div>
-                                                </div>
+                                                        <div className='flex items-center justify-between ml-16'>
+                                                            <div className='max-w-[50%]'>
+                                                                <div className='3xl:text-base text-sm text-[#50777E] font-medium space-x-1'>
+                                                                    Thêm thông tin thẻ của bạn
+                                                                </div>
+                                                            </div>
 
-                                                <div className='max-w-[50%] w-full'>
-                                                    <Button
-                                                        type="button"
-                                                        className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-[#1D1D1D] bg-[#9DF2EE] hover:bg-[#9DF2EE]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
-                                                    >
-                                                        Thêm thẻ
-                                                    </Button>
-                                                </div>
+                                                            <div className='max-w-[50%] w-full'>
+                                                                <Button
+                                                                    type="button"
+                                                                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-[#1D1D1D] bg-[#9DF2EE] hover:bg-[#9DF2EE]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                                                >
+                                                                    Thêm thẻ
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                {
+                                                    isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id &&
+                                                    <div className='absolute right-3 top-3'>
+                                                        <PiCheckCircleFill className='size-6 text-[#2FB9BD]' />
+                                                    </div>
+                                                }
                                             </div>
-                                        </div>
+                                            :
+                                            null
                                     }
-                                    {
-                                        isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id &&
-                                        <div className='absolute right-3 top-3'>
-                                            <PiCheckCircleFill className='size-6 text-[#2FB9BD]' />
-                                        </div>
-                                    }
-                                </div>
+                                </React.Fragment>
                             ))
                         }
                     </div>

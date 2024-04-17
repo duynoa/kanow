@@ -19,6 +19,7 @@ import Link from 'next/link'
 import { useDataInfoRentalCar, useDataPolicy } from '@/hooks/useDataQueryKey'
 import Image from 'next/image'
 import { FaDeleteLeft } from 'react-icons/fa6'
+import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
 
 type Props = {
     params: {
@@ -43,6 +44,9 @@ const PriceList = ({
             status: isStateInfoRentalCar?.detailRentalCar?.status?.status
         })
     }
+
+    console.log('isStateInfoRentalCar :', isStateInfoRentalCar);
+
 
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
@@ -101,7 +105,7 @@ const PriceList = ({
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-2'>
+                    {/* <div className='flex flex-col gap-2'>
                         <div className='flex items-center gap-2 w-fit caret-transparent'>
                             <span className='3xl:text-base lg:text-sm md:text-base text-sm font-semibold text-[#383A43]'>
                                 Bảo hiểm thuê xe VNI
@@ -114,7 +118,7 @@ const PriceList = ({
                         <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 duration-200 transition font-semibold cursor-pointer caret-transparent'>
                             Xem thêm
                         </div>
-                    </div>
+                    </div> */}
                 </>
             }
 
@@ -183,7 +187,7 @@ const PriceList = ({
                             }
                         </div>
                         <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
-                            {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price?.price_insurance_day ? isStateInfoRentalCar?.detailRentalCar?.price?.price_insurance_day : 0)}<span>đ</span>
+                            {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price?.price_insurance_day ? isStateInfoRentalCar?.detailRentalCar?.price?.price_insurance_day : 0)}<span>đ/ngày</span>
                         </div>
                     </div>
                 </div>
@@ -314,13 +318,12 @@ const PriceList = ({
                             }
                             {
                                 isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status >= 4 &&
-                                <Button
-                                    type="button"
-                                    onClick={handleOpenAlertCancel}
+                                <Link
+                                    href={`/detail-car/${isStateInfoRentalCar?.detailRentalCar?.car?.id}?${ConvertToSlug(isStateInfoRentalCar?.detailRentalCar?.car?.name)}`}
                                     className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
                                 >
                                     Đặt lại
-                                </Button>
+                                </Link>
                             }
                             {
                                 isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status < 3 &&

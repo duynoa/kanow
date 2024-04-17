@@ -168,8 +168,8 @@ const SearchCars = (props: Props) => {
                 }
             })
             const dataParams = {
-                "lat": valueAddress ? coordinates.lat : "",
-                "lon": valueAddress ? coordinates.lng : "",
+                "lat": valueAddress ? coordinates.lat : undefined,
+                "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`
                 // date_search: "10/04/2024 11:00:00 - 11/04/2024 12:00:00"
             }
@@ -242,8 +242,8 @@ const SearchCars = (props: Props) => {
 
                         const fetchDataListCar = async () => {
                             const query = {
-                                "lat": valueAddress ? coordinates.lat : "",
-                                "lon": valueAddress ? coordinates.lng : "",
+                                "lat": valueAddress ? coordinates.lat : undefined,
+                                "lon": valueAddress ? coordinates.lng : undefined,
                                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                                 // date_search: "10/04/2024 11:00:00 - 11/04/2024 12:00:00",
                                 company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
@@ -431,8 +431,8 @@ const SearchCars = (props: Props) => {
             const newStarSearch = isState?.dataParams?.star_search !== item.value ? item.value : 0;
 
             const query = {
-                "lat": valueAddress ? coordinates.lat : "",
-                "lon": valueAddress ? coordinates.lng : "",
+                "lat": valueAddress ? coordinates.lat : undefined,
+                "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
                 type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
@@ -482,8 +482,8 @@ const SearchCars = (props: Props) => {
             const newTramSearch = isState?.dataParams?.tram_search !== item.value ? item.value : 0;
 
             const query = {
-                "lat": valueAddress ? coordinates.lat : "",
-                "lon": valueAddress ? coordinates.lng : "",
+                "lat": valueAddress ? coordinates.lat : undefined,
+                "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
                 type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
@@ -533,8 +533,8 @@ const SearchCars = (props: Props) => {
             const newDiscountSearch = isState?.dataParams?.discount_search !== item.value ? item.value : 0;
 
             const query = {
-                "lat": valueAddress ? coordinates.lat : "",
-                "lon": valueAddress ? coordinates.lng : "",
+                "lat": valueAddress ? coordinates.lat : undefined,
+                "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
                 type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
@@ -584,8 +584,8 @@ const SearchCars = (props: Props) => {
             const newBookCarFlashSearch = isState?.dataParams?.book_car_flash !== item.value ? item.value : 0;
 
             const query = {
-                "lat": valueAddress ? coordinates.lat : "",
-                "lon": valueAddress ? coordinates.lng : "",
+                "lat": valueAddress ? coordinates.lat : undefined,
+                "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
                 type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
@@ -635,8 +635,8 @@ const SearchCars = (props: Props) => {
             const newMortgageSearch = isState?.dataParams?.mortgage !== item.value ? item.value : 0;
 
             const query = {
-                "lat": valueAddress ? coordinates.lat : "",
-                "lon": valueAddress ? coordinates.lng : "",
+                "lat": valueAddress ? coordinates.lat : undefined,
+                "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
                 type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
@@ -686,8 +686,8 @@ const SearchCars = (props: Props) => {
             const newDeliveryCarSearch = isState?.dataParams?.delivery_car !== item.value ? item.value : 0;
 
             const query = {
-                "lat": valueAddress ? coordinates.lat : "",
-                "lon": valueAddress ? coordinates.lng : "",
+                "lat": valueAddress ? coordinates.lat : undefined,
+                "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
                 type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,

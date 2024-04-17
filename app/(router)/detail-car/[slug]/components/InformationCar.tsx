@@ -58,7 +58,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
 
     return (
         <div className='flex flex-col gap-6 xxl:w-[70%] xxl:max-w-[70%] lg:w-[65%] lg:max-w-[65%] w-full max-w-full h-full pb-16 lg:order-none order-2'>
-            <div className='flex flex-row items-center justify-between 3xl:pb-6 pb-4 border-b-2'>
+            <div className='flex flex-row items-center justify-between 3xl:pb-6 pb-4 border-b'>
                 <div className='flex flex-col gap-2'>
                     <div className='3xl:text-4xl md:text-3xl text-xl uppercase text-[#09080D] font-bold'>
                         {isStateDetailCar?.dataDetailCar?.name_car ? isStateDetailCar?.dataDetailCar?.name_car : ""}
@@ -114,7 +114,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                 </div>
             </div>
 
-            <div id="section-1" className='flex flex-col gap-2 3xl:pb-6 pb-4 border-b-2'>
+            <div id="section-1" className='flex flex-col gap-2 3xl:pb-6 pb-4 border-b'>
                 <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                     Đặc điểm
                 </div>
@@ -180,7 +180,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                 </div>
             </div>
 
-            <div className='flex flex-col gap-2 3xl:pb-6 pb-4 border-b-2'>
+            <div className='flex flex-col gap-2 3xl:pb-6 pb-4 border-b'>
                 <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                     Mô tả
                 </div>
@@ -221,7 +221,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                 </div>
             </div>
 
-            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
+            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
                 <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                     Tiện nghi trên xe
                 </div>
@@ -244,7 +244,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
             </div>
 
             {/* api thiếu data */}
-            <div id="section-2" className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
+            <div id="section-2" className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
                 <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                     Chủ xe
                 </div>
@@ -282,7 +282,9 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                                         </div>
                                     </div>
                                     :
-                                    null
+                                    <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                        Chưa có đánh giá
+                                    </div>
                             }
                         </div>
                     </div>
@@ -320,7 +322,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
             </div>
 
             {/* chưa có toạ độ google maps */}
-            <div id="section-3" className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
+            <div id="section-3" className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
                 <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                     Vị trí xe
                 </div>
@@ -335,7 +337,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                 </div>
             </div>
 
-            <div className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b-2'>
+            <div className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b'>
                 <div className='flex items-center justify-between'>
                     <div className='flex flex-col gap-1'>
                         <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
@@ -444,7 +446,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                 }
             </div>
 
-            <div id="section-4" className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
+            <div id="section-4" className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
                 <div className='flex flex-row items-center gap-2'>
                     <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                         Giấy tờ thuê xe
@@ -554,7 +556,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                 </div>
             </div>
 
-            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
+            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
                 <div className='flex flex-row items-center gap-2'>
                     <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                         Tài sản thế chấp
@@ -580,35 +582,49 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                             </ActionTooltip>
                     }
                 </div>
-                <div className='3xl:text-base text-sm text-[#585F71]'>
-                    {isStateDetailCar?.dataDetailCar?.collateral_car?.note_mortgage ? isStateDetailCar?.dataDetailCar?.collateral_car?.note_mortgage : ""}
-                </div>
+                {
+                    isStateDetailCar?.dataDetailCar?.type?.mortgage ?
+                        <div className='border border-l-[10px] border-y-0 border-r-0 border-[#2FB9BD] bg-[#2FB9BD]/20 rounded-lg px-6 py-4'>
+                            <div className='3xl:text-base text-sm text-[#585F71]'>
+                                Không yêu cầu khách thuê thế chấp Tiền mặt hoặc Xe máy
+                            </div>
+                        </div>
+                        :
+                        <div className='3xl:text-base text-sm text-[#585F71]'>
+                            {isStateDetailCar?.dataDetailCar?.collateral_car?.note_mortgage ? isStateDetailCar?.dataDetailCar?.collateral_car?.note_mortgage : ""}
+                        </div>
+                }
             </div>
 
-            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
-                <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
-                    Phụ phí có thể phát sinh
-                </div>
-                <div className='flex flex-col gap-4'>
-                    {
-                        isStateDetailCar?.dataDetailCar?.surcharge_car && isStateDetailCar?.dataDetailCar?.surcharge_car?.map((item) => (
-                            <div key={`id-${item.id}`} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
-                                <div className='w-[70%] max-w-[70%] flex flex-col gap-1'>
-                                    <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
-                                        {item.name ? item.name : ""}
+            {
+                isStateDetailCar?.dataDetailCar?.surcharge_car && isStateDetailCar?.dataDetailCar?.surcharge_car.length > 0 ?
+                    <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
+                        <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
+                            Phụ phí có thể phát sinh
+                        </div>
+                        <div className='flex flex-col gap-4'>
+                            {
+                                isStateDetailCar?.dataDetailCar?.surcharge_car?.map((item) => (
+                                    <div key={`id-${item.id}`} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
+                                        <div className='w-[70%] max-w-[70%] flex flex-col gap-1'>
+                                            <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
+                                                {item.name ? item.name : ""}
+                                            </div>
+                                            <div className='3xl:text-base text-sm text-[#585F71]'>
+                                                {item.note ? item.note : ""}
+                                            </div>
+                                        </div>
+                                        <div className='3xl:text-base text-sm w-[20%] max-w-[20%] flex justify-end text-[#FA3434] font-medium'>
+                                            {item.value ? `${FormatNumberToDecimal(item.value, 3)}đ` : ""}
+                                        </div>
                                     </div>
-                                    <div className='3xl:text-base text-sm text-[#585F71]'>
-                                        {item.note ? item.note : ""}
-                                    </div>
-                                </div>
-                                <div className='3xl:text-base text-sm w-[20%] max-w-[20%] flex justify-end text-[#FA3434] font-medium'>
-                                    {item.value ? item.value : ""}
-                                </div>
-                            </div>
-                        ))
-                    }
-                </div>
-            </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+                    :
+                    null
+            }
 
             <div className='flex flex-col 3xl:gap-4 gap-2'>
                 <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>

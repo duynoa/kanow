@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import {
     Dialog,
@@ -37,12 +37,13 @@ import { useDataPolicy } from "@/hooks/useDataQueryKey";
 import moment from "moment";
 import { postRequestRentalCar } from "@/services/cars/cars.services";
 import { toastCore } from "@/lib/toast";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 type Props = {};
 
-export function DialogRequestCarRental({ }: Props) {
+export const DialogRequestCarRental = memo(({ }: Props) => {
     const router = useRouter()
+    const pathname = usePathname()
     const { isVisibleTablet } = useResize()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isStatePolicy } = useDataPolicy()
@@ -50,13 +51,18 @@ export function DialogRequestCarRental({ }: Props) {
     const { dateReal, numberDay, dateTemp } = useDialogCalendar()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
-    const [checkPolicy, setCheckPolicy] = useState<boolean>(false)
+    const [checkPolicy, setCheckPolicy] = useState<boolean>(true)
 
     useEffect(() => {
-        if (openDialogRequestCarRental) {
-            setIsMounted(true)
+        setIsMounted(true)
+    }, [])
+
+    // tác dụng nếu qua page khác thì sẽ tắt dialog này
+    useEffect(() => {
+        if (!pathname.startsWith('/detail-car/')) {
+            setOpenDialogRequestCarRental(false)
         }
-    }, [openDialogRequestCarRental])
+    }, [pathname])
 
     const form = useForm({
         defaultValues: {
@@ -89,7 +95,7 @@ export function DialogRequestCarRental({ }: Props) {
                 toastCore.success('Gửi yêu cầu thuê xe thành công!')
                 setOpenDialogRequestCarRental(false)
                 router.push(`/info-rental-car/${data.id}`)
-                setCheckPolicy(false)
+                setCheckPolicy(true)
             } else {
                 toastCore.error(data.message)
             }
@@ -101,10 +107,10 @@ export function DialogRequestCarRental({ }: Props) {
 
     const handleCloseModal = () => {
         setOpenDialogRequestCarRental(false)
-        setCheckPolicy(false)
+        setCheckPolicy(true)
     }
 
-    if (!isMounted) {
+    if (!isMounted || !openDialogRequestCarRental) {
         return null
     }
 
@@ -239,7 +245,7 @@ export function DialogRequestCarRental({ }: Props) {
                                             </div>
                                             <div className='pl-7 mt-1 3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium'>
                                                 {/* 12 Hoàn Kiếm Hà Nội */}
-                                                {dataListRequestCarRental?.dataDetailCar?.full_address}
+                                                {dataListRequestCarRental?.dataDetailCar?.address ? dataListRequestCarRental?.dataDetailCar?.address : ""}
                                             </div>
                                             <div className='pl-7 3xl:text-base lg:text-sm md:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-medium cursor-pointer w-fit duration-200 transition caret-transparent'>
                                                 Xem bản đồ
@@ -283,11 +289,13 @@ export function DialogRequestCarRental({ }: Props) {
                                                         <div className='flex items-center gap-1'>
                                                             <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
                                                             <div className='3xl:text-sm text-xs text-[#484D5C] font-medium'>
-                                                                {dataListRequestCarRental?.dataDetailCar?.point_star ? (FormatPointStar(4.9999, 1)) : 0}
+                                                                {dataListRequestCarRental?.dataDetailCar?.point_star ? (FormatPointStar(dataListRequestCarRental?.dataDetailCar?.point_star, 1)) : 0}
                                                             </div>
                                                         </div>
                                                         :
-                                                        null
+                                                        <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                                            Chưa có đánh giá
+                                                        </div>
                                                 }
                                             </div>
                                         </div>
@@ -504,7 +512,7 @@ export function DialogRequestCarRental({ }: Props) {
                                                 }
                                             </div>
                                             <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
-                                                {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.price_insurance_day ? dataListRequestCarRental?.dataDetailCar?.price?.price_insurance_day : 0)}<span>đ</span>
+                                                {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.price_insurance_day ? dataListRequestCarRental?.dataDetailCar?.price?.price_insurance_day : 0)}<span>đ/ngày</span>
                                             </div>
                                         </div>
                                     </div>
@@ -726,4 +734,6 @@ export function DialogRequestCarRental({ }: Props) {
             </DialogContent>
         </Dialog>
     );
-}
+})
+
+DialogRequestCarRental.displayName = "DialogRequestCarRental";

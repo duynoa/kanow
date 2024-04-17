@@ -39,6 +39,7 @@ import { getDataPolicy } from '@/services/cars/policy.services'
 import { useDataDetailCar, useDataPolicy } from '@/hooks/useDataQueryKey'
 import moment from 'moment'
 import { getListCalendarPriceMonth } from '@/services/cars/calendar.services'
+import { addDays, differenceInMinutes, setHours, setMinutes } from 'date-fns'
 
 type Props = {
     params: {
@@ -54,16 +55,19 @@ const DetailCar = ({ params }: Props) => {
     const { dataPromotions, setDataPromotions } = useDialogPromotion()
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
 
-    const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
+    const { isStateDetailCar, queryKeyIsStateDetailCar, setShouldFetchData, shouldFetchData } = useDataDetailCar()
 
     const { queryKeyIsStatePolicy } = useDataPolicy()
-    const { dateReal, dateTemp, numberDay, setDataCalendar } = useDialogCalendar()
+    const { openDialogCalendar, dateReal, dateTemp, numberDay, dateStart, dateEnd, setDateTemp, setDateStart, setDateEnd, setDataCalendar, setNumberDay } = useDialogCalendar()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [slug, setSlug] = useState(params.slug);
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
     const [showSecondHeader, setShowSecondHeader] = useState(false);
-
+    const parseTimeString = (timeString: string): [number, number] => {
+        const [hours, minutes] = timeString?.split(':').map(Number);
+        return [hours, minutes];
+    };
     // const initialState: IInitialStateDetailCar = {
     //     dataDetailCar: {
     //         id: "",
@@ -147,35 +151,7 @@ const DetailCar = ({ params }: Props) => {
         setIsMounted(true)
     }, [])
 
-    const fetchDataDetailCar = async () => {
-        try {
-            queryKeyIsStateDetailCar({
-                onSuccess: {
-                    onSuccessPage: true
-                }
-            })
 
-            let dataParams = {
-                date_search: `${dateTemp ? `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}` : `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`} `
-            }
-            const { data } = await getDataDetailCar(params.slug, dataParams)
-
-            if (data && data.data && data.base.base) {
-                let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
-                console.log('customDataDetailCar', customDataDetailCar);
-
-                queryKeyIsStateDetailCar({
-                    dataDetailCar: customDataDetailCar,
-                    onSuccess: {
-                        onSuccessPage: false
-                    }
-                })
-            }
-        } catch (err) {
-            throw err
-        }
-
-    }
 
     const fetchDataListCarsRelated = async () => {
         try {
@@ -215,10 +191,113 @@ const DetailCar = ({ params }: Props) => {
         }
     }
 
-    useEffect(() => {
-        fetchDataDetailCar()
-    }, [slug, getCookie, dateTemp, dateReal])
+    const fetchDataDetailCarFirst = async () => {
+        try {
+            // Kiểm tra nếu không cần gọi fetchDataDetailCarSecond thì return luôn
+            // if (!shouldFetchData) return;
 
+            queryKeyIsStateDetailCar({
+                onSuccess: {
+                    onSuccessPage: true
+                }
+            })
+
+            let dataParams = {
+                date_search: `${dateTemp ? `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}` : `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`} `
+            }
+            const { data } = await getDataDetailCar(params.slug, dataParams)
+
+            if (data && data.data && data.base.base) {
+                let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
+
+                if (data.data?.hour_receive_car &&
+                    data.data?.hour_back_car &&
+                    data.data?.hour_receive_car?.length > 0 &&
+                    data.data?.hour_back_car?.length > 0
+                ) {
+                    const [startHours, startMinutes] = parseTimeString(data.data?.hour_receive_car ? data.data?.hour_receive_car[0]?.hour_start : "21:00");
+                    const [endHours, endMinutes] = parseTimeString(data.data?.hour_back_car ? data.data?.hour_back_car[0]?.hour_start : "20:00");
+
+                    const startDate = setMinutes(setHours(new Date(), startHours), startMinutes);
+                    const endDate = setMinutes(setHours(addDays(new Date(), 1), endHours), endMinutes);
+
+                    const minutesDifference = differenceInMinutes(endDate, startDate);
+                    const timeDate = Math.ceil(minutesDifference / 1440)
+
+                    setDateStart(startDate)
+                    setDateEnd(endDate)
+                    setDateTemp({
+                        from: startDate,
+                        to: endDate,
+                    })
+                    setNumberDay(timeDate)
+                } else {
+                    const startDate = setMinutes(setHours(new Date(), 21), 0);
+                    const endDate = setMinutes(setHours(addDays(new Date(), 1), 20), 0);
+
+                    const minutesDifference = differenceInMinutes(endDate, startDate);
+                    const timeDate = Math.ceil(minutesDifference / 1440)
+
+                    setDateStart(startDate)
+                    setDateEnd(endDate)
+                    setDateTemp({
+                        from: startDate,
+                        to: endDate,
+                    })
+
+                    setNumberDay(timeDate)
+                }
+
+                queryKeyIsStateDetailCar({
+                    dataDetailCar: customDataDetailCar,
+                    onSuccess: {
+                        onSuccessPage: false
+                    }
+                })
+            }
+            // Đã gọi fetchDataDetailCarSecond, set shouldFetchData về false để tránh gọi lại trong useEffect
+            setShouldFetchData(false);
+        } catch (err) {
+            throw err
+        }
+
+    }
+    const fetchDataDetailCarSecond = async () => {
+        try {
+            // Kiểm tra nếu không cần gọi fetchDataDetailCarSecond thì return luôn
+            // if (!shouldFetchData) return;
+
+            queryKeyIsStateDetailCar({
+                onSuccess: {
+                    onSuccessPage: true
+                }
+            })
+
+            let dataParams = {
+                date_search: `${dateTemp ? `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}` : `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`} `
+            }
+            const { data } = await getDataDetailCar(params.slug, dataParams)
+
+            if (data && data.data && data.base.base) {
+                let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
+
+                queryKeyIsStateDetailCar({
+                    dataDetailCar: customDataDetailCar,
+                    onSuccess: {
+                        onSuccessPage: false
+                    }
+                })
+            }
+            // Đã gọi fetchDataDetailCarSecond, set shouldFetchData về false để tránh gọi lại trong useEffect
+            setShouldFetchData(false);
+        } catch (err) {
+            throw err
+        }
+
+    }
+    useEffect(() => {
+        fetchDataDetailCarSecond()
+    }, [openDialogCalendar, shouldFetchData])
 
     useEffect(() => {
         const fetchListPromotions = async () => {
@@ -268,56 +347,54 @@ const DetailCar = ({ params }: Props) => {
             }
         }
 
-        // fetchDataDetailCar()
+        fetchDataDetailCarFirst()
         fetchDataListCalendarPriceMonth()
         fetchDataPolicy()
         fetchDataListCarsRelated()
         fetchListPromotions()
         fetchListReportCar()
-    }, [slug, getCookie])
+    }, [slug])
 
     useEffect(() => {
-        if (numberDay) {
-            queryKeyIsStateDetailCar({
-                dataDetailCar: {
-                    ...isStateDetailCar?.dataDetailCar,
-                    price: {
-                        ...isStateDetailCar?.dataDetailCar?.price,
-                        // tổng tạm tính 
-                        temp_total_amount: (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+        queryKeyIsStateDetailCar({
+            dataDetailCar: {
+                ...isStateDetailCar?.dataDetailCar,
+                price: {
+                    ...isStateDetailCar?.dataDetailCar?.price,
+                    // tổng tạm tính 
+                    temp_total_amount: (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
 
-                        // thành tiền
-                        total_amount:
-                            isStateDetailCar?.dataDetailCar?.promotion?.length > 0
-                                ?
-                                ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1)) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day
-                                :
-                                (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+                    // thành tiền
+                    total_amount:
+                        isStateDetailCar?.dataDetailCar?.promotion?.length > 0
+                            ?
+                            ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1)) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day
+                            :
+                            (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
 
-                        // tiền đặt cọc
-                        price_depoist:
-                            isStateDetailCar?.dataDetailCar?.promotion?.length > 0
-                                ?
-                                ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
-                                :
-                                (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
-                        ,
-                        // số ngày
-                        // number_day: +isStateDetailCar?.dataDetailCar?.price?.number_day,
-                        number_day: numberDay ? numberDay : 1,
-                        // thanh toán khi nhận xe (Thành tiền - tiền cọc)
-                        cash_on_delivery:
-                            isStateDetailCar?.dataDetailCar?.promotion?.length > 0
-                                ?
-                                (((+isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - +isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + (+isStateDetailCar?.dataDetailCar?.price?.price_insurance_day)) * (numberDay ? numberDay : 1)) - ((((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100))
-                                :
-                                ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - (((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)),
+                    // tiền đặt cọc
+                    price_depoist:
+                        isStateDetailCar?.dataDetailCar?.promotion?.length > 0
+                            ?
+                            ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
+                            :
+                            (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
+                    ,
+                    // số ngày
+                    // number_day: +isStateDetailCar?.dataDetailCar?.price?.number_day,
+                    number_day: numberDay ? numberDay : 1,
+                    // thanh toán khi nhận xe (Thành tiền - tiền cọc)
+                    cash_on_delivery:
+                        isStateDetailCar?.dataDetailCar?.promotion?.length > 0
+                            ?
+                            (((+isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - +isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + (+isStateDetailCar?.dataDetailCar?.price?.price_insurance_day)) * (numberDay ? numberDay : 1)) - ((((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100))
+                            :
+                            ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - (((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)),
 
-                    }
                 }
-            })
-        }
-    }, [numberDay])
+            }
+        })
+    }, [numberDay, queryKeyIsStateDetailCar])
 
 
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {
@@ -353,7 +430,7 @@ const DetailCar = ({ params }: Props) => {
 
                 const { data } = await postUpdateFavoriteHeartCar(dataParams)
                 if (data.result && getCookie !== "kanow" && getCookie !== undefined) {
-                    fetchDataDetailCar()
+                    fetchDataDetailCarSecond()
                 } else {
                     setOpenDialogLogin(true)
                 }

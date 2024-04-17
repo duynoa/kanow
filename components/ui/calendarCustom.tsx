@@ -12,6 +12,7 @@ import { A11y, Pagination } from "swiper/modules";
 import { TiArrowLeft, TiArrowRight } from "react-icons/ti";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useDialogCalendar } from "@/hooks/useOpenDialog";
+import { debounce } from "lodash";
 
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
@@ -43,192 +44,1045 @@ function CalendarCustom({
         setValidateDateSubmit
     } = useDialogCalendar()
 
-
+    // const data = [
+    //     {
+    //         "id": 13,
+    //         "car": {
+    //             "id": 23,
+    //             "name": "MAZDA CX8 LUXURY 2021"
+    //         },
+    //         "month": "04",
+    //         "year": "2024",
+    //         "price_detail": [
+    //             {
+    //                 "id": 365,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-01",
+    //                 "date_word": "Mon",
+    //                 "day": 1,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 366,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-02",
+    //                 "date_word": "Tue",
+    //                 "day": 2,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 367,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-03",
+    //                 "date_word": "Wed",
+    //                 "day": 3,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 368,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-04",
+    //                 "date_word": "Thu",
+    //                 "day": 4,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 369,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-05",
+    //                 "date_word": "Fri",
+    //                 "day": 5,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 370,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1600000,
+    //                 "date": "2024-04-06",
+    //                 "date_word": "Sat",
+    //                 "day": 6,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 371,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1600000,
+    //                 "date": "2024-04-07",
+    //                 "date_word": "Sun",
+    //                 "day": 7,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 372,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-08",
+    //                 "date_word": "Mon",
+    //                 "day": 8,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 373,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-09",
+    //                 "date_word": "Tue",
+    //                 "day": 9,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 374,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-10",
+    //                 "date_word": "Wed",
+    //                 "day": 10,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 375,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1600000,
+    //                 "date": "2024-04-11",
+    //                 "date_word": "Thu",
+    //                 "day": 11,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 376,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-12",
+    //                 "date_word": "Fri",
+    //                 "day": 12,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 377,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1600000,
+    //                 "date": "2024-04-13",
+    //                 "date_word": "Sat",
+    //                 "day": 13,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 378,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1600000,
+    //                 "date": "2024-04-14",
+    //                 "date_word": "Sun",
+    //                 "day": 14,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 379,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-15",
+    //                 "date_word": "Mon",
+    //                 "day": 15,
+    //                 "status": 2
+    //             },
+    //             {
+    //                 "id": 380,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-16",
+    //                 "date_word": "Tue",
+    //                 "day": 16,
+    //                 "status": 2
+    //             },
+    //             {
+    //                 "id": 381,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-17",
+    //                 "date_word": "Wed",
+    //                 "day": 17,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 382,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-18",
+    //                 "date_word": "Thu",
+    //                 "day": 18,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 383,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-19",
+    //                 "date_word": "Fri",
+    //                 "day": 19,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 384,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1600000,
+    //                 "date": "2024-04-20",
+    //                 "date_word": "Sat",
+    //                 "day": 20,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 385,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1600000,
+    //                 "date": "2024-04-21",
+    //                 "date_word": "Sun",
+    //                 "day": 21,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 386,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-22",
+    //                 "date_word": "Mon",
+    //                 "day": 22,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 387,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-23",
+    //                 "date_word": "Tue",
+    //                 "day": 23,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 388,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-24",
+    //                 "date_word": "Wed",
+    //                 "day": 24,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 389,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-25",
+    //                 "date_word": "Thu",
+    //                 "day": 25,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 390,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-26",
+    //                 "date_word": "Fri",
+    //                 "day": 26,
+    //                 "status": 2
+    //             },
+    //             {
+    //                 "id": 391,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1600000,
+    //                 "date": "2024-04-27",
+    //                 "date_word": "Sat",
+    //                 "day": 27,
+    //                 "status": 2
+    //             },
+    //             {
+    //                 "id": 392,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1600000,
+    //                 "date": "2024-04-28",
+    //                 "date_word": "Sun",
+    //                 "day": 28,
+    //                 "status": 2
+    //             },
+    //             {
+    //                 "id": 393,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-29",
+    //                 "date_word": "Mon",
+    //                 "day": 29,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 394,
+    //                 "price_month_car_id": 13,
+    //                 "price": 1580000,
+    //                 "date": "2024-04-30",
+    //                 "date_word": "Tue",
+    //                 "day": 30,
+    //                 "status": 0
+    //             }
+    //         ]
+    //     },
+    //     {
+    //         "id": 14,
+    //         "car": {
+    //             "id": 23,
+    //             "name": "MAZDA CX8 LUXURY 2021"
+    //         },
+    //         "month": "05",
+    //         "year": "2024",
+    //         "price_detail": [
+    //             {
+    //                 "id": 395,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-01",
+    //                 "date_word": "Wed",
+    //                 "day": 1,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 396,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-02",
+    //                 "date_word": "Thu",
+    //                 "day": 2,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 397,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-03",
+    //                 "date_word": "Fri",
+    //                 "day": 3,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 398,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1600000,
+    //                 "date": "2024-05-04",
+    //                 "date_word": "Sat",
+    //                 "day": 4,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 399,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1600000,
+    //                 "date": "2024-05-05",
+    //                 "date_word": "Sun",
+    //                 "day": 5,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 400,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-06",
+    //                 "date_word": "Mon",
+    //                 "day": 6,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 401,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-07",
+    //                 "date_word": "Tue",
+    //                 "day": 7,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 402,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-08",
+    //                 "date_word": "Wed",
+    //                 "day": 8,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 403,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-09",
+    //                 "date_word": "Thu",
+    //                 "day": 9,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 404,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-10",
+    //                 "date_word": "Fri",
+    //                 "day": 10,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 405,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1600000,
+    //                 "date": "2024-05-11",
+    //                 "date_word": "Sat",
+    //                 "day": 11,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 406,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1600000,
+    //                 "date": "2024-05-12",
+    //                 "date_word": "Sun",
+    //                 "day": 12,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 407,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-13",
+    //                 "date_word": "Mon",
+    //                 "day": 13,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 408,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-14",
+    //                 "date_word": "Tue",
+    //                 "day": 14,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 409,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-15",
+    //                 "date_word": "Wed",
+    //                 "day": 15,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 410,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-16",
+    //                 "date_word": "Thu",
+    //                 "day": 16,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 411,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-17",
+    //                 "date_word": "Fri",
+    //                 "day": 17,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 412,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1600000,
+    //                 "date": "2024-05-18",
+    //                 "date_word": "Sat",
+    //                 "day": 18,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 413,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1600000,
+    //                 "date": "2024-05-19",
+    //                 "date_word": "Sun",
+    //                 "day": 19,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 414,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-20",
+    //                 "date_word": "Mon",
+    //                 "day": 20,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 415,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-21",
+    //                 "date_word": "Tue",
+    //                 "day": 21,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 416,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-22",
+    //                 "date_word": "Wed",
+    //                 "day": 22,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 417,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-23",
+    //                 "date_word": "Thu",
+    //                 "day": 23,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 418,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-24",
+    //                 "date_word": "Fri",
+    //                 "day": 24,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 419,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1600000,
+    //                 "date": "2024-05-25",
+    //                 "date_word": "Sat",
+    //                 "day": 25,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 420,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1600000,
+    //                 "date": "2024-05-26",
+    //                 "date_word": "Sun",
+    //                 "day": 26,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 421,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-27",
+    //                 "date_word": "Mon",
+    //                 "day": 27,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 422,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-28",
+    //                 "date_word": "Tue",
+    //                 "day": 28,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 423,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-29",
+    //                 "date_word": "Wed",
+    //                 "day": 29,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 424,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-30",
+    //                 "date_word": "Thu",
+    //                 "day": 30,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 425,
+    //                 "price_month_car_id": 14,
+    //                 "price": 1580000,
+    //                 "date": "2024-05-31",
+    //                 "date_word": "Fri",
+    //                 "day": 31,
+    //                 "status": 0
+    //             }
+    //         ]
+    //     },
+    //     {
+    //         "id": 15,
+    //         "car": {
+    //             "id": 23,
+    //             "name": "MAZDA CX8 LUXURY 2021"
+    //         },
+    //         "month": "06",
+    //         "year": "2024",
+    //         "price_detail": [
+    //             {
+    //                 "id": 426,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1600000,
+    //                 "date": "2024-06-01",
+    //                 "date_word": "Sat",
+    //                 "day": 1,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 427,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1600000,
+    //                 "date": "2024-06-02",
+    //                 "date_word": "Sun",
+    //                 "day": 2,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 428,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-03",
+    //                 "date_word": "Mon",
+    //                 "day": 3,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 429,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-04",
+    //                 "date_word": "Tue",
+    //                 "day": 4,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 430,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-05",
+    //                 "date_word": "Wed",
+    //                 "day": 5,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 431,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-06",
+    //                 "date_word": "Thu",
+    //                 "day": 6,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 432,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-07",
+    //                 "date_word": "Fri",
+    //                 "day": 7,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 433,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1600000,
+    //                 "date": "2024-06-08",
+    //                 "date_word": "Sat",
+    //                 "day": 8,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 434,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1600000,
+    //                 "date": "2024-06-09",
+    //                 "date_word": "Sun",
+    //                 "day": 9,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 435,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-10",
+    //                 "date_word": "Mon",
+    //                 "day": 10,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 436,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-11",
+    //                 "date_word": "Tue",
+    //                 "day": 11,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 437,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-12",
+    //                 "date_word": "Wed",
+    //                 "day": 12,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 438,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-13",
+    //                 "date_word": "Thu",
+    //                 "day": 13,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 439,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-14",
+    //                 "date_word": "Fri",
+    //                 "day": 14,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 440,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1600000,
+    //                 "date": "2024-06-15",
+    //                 "date_word": "Sat",
+    //                 "day": 15,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 441,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1600000,
+    //                 "date": "2024-06-16",
+    //                 "date_word": "Sun",
+    //                 "day": 16,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 442,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-17",
+    //                 "date_word": "Mon",
+    //                 "day": 17,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 443,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-18",
+    //                 "date_word": "Tue",
+    //                 "day": 18,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 444,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-19",
+    //                 "date_word": "Wed",
+    //                 "day": 19,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 445,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-20",
+    //                 "date_word": "Thu",
+    //                 "day": 20,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 446,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-21",
+    //                 "date_word": "Fri",
+    //                 "day": 21,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 447,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1600000,
+    //                 "date": "2024-06-22",
+    //                 "date_word": "Sat",
+    //                 "day": 22,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 448,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1600000,
+    //                 "date": "2024-06-23",
+    //                 "date_word": "Sun",
+    //                 "day": 23,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 449,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-24",
+    //                 "date_word": "Mon",
+    //                 "day": 24,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 450,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-25",
+    //                 "date_word": "Tue",
+    //                 "day": 25,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 451,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-26",
+    //                 "date_word": "Wed",
+    //                 "day": 26,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 452,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-27",
+    //                 "date_word": "Thu",
+    //                 "day": 27,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 453,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1580000,
+    //                 "date": "2024-06-28",
+    //                 "date_word": "Fri",
+    //                 "day": 28,
+    //                 "status": 0
+    //             },
+    //             {
+    //                 "id": 454,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1600000,
+    //                 "date": "2024-06-29",
+    //                 "date_word": "Sat",
+    //                 "day": 29,
+    //                 "status": 1
+    //             },
+    //             {
+    //                 "id": 455,
+    //                 "price_month_car_id": 15,
+    //                 "price": 1600000,
+    //                 "date": "2024-06-30",
+    //                 "date_word": "Sun",
+    //                 "day": 30,
+    //                 "status": 1
+    //             },
+    //         ]
+    //     }
+    // ]
 
     const data = [
         {
-            "id": 13,
+            "id": 24,
             "car": {
-                "id": 23,
-                "name": "MAZDA CX8 LUXURY 2021"
+                "id": 22,
+                "name": "MITSUBISHI PAJERO SPORT 2015"
             },
             "month": "04",
             "year": "2024",
             "price_detail": [
                 {
-                    "id": 365,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 700,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-01",
                     "date_word": "Mon",
                     "day": 1,
                     "status": 0
                 },
                 {
-                    "id": 366,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 701,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-02",
                     "date_word": "Tue",
                     "day": 2,
                     "status": 0
                 },
                 {
-                    "id": 367,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 702,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-03",
                     "date_word": "Wed",
                     "day": 3,
                     "status": 0
                 },
                 {
-                    "id": 368,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 703,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-04",
                     "date_word": "Thu",
                     "day": 4,
                     "status": 0
                 },
                 {
-                    "id": 369,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 704,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-05",
                     "date_word": "Fri",
                     "day": 5,
                     "status": 0
                 },
                 {
-                    "id": 370,
-                    "price_month_car_id": 13,
-                    "price": 1600000,
+                    "id": 705,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-06",
                     "date_word": "Sat",
                     "day": 6,
-                    "status": 1
+                    "status": 0
                 },
                 {
-                    "id": 371,
-                    "price_month_car_id": 13,
-                    "price": 1600000,
+                    "id": 706,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-07",
                     "date_word": "Sun",
                     "day": 7,
-                    "status": 1
+                    "status": 0
                 },
                 {
-                    "id": 372,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 707,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-08",
                     "date_word": "Mon",
                     "day": 8,
                     "status": 0
                 },
                 {
-                    "id": 373,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 708,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-09",
                     "date_word": "Tue",
                     "day": 9,
                     "status": 0
                 },
                 {
-                    "id": 374,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 709,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-10",
                     "date_word": "Wed",
                     "day": 10,
                     "status": 0
                 },
                 {
-                    "id": 375,
-                    "price_month_car_id": 13,
-                    "price": 1600000,
+                    "id": 710,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-11",
                     "date_word": "Thu",
                     "day": 11,
-                    "status": 1
+                    "status": 0
                 },
                 {
-                    "id": 376,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 711,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-12",
                     "date_word": "Fri",
                     "day": 12,
                     "status": 0
                 },
                 {
-                    "id": 377,
-                    "price_month_car_id": 13,
-                    "price": 1600000,
+                    "id": 712,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-13",
                     "date_word": "Sat",
                     "day": 13,
-                    "status": 1
+                    "status": 0
                 },
                 {
-                    "id": 378,
-                    "price_month_car_id": 13,
-                    "price": 1600000,
+                    "id": 713,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-14",
                     "date_word": "Sun",
                     "day": 14,
-                    "status": 1
+                    "status": 0
                 },
                 {
-                    "id": 379,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 714,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-15",
                     "date_word": "Mon",
                     "day": 15,
-                    "status": 2
+                    "status": 0
                 },
                 {
-                    "id": 380,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 715,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-16",
                     "date_word": "Tue",
                     "day": 16,
-                    "status": 2
+                    "status": 0
                 },
                 {
-                    "id": 381,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 716,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-17",
                     "date_word": "Wed",
                     "day": 17,
-                    "status": 0
+                    "status": 2
                 },
                 {
-                    "id": 382,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 717,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-18",
                     "date_word": "Thu",
                     "day": 18,
-                    "status": 0
+                    "status": 2
                 },
                 {
-                    "id": 383,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 718,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-19",
                     "date_word": "Fri",
                     "day": 19,
                     "status": 0
                 },
                 {
-                    "id": 384,
-                    "price_month_car_id": 13,
+                    "id": 719,
+                    "price_month_car_id": 24,
                     "price": 1600000,
                     "date": "2024-04-20",
                     "date_word": "Sat",
@@ -236,90 +1090,90 @@ function CalendarCustom({
                     "status": 1
                 },
                 {
-                    "id": 385,
-                    "price_month_car_id": 13,
-                    "price": 1600000,
+                    "id": 720,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-21",
                     "date_word": "Sun",
                     "day": 21,
-                    "status": 1
+                    "status": 2
                 },
                 {
-                    "id": 386,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 721,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-22",
                     "date_word": "Mon",
                     "day": 22,
                     "status": 0
                 },
                 {
-                    "id": 387,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 722,
+                    "price_month_car_id": 24,
+                    "price": 2000000,
                     "date": "2024-04-23",
                     "date_word": "Tue",
                     "day": 23,
-                    "status": 0
+                    "status": 3
                 },
                 {
-                    "id": 388,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 723,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-24",
                     "date_word": "Wed",
                     "day": 24,
-                    "status": 0
+                    "status": 3
                 },
                 {
-                    "id": 389,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 724,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-25",
                     "date_word": "Thu",
                     "day": 25,
                     "status": 0
                 },
                 {
-                    "id": 390,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 725,
+                    "price_month_car_id": 24,
+                    "price": 1800000,
                     "date": "2024-04-26",
                     "date_word": "Fri",
                     "day": 26,
-                    "status": 2
+                    "status": 1
                 },
                 {
-                    "id": 391,
-                    "price_month_car_id": 13,
-                    "price": 1600000,
+                    "id": 726,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-27",
                     "date_word": "Sat",
                     "day": 27,
-                    "status": 2
+                    "status": 0
                 },
                 {
-                    "id": 392,
-                    "price_month_car_id": 13,
-                    "price": 1600000,
+                    "id": 727,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-28",
                     "date_word": "Sun",
                     "day": 28,
-                    "status": 2
+                    "status": 0
                 },
                 {
-                    "id": 393,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 728,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-29",
                     "date_word": "Mon",
                     "day": 29,
                     "status": 0
                 },
                 {
-                    "id": 394,
-                    "price_month_car_id": 13,
-                    "price": 1580000,
+                    "id": 729,
+                    "price_month_car_id": 24,
+                    "price": 1500000,
                     "date": "2024-04-30",
                     "date_word": "Tue",
                     "day": 30,
@@ -328,578 +1182,296 @@ function CalendarCustom({
             ]
         },
         {
-            "id": 14,
+            "id": 25,
             "car": {
-                "id": 23,
-                "name": "MAZDA CX8 LUXURY 2021"
+                "id": 22,
+                "name": "MITSUBISHI PAJERO SPORT 2015"
             },
             "month": "05",
             "year": "2024",
             "price_detail": [
                 {
-                    "id": 395,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 730,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-01",
                     "date_word": "Wed",
                     "day": 1,
                     "status": 0
                 },
                 {
-                    "id": 396,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 731,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-02",
                     "date_word": "Thu",
                     "day": 2,
                     "status": 0
                 },
                 {
-                    "id": 397,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 732,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-03",
                     "date_word": "Fri",
                     "day": 3,
                     "status": 0
                 },
                 {
-                    "id": 398,
-                    "price_month_car_id": 14,
-                    "price": 1600000,
+                    "id": 733,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-04",
                     "date_word": "Sat",
                     "day": 4,
-                    "status": 1
+                    "status": 0
                 },
                 {
-                    "id": 399,
-                    "price_month_car_id": 14,
-                    "price": 1600000,
+                    "id": 734,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-05",
                     "date_word": "Sun",
                     "day": 5,
-                    "status": 1
+                    "status": 0
                 },
                 {
-                    "id": 400,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 735,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-06",
                     "date_word": "Mon",
                     "day": 6,
                     "status": 0
                 },
                 {
-                    "id": 401,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 736,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-07",
                     "date_word": "Tue",
                     "day": 7,
                     "status": 0
                 },
                 {
-                    "id": 402,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 737,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-08",
                     "date_word": "Wed",
                     "day": 8,
                     "status": 0
                 },
                 {
-                    "id": 403,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 738,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-09",
                     "date_word": "Thu",
                     "day": 9,
                     "status": 0
                 },
                 {
-                    "id": 404,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 739,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-10",
                     "date_word": "Fri",
                     "day": 10,
                     "status": 0
                 },
                 {
-                    "id": 405,
-                    "price_month_car_id": 14,
-                    "price": 1600000,
+                    "id": 740,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-11",
                     "date_word": "Sat",
                     "day": 11,
-                    "status": 1
+                    "status": 0
                 },
                 {
-                    "id": 406,
-                    "price_month_car_id": 14,
-                    "price": 1600000,
+                    "id": 741,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-12",
                     "date_word": "Sun",
                     "day": 12,
-                    "status": 1
+                    "status": 0
                 },
                 {
-                    "id": 407,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 742,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-13",
                     "date_word": "Mon",
                     "day": 13,
                     "status": 0
                 },
                 {
-                    "id": 408,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 743,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-14",
                     "date_word": "Tue",
                     "day": 14,
                     "status": 0
                 },
                 {
-                    "id": 409,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 744,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-15",
                     "date_word": "Wed",
                     "day": 15,
                     "status": 0
                 },
                 {
-                    "id": 410,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 745,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-16",
                     "date_word": "Thu",
                     "day": 16,
                     "status": 0
                 },
                 {
-                    "id": 411,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 746,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-17",
                     "date_word": "Fri",
                     "day": 17,
                     "status": 0
                 },
                 {
-                    "id": 412,
-                    "price_month_car_id": 14,
-                    "price": 1600000,
+                    "id": 747,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-18",
                     "date_word": "Sat",
                     "day": 18,
-                    "status": 1
+                    "status": 0
                 },
                 {
-                    "id": 413,
-                    "price_month_car_id": 14,
-                    "price": 1600000,
+                    "id": 748,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-19",
                     "date_word": "Sun",
                     "day": 19,
-                    "status": 1
+                    "status": 0
                 },
                 {
-                    "id": 414,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 749,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-20",
                     "date_word": "Mon",
                     "day": 20,
                     "status": 0
                 },
                 {
-                    "id": 415,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 750,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-21",
                     "date_word": "Tue",
                     "day": 21,
                     "status": 0
                 },
                 {
-                    "id": 416,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 751,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-22",
                     "date_word": "Wed",
                     "day": 22,
                     "status": 0
                 },
                 {
-                    "id": 417,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 752,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-23",
                     "date_word": "Thu",
                     "day": 23,
                     "status": 0
                 },
                 {
-                    "id": 418,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 753,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-24",
                     "date_word": "Fri",
                     "day": 24,
                     "status": 0
                 },
                 {
-                    "id": 419,
-                    "price_month_car_id": 14,
-                    "price": 1600000,
+                    "id": 754,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-25",
                     "date_word": "Sat",
                     "day": 25,
-                    "status": 1
+                    "status": 0
                 },
                 {
-                    "id": 420,
-                    "price_month_car_id": 14,
-                    "price": 1600000,
+                    "id": 755,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-26",
                     "date_word": "Sun",
                     "day": 26,
-                    "status": 1
+                    "status": 0
                 },
                 {
-                    "id": 421,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 756,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-27",
                     "date_word": "Mon",
                     "day": 27,
                     "status": 0
                 },
                 {
-                    "id": 422,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 757,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-28",
                     "date_word": "Tue",
                     "day": 28,
                     "status": 0
                 },
                 {
-                    "id": 423,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 758,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-29",
                     "date_word": "Wed",
                     "day": 29,
                     "status": 0
                 },
                 {
-                    "id": 424,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 759,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-30",
                     "date_word": "Thu",
                     "day": 30,
                     "status": 0
                 },
                 {
-                    "id": 425,
-                    "price_month_car_id": 14,
-                    "price": 1580000,
+                    "id": 760,
+                    "price_month_car_id": 25,
+                    "price": 1500000,
                     "date": "2024-05-31",
                     "date_word": "Fri",
                     "day": 31,
                     "status": 0
                 }
             ]
-        },
-        {
-            "id": 15,
-            "car": {
-                "id": 23,
-                "name": "MAZDA CX8 LUXURY 2021"
-            },
-            "month": "06",
-            "year": "2024",
-            "price_detail": [
-                {
-                    "id": 426,
-                    "price_month_car_id": 15,
-                    "price": 1600000,
-                    "date": "2024-06-01",
-                    "date_word": "Sat",
-                    "day": 1,
-                    "status": 1
-                },
-                {
-                    "id": 427,
-                    "price_month_car_id": 15,
-                    "price": 1600000,
-                    "date": "2024-06-02",
-                    "date_word": "Sun",
-                    "day": 2,
-                    "status": 1
-                },
-                {
-                    "id": 428,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-03",
-                    "date_word": "Mon",
-                    "day": 3,
-                    "status": 0
-                },
-                {
-                    "id": 429,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-04",
-                    "date_word": "Tue",
-                    "day": 4,
-                    "status": 0
-                },
-                {
-                    "id": 430,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-05",
-                    "date_word": "Wed",
-                    "day": 5,
-                    "status": 0
-                },
-                {
-                    "id": 431,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-06",
-                    "date_word": "Thu",
-                    "day": 6,
-                    "status": 0
-                },
-                {
-                    "id": 432,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-07",
-                    "date_word": "Fri",
-                    "day": 7,
-                    "status": 0
-                },
-                {
-                    "id": 433,
-                    "price_month_car_id": 15,
-                    "price": 1600000,
-                    "date": "2024-06-08",
-                    "date_word": "Sat",
-                    "day": 8,
-                    "status": 1
-                },
-                {
-                    "id": 434,
-                    "price_month_car_id": 15,
-                    "price": 1600000,
-                    "date": "2024-06-09",
-                    "date_word": "Sun",
-                    "day": 9,
-                    "status": 1
-                },
-                {
-                    "id": 435,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-10",
-                    "date_word": "Mon",
-                    "day": 10,
-                    "status": 0
-                },
-                {
-                    "id": 436,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-11",
-                    "date_word": "Tue",
-                    "day": 11,
-                    "status": 0
-                },
-                {
-                    "id": 437,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-12",
-                    "date_word": "Wed",
-                    "day": 12,
-                    "status": 0
-                },
-                {
-                    "id": 438,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-13",
-                    "date_word": "Thu",
-                    "day": 13,
-                    "status": 0
-                },
-                {
-                    "id": 439,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-14",
-                    "date_word": "Fri",
-                    "day": 14,
-                    "status": 0
-                },
-                {
-                    "id": 440,
-                    "price_month_car_id": 15,
-                    "price": 1600000,
-                    "date": "2024-06-15",
-                    "date_word": "Sat",
-                    "day": 15,
-                    "status": 1
-                },
-                {
-                    "id": 441,
-                    "price_month_car_id": 15,
-                    "price": 1600000,
-                    "date": "2024-06-16",
-                    "date_word": "Sun",
-                    "day": 16,
-                    "status": 1
-                },
-                {
-                    "id": 442,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-17",
-                    "date_word": "Mon",
-                    "day": 17,
-                    "status": 0
-                },
-                {
-                    "id": 443,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-18",
-                    "date_word": "Tue",
-                    "day": 18,
-                    "status": 0
-                },
-                {
-                    "id": 444,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-19",
-                    "date_word": "Wed",
-                    "day": 19,
-                    "status": 0
-                },
-                {
-                    "id": 445,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-20",
-                    "date_word": "Thu",
-                    "day": 20,
-                    "status": 0
-                },
-                {
-                    "id": 446,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-21",
-                    "date_word": "Fri",
-                    "day": 21,
-                    "status": 0
-                },
-                {
-                    "id": 447,
-                    "price_month_car_id": 15,
-                    "price": 1600000,
-                    "date": "2024-06-22",
-                    "date_word": "Sat",
-                    "day": 22,
-                    "status": 1
-                },
-                {
-                    "id": 448,
-                    "price_month_car_id": 15,
-                    "price": 1600000,
-                    "date": "2024-06-23",
-                    "date_word": "Sun",
-                    "day": 23,
-                    "status": 1
-                },
-                {
-                    "id": 449,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-24",
-                    "date_word": "Mon",
-                    "day": 24,
-                    "status": 0
-                },
-                {
-                    "id": 450,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-25",
-                    "date_word": "Tue",
-                    "day": 25,
-                    "status": 0
-                },
-                {
-                    "id": 451,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-26",
-                    "date_word": "Wed",
-                    "day": 26,
-                    "status": 0
-                },
-                {
-                    "id": 452,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-27",
-                    "date_word": "Thu",
-                    "day": 27,
-                    "status": 0
-                },
-                {
-                    "id": 453,
-                    "price_month_car_id": 15,
-                    "price": 1580000,
-                    "date": "2024-06-28",
-                    "date_word": "Fri",
-                    "day": 28,
-                    "status": 0
-                },
-                {
-                    "id": 454,
-                    "price_month_car_id": 15,
-                    "price": 1600000,
-                    "date": "2024-06-29",
-                    "date_word": "Sat",
-                    "day": 29,
-                    "status": 1
-                },
-                {
-                    "id": 455,
-                    "price_month_car_id": 15,
-                    "price": 1600000,
-                    "date": "2024-06-30",
-                    "date_word": "Sun",
-                    "day": 30,
-                    "status": 1
-                },
-            ]
         }
     ]
-
 
     const seasonEmoji: Record<string, string> = {
         winter: '⛄️',
@@ -967,7 +1539,7 @@ function CalendarCustom({
         const currentYear = currentDate.getFullYear(); // Lấy năm hiện tại
 
         // Tạo dữ liệu cho các tháng từ data
-        const monthData = dataCalendar.filter(item => +item.year === currentYear);
+        const monthData = data.filter(item => +item.year === currentYear);
 
         const customDataDate = monthData.map((item) => ({
             ...item,
@@ -1008,7 +1580,7 @@ function CalendarCustom({
             // Render các ngày của tháng trước
             for (let d = new Date(startOfPreviousWeek); d < firstDayOfMonth; d.setDate(d.getDate() + 1)) {
                 dayComponents.push(
-                    <div key={`prev-${d}`} className='col-span-1 text-center font-normal text-slate-400 3xl:text-[15px] text-sm'>
+                    <div key={`prev-${d}`} className='col-span-1 text-center text-[#000000]/40 font-normal 3xl:text-[15px] text-sm'>
                         {/* Hiển thị ngày của tháng trước */}
                         {d.getDate()}
                     </div>
@@ -1019,8 +1591,6 @@ function CalendarCustom({
             monthItem.price_detail.forEach((dayDataApi: any, i: any) => {
                 const currentDate = new Date(dayDataApi.date);
                 const dayOfWeek = currentDate.getDay();
-                // console.log('currentDate', currentDate);
-
 
                 dayComponents.push(
                     <div key={`current-${i}`} className='col-span-1'>
@@ -1037,14 +1607,12 @@ function CalendarCustom({
             // Render các ngày của tháng sau
             for (let d = new Date(lastDayOfMonth); d <= endOfNextWeek; d.setDate(d.getDate() + 1)) {
                 dayComponents.push(
-                    <div key={`next-${d}`} className='col-span-1 text-center font-normal text-slate-400 3xl:text-[15px] text-sm'>
+                    <div key={`next-${d}`} className='col-span-1 text-center text-[#000000]/40 font-normal 3xl:text-[15px] text-sm'>
                         {/* Hiển thị ngày của tháng sau */}
                         {d.getDate()}
                     </div>
                 );
             }
-            // console.log('firstDayOfMonth', firstDayOfMonth);
-
 
             return (
                 <SwiperSlide key={index} className="flex flex-col gap-2 p-0 max-w-[400px]">
@@ -1132,14 +1700,16 @@ function CalendarCustom({
 
             return dates;
         };
-
         const checkDateInBetween = (dateToCheck: Date, datesInBetween: Date[]): boolean => {
             return datesInBetween.some((date) => {
                 return dateToCheck.getTime() === date.getTime();
             });
         };
 
-        const handleChangeDate = (item: any) => {
+        const handleChangeDate = (event: React.MouseEvent<HTMLDivElement>, item: any) => {
+            event.preventDefault(); // Ngăn chặn hành vi mặc định của trình duyệt
+            event.stopPropagation()
+
             const date = new Date(Number(item?.year), Number(item?.month) - 1, item?.day);
             // kiểm tra nếu cùng ngày hoặc ngày sau ngày dateStart
             // cùng tháng và sau ngày dateStart
@@ -1166,23 +1736,10 @@ function CalendarCustom({
                 )
             };
 
-            setStatusDate(dayDataApi.status)
-
             if (dateStart && dateEnd) {
-                if (isAfterInSameYearAndMonth(date, dateStart) && !isSameDay(dateEnd ? dateEnd : "", date)) {
-                    // If it's different, keep the time of the current to dateReal and update the dateReal
-                    date.setHours(dateEnd?.getHours(), dateEnd?.getMinutes(), dateEnd?.getSeconds());
-                    setDateEnd(date)
-                } else {
-                    // If it's different, keep the time of the current to dateReal and update the dateReal
-                    date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
-                    if (isSameDay(date, dateStart) || isSameDay(date, dateEnd)) {
-                        setDateStart(date)
-                        setDateEnd(undefined)
-                    } else {
-                        setDateStart(date)
-                    }
-                }
+                date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+                setDateStart(date)
+                setDateEnd(undefined)
             } else if (dateStart && !dateEnd) {
                 date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
                 if (isBeforeInSameYearAndMonth(date, dateStart)) {
@@ -1198,7 +1755,7 @@ function CalendarCustom({
         const datesInBetween = dateStart && dateEnd ? datesBetweenDates(dateStart, dateEnd) : [];
 
         const firstDate = new Date(Number(dayDataApi?.year), Number(dayDataApi?.month) - 1, dayDataApi.day)
-        const dayData = dataCalendar.flatMap(item => item.price_detail).find(d => d.date == date.toISOString().split('T')[0]);
+        const dayData = data.flatMap(item => item.price_detail).find(d => d.date == date.toISOString().split('T')[0]);
 
         const secondDate = new Date();
         const firstYear = firstDate.getFullYear();
@@ -1257,17 +1814,29 @@ function CalendarCustom({
         if (dayData) {
             return (
                 <div
-                    onClick={isEarlier ? () => { } : () => handleChangeDate(dayDataApi)}
+                    onClick={isEarlier ? () => { } : (event: React.MouseEvent<HTMLDivElement>) => handleChangeDate(event, dayDataApi)}
                     className={`
-                 ${isPicked && (dayDataApi?.status != 2 || dayDataApi?.status != 3) && "bg-[#2FB9BD]  hover:bg-[#2FB9BD]/80 text-white hover:text-white cursor-pointer"} 
-                 ${isPicked && (dayDataApi?.status == 2 || dayDataApi?.status == 3) && " !text-[#D3D3D3] border-2 border-[#2FB9BD] hover:!text-[#D3D3D3] bg-[#F6F6F7] hover:bg-[#F6F6F7]/80"}
-                ${isInRange && (dayDataApi?.status != 2 || dayDataApi?.status != 3) && " bg-[#C2F9F9] text-[#2FB9BD] hover:bg-[#2FB9BD] hover:text-white"}
-                ${isInRange && (dayDataApi?.status == 2 || dayDataApi?.status == 3) && " text-[#D3D3D3] hover:!text-[#D3D3D3] border-2 border-[#C2F9F9] bg-[#F6F6F7] hover:!bg-[#F6F6F7]/80"}
-                ${!isInRange && (dayDataApi?.status == 2 || dayDataApi?.status == 3) && " text-[#D3D3D3] hover:text-[#D3D3D3] bg-[#F6F6F7]"}
-                ${isEarlier && !isInRange && (dayDataApi?.status != 2 || dayDataApi?.status != 3) && "!cursor-default text-slate-400"}
-                ${!isEarlier && !isInRange && (dayDataApi?.status != 2 || dayDataApi?.status != 3) && "hover:bg-[#2FB9BD]/80 hover:text-white"}
-                ${!isEarlier && !isInRange && (dayDataApi?.status == 2 || dayDataApi?.status == 3) && "text-[#D3D3D3] bg-[#F6F6F7] hover:!text-[#D3D3D3] hover:!bg-[#F6F6F7]"}
-                rounded-[2px] flex flex-col justify-center items-center w-full h-12 p-2 cursor-pointer group`}
+                    ${isPicked && (dayDataApi.status !== 2 && dayDataApi.status !== 3) ? "bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 text-white hover:text-white cursor-pointer" : ""} 
+                    ${isPicked && (dayDataApi.status === 2 || dayDataApi.status === 3) ? " !text-[#D3D3D3] border-2 border-[#2FB9BD] hover:!text-[#D3D3D3] bg-[#F6F6F7] hover:bg-[#F6F6F7]/80 cursor-pointer" : ""}
+                    ${isInRange && (dayDataApi.status !== 2 && dayDataApi.status !== 3) ? " bg-[#C2F9F9] text-[#2FB9BD] hover:bg-[#2FB9BD] hover:text-white cursor-pointer" : ""}
+                    ${isInRange && (dayDataApi.status === 2 || dayDataApi.status === 3) ? " text-[#D3D3D3] hover:!text-[#D3D3D3] border-2 border-[#C2F9F9] bg-[#F6F6F7] hover:!bg-[#F6F6F7]/80 cursor-pointer" : ""}
+                    ${!isInRange && (dayDataApi.status === 2 || dayDataApi.status === 3) ? " text-[#D3D3D3] hover:text-[#D3D3D3] bg-[#F6F6F7] cursor-pointer" : ""}
+                    ${isEarlier && !isInRange && (dayDataApi?.status !== 2 && dayDataApi?.status !== 3) ? "!cursor-default text-[#000000]/40 font-normal text-sm" : ""}
+                    ${!isEarlier && !isInRange && (dayDataApi?.status !== 2 && dayDataApi?.status !== 3) ? "hover:bg-[#2FB9BD]/80 hover:text-white cursor-pointer" : ""}
+                    ${!isEarlier && !isInRange && (dayDataApi?.status === 2 || dayDataApi?.status === 3) ? "text-[#D3D3D3] bg-[#F6F6F7] hover:!text-[#D3D3D3] hover:!bg-[#F6F6F7] cursor-pointer" : ""}
+                    rounded-[2px] flex flex-col justify-center items-center w-full h-12 p-2 group`
+                    }
+                // className={`
+                // ${isPicked && (dayDataApi.status !== 2 && dayDataApi.status !== 3) ? "bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 text-white hover:text-white cursor-pointer" : ""} 
+                // ${isPicked && (dayDataApi.status === 2 || dayDataApi.status === 3) ? " !text-[#D3D3D3] border-2 border-[#2FB9BD] hover:!text-[#D3D3D3] bg-[#F6F6F7] hover:bg-[#F6F6F7]/80 cursor-pointer" : ""}
+                // ${isInRange && (dayDataApi.status !== 2 && dayDataApi.status !== 3) ? " bg-[#C2F9F9] text-[#2FB9BD] hover:bg-[#2FB9BD] hover:text-white cursor-pointer" : ""}
+                // ${isInRange && (dayDataApi.status === 2 || dayDataApi.status === 3) ? " text-[#D3D3D3] hover:!text-[#D3D3D3] border-2 border-[#C2F9F9] bg-[#F6F6F7] hover:!bg-[#F6F6F7]/80 cursor-pointer" : ""}
+                // ${!isInRange && (dayDataApi.status === 2 || dayDataApi.status === 3) ? " text-[#D3D3D3] hover:text-[#D3D3D3] bg-[#F6F6F7] cursor-pointer" : ""}
+                // ${isEarlier && !isInRange && (dayDataApi?.status !== 2 && dayDataApi?.status !== 3) ? "!cursor-default text-slate-400" : ""}
+                // ${!isEarlier && !isInRange && (dayDataApi?.status !== 2 && dayDataApi?.status !== 3) ? "hover:bg-[#2FB9BD]/80 hover:text-white cursor-pointer" : ""}
+                // ${!isEarlier && !isInRange && (dayDataApi?.status === 2 || dayDataApi?.status === 3) ? "text-[#D3D3D3] bg-[#F6F6F7] hover:!text-[#D3D3D3] hover:!bg-[#F6F6F7] cursor-pointer" : ""}
+                // rounded-[2px] flex flex-col justify-center items-center w-full h-12 p-2 group`
+                // }
                 >
                     <div className='3xl:text-[15px] text-sm font-medium'>
                         {dayData.day}
