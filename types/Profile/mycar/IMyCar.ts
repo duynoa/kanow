@@ -5,7 +5,5 @@ export interface IMyCar {
     limit: number;
     isLoadingScroll: boolean;
     isLoadingCar: boolean;
-    daTafilter: any[];
-    openFilter: boolean;
-    status_search: number | string;
+    tab: number | string;
 }

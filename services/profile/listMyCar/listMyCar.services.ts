@@ -16,7 +16,11 @@ const apiMyCar = () => {
         return axios.get(`/car/getList`, config);
     };
 
-    return { apiContract, apiListCar };
+    const apiListStatusFilter = () => {
+        return axios.get(`category/getListStatusCar`);
+    };
+
+    return { apiContract, apiListCar, apiListStatusFilter };
 };
 
 export default apiMyCar;

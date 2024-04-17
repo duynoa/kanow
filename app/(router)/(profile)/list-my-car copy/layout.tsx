@@ -1,3 +1,4 @@
+import LayoutMyCar from '@/components/layout/LayoutMyCar'
 import BackgroundUiProfile from '@/themes/profile/BackgroundUiProfile'
 import type { Metadata } from 'next'
 
@@ -11,5 +12,13 @@ export default function RootLayout({
 }: {
     children: React.ReactNode
 }) {
-    return children
+    return (
+        <>
+            <LayoutMyCar>
+                <BackgroundUiProfile className='rounded-tl-none'>
+                    {children}
+                </BackgroundUiProfile>
+            </LayoutMyCar>
+        </>
+    )
 }

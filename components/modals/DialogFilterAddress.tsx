@@ -23,6 +23,7 @@ import SearchAddress from "../searchAddress/SearchAddress";
 import useGoogleApi from "@/services/filter/google/google.services";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import useAirportCarDeliveryApi from "@/services/filter/listAirport/airportCarDelivery.services";
+import { useGeolocated } from "react-geolocated";
 
 
 type Props = {
@@ -58,7 +59,6 @@ export function DialogFilterAddress({ }: Props) {
         },
     })
 
-    const [valueMount, setValueMount] = useState('')
 
     const [dataPlane, setDataPlane] = useState<IPlace[]>([])
 
@@ -70,11 +70,20 @@ export function DialogFilterAddress({ }: Props) {
 
     }
 
-    const handleAddressCurent = async () => {
-        // await fetchLocationName()
-        // form.setValue("valueAddres", valueMount)
+    const getGeolocated = useGeolocated({
+        onSuccess(position) {
+            setCoordinates({
+                defaultLat: position.coords.latitude,
+                defaultLng: position.coords.longitude,
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            })
+            fetchLocationName(position.coords.latitude, position.coords.longitude)
+        }
+    })
 
-        await fetchLocationName()
+    const handleAddressCurent = () => {
+        return getGeolocated.getPosition()
     }
 
     // lấy danh sách giao xe sân bay
@@ -92,12 +101,13 @@ export function DialogFilterAddress({ }: Props) {
 
 
     // lấy địa chỉ theo vị trí hiên tại của google
-    const fetchLocationName = async () => {
+    const fetchLocationName = async (lat: any, lng: any) => {
         try {
-            const response = await apiGetAddress(coordinates.defaultLat, coordinates.defaultLng, generalKey.google_api_key)
+            const response = await apiGetAddress(lat, lng, generalKey.google_api_key)
             const data = response.data;
             if (data.status === 'OK') {
-                const address = data.results[0].formatted_address.split(',').slice(1).join(',');
+                const address = data.results[0].formatted_address
+                // const address = data.results[0].formatted_address.split(',').slice(1).join(',');
                 // const address = data.results[0].address_components?.map((e: any) => {
                 //     return ["street_number", "route", 'plus_code'].includes(e.types[0]) ? undefined : e.long_name;
                 // }).filter(Boolean).join(', ')
@@ -113,18 +123,18 @@ export function DialogFilterAddress({ }: Props) {
     };
 
 
-    //lấy định vị tọa độ hiện tại
+    // lấy định vị tọa độ hiện tại
     useEffect(() => {
-        if (generalKey.google_api_key) {
-            navigator.geolocation.watchPosition((position) => {
-                setCoordinates({
-                    defaultLat: position.coords.latitude,
-                    defaultLng: position.coords.longitude,
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                })
-            })
-        }
+        // if (generalKey.google_api_key) {
+        //     navigator.geolocation.watchPosition((position) => {
+        // setCoordinates({
+        //     defaultLat: position.coords.latitude,
+        //     defaultLng: position.coords.longitude,
+        //     lat: position.coords.latitude,
+        //     lng: position.coords.longitude
+        // })
+        //     })
+        // }
         if (openDialogAddress) {
             fetchAirportCarDelivery()
             if (valueAddress) {

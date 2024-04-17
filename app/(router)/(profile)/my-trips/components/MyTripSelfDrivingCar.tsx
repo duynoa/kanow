@@ -106,7 +106,7 @@ const MyTripSelfDrivingCar = ({ isState }: any) => {
                         <Link
                             href={`/info-rental-car/${e.id}`}
                             id={`card-${e.id}`}
-                            className={`flex lg:items-center lg:flex-nowrap group items-start flex-wrap lg:gap-6 gap-3  bg-white border-[#D7D9E0]  ${index === isState.dataMyTrips?.length - 1 ? 'border-b-0' : 'border-b'}  w-full relative z-0`}
+                            className={`flex lg:items-center lg:flex-nowrap group items-start flex-wrap lg:gap-6 gap-3  bg-white border-[#D7D9E0]  ${index === isState.dataMyTrips?.length - 1 ? 'border-b-0' : 'border-b'} pb-5 w-full relative z-0`}
                         >
                             <div
 

@@ -330,7 +330,7 @@ const Header = () => {
                                                                 className={`text-[#0E0E0E]/80 flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-[17px] xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
                                                                 prefetch={false}
                                                             >
-                                                                <span className='capitalize'>{informationUser?.fullname}</span>
+                                                                <span className='capitalize hover:opacity-65 transition-all duration-200 ease-linear'>{informationUser?.fullname}</span>
                                                                 <IoIosArrowDown className='2xl:text-2xl text-xl text-[#2FB9BD]' />
                                                             </Link>
                                                         </div>
@@ -554,7 +554,7 @@ const Header = () => {
                                                         className={`text-[#0E0E0E]/80 flex gap-2 items-center cursor-pointer font-medium col-span-1 3xl:text-[17px] xxl:text-base xl:text-sm text-sm hover:text-[#0E0E0E] transition-all`}
                                                         prefetch={false}
                                                     >
-                                                        <span className='capitalize caret-transparent '>{informationUser?.fullname}</span>
+                                                        <span className='capitalize caret-transparent hover:opacity-65 transition-all duration-200 ease-linear'>{informationUser?.fullname}</span>
                                                         <IoIosArrowDown className='2xl:text-2xl text-xl text-[#2FB9BD]' />
                                                     </Link>
                                                 </>
