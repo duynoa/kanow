@@ -10,7 +10,7 @@ const SearchAddress = ({ onChange, children }: any) => {
     const { setCoordinates } = useDialogAddress()
     const handleChangeReplace = () => {
         const [place] = refGoogle.current.getPlaces()
-        if (place) {
+        if (place && place.address_components.some((component: any) => component.types.includes('country') && component.short_name === 'VN')) {
             setCoordinates({
                 lat: place.geometry?.location?.lat(),
                 lng: place.geometry?.location?.lng()
@@ -20,18 +20,22 @@ const SearchAddress = ({ onChange, children }: any) => {
         }
         setCoordinates({ lat: 0, lng: 0 })
     }
-
     return (
         <LoadScript
             googleMapsApiKey={generalKey.google_api_key}
             // googleMapsApiKey={generalKey.google_api_key}
             libraries={["places"]}
+            language="Vietnamese"
+            region="Vietnam"
 
+        // children
         >
             <StandaloneSearchBox
                 onLoad={ref => refGoogle.current = ref}
                 onPlacesChanged={handleChangeReplace}
+
             >
+
                 {children}
             </StandaloneSearchBox>
         </LoadScript>

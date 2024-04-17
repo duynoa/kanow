@@ -42,6 +42,7 @@ import { DialogFilterAddress } from '../modals/DialogFilterAddress';
 import { useDialogAddress, useDialogRegisterOwnerDriver } from '@/hooks/useOpenDialog';
 import { useParams } from 'next/navigation';
 import { DialogRegisterOwnerDriver } from '../modals/DialogRegisterOwnerDriver';
+import DialogFilterMyCar from '../modals/DialogFilterMyCar';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -248,6 +249,7 @@ const LayoutContainer = ({
 
                     <AlertDialogCustom />
                     <DialogRegisterOwnerDriver />
+                    <DialogFilterMyCar />
                 </main>
                 {pathname !== "/list-car-autonomous" && <Footer />}
                 <ToastContainer

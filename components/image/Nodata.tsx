@@ -35,6 +35,9 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
             case 'address':
                 quertyState({ title: 'Bạn chưa có địa chỉ nào', image: '/profile/address/nodata.png' })
                 break;
+            case 'list-my-car':
+                quertyState({ title: 'Bạn chưa có xe nào', image: '/profile/account/nodata.png' })
+                break;
             default:
                 break;
         }
@@ -56,6 +59,7 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
                  ${type == 'account' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
                  ${type == 'mytrip' && (isVisibleMobile ? "size-full" : 'size-[40%]')}
                  ${type == 'address' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
+                 ${type == 'list-my-car' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
                  mx-auto`} />
         </div>
         <h1 className="lg:text-sm text-xs">{data.title}</h1>
