@@ -1539,7 +1539,7 @@ function CalendarCustom({
         const currentYear = currentDate.getFullYear(); // Lấy năm hiện tại
 
         // Tạo dữ liệu cho các tháng từ data
-        const monthData = data.filter(item => +item.year === currentYear);
+        const monthData = dataCalendar.filter(item => +item.year === currentYear);
 
         const customDataDate = monthData.map((item) => ({
             ...item,
@@ -1755,7 +1755,7 @@ function CalendarCustom({
         const datesInBetween = dateStart && dateEnd ? datesBetweenDates(dateStart, dateEnd) : [];
 
         const firstDate = new Date(Number(dayDataApi?.year), Number(dayDataApi?.month) - 1, dayDataApi.day)
-        const dayData = data.flatMap(item => item.price_detail).find(d => d.date == date.toISOString().split('T')[0]);
+        const dayData = dataCalendar.flatMap(item => item.price_detail).find(d => d.date == date.toISOString().split('T')[0]);
 
         const secondDate = new Date();
         const firstYear = firstDate.getFullYear();

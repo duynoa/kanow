@@ -12,7 +12,7 @@ import {
 import { X } from "lucide-react"
 
 import Image from "next/image";
-import { useDialogFilterListCars } from "@/hooks/useOpenDialog";
+import { useDialogAddress, useDialogCalendar, useDialogFilterListCars } from "@/hooks/useOpenDialog";
 
 import { FormatNumberHundred } from "../format/FormatNumber";
 import { Button } from "../ui/button";
@@ -22,17 +22,29 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 import { toast } from "react-toastify";
 import { CustomDataListCars } from "@/custom/CustomData";
-import { IInitialStateSearchCar } from "@/types/Initial/IInitial";
+import { IInitialStateListCarAutonomous } from "@/types/Initial/IInitial";
+import { useDataListCarAutonomous } from "@/hooks/useDataQueryKey";
+import moment from "moment";
 
-type Props = {
-    isState: IInitialStateSearchCar,
-    queryKeyIsState: (key: any) => void
-}
+type Props = {}
 
-export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
-    // const { isState, queryKeyIsState } = useListCar()
+export function DialogFilterListCars({ }: Props) {
+    // const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useListCar()
 
+    const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useDataListCarAutonomous()
     const { openDialogFilterListCars, setOpenDialogFilterListCars, type } = useDialogFilterListCars()
+
+    const {
+        openDialogAddress,
+        valueAddress,
+        setOpenDialogAddress,
+        setValueAddress,
+        coordinates,
+        setCoordinates,
+        setOnSubmitFilter
+    } = useDialogAddress()
+
+    const { dateReal } = useDialogCalendar()
 
     const handleOpenChangeModal = (type?: string) => {
         if (type === "type_car_search") {
@@ -43,14 +55,14 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
     }
 
     useEffect(() => {
-        if (type === 'company_car_search' && isState?.filter?.listAutomaker?.length === 0) {
+        if (type === 'company_car_search' && isStateListCarAutonomous?.filter?.listAutomaker?.length === 0) {
             const fetchDataListAutomaker = async () => {
                 const { data } = await getListAutomaker();
 
                 if (data && data.data) {
-                    queryKeyIsState({
+                    queryKeyIsStateListCarAutonomous({
                         filter: {
-                            ...isState.filter,
+                            ...isStateListCarAutonomous.filter,
                             listAutomaker: data.data,
                         }
                     })
@@ -58,14 +70,14 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
             }
 
             fetchDataListAutomaker()
-        } else if (type === 'type_car_search' && isState?.filter?.listTypesCar?.length === 0) {
+        } else if (type === 'type_car_search' && isStateListCarAutonomous?.filter?.listTypesCar?.length === 0) {
             const fetchDataListTypesCar = async () => {
                 const { data } = await getListTypeCars();
 
                 if (data && data.data) {
-                    queryKeyIsState({
+                    queryKeyIsStateListCarAutonomous({
                         filter: {
-                            ...isState.filter,
+                            ...isStateListCarAutonomous.filter,
                             listTypesCar: data.data,
                         }
                     })
@@ -77,21 +89,21 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
         }
     }, [
         type,
-        isState?.filter,
-        queryKeyIsState
+        isStateListCarAutonomous?.filter,
+        queryKeyIsStateListCarAutonomous
     ])
 
     const handleFilterListCars = async (value: string | any, type: string) => {
         if (type === "company_car_search" && value) {
-            queryKeyIsState({
+            queryKeyIsStateListCarAutonomous({
                 dataParams: {
-                    ...isState.dataParams,
+                    ...isStateListCarAutonomous.dataParams,
                     company_car_search: value,
                 }
             })
         } else if (type === "type_car_search" && value) {
             const typeId = value.id;
-            const currentTypeSearch = isState.dataParams?.type_car_search || [];
+            const currentTypeSearch = isStateListCarAutonomous.dataParams?.type_car_search || [];
 
             const isTypeExists = currentTypeSearch.includes(typeId);
 
@@ -100,33 +112,36 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                 const updatedTypeSearch = [...currentTypeSearch, typeId];
 
                 const query = {
-                    company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
+                    "lat": valueAddress ? coordinates.lat : undefined,
+                    "lon": valueAddress ? coordinates.lng : undefined,
+                    date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
+                    company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
                     type_car_search: updatedTypeSearch && updatedTypeSearch.length === 0 ? [] : updatedTypeSearch,
-                    transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
-                    star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
-                    tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
-                    discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
-                    book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
-                    mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
-                    delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+                    transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
+                    star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
+                    tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
+                    discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
+                    book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
+                    mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
+                    delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
                 }
 
-                let limit = isState.limit.limitAllCars;
+                let limit = isStateListCarAutonomous.limit.limitAllCars;
 
                 if (
-                    isState.dataParams?.company_car_search === "0" &&
+                    isStateListCarAutonomous.dataParams?.company_car_search === "0" &&
                     updatedTypeSearch?.length === 0 &&
-                    isState?.dataParams?.transmission_search == "0" &&
-                    isState.dataParams?.star_search === 0 &&
-                    isState.dataParams?.tram_search === 0 &&
-                    isState.dataParams?.discount_search === 0 &&
-                    isState.dataParams?.book_car_flash === 0 &&
-                    isState.dataParams?.mortgage === 0 &&
-                    isState.dataParams?.delivery_car === 0
+                    isStateListCarAutonomous?.dataParams?.transmission_search == "0" &&
+                    isStateListCarAutonomous.dataParams?.star_search === 0 &&
+                    isStateListCarAutonomous.dataParams?.tram_search === 0 &&
+                    isStateListCarAutonomous.dataParams?.discount_search === 0 &&
+                    isStateListCarAutonomous.dataParams?.book_car_flash === 0 &&
+                    isStateListCarAutonomous.dataParams?.mortgage === 0 &&
+                    isStateListCarAutonomous.dataParams?.delivery_car === 0
                 ) {
-                    limit = isState.limit.limitAllCars;
+                    limit = isStateListCarAutonomous.limit.limitAllCars;
                 } else {
-                    limit = isState.limit.limitFilterCars;
+                    limit = isStateListCarAutonomous.limit.limitFilterCars;
                 }
 
                 const { data } = await getListCars(1, limit, query)
@@ -161,12 +176,12 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
 
                     let { customDataListCars } = CustomDataListCars(data)
 
-                    queryKeyIsState({
+                    queryKeyIsStateListCarAutonomous({
                         listCardCars: customDataListCars,
                         page: 2,
                         next: data?.links?.next,
                         dataParams: {
-                            ...isState.dataParams,
+                            ...isStateListCarAutonomous.dataParams,
                             type_car_search: updatedTypeSearch
                         }
                     })
@@ -179,34 +194,37 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                 const updatedTypeSearch = currentTypeSearch.filter(id => id !== typeId);
 
                 const query = {
-                    company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
+                    "lat": valueAddress ? coordinates.lat : undefined,
+                    "lon": valueAddress ? coordinates.lng : undefined,
+                    date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
+                    company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
                     type_car_search: updatedTypeSearch && updatedTypeSearch.length === 0 ? [] : updatedTypeSearch,
-                    transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
-                    star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
-                    tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
-                    discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
-                    book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
-                    mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
-                    delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+                    transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
+                    star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
+                    tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
+                    discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
+                    book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
+                    mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
+                    delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
                 }
 
 
-                let limit = isState.limit.limitAllCars;
+                let limit = isStateListCarAutonomous.limit.limitAllCars;
 
                 if (
-                    isState.dataParams?.company_car_search === "0" &&
+                    isStateListCarAutonomous.dataParams?.company_car_search === "0" &&
                     updatedTypeSearch?.length === 0 &&
-                    isState?.dataParams?.transmission_search == "0" &&
-                    isState.dataParams?.star_search === 0 &&
-                    isState.dataParams?.tram_search === 0 &&
-                    isState.dataParams?.discount_search === 0 &&
-                    isState.dataParams?.book_car_flash === 0 &&
-                    isState.dataParams?.mortgage === 0 &&
-                    isState.dataParams?.delivery_car === 0
+                    isStateListCarAutonomous?.dataParams?.transmission_search == "0" &&
+                    isStateListCarAutonomous.dataParams?.star_search === 0 &&
+                    isStateListCarAutonomous.dataParams?.tram_search === 0 &&
+                    isStateListCarAutonomous.dataParams?.discount_search === 0 &&
+                    isStateListCarAutonomous.dataParams?.book_car_flash === 0 &&
+                    isStateListCarAutonomous.dataParams?.mortgage === 0 &&
+                    isStateListCarAutonomous.dataParams?.delivery_car === 0
                 ) {
-                    limit = isState.limit.limitAllCars;
+                    limit = isStateListCarAutonomous.limit.limitAllCars;
                 } else {
-                    limit = isState.limit.limitFilterCars;
+                    limit = isStateListCarAutonomous.limit.limitFilterCars;
                 }
 
                 const { data } = await getListCars(1, limit, query)
@@ -241,21 +259,21 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
 
                     let { customDataListCars } = CustomDataListCars(data)
 
-                    queryKeyIsState({
+                    queryKeyIsStateListCarAutonomous({
                         listCardCars: customDataListCars,
                         page: 2,
                         next: data?.links?.next,
                         dataParams: {
-                            ...isState.dataParams,
+                            ...isStateListCarAutonomous.dataParams,
                             type_car_search: updatedTypeSearch
                         }
                     })
                 }
             }
         } else if (type === "transmission_search" && value) {
-            queryKeyIsState({
+            queryKeyIsStateListCarAutonomous({
                 dataParams: {
-                    ...isState.dataParams,
+                    ...isStateListCarAutonomous.dataParams,
                     transmission_search: value,
                 }
             })
@@ -264,28 +282,31 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
 
     const handleSubmitFilter = async () => {
         const query = {
-            company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
-            type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
-            transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
-            star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
-            tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
-            discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
-            book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
-            mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
-            delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+            "lat": valueAddress ? coordinates.lat : undefined,
+            "lon": valueAddress ? coordinates.lng : undefined,
+            date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
+            company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
+            type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
+            transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
+            star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
+            tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
+            discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
+            book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
+            mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
+            delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
         }
 
-        let limit = isState.limit.limitAllCars;
+        let limit = isStateListCarAutonomous.limit.limitAllCars;
 
         if (
-            isState.dataParams?.company_car_search === "0" &&
-            isState.dataParams?.type_car_search?.length === 0 &&
-            isState?.dataParams?.transmission_search == "0" &&
-            isState.dataParams?.star_search === 0
+            isStateListCarAutonomous.dataParams?.company_car_search === "0" &&
+            isStateListCarAutonomous.dataParams?.type_car_search?.length === 0 &&
+            isStateListCarAutonomous?.dataParams?.transmission_search == "0" &&
+            isStateListCarAutonomous.dataParams?.star_search === 0
         ) {
-            limit = isState.limit.limitAllCars;
+            limit = isStateListCarAutonomous.limit.limitAllCars;
         } else {
-            limit = isState.limit.limitFilterCars;
+            limit = isStateListCarAutonomous.limit.limitFilterCars;
         }
 
         const { data } = await getListCars(1, limit, query)
@@ -293,7 +314,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
         if (data && data.data && data.base) {
             let { customDataListCars } = CustomDataListCars(data)
 
-            queryKeyIsState({
+            queryKeyIsStateListCarAutonomous({
                 listCardCars: customDataListCars,
                 page: 2,
                 next: data?.links?.next
@@ -336,12 +357,12 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                             type === "type_car_search" &&
                             <div className='grid grid-cols-3 gap-6 w-full'>
                                 {
-                                    isState?.filter?.listTypesCar && isState?.filter?.listTypesCar?.map((item) => {
+                                    isStateListCarAutonomous?.filter?.listTypesCar && isStateListCarAutonomous?.filter?.listTypesCar?.map((item) => {
 
                                         return (
                                             <div
                                                 key={`typesCarId-${item.id}`}
-                                                className={`${isState.dataParams?.type_car_search?.includes(item.id) ? "border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD] shadow-md" : "border-[#B4B8C5]"} col-span-1 flex flex-col justify-center items-center h-full border hover:shadow-xl hover:drop-shadow-xl duration-300 transition-all cursor-pointer rounded-xl 3xl:p-4 p-4`}
+                                                className={`${isStateListCarAutonomous.dataParams?.type_car_search?.includes(item.id) ? "border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD] shadow-md" : "border-[#B4B8C5]"} col-span-1 flex flex-col justify-center items-center h-full border hover:shadow-xl hover:drop-shadow-xl duration-300 transition-all cursor-pointer rounded-xl 3xl:p-4 p-4`}
                                                 onClick={() => handleFilterListCars(item, "type_car_search")}
                                             >
                                                 <div className='w-20 h-auto'>
@@ -372,7 +393,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                             <RadioGroup
                                 onValueChange={(value) => handleFilterListCars(value, "company_car_search")}
                                 defaultValue="0"
-                                value={isState?.dataParams?.company_car_search}
+                                value={isStateListCarAutonomous?.dataParams?.company_car_search}
                                 className='grid grid-cols-2 gap-6 w-full'
                                 autoFocus={false}
                             >
@@ -380,7 +401,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                                     <RadioGroupItem
                                         value={`0`}
                                         id={`0`}
-                                        className={`${isState?.dataParams?.company_car_search == "0" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
+                                        className={`${isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
                                     />
                                     <Label
                                         htmlFor={`0`}
@@ -393,9 +414,9 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                                 </div>
 
                                 {
-                                    isState?.filter?.listAutomaker && isState?.filter?.listAutomaker?.map((item) => (
+                                    isStateListCarAutonomous?.filter?.listAutomaker && isStateListCarAutonomous?.filter?.listAutomaker?.map((item) => (
                                         <div key={`automakerId-${item.id}`} className='col-span-1 flex items-center space-x-3 group'>
-                                            <RadioGroupItem value={`${item.id}`} id={`${item.id}`} className={`${isState?.dataParams?.company_car_search == `${item.id}` ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`} />
+                                            <RadioGroupItem value={`${item.id}`} id={`${item.id}`} className={`${isStateListCarAutonomous?.dataParams?.company_car_search == `${item.id}` ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`} />
                                             <Label
                                                 htmlFor={`${item.id}`}
                                                 className="flex items-center gap-2 cursor-pointer"
@@ -425,7 +446,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                             type === "transmission_search" &&
                             <RadioGroup
                                 defaultValue="0"
-                                value={isState?.dataParams?.transmission_search}
+                                value={isStateListCarAutonomous?.dataParams?.transmission_search}
                                 onValueChange={(value) => handleFilterListCars(value, "transmission_search")}
                                 className='grid grid-cols-1 gap-6 w-full'
                                 autoFocus={false}
@@ -434,7 +455,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                                     <RadioGroupItem
                                         value={`0`}
                                         id={`0`}
-                                        className={`${isState?.dataParams?.transmission_search == "0" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
+                                        className={`${isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
                                     />
                                     <Label
                                         htmlFor={`0`}
@@ -449,7 +470,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                                     <RadioGroupItem
                                         value={`1`}
                                         id={`1`}
-                                        className={`${isState?.dataParams?.transmission_search == "1" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
+                                        className={`${isStateListCarAutonomous?.dataParams?.transmission_search == "1" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
                                     />
                                     <Label
                                         htmlFor={`1`}
@@ -464,7 +485,7 @@ export function DialogFilterListCars({ isState, queryKeyIsState }: Props) {
                                     <RadioGroupItem
                                         value={`2`}
                                         id={`2`}
-                                        className={`${isState?.dataParams?.transmission_search == "2" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
+                                        className={`${isStateListCarAutonomous?.dataParams?.transmission_search == "2" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
                                     />
                                     <Label
                                         htmlFor={`2`}

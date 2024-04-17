@@ -36,7 +36,7 @@ import 'swiper/css/autoplay'
 import "aos/dist/aos.css";
 import '@/styles/globals.scss';
 import 'react-toastify/dist/ReactToastify.css';
-import { useDataInfoRentalCar } from '@/hooks/useDataQueryKey';
+import { useDataInfoRentalCar, useDataListCarAutonomous } from '@/hooks/useDataQueryKey';
 import { DialogCancelCar } from '../modals/DialogCancelCar';
 import { DialogFilterAddress } from '../modals/DialogFilterAddress';
 import { useDialogAddress, useDialogRegisterOwnerDriver } from '@/hooks/useOpenDialog';
@@ -66,6 +66,7 @@ const LayoutContainer = ({
     const { openDialogAddress, } = useDialogAddress()
 
     const { openDialogRegisterOwnerDriver } = useDialogRegisterOwnerDriver();
+    const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useDataListCarAutonomous()
 
     const {
         isVisibleMobile,
@@ -102,6 +103,13 @@ const LayoutContainer = ({
         };
         scrollTop()
 
+
+        if (!pathname.startsWith('/list-car-autonomous')) {
+            queryKeyIsStateListCarAutonomous({
+                ...isStateListCarAutonomous,
+                page: 1
+            })
+        }
     }, [pathname])
 
 

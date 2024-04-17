@@ -1,6 +1,7 @@
 import {
     IInitialStateDetailCar,
     IInitialStateInfoRentalCar,
+    IInitialStateListCarAutonomous,
     IInitialStatePayment,
     IInitialStatePolicy
 } from '@/types/Initial/IInitial';
@@ -8,6 +9,51 @@ import { addDays, setHours, setMinutes } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 import { create } from 'zustand';
 
+// data list car tự lái
+interface isStateListCarAutonomous {
+    isStateListCarAutonomous: IInitialStateListCarAutonomous;
+    queryKeyIsStateListCarAutonomous: (key: Partial<IInitialStateListCarAutonomous>) => void;
+}
+
+const isStateListCarAutonomous: IInitialStateListCarAutonomous = {
+    listCardCars: [],
+    isLoadingScroll: false,
+    page: 1,
+    next: null,
+    filter: {
+        listTypesCar: [],
+        listAutomaker: []
+    },
+    dataParams: {
+        company_car_search: "0",
+        transmission_search: "0",
+        type_car_search: [],
+        tram_search: 0,
+        discount_search: 0,
+        book_car_flash: 0,
+        delivery_car: 0,
+        mortgage: 0,
+        star_search: 0,
+    },
+    onSuccess: {
+        onSuccessPage: false
+    },
+    limit: {
+        limitFilterCars: 50,
+        limitAllCars: 8,
+    }
+};
+
+export const useDataListCarAutonomous = create<isStateListCarAutonomous>((set) => ({
+    isStateListCarAutonomous,
+    queryKeyIsStateListCarAutonomous: (key) => set((state) => ({
+        isStateListCarAutonomous: {
+            ...state.isStateListCarAutonomous,
+            ...key
+        }
+    }
+    )),
+}));
 // data detail car tự lái
 interface IStateDetailCar {
     isStateDetailCar: IInitialStateDetailCar;
