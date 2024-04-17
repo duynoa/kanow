@@ -24,8 +24,8 @@ import {
 
 import { Check, X } from "lucide-react"
 
-import { useDialogCalendar } from "@/hooks/useOpenDialog";
-import { addDays, differenceInCalendarDays, differenceInDays, differenceInHours, differenceInMinutes, endOfDay, format, isAfter, isSameDay, isSameMinute, parseISO, startOfDay } from "date-fns";
+import { useDialogCalendar, useDialogPromotion } from "@/hooks/useOpenDialog";
+import { addDays, differenceInCalendarDays, differenceInDays, differenceInHours, differenceInMinutes, endOfDay, format, isAfter, isSameDay, isSameMinute, parseISO, setHours, setMinutes, startOfDay } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { Input } from "../ui/input";
 import { v4 as uuidv4 } from 'uuid';
@@ -296,13 +296,16 @@ export function DialogCalendar({ }: Props) {
         dataTimeLeft: dataTimeCustom,
         dataTimeRight: dataTimeCustom
     }
-
+    const [isMounted, setIsMounted] = useState<boolean>(false)
     const [dateTimeComponent, setDateTimeComponent] = useState<any>()
     const [numberDayComponent, setNumberDayComponent] = useState<any>()
     const [hoursBetWeenDays, setHoursBetWeenDays] = useState<number>(0)
     const [dataTime, setDateTime] = useState<any>(initialDateTime)
 
-    const { isStateDetailCar } = useDataDetailCar()
+    const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
+    const { dataPromotions } = useDialogPromotion()
+
+
 
     const {
         dateReal,
@@ -323,6 +326,10 @@ export function DialogCalendar({ }: Props) {
         validateDateSubmit,
         setValidateDateSubmit,
     } = useDialogCalendar()
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
 
     const handleOpenChangeModal = () => {
         setOpenDialogCalendar(!openDialogCalendar)
@@ -375,31 +382,6 @@ export function DialogCalendar({ }: Props) {
         }
     }
 
-    // change time in calender
-    // const handleTimeChange = (value: string, type: string) => {
-    //     if (dateTimeComponent) {
-    //         if (dateTimeComponent.from && type === 'from') {
-    //             const updatedDate = {
-    //                 ...dateTimeComponent,
-    //                 from: new Date(dateTimeComponent?.from.setHours(+value?.split(":")[0], +value.split(":")[1])),
-    //             };
-
-    //             // setDateTemp(updatedDate);
-    //             setDateTimeComponent(updatedDate);
-    //         } else if (dateTimeComponent.to && type === 'to') {
-    //             const updatedDate = {
-    //                 ...dateTimeComponent,
-    //                 to: new Date(dateTimeComponent?.to.setHours(+value?.split(":")[0], +value.split(":")[1])),
-    //             };
-
-    //             // setDateTemp(updatedDate);
-    //             setDateTimeComponent(updatedDate);
-    //         }
-
-    //     }
-
-    // };
-
     const handleTimeChange = (value: string, type: string) => {
         if (dateStart && dateEnd) {
             if (dateStart && type === 'from') {
@@ -415,103 +397,104 @@ export function DialogCalendar({ }: Props) {
 
     useEffect(() => {
         setDateTemp(dateReal)
-        setNumberDay(numberDayComponent)
+        setNumberDay(numberDayComponent ? numberDayComponent : 1)
         setDateTimeComponent(dateReal)
     }, [slug])
 
     useEffect(() => {
-        if (openDialogCalendar) {
-            const filterDatesByRange = (dataCalendar: any[], startDate: Date, endDate: Date) => {
-                const dataBetweens = dataCalendar?.map((item: any) => {
-                    return {
-                        ...item,
-                        price_detail: item.price_detail.filter((detail: any) => {
-                            const date = new Date(detail.date);
-                            const startOfDay = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-                            const endOfDay = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
-                            // Kiểm tra xem ngày có nằm trong khoảng thời gian đã chọn không
-                            const withinDateRange = date >= startOfDay && date <= endOfDay;
-                            // Kiểm tra xem status có phù hợp không
-                            return withinDateRange;
-                        })
-                    };
-                })
 
-                return dataBetweens
-            }
 
-            // Hàm kiểm tra xem có ngày nào trong khoảng thời gian có status là 2 hoặc 3 không
-            const validateDates = (dataCalendar: any[], startDate: Date, endDate: Date) => {
-                const filteredDates = filterDatesByRange(dataCalendar, startDate, endDate);
+        const filterDatesByRange = (dataCalendar: any[], startDate: Date, endDate: Date) => {
+            const dataBetweens = dataCalendar?.map((item: any) => {
+                return {
+                    ...item,
+                    price_detail: item.price_detail.filter((detail: any) => {
+                        const date = new Date(detail.date);
+                        const startOfDay = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+                        const endOfDay = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
+                        // Kiểm tra xem ngày có nằm trong khoảng thời gian đã chọn không
+                        const withinDateRange = date >= startOfDay && date <= endOfDay;
+                        // Kiểm tra xem status có phù hợp không
+                        return withinDateRange;
+                    })
+                };
+            })
 
-                return filteredDates.some((item: any) => {
-                    return item.price_detail.some((detail: any) => {
-                        return detail.status === 2 || detail.status === 3;
-                    });
-                });
-            }
-
-            if (dateStart && dateEnd) {
-                //    validate ngày
-                const isValid = validateDates(dataCalendar, dateStart, dateEnd);
-                setValidateDateSubmit(isValid);
-
-                // state chọn số ngày thuê
-                const daysDifference = differenceInCalendarDays(dateEnd, dateStart);
-                const hoursDifference = differenceInHours(dateEnd, dateStart);
-                const minutesDifference = differenceInMinutes(dateEnd, dateStart);
-                const isDateEndAfter = isAfter(dateEnd, dateStart);
-                const timeDate = Math.ceil(minutesDifference / 1440)
-                let minTimeInDay = hoursDifference >= +generalKey.hour_min_car
-
-                console.log('hoursDifference', hoursDifference);
-                console.log('minTimeInDay', minTimeInDay);
-                if (daysDifference > 0 && isDateEndAfter) {
-                    setNumberDayComponent(timeDate);
-                } else if (minutesDifference >= 1440 && isDateEndAfter) {
-                    setNumberDayComponent(timeDate);
-                } else {
-
-                    setHoursBetWeenDays(hoursDifference)
-                    setNumberDayComponent(1);
-                }
-
-            } else if (!dateEnd) {
-                // setHoursBetWeenDays(0)
-                setNumberDayComponent(1)
-                setValidateDateSubmit(false)
-            }
-
-            // lọc giờ trong modal
-            if (isStateDetailCar?.dataDetailCar?.hour_receive_car?.length > 0 && isStateDetailCar?.dataDetailCar?.hour_back_car?.length > 0) {
-                const filterByHourRange = (dataTime: any[], hourStart: string, hourEnd: string) =>
-                    dataTime.filter((item) => (
-                        (item.value >= hourStart) &&
-                        (item.value <= hourEnd)
-                    ));
-
-                const newDataTimeReceiveCar = filterByHourRange(
-                    dataTime.dataTimeLeft,
-                    isStateDetailCar?.dataDetailCar?.hour_receive_car[0].hour_start,
-                    isStateDetailCar?.dataDetailCar?.hour_receive_car[0].hour_end
-                );
-
-                const newDataTimeBackCar = filterByHourRange(
-                    dataTime.dataTimeRight,
-                    isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_start,
-                    isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_end
-                );
-
-                setDateTime({
-                    dataTimeLeft: newDataTimeReceiveCar,
-                    dataTimeRight: newDataTimeBackCar
-                })
-            } else {
-                setDateTime(initialDateTime)
-            }
-
+            return dataBetweens
         }
-    }, [openDialogCalendar, dateStart, dateEnd, slug])
+
+        // Hàm kiểm tra xem có ngày nào trong khoảng thời gian có status là 2 hoặc 3 không
+        const validateDates = (dataCalendar: any[], startDate: Date, endDate: Date) => {
+            const filteredDates = filterDatesByRange(dataCalendar, startDate, endDate);
+
+            console.log('filteredDates ;', filteredDates);
+
+            return filteredDates.some((item: any) => {
+                return item.price_detail.some((detail: any) => {
+                    return detail.status === 2 || detail.status === 3;
+                });
+            });
+        }
+
+        if (dateStart && dateEnd) {
+            //    validate ngày
+            const isValid = validateDates(dataCalendar, dateStart, dateEnd);
+            console.log('isValid :', isValid);
+
+            setValidateDateSubmit(isValid);
+
+            // state chọn số ngày thuê
+            const daysDifference = differenceInCalendarDays(dateEnd, dateStart);
+            const hoursDifference = differenceInHours(dateEnd, dateStart);
+            const minutesDifference = differenceInMinutes(dateEnd, dateStart);
+            const isDateEndAfter = isAfter(dateEnd, dateStart);
+            const timeDate = Math.ceil(minutesDifference / 1440)
+            let minTimeInDay = hoursDifference >= +generalKey.hour_min_car
+
+            if (daysDifference > 0 && isDateEndAfter) {
+                setNumberDayComponent(timeDate);
+            } else if (minutesDifference >= 1440 && isDateEndAfter) {
+                setNumberDayComponent(timeDate);
+            } else {
+
+                setHoursBetWeenDays(hoursDifference)
+                setNumberDayComponent(1);
+            }
+
+        } else if (!dateEnd) {
+            // setHoursBetWeenDays(0)
+            setNumberDayComponent(1)
+            setValidateDateSubmit(false)
+        }
+
+        // lọc giờ trong modal
+        if (isStateDetailCar?.dataDetailCar?.hour_receive_car?.length > 0 && isStateDetailCar?.dataDetailCar?.hour_back_car?.length > 0) {
+            const filterByHourRange = (dataTime: any[], hourStart: string, hourEnd: string) =>
+                dataTime.filter((item) => (
+                    (item.value >= hourStart) &&
+                    (item.value <= hourEnd)
+                ));
+
+            const newDataTimeReceiveCar = filterByHourRange(
+                dataTime.dataTimeLeft,
+                isStateDetailCar?.dataDetailCar?.hour_receive_car[0].hour_start,
+                isStateDetailCar?.dataDetailCar?.hour_receive_car[0].hour_end
+            );
+
+            const newDataTimeBackCar = filterByHourRange(
+                dataTime.dataTimeRight,
+                isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_start,
+                isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_end
+            );
+
+            setDateTime({
+                dataTimeLeft: newDataTimeReceiveCar,
+                dataTimeRight: newDataTimeBackCar
+            })
+        } else {
+            setDateTime(initialDateTime)
+        }
+    }, [dateStart, dateEnd, slug, dataCalendar])
 
 
     const handleSubmitDateTime = () => {
@@ -525,10 +508,24 @@ export function DialogCalendar({ }: Props) {
                     from: dateStart,
                     to: dateEnd,
                 });
+                if (
+                    isStateDetailCar?.dataDetailCar?.price?.number_day &&
+                    isStateDetailCar?.infoPromotion?.activePromotion?.number_day &&
+                    numberDayComponent < isStateDetailCar.infoPromotion.activePromotion.number_day
+                ) {
+                    queryKeyIsStateDetailCar({
+                        ...isStateDetailCar,
+                        infoPromotion: {
+                            ...isStateDetailCar?.infoPromotion,
+                            activePromotion: null
+                        }
+                    })
+                }
             } else {
                 setDateReal(dateTimeComponent);
             }
             setNumberDay(numberDayComponent);
+
             setOpenDialogCalendar(false)
         } catch (err) {
             throw err
@@ -544,13 +541,10 @@ export function DialogCalendar({ }: Props) {
         }
     }, [openDialogCalendar])
 
-
-    console.log('hoursBetWeenDays', hoursBetWeenDays);
-
     return (
         <Dialog modal open={openDialogCalendar} onOpenChange={handleOpenChangeModal}>
             <DialogOverlay />
-            <DialogContent className="px-0 pb-0 lg:max-w-[800px] md:max-w-[480px] w-fit max-h-[95vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
+            <DialogContent className="p-0 lg:max-w-[800px] md:max-w-[480px] w-fit h-[95vh] max-h-[95vh] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
                 <DialogClose
                     onClick={handleOpenChangeModal}
                     className="3xl:size-10 size-8 border border-[#000000] flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-40"
@@ -559,13 +553,13 @@ export function DialogCalendar({ }: Props) {
                     <span className="sr-only">Close</span>
                 </DialogClose>
 
-                <DialogHeader className='flex items-center justify-center w-full border-b pb-4'>
+                <DialogHeader className='flex items-center justify-center w-full border-b'>
                     <DialogTitle className='text-2xl capitalize'>
                         Thời gian
                     </DialogTitle>
                 </DialogHeader>
 
-                <div className='flex flex-col gap-2'>
+                <div className='flex flex-col gap-2 overflow-auto'>
                     <div className='px-2 border m-2 rounded-lg drop-shadow-md max-w-[760px]'>
                         <CalendarCustom
                             initialFocus
@@ -698,7 +692,7 @@ export function DialogCalendar({ }: Props) {
                     }
                 </div>
 
-                <div className='flex items-center justify-between border-t drop-shadow-md py-6 px-4 mt-10 bg-white'>
+                <div className='flex items-center justify-between border-t drop-shadow-md py-6 px-4 bg-white rounded-b-lg'>
                     <div className='flex flex-col'>
                         <div className='text-base font-semibold'>
                             {dateStart ? format(dateStart, 'HH:mm, dd/MM') : ""}{dateEnd ? ` - ${format(dateEnd, 'HH:mm, dd/MM')}` : ''}

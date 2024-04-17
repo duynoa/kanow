@@ -39,12 +39,17 @@ const InfoRentalCar = ({ params }: Props) => {
         const fetchListPaymentMode = async () => {
             const { data } = await getListPaymentMode();
 
+            console.log('data', data);
+            const indexFirstArray = data.data.findIndex((item: any) => item.type === 1)
+            console.log('indexFirstArray', indexFirstArray);
+
+
             if (data && data.data) {
                 queryKeyIsStatePaymentRental({
                     listPaymentMode: data.data,
                     payment: {
-                        idActivePaymentMethod: data?.data[0]?.id,
-                        indexPaymentMethod: 0
+                        idActivePaymentMethod: data?.data[indexFirstArray]?.id,
+                        indexPaymentMethod: indexFirstArray
                     }
                 })
             }

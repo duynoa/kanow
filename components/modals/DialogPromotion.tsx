@@ -115,6 +115,10 @@ export function DialogPromotion({ }: Props) {
 
     }, 300)
 
+    console.log('dataPromotions : ', dataPromotions);
+    console.log('isStateDetailCar : ', isStateDetailCar);
+
+
     return (
         <Dialog modal open={openDialogPromotion} onOpenChange={handleOpenChangeModal}>
             <DialogOverlay />
@@ -174,7 +178,7 @@ export function DialogPromotion({ }: Props) {
                             return (
                                 <React.Fragment key={`promotion-${index}`}>
                                     {
-                                        item.indefinite == 1 || item.indefinite == 0 && isCurrentDateWithinRange ?
+                                        (item.indefinite == 1 && isStateDetailCar?.dataDetailCar?.price?.number_day && isStateDetailCar?.dataDetailCar?.price?.number_day >= item.number_day || item.indefinite == 0 && isStateDetailCar?.dataDetailCar?.price?.number_day && isStateDetailCar?.dataDetailCar?.price?.number_day >= item.number_day) && isCurrentDateWithinRange ?
                                             <div className='flex flex-col gap-4'>
                                                 <div className='flex items-center justify-between w-full'>
                                                     <div className='flex gap-3'>

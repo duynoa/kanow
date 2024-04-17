@@ -11,6 +11,8 @@ import { create } from 'zustand';
 // data detail car tự lái
 interface IStateDetailCar {
     isStateDetailCar: IInitialStateDetailCar;
+    shouldFetchData: boolean;
+    setShouldFetchData: (shouldFetchData: boolean) => void;
     queryKeyIsStateDetailCar: (key: Partial<IInitialStateDetailCar>) => void;
 }
 
@@ -94,6 +96,7 @@ const isStateDetailCar: IInitialStateDetailCar = {
 
 export const useDataDetailCar = create<IStateDetailCar>((set) => ({
     isStateDetailCar,
+    shouldFetchData: false,
     queryKeyIsStateDetailCar: (key) => set((state) => ({
         isStateDetailCar: {
             ...state.isStateDetailCar,
@@ -101,6 +104,7 @@ export const useDataDetailCar = create<IStateDetailCar>((set) => ({
         }
     }
     )),
+    setShouldFetchData: (shouldFetchData: boolean) => set((state) => ({ ...state, shouldFetchData: shouldFetchData })),
 }));
 
 // data request rental Car

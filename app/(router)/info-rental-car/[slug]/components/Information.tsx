@@ -212,7 +212,9 @@ const Information = ({
                                             </div>
                                         </div>
                                         :
-                                        null
+                                        <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                            Chưa có đánh giá
+                                        </div>
                                 }
 
                                 {/* <div className='flex items-center gap-1'>
