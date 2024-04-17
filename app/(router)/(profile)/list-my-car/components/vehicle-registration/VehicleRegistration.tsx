@@ -12,6 +12,8 @@ import Image from "next/image"
 import React, { useState } from "react"
 import { StepRegister } from "./components/StepRegister"
 import UnderDevelopment from "@/components/underDevelopment/UnderDevelopment"
+import { toastCore } from "@/lib/toast"
+import { useForm } from "react-hook-form"
 
 type Props = {
 
@@ -22,40 +24,66 @@ const VehicleRegistration = (props: Props) => {
         tab: "register"
     }
 
+    const form = useForm({
+        defaultValues: {
+            // Biển số xe
+            licensePlates: "",
+            //Hãng xe
+            carCompany: "",
+            // Mẫu xe
+            carModel: "",
+            // số ghế
+            seats: "",
+            // năm sx
+            yearOfmManufacture: "",
+            // chueyern động
+            move: "",
+            // Loại nhiên liệu,
+            feuelType: "",
+        }
+    })
+
     const [isState, setIsState] = useState(initialState)
 
     const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
     return (
         <>
-            <Tabs defaultValue={isState.tab} onValueChange={(value) => queryState({ tab: value })} className="w-full">
-                <TabsList className="grid grid-cols-11 items-center w-full bg-transparent">
+            <Tabs defaultValue={isState.tab}
+                onValueChange={(value) => {
+                    queryState({ tab: value })
+                }}
+                className="w-full">
+                <TabsList className="grid grid-cols-12 items-center w-full bg-transparent">
                     {
                         isState.tab !== 'register' &&
                         <React.Fragment>
                             <TabsTrigger value="information"
-                                className={`col-span-1 w-full data-[state=active]:text-[#2FB9BD] text-[#667085] data-[state=active]:border-[#2FB9BD]
-                                    border-2 ${isState.tab == "lease" || isState.tab == "images" ? "border-[#2FB9BD] text-[#2FB9BD]" : "border-gray-500"} rounded-full px-5 py-4 font-semibold text-sm leading-[17px]`}>
+                                disabled
+                                className={`col-span-2 w-full 
+                                    border-2 disabled:opacity-100 data-[state=active]:text-[#2FB9BD] data-[state=active]:bg-[#2FB9BD]/20  ${isState.tab == "lease" || isState.tab == "images" || isState.tab == "information" ? "border-[#2FB9BD] text-[#2FB9BD]" : "border-gray-500"} rounded-full px-6 py-3 font-semibold text-sm leading-[17px]`}>
                                 Thông tin
                             </TabsTrigger>
-                            <div className="col-span-4 w-full">
+                            <div className="col-span-3 w-full">
                                 <div style={{
                                     backgroundColor: `${isState.tab == "lease" || isState.tab == "images" ? "#2FB9BD" : "gray"}`,
                                 }} className="h-[2px] w-full"></div>
                             </div>
                             <TabsTrigger value="lease"
-                                className={`col-span-1 w-full data-[state=active]:text-[#2FB9BD] text-[#667085] data-[state=active]:border-[#2FB9BD]
-                                    border-2 ${isState.tab == "lease" || isState.tab == "images" ? "border-[#2FB9BD] text-[#2FB9BD]" : "border-gray-500"} rounded-full px-5 py-4 font-semibold text-sm leading-[17px]`}>
+                                disabled
+                                className={`col-span-2 w-full
+                                    border-2 disabled:opacity-100 data-[state=active]:text-[#2FB9BD] data-[state=active]:bg-[#2FB9BD]/20 ${isState.tab == "lease" || isState.tab == "images" ? "border-[#2FB9BD] text-[#2FB9BD]" : "border-gray-500"} rounded-full px-6 py-3 font-semibold text-sm leading-[17px]`}>
                                 Cho thuê
                             </TabsTrigger>
-                            <div className="col-span-4 w-full">
+                            <div className="col-span-3 w-full">
                                 <div style={{
                                     backgroundColor: `${isState.tab == "images" ? "#2FB9BD" : "gray"}`,
                                 }} className="h-[2px] w-full"></div>
                             </div>
                             <TabsTrigger value="images"
-                                className='col-span-1 w-full data-[state=active]:text-[#2FB9BD] text-[#667085] data-[state=active]:border-[#2FB9BD]
-                                    border-2 border-gray-500 rounded-full px-5 py-4 font-semibold text-sm leading-[17px]'>
+                                disabled
+                                className='col-span-2 w-full 
+                                    border-2 disabled:opacity-100 data-[state=active]:text-[#2FB9BD] data-[state=active]:bg-[#2FB9BD]/20 border-gray-500 rounded-full px-6 py-3 font-semibold text-sm leading-[17px]'>
                                 Hình ảnh
                             </TabsTrigger>
                         </React.Fragment>

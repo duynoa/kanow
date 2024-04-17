@@ -735,6 +735,8 @@ const SearchCars = (props: Props) => {
             }
         }
     };
+    console.log("isState?.listCardCars", isState?.listCardCars);
+
 
     if (!isMounted) {
         return null;
@@ -949,7 +951,7 @@ const SearchCars = (props: Props) => {
                                             }
                                         </div>
                                     </div>
-                                    <div className='flex items-center gap-2 mt-2'>
+                                    <div className={`flex items-center ${card?.location?.distance ? 'justify-between' : 'justify-start'} gap-2 mt-2`}>
                                         <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default caret-transparent'>
                                             {card?.type?.transmission_search ? card?.type?.transmission_search : ""}
                                         </Badge>
@@ -961,6 +963,10 @@ const SearchCars = (props: Props) => {
                                                 :
                                                 null
                                         }
+                                        {card?.location?.distance &&
+                                            <div className='text-[#1AC5CA] text-xs font-semibold'>~ {card?.location?.distance} km</div>
+                                        }
+
                                     </div>
                                     <div className='flex gap-3 items-center'>
                                         <div className='3xl:w-12 3xl:max-w-12 3xl:h-12 w-10 max-w-10 h-10 '>
