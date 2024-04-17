@@ -4,7 +4,7 @@ import { IReportCar } from "../Cars/IReportCar";
 import { IDataPolicy } from "../Policy/IPolicy";
 
 // initial list car autonomous
-interface IInitialStateSearchCar {
+interface IInitialStateListCarAutonomous {
     listCardCars: IDataCardCar[];
     page: number;
     isLoadingScroll: boolean;
@@ -78,7 +78,7 @@ interface IInitialStatePolicy {
 }
 
 export type {
-    IInitialStateSearchCar,
+    IInitialStateListCarAutonomous,
     IInitialStateDetailCar,
     IInitialStateInfoRentalCar,
     IInitialStatePayment,

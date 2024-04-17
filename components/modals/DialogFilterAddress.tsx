@@ -18,12 +18,17 @@ import { TiLocation } from "react-icons/ti";
 import { Separator } from "../ui/separator";
 import { useEffect, useState } from "react";
 import { useGeneralKey } from "@/hooks/useGeneralKey";
-import { useDialogAddress } from "@/hooks/useOpenDialog";
+import { useDialogAddress, useDialogCalendar } from "@/hooks/useOpenDialog";
 import SearchAddress from "../searchAddress/SearchAddress";
 import useGoogleApi from "@/services/filter/google/google.services";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import useAirportCarDeliveryApi from "@/services/filter/listAirport/airportCarDelivery.services";
 import { useGeolocated } from "react-geolocated";
+import { usePathname } from "next/navigation";
+import { getListCars } from "@/services/cars/cars.services";
+import { useDataListCarAutonomous } from "@/hooks/useDataQueryKey";
+import { CustomDataListCars } from "@/custom/CustomData";
+import moment from "moment";
 
 
 type Props = {
@@ -41,17 +46,23 @@ interface IPlace {
 
 export function DialogFilterAddress({ }: Props) {
     const { generalKey } = useGeneralKey()
+    const pathname = usePathname()
 
     const { apiGetAddress } = useGoogleApi()
 
     const { apiGetListAirportCarDelivery } = useAirportCarDeliveryApi()
+    const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useDataListCarAutonomous()
+    const { dateReal } = useDialogCalendar()
 
     const {
         openDialogAddress,
         valueAddress,
         setOpenDialogAddress,
         setValueAddress,
-        coordinates, setCoordinates, setOnSubmitFilter } = useDialogAddress()
+        coordinates,
+        setCoordinates,
+        setOnSubmitFilter
+    } = useDialogAddress()
 
     const form = useForm({
         defaultValues: {
@@ -62,11 +73,58 @@ export function DialogFilterAddress({ }: Props) {
 
     const [dataPlane, setDataPlane] = useState<IPlace[]>([])
 
-    const onSubmit = async (data: any) => {
-        setValueAddress(data.valueAddres)
-        setOpenDialogAddress(false)
-        setOnSubmitFilter(true)
-        console.log("data", data);
+    const onSubmit = async (dataAddress: any) => {
+        if (pathname.startsWith('/list-car-autonomous')) {
+            console.log('valueAddress', valueAddress);
+
+            const query = {
+                "lat": dataAddress.valueAddres ? coordinates.lat : undefined,
+                "lon": dataAddress.valueAddres ? coordinates.lng : undefined,
+                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
+                company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
+                type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
+                transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
+                star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
+                tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
+                discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
+                book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
+                mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
+                delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
+            }
+
+            let limit = isStateListCarAutonomous.limit.limitAllCars;
+
+            if (
+                isStateListCarAutonomous.dataParams?.company_car_search === "0" &&
+                isStateListCarAutonomous.dataParams?.type_car_search?.length === 0 &&
+                isStateListCarAutonomous?.dataParams?.transmission_search == "0" &&
+                isStateListCarAutonomous.dataParams?.star_search === 0
+            ) {
+                limit = isStateListCarAutonomous.limit.limitAllCars;
+            } else {
+                limit = isStateListCarAutonomous.limit.limitFilterCars;
+            }
+
+            const { data } = await getListCars(1, limit, query)
+
+            if (data && data.data && data.base) {
+                let { customDataListCars } = CustomDataListCars(data)
+
+                queryKeyIsStateListCarAutonomous({
+                    listCardCars: customDataListCars,
+                    page: 2,
+                    next: data?.links?.next
+                })
+
+                setValueAddress(dataAddress.valueAddres)
+                setOpenDialogAddress(false)
+            }
+
+        } else {
+            setValueAddress(dataAddress.valueAddres)
+            setOpenDialogAddress(false)
+            setOnSubmitFilter(true)
+        }
 
     }
 

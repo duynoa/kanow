@@ -33,9 +33,11 @@ import { DialogFilterListCars } from '@/components/modals/DialogFilterListCars';
 import { CustomDataListCars } from '@/custom/CustomData';
 import { useCookie } from '@/hooks/useCookie';
 import SkeletonListCar from './components/SkeletonListCar';
-import { IInitialStateSearchCar } from '@/types/Initial/IInitial';
+import { IInitialStateListCarAutonomous } from '@/types/Initial/IInitial';
 import moment from 'moment';
 import { useListCar } from '@/hooks/useQueryKeyList';
+import { useDataListCarAutonomous } from '@/hooks/useDataQueryKey';
+import { usePathname } from 'next/navigation';
 
 type Props = {}
 
@@ -50,6 +52,7 @@ const SearchCars = (props: Props) => {
     const { setOpenDialogFilterListCars } = useDialogFilterListCars()
     const { getCookie } = useCookie()
     const { coordinates } = useDialogAddress()
+    const pathname = usePathname()
 
     // THÊM MỘT HẰNG SỐ ĐỂ ĐỊNH NGHĨA KHOẢNG ĐỘ CHO PHÉP
     const ALLOWED_OFFSET = 600;
@@ -63,7 +66,7 @@ const SearchCars = (props: Props) => {
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
     const [isFilterFixed, setIsFilterFixed] = useState<boolean>(false);
-    // const { isState, queryKeyIsState } = useListCar()
+    const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useDataListCarAutonomous()
     // DATA BỘ LỌC FILTER
     const listFilter = [
         {
@@ -121,48 +124,55 @@ const SearchCars = (props: Props) => {
             value: 0
         },
     ]
-    const initialState: IInitialStateSearchCar = {
-        listCardCars: [],
-        isLoadingScroll: false,
-        page: 1,
-        next: null,
-        filter: {
-            listTypesCar: [],
-            listAutomaker: []
-        },
-        dataParams: {
-            company_car_search: "0",
-            transmission_search: "0",
-            type_car_search: [],
-            tram_search: 0,
-            discount_search: 0,
-            book_car_flash: 0,
-            delivery_car: 0,
-            mortgage: 0,
-            star_search: 0,
-        },
-        onSuccess: {
-            onSuccessPage: false
-        },
-        limit: {
-            limitFilterCars: 50,
-            limitAllCars: 8,
-        }
-    }
 
-    const [isState, setIsState] = useState<IInitialStateSearchCar | any>(initialState)
+    // const initialState: IInitialStateListCarAutonomous = {
+    //     listCardCars: [],
+    //     isLoadingScroll: false,
+    //     page: 1,
+    //     next: null,
+    //     filter: {
+    //         listTypesCar: [],
+    //         listAutomaker: []
+    //     },
+    //     dataParams: {
+    //         company_car_search: "0",
+    //         transmission_search: "0",
+    //         type_car_search: [],
+    //         tram_search: 0,
+    //         discount_search: 0,
+    //         book_car_flash: 0,
+    //         delivery_car: 0,
+    //         mortgage: 0,
+    //         star_search: 0,
+    //     },
+    //     onSuccess: {
+    //         onSuccessPage: false
+    //     },
+    //     limit: {
+    //         limitFilterCars: 50,
+    //         limitAllCars: 8,
+    //     }
+    // }
 
-    const queryKeyIsState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
+    // const [isStateListCarAutonomous, setIsState] = useState<IInitialStateListCarAutonomous | any>(initialState)
+
+    // const queryKeyIsStateListCarAutonomous = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
     useEffect(() => {
         setIsMounted(true)
     }, [])
 
+    console.log('isStateListCarAutonomous : ', isStateListCarAutonomous);
+
+
+    
+
+
     // SỬ DỤNG useEffect ĐỂ FETCH LIST CARS LẦN ĐẦU TIÊN VÀO
     const handleFetchListCars = async (page: any) => {
         try {
 
-            queryKeyIsState({
+            queryKeyIsStateListCarAutonomous({
                 onSuccess: {
                     onSuccessPage: true
                 }
@@ -173,14 +183,14 @@ const SearchCars = (props: Props) => {
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`
                 // date_search: "10/04/2024 11:00:00 - 11/04/2024 12:00:00"
             }
-            const { data } = await getListCars(page, isState.limit.limitAllCars, dataParams)
+            const { data } = await getListCars(page, isStateListCarAutonomous.limit.limitAllCars, dataParams)
 
             if (data && data.data && data.base) {
                 let { customDataListCars } = CustomDataListCars(data)
 
-                queryKeyIsState({
+                queryKeyIsStateListCarAutonomous({
                     listCardCars: customDataListCars,
-                    page: isState.page + 1,
+                    page: isStateListCarAutonomous.page + 1,
                     next: data?.links?.next,
                     onSuccess: {
                         onSuccessPage: false
@@ -204,7 +214,7 @@ const SearchCars = (props: Props) => {
         if (onSubmitFilter) {
             handleFetchListCars(1)
         }
-        queryKeyIsState({ page: 1 })
+        queryKeyIsStateListCarAutonomous({ page: 1 })
     }, [onSubmitFilter])
 
     // LĂN CHUỘT XUỐNG NẾU VƯỢT 60PX THÌ SẼ HIỆN FIXED BỘ LỌC
@@ -235,10 +245,10 @@ const SearchCars = (props: Props) => {
                 const lastRefBottom = Math.floor(lastScrollCurrentRef.getBoundingClientRect().bottom);
                 const currentScroll = Math.floor(window.scrollY);
 
-                if (currentScroll >= lastRefBottom - ALLOWED_OFFSET && !isAtBottomRef.current && isState.isLoadingScroll === false) {
+                if (currentScroll >= lastRefBottom - ALLOWED_OFFSET && !isAtBottomRef.current && isStateListCarAutonomous.isLoadingScroll === false) {
                     // Bạn đã cuộn đến cuối phần ScrollArea
-                    if (isState.listCardCars && isState.next !== null) {
-                        queryKeyIsState({ isLoadingScroll: true });
+                    if (isStateListCarAutonomous.listCardCars && isStateListCarAutonomous.next !== null) {
+                        queryKeyIsStateListCarAutonomous({ isLoadingScroll: true });
 
                         const fetchDataListCar = async () => {
                             const query = {
@@ -246,18 +256,18 @@ const SearchCars = (props: Props) => {
                                 "lon": valueAddress ? coordinates.lng : undefined,
                                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                                 // date_search: "10/04/2024 11:00:00 - 11/04/2024 12:00:00",
-                                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
-                                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
-                                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
-                                star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
-                                tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
-                                discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
-                                book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
-                                mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
-                                delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+                                company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
+                                type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
+                                transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
+                                star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
+                                tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
+                                discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
+                                book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
+                                mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
+                                delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
                             }
 
-                            const { data } = await getListCars(isState.page, isState.limit.limitAllCars, query);
+                            const { data } = await getListCars(isStateListCarAutonomous.page, isStateListCarAutonomous.limit.limitAllCars, query);
 
                             console.log('check data : ', data);
 
@@ -265,15 +275,15 @@ const SearchCars = (props: Props) => {
                             if (data && data?.links && data?.data && data?.base) {
                                 let { customDataListCars } = CustomDataListCars(data)
 
-                                queryKeyIsState({
-                                    listCardCars: [...(isState.listCardCars || []), ...customDataListCars],
-                                    page: isState.page + 1,
+                                queryKeyIsStateListCarAutonomous({
+                                    listCardCars: [...(isStateListCarAutonomous.listCardCars || []), ...customDataListCars],
+                                    page: isStateListCarAutonomous.page + 1,
                                     next: data?.links?.next
                                 });
 
-                                const lastElementIndex = isState.listCardCars.length - 1;
+                                const lastElementIndex = isStateListCarAutonomous.listCardCars.length - 1;
                                 // Lấy id của phần tử đầu tiên trong mảng mới
-                                const lastElementId = isState.listCardCars && isState.listCardCars.length > 0 ? `card-${isState.listCardCars[lastElementIndex]?.id}` : "";
+                                const lastElementId = isStateListCarAutonomous.listCardCars && isStateListCarAutonomous.listCardCars.length > 0 ? `card-${isStateListCarAutonomous.listCardCars[lastElementIndex]?.id}` : "";
                                 const lastElement = document.getElementById(lastElementId);
 
                                 if (lastElement) {
@@ -285,14 +295,14 @@ const SearchCars = (props: Props) => {
                                     });
                                 }
 
-                                queryKeyIsState({
+                                queryKeyIsStateListCarAutonomous({
                                     isLoadingScroll: false
                                 })
                             } else {
-                                queryKeyIsState({
-                                    listCardCars: isState.listCardCars,
+                                queryKeyIsStateListCarAutonomous({
+                                    listCardCars: isStateListCarAutonomous.listCardCars,
                                     next: data?.links?.next,
-                                    page: data?.links?.next !== null ? isState.page + 1 : isState.page,
+                                    page: data?.links?.next !== null ? isStateListCarAutonomous.page + 1 : isStateListCarAutonomous.page,
                                     isLoadingScroll: false,
                                 });
                             }
@@ -318,20 +328,20 @@ const SearchCars = (props: Props) => {
         };
     }, [
         scrollContainerRef,
-        isState.next,
-        isState.listCardCars,
-        isState.page,
-        isState.isLoadingScroll,
+        isStateListCarAutonomous.next,
+        isStateListCarAutonomous.listCardCars,
+        isStateListCarAutonomous.page,
+        isStateListCarAutonomous.isLoadingScroll,
         isVisibleMobile
     ]);
 
     const isValueNonZeroOrNonEmptyArray = (key: string, type: string) => {
         if (type === "filter") {
-            const newValue: any = isState.dataParams
+            const newValue: any = isStateListCarAutonomous.dataParams
             const value = newValue[key];
             return value != 0 && (Array.isArray(value) ? value.length != 0 : true);
         } else if (type === "reset_filter") {
-            const { dataParams } = isState;
+            const { dataParams } = isStateListCarAutonomous;
 
             return Object.values(dataParams).some(value => value != 0 && (!Array.isArray(value) || value.length != 0));
         }
@@ -346,13 +356,13 @@ const SearchCars = (props: Props) => {
             try {
                 const dataParams = {
                     car_id: car_id,
-                    status: isState?.listCardCars[index]?.favorite_car ? 0 : 1
+                    status: isStateListCarAutonomous?.listCardCars[index]?.favorite_car ? 0 : 1
                 }
 
                 const { data } = await postUpdateFavoriteHeartCar(dataParams)
 
                 if (data.result && getCookie !== "kanow" && getCookie !== undefined) {
-                    let newDataTest = isState?.listCardCars.map((item: any) => {
+                    let newDataTest = isStateListCarAutonomous?.listCardCars.map((item: any) => {
                         if (item.id === car_id) {
                             return {
                                 ...item,
@@ -363,7 +373,7 @@ const SearchCars = (props: Props) => {
                         }
                     })
 
-                    queryKeyIsState({
+                    queryKeyIsStateListCarAutonomous({
                         listCardCars: newDataTest
                     })
                 } else {
@@ -402,12 +412,12 @@ const SearchCars = (props: Props) => {
             delivery_car: undefined,
         }
 
-        const { data } = await getListCars(1, isState.limit.limitAllCars, query)
+        const { data } = await getListCars(1, isStateListCarAutonomous.limit.limitAllCars, query)
 
         if (data && data.data && data.base) {
             let { customDataListCars } = CustomDataListCars(data)
 
-            queryKeyIsState({
+            queryKeyIsStateListCarAutonomous({
                 listCardCars: customDataListCars,
                 page: 2,
                 next: data?.links?.next,
@@ -428,39 +438,39 @@ const SearchCars = (props: Props) => {
 
     const handleFilterClick = async (item: any) => {
         if (item.type === "star_search") {
-            const newStarSearch = isState?.dataParams?.star_search !== item.value ? item.value : 0;
+            const newStarSearch = isStateListCarAutonomous?.dataParams?.star_search !== item.value ? item.value : 0;
 
             const query = {
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
-                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
-                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
+                company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
+                type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
+                transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
                 star_search: newStarSearch == 0 ? undefined : newStarSearch,
-                tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
-                discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
-                book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
-                mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
-                delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+                tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
+                discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
+                book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
+                mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
+                delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
             }
 
-            let limit = isState.limit.limitAllCars;
+            let limit = isStateListCarAutonomous.limit.limitAllCars;
 
             if (
-                isState.dataParams?.company_car_search === "0" &&
-                isState.dataParams?.type_car_search?.length === 0 &&
-                isState?.dataParams?.transmission_search == "0" &&
+                isStateListCarAutonomous.dataParams?.company_car_search === "0" &&
+                isStateListCarAutonomous.dataParams?.type_car_search?.length === 0 &&
+                isStateListCarAutonomous?.dataParams?.transmission_search == "0" &&
                 newStarSearch === 0 &&
-                isState.dataParams?.tram_search === 0 &&
-                isState.dataParams?.discount_search === 0 &&
-                isState.dataParams?.book_car_flash === 0 &&
-                isState.dataParams?.mortgage === 0 &&
-                isState.dataParams?.delivery_car === 0
+                isStateListCarAutonomous.dataParams?.tram_search === 0 &&
+                isStateListCarAutonomous.dataParams?.discount_search === 0 &&
+                isStateListCarAutonomous.dataParams?.book_car_flash === 0 &&
+                isStateListCarAutonomous.dataParams?.mortgage === 0 &&
+                isStateListCarAutonomous.dataParams?.delivery_car === 0
             ) {
-                limit = isState.limit.limitAllCars;
+                limit = isStateListCarAutonomous.limit.limitAllCars;
             } else {
-                limit = isState.limit.limitFilterCars;
+                limit = isStateListCarAutonomous.limit.limitFilterCars;
             }
 
             const { data } = await getListCars(1, limit, query)
@@ -468,50 +478,50 @@ const SearchCars = (props: Props) => {
             if (data && data.data && data.base) {
                 let { customDataListCars } = CustomDataListCars(data)
 
-                queryKeyIsState({
+                queryKeyIsStateListCarAutonomous({
                     listCardCars: customDataListCars,
                     page: 2,
                     next: data?.links?.next,
                     dataParams: {
-                        ...isState.dataParams,
+                        ...isStateListCarAutonomous.dataParams,
                         star_search: newStarSearch
                     }
                 })
             }
         } else if (item.type === "tram_search") {
-            const newTramSearch = isState?.dataParams?.tram_search !== item.value ? item.value : 0;
+            const newTramSearch = isStateListCarAutonomous?.dataParams?.tram_search !== item.value ? item.value : 0;
 
             const query = {
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
-                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
-                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
-                star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
+                company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
+                type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
+                transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
+                star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
                 tram_search: newTramSearch == 0 ? undefined : newTramSearch,
-                discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
-                book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
-                mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
-                delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+                discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
+                book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
+                mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
+                delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
             }
 
-            let limit = isState.limit.limitAllCars;
+            let limit = isStateListCarAutonomous.limit.limitAllCars;
 
             if (
-                isState.dataParams?.company_car_search === "0" &&
-                isState.dataParams?.type_car_search?.length === 0 &&
-                isState?.dataParams?.transmission_search == "0" &&
-                isState.dataParams?.star_search === 0 &&
+                isStateListCarAutonomous.dataParams?.company_car_search === "0" &&
+                isStateListCarAutonomous.dataParams?.type_car_search?.length === 0 &&
+                isStateListCarAutonomous?.dataParams?.transmission_search == "0" &&
+                isStateListCarAutonomous.dataParams?.star_search === 0 &&
                 newTramSearch === 0 &&
-                isState.dataParams?.discount_search === 0 &&
-                isState.dataParams?.book_car_flash === 0 &&
-                isState.dataParams?.mortgage === 0 &&
-                isState.dataParams?.delivery_car === 0
+                isStateListCarAutonomous.dataParams?.discount_search === 0 &&
+                isStateListCarAutonomous.dataParams?.book_car_flash === 0 &&
+                isStateListCarAutonomous.dataParams?.mortgage === 0 &&
+                isStateListCarAutonomous.dataParams?.delivery_car === 0
             ) {
-                limit = isState.limit.limitAllCars;
+                limit = isStateListCarAutonomous.limit.limitAllCars;
             } else {
-                limit = isState.limit.limitFilterCars;
+                limit = isStateListCarAutonomous.limit.limitFilterCars;
             }
 
             const { data } = await getListCars(1, limit, query)
@@ -519,50 +529,50 @@ const SearchCars = (props: Props) => {
             if (data && data.data && data.base) {
                 let { customDataListCars } = CustomDataListCars(data)
 
-                queryKeyIsState({
+                queryKeyIsStateListCarAutonomous({
                     listCardCars: customDataListCars,
                     page: 2,
                     next: data?.links?.next,
                     dataParams: {
-                        ...isState.dataParams,
+                        ...isStateListCarAutonomous.dataParams,
                         tram_search: newTramSearch
                     }
                 })
             }
         } else if (item.type === "discount_search") {
-            const newDiscountSearch = isState?.dataParams?.discount_search !== item.value ? item.value : 0;
+            const newDiscountSearch = isStateListCarAutonomous?.dataParams?.discount_search !== item.value ? item.value : 0;
 
             const query = {
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
-                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
-                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
-                star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
-                tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
+                company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
+                type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
+                transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
+                star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
+                tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
                 discount_search: newDiscountSearch == 0 ? undefined : newDiscountSearch,
-                book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
-                mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
-                delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+                book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
+                mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
+                delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
             }
 
-            let limit = isState.limit.limitAllCars;
+            let limit = isStateListCarAutonomous.limit.limitAllCars;
 
             if (
-                isState.dataParams?.company_car_search === "0" &&
-                isState.dataParams?.type_car_search?.length === 0 &&
-                isState?.dataParams?.transmission_search == "0" &&
-                isState.dataParams?.star_search === 0 &&
-                isState.dataParams?.tram_search === 0 &&
+                isStateListCarAutonomous.dataParams?.company_car_search === "0" &&
+                isStateListCarAutonomous.dataParams?.type_car_search?.length === 0 &&
+                isStateListCarAutonomous?.dataParams?.transmission_search == "0" &&
+                isStateListCarAutonomous.dataParams?.star_search === 0 &&
+                isStateListCarAutonomous.dataParams?.tram_search === 0 &&
                 newDiscountSearch === 0 &&
-                isState.dataParams?.book_car_flash === 0 &&
-                isState.dataParams?.mortgage === 0 &&
-                isState.dataParams?.delivery_car === 0
+                isStateListCarAutonomous.dataParams?.book_car_flash === 0 &&
+                isStateListCarAutonomous.dataParams?.mortgage === 0 &&
+                isStateListCarAutonomous.dataParams?.delivery_car === 0
             ) {
-                limit = isState.limit.limitAllCars;
+                limit = isStateListCarAutonomous.limit.limitAllCars;
             } else {
-                limit = isState.limit.limitFilterCars;
+                limit = isStateListCarAutonomous.limit.limitFilterCars;
             }
 
             const { data } = await getListCars(1, limit, query)
@@ -570,50 +580,50 @@ const SearchCars = (props: Props) => {
             if (data && data.data && data.base) {
                 let { customDataListCars } = CustomDataListCars(data)
 
-                queryKeyIsState({
+                queryKeyIsStateListCarAutonomous({
                     listCardCars: customDataListCars,
                     page: 2,
                     next: data?.links?.next,
                     dataParams: {
-                        ...isState.dataParams,
+                        ...isStateListCarAutonomous.dataParams,
                         discount_search: newDiscountSearch
                     }
                 })
             }
         } else if (item.type === "book_car_flash") {
-            const newBookCarFlashSearch = isState?.dataParams?.book_car_flash !== item.value ? item.value : 0;
+            const newBookCarFlashSearch = isStateListCarAutonomous?.dataParams?.book_car_flash !== item.value ? item.value : 0;
 
             const query = {
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
-                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
-                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
-                star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
-                tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
-                discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
+                company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
+                type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
+                transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
+                star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
+                tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
+                discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
                 book_car_flash: newBookCarFlashSearch == 0 ? undefined : newBookCarFlashSearch,
-                mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
-                delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+                mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
+                delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
             }
 
-            let limit = isState.limit.limitAllCars;
+            let limit = isStateListCarAutonomous.limit.limitAllCars;
 
             if (
-                isState.dataParams?.company_car_search === "0" &&
-                isState.dataParams?.type_car_search?.length === 0 &&
-                isState?.dataParams?.transmission_search == "0" &&
-                isState.dataParams?.star_search === 0 &&
-                isState.dataParams?.tram_search === 0 &&
-                isState.dataParams?.discount_search === 0 &&
+                isStateListCarAutonomous.dataParams?.company_car_search === "0" &&
+                isStateListCarAutonomous.dataParams?.type_car_search?.length === 0 &&
+                isStateListCarAutonomous?.dataParams?.transmission_search == "0" &&
+                isStateListCarAutonomous.dataParams?.star_search === 0 &&
+                isStateListCarAutonomous.dataParams?.tram_search === 0 &&
+                isStateListCarAutonomous.dataParams?.discount_search === 0 &&
                 newBookCarFlashSearch === 0 &&
-                isState.dataParams?.mortgage === 0 &&
-                isState.dataParams?.delivery_car === 0
+                isStateListCarAutonomous.dataParams?.mortgage === 0 &&
+                isStateListCarAutonomous.dataParams?.delivery_car === 0
             ) {
-                limit = isState.limit.limitAllCars;
+                limit = isStateListCarAutonomous.limit.limitAllCars;
             } else {
-                limit = isState.limit.limitFilterCars;
+                limit = isStateListCarAutonomous.limit.limitFilterCars;
             }
 
             const { data } = await getListCars(1, limit, query)
@@ -621,50 +631,50 @@ const SearchCars = (props: Props) => {
             if (data && data.data && data.base) {
                 let { customDataListCars } = CustomDataListCars(data)
 
-                queryKeyIsState({
+                queryKeyIsStateListCarAutonomous({
                     listCardCars: customDataListCars,
                     page: 2,
                     next: data?.links?.next,
                     dataParams: {
-                        ...isState.dataParams,
+                        ...isStateListCarAutonomous.dataParams,
                         book_car_flash: newBookCarFlashSearch
                     }
                 })
             }
         } else if (item.type === "mortgage") {
-            const newMortgageSearch = isState?.dataParams?.mortgage !== item.value ? item.value : 0;
+            const newMortgageSearch = isStateListCarAutonomous?.dataParams?.mortgage !== item.value ? item.value : 0;
 
             const query = {
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
-                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
-                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
-                star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
-                tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
-                discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
-                book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
+                company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
+                type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
+                transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
+                star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
+                tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
+                discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
+                book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
                 mortgage: newMortgageSearch == 0 ? undefined : newMortgageSearch,
-                delivery_car: isState?.dataParams?.delivery_car == 0 ? undefined : isState?.dataParams?.delivery_car,
+                delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
             }
 
-            let limit = isState.limit.limitAllCars;
+            let limit = isStateListCarAutonomous.limit.limitAllCars;
 
             if (
-                isState.dataParams?.company_car_search === "0" &&
-                isState.dataParams?.type_car_search?.length === 0 &&
-                isState?.dataParams?.transmission_search == "0" &&
-                isState.dataParams?.star_search === 0 &&
-                isState.dataParams?.tram_search === 0 &&
-                isState.dataParams?.discount_search === 0 &&
-                isState.dataParams?.book_car_flash === 0 &&
+                isStateListCarAutonomous.dataParams?.company_car_search === "0" &&
+                isStateListCarAutonomous.dataParams?.type_car_search?.length === 0 &&
+                isStateListCarAutonomous?.dataParams?.transmission_search == "0" &&
+                isStateListCarAutonomous.dataParams?.star_search === 0 &&
+                isStateListCarAutonomous.dataParams?.tram_search === 0 &&
+                isStateListCarAutonomous.dataParams?.discount_search === 0 &&
+                isStateListCarAutonomous.dataParams?.book_car_flash === 0 &&
                 newMortgageSearch === 0 &&
-                isState.dataParams?.delivery_car === 0
+                isStateListCarAutonomous.dataParams?.delivery_car === 0
             ) {
-                limit = isState.limit.limitAllCars;
+                limit = isStateListCarAutonomous.limit.limitAllCars;
             } else {
-                limit = isState.limit.limitFilterCars;
+                limit = isStateListCarAutonomous.limit.limitFilterCars;
             }
 
             const { data } = await getListCars(1, limit, query)
@@ -672,50 +682,50 @@ const SearchCars = (props: Props) => {
             if (data && data.data && data.base) {
                 let { customDataListCars } = CustomDataListCars(data)
 
-                queryKeyIsState({
+                queryKeyIsStateListCarAutonomous({
                     listCardCars: customDataListCars,
                     page: 2,
                     next: data?.links?.next,
                     dataParams: {
-                        ...isState.dataParams,
+                        ...isStateListCarAutonomous.dataParams,
                         mortgage: newMortgageSearch
                     }
                 })
             }
         } else if (item.type === "delivery_car") {
-            const newDeliveryCarSearch = isState?.dataParams?.delivery_car !== item.value ? item.value : 0;
+            const newDeliveryCarSearch = isStateListCarAutonomous?.dataParams?.delivery_car !== item.value ? item.value : 0;
 
             const query = {
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-                company_car_search: isState?.dataParams?.company_car_search == "0" ? undefined : isState?.dataParams?.company_car_search,
-                type_car_search: isState?.dataParams?.type_car_search && isState?.dataParams?.type_car_search.length === 0 ? [] : isState?.dataParams?.type_car_search,
-                transmission_search: isState?.dataParams?.transmission_search == "0" ? undefined : isState?.dataParams?.transmission_search,
-                star_search: isState?.dataParams?.star_search == 0 ? undefined : isState?.dataParams?.star_search,
-                tram_search: isState?.dataParams?.tram_search == 0 ? undefined : isState?.dataParams?.tram_search,
-                discount_search: isState?.dataParams?.discount_search == 0 ? undefined : isState?.dataParams?.discount_search,
-                book_car_flash: isState?.dataParams?.book_car_flash == 0 ? undefined : isState?.dataParams?.book_car_flash,
-                mortgage: isState?.dataParams?.mortgage == 0 ? undefined : isState?.dataParams?.mortgage,
+                company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
+                type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
+                transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
+                star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
+                tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
+                discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
+                book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
+                mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
                 delivery_car: newDeliveryCarSearch == 0 ? undefined : newDeliveryCarSearch,
             }
 
-            let limit = isState.limit.limitAllCars;
+            let limit = isStateListCarAutonomous.limit.limitAllCars;
 
             if (
-                isState.dataParams?.company_car_search === "0" &&
-                isState.dataParams?.type_car_search?.length === 0 &&
-                isState?.dataParams?.transmission_search == "0" &&
-                isState.dataParams?.star_search === 0 &&
-                isState.dataParams?.tram_search === 0 &&
-                isState.dataParams?.discount_search === 0 &&
-                isState.dataParams?.book_car_flash === 0 &&
-                isState.dataParams?.mortgage === 0 &&
+                isStateListCarAutonomous.dataParams?.company_car_search === "0" &&
+                isStateListCarAutonomous.dataParams?.type_car_search?.length === 0 &&
+                isStateListCarAutonomous?.dataParams?.transmission_search == "0" &&
+                isStateListCarAutonomous.dataParams?.star_search === 0 &&
+                isStateListCarAutonomous.dataParams?.tram_search === 0 &&
+                isStateListCarAutonomous.dataParams?.discount_search === 0 &&
+                isStateListCarAutonomous.dataParams?.book_car_flash === 0 &&
+                isStateListCarAutonomous.dataParams?.mortgage === 0 &&
                 newDeliveryCarSearch === 0
             ) {
-                limit = isState.limit.limitAllCars;
+                limit = isStateListCarAutonomous.limit.limitAllCars;
             } else {
-                limit = isState.limit.limitFilterCars;
+                limit = isStateListCarAutonomous.limit.limitFilterCars;
             }
 
             const { data } = await getListCars(1, limit, query)
@@ -723,12 +733,12 @@ const SearchCars = (props: Props) => {
             if (data && data.data && data.base) {
                 let { customDataListCars } = CustomDataListCars(data)
 
-                queryKeyIsState({
+                queryKeyIsStateListCarAutonomous({
                     listCardCars: customDataListCars,
                     page: 2,
                     next: data?.links?.next,
                     dataParams: {
-                        ...isState.dataParams,
+                        ...isStateListCarAutonomous.dataParams,
                         delivery_car: newDeliveryCarSearch
                     }
                 })
@@ -886,12 +896,12 @@ const SearchCars = (props: Props) => {
             </div >
 
             <div
-                className={`${isFilterFixed ? "lg:mt-40 mt-60" : "mt-6"} ${isState?.isLoadingScroll ? "pb-0" : "pb-20"}`}
+                className={`${isFilterFixed ? "lg:mt-40 mt-60" : "mt-6"} ${isStateListCarAutonomous?.isLoadingScroll ? "pb-0" : "pb-20"}`}
                 ref={scrollContainerRef}
             >
                 <div className='custom-container grid xxl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-6 gap-4 justify-start h-full'>
                     {
-                        isState.onSuccess.onSuccessPage ?
+                        isStateListCarAutonomous.onSuccess.onSuccessPage ?
                             <>
                                 {[...Array(8)].map((_, index) => (
                                     <React.Fragment key={`index-${index}`}>
@@ -900,7 +910,7 @@ const SearchCars = (props: Props) => {
                                 ))}
                             </>
                             :
-                            isState?.listCardCars && isState?.listCardCars?.map((card: any, index: number) => (
+                            isStateListCarAutonomous?.listCardCars && isStateListCarAutonomous?.listCardCars?.map((card: any, index: number) => (
                                 <Link
                                     id={`card-${card.id}`}
                                     key={card.id}
@@ -1057,7 +1067,7 @@ const SearchCars = (props: Props) => {
 
                 </div>
                 {
-                    isState?.isLoadingScroll && (
+                    isStateListCarAutonomous?.isLoadingScroll && (
                         <div className="w-full 3xl:h-[80px] h-[60px] flex justify-center items-center gap-2 bg-white shadow-2xl mt-6">
                             <div className="text-[#2FB9BD] inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
                             <span className="text-[#2FB9BD] 3xl:text-xl text-base">Loading...</span>
@@ -1068,7 +1078,7 @@ const SearchCars = (props: Props) => {
             </div>
 
             {/* <DialogFilterListCars /> */}
-            <DialogFilterListCars isState={isState} queryKeyIsState={queryKeyIsState} />
+            <DialogFilterListCars />
         </>
     )
 }

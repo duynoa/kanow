@@ -1,9 +1,9 @@
-import { IInitialStateSearchCar } from '@/types/Initial/IInitial';
+import { IInitialStateListCarAutonomous } from '@/types/Initial/IInitial';
 import { create } from 'zustand';
 
 // data Payment method mode
 interface IState {
-    isState: IInitialStateSearchCar;
+    isState: IInitialStateListCarAutonomous;
     queryKeyIsState: (key: any) => void;
 }
 
