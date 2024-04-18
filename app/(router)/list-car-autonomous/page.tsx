@@ -745,8 +745,6 @@ const SearchCars = (props: Props) => {
             }
         }
     };
-    console.log("isState?.listCardCars", isState?.listCardCars);
-
 
     if (!isMounted) {
         return null;
