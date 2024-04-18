@@ -40,6 +40,13 @@ const VehicleRegistration = (props: Props) => {
             move: "",
             // Loại nhiên liệu,
             feuelType: "",
+            // Mức tiêu thụ nhiên nhiệu
+            fuelConsumptionLevel: "",
+            // mô tả
+            describe: "",
+            // tính năng
+            feature: "",
+
         }
     })
 
@@ -60,30 +67,32 @@ const VehicleRegistration = (props: Props) => {
                         <React.Fragment>
                             <TabsTrigger value="information"
                                 disabled
-                                className={`col-span-2 w-full 
-                                    border-2 disabled:opacity-100 data-[state=active]:text-[#2FB9BD] data-[state=active]:bg-[#2FB9BD]/20  ${isState.tab == "lease" || isState.tab == "images" || isState.tab == "information" ? "border-[#2FB9BD] text-[#2FB9BD]" : "border-gray-500"} rounded-full px-6 py-3 font-semibold text-sm leading-[17px]`}>
+                                className={`lg:col-span-2 col-span-3 w-full 
+                                    border-2 disabled:opacity-100 data-[state=active]:text-[#2FB9BD] data-[state=active]:bg-[#2FB9BD]/20  
+                                    ${isState.tab == "lease" || isState.tab == "images" || isState.tab == "information" ? "border-[#2FB9BD] text-[#2FB9BD]" : "border-gray-500"} rounded-full py-3 font-semibold lg:text-sm text-xs leading-[17px]`}>
                                 Thông tin
                             </TabsTrigger>
-                            <div className="col-span-3 w-full">
+                            <div className="lg:col-span-3 col-span-1 w-full">
                                 <div style={{
                                     backgroundColor: `${isState.tab == "lease" || isState.tab == "images" ? "#2FB9BD" : "gray"}`,
                                 }} className="h-[2px] w-full"></div>
                             </div>
                             <TabsTrigger value="lease"
                                 disabled
-                                className={`col-span-2 w-full
-                                    border-2 disabled:opacity-100 data-[state=active]:text-[#2FB9BD] data-[state=active]:bg-[#2FB9BD]/20 ${isState.tab == "lease" || isState.tab == "images" ? "border-[#2FB9BD] text-[#2FB9BD]" : "border-gray-500"} rounded-full px-6 py-3 font-semibold text-sm leading-[17px]`}>
+                                className={`lg:col-span-2 col-span-3 w-full
+                                    border-2 disabled:opacity-100 data-[state=active]:text-[#2FB9BD] data-[state=active]:bg-[#2FB9BD]/20 
+                                    ${isState.tab == "lease" || isState.tab == "images" ? "border-[#2FB9BD] text-[#2FB9BD]" : "border-gray-500"} rounded-full py-3 font-semibold lg:text-sm text-xs leading-[17px]`}>
                                 Cho thuê
                             </TabsTrigger>
-                            <div className="col-span-3 w-full">
+                            <div className="lg:col-span-3 col-span-1 w-full">
                                 <div style={{
                                     backgroundColor: `${isState.tab == "images" ? "#2FB9BD" : "gray"}`,
                                 }} className="h-[2px] w-full"></div>
                             </div>
                             <TabsTrigger value="images"
                                 disabled
-                                className='col-span-2 w-full 
-                                    border-2 disabled:opacity-100 data-[state=active]:text-[#2FB9BD] data-[state=active]:bg-[#2FB9BD]/20 border-gray-500 rounded-full px-6 py-3 font-semibold text-sm leading-[17px]'>
+                                className='lg:col-span-2 col-span-3 w-full 
+                                    border-2 disabled:opacity-100 data-[state=active]:text-[#2FB9BD] data-[state=active]:bg-[#2FB9BD]/20 border-gray-500 rounded-full py-3 font-semibold lg:text-sm text-xs leading-[17px]'>
                                 Hình ảnh
                             </TabsTrigger>
                         </React.Fragment>
@@ -100,7 +109,7 @@ const VehicleRegistration = (props: Props) => {
                         <TabsList className=" items-center w-full bg-transparent">
                             <TabsTrigger value="information"
                                 className={`col-span-11 w-fit text-white border-[#2FB9BD] rounded-xl
-                                    border-2 px-8 py-4 bg-[#2FB9BD] font-semibold text-sm leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
+                                    border-2 px-8 py-4 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
                                 Đăng ký xe tự lái
                             </TabsTrigger>
                         </TabsList>
@@ -124,6 +133,8 @@ const VehicleRegistration = (props: Props) => {
                 <TabsContent value="images" className="lg:mt-4 mt-5">
                     <UnderDevelopment />
                 </TabsContent>
+                <Button type="button">Quay lại</Button>
+                {/* <Button type="button">Quay lại</Button> */}
             </Tabs>
         </>
 
