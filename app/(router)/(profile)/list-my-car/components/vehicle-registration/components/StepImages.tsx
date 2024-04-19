@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { IVehicleRegistration } from "@/types/Profile/mycar/IMyCar"
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form"
+import { MdClear } from "react-icons/md"
 
 type Props = {
     form: any,
@@ -54,10 +55,10 @@ const StepImages = ({ form, isState, queryState }: Props) => {
                                             {value ?
                                                 <>
                                                     {
-                                                        value.map((e: any) => {
+                                                        value.map((e: any, index: number) => {
                                                             if (!e) return
                                                             return (
-                                                                <div key={e} className="col-span-1 h-[250px]">
+                                                                <div key={e} className="col-span-1 h-[250px] relative">
                                                                     <Image
 
                                                                         src={e instanceof File ? URL.createObjectURL(e) : e ?? ""}
@@ -65,6 +66,19 @@ const StepImages = ({ form, isState, queryState }: Props) => {
                                                                         height={1024}
                                                                         alt="image" className="w-full h-full object-cover rounded-md"
                                                                     />
+                                                                    <div
+                                                                        className="bg-white rounded-full rounded-fit absolute top-0 right-3 translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                                                                        <MdClear
+                                                                            onClick={() => {
+                                                                                const inputElement = document.getElementById('picture') as HTMLInputElement | null;
+                                                                                if (inputElement) {
+                                                                                    inputElement.value = '';
+                                                                                }
+                                                                                onChange(value?.filter((value: any) => value !== e))
+                                                                            }}
+                                                                            className="text-red-500 bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer md:text-[26px] text-xl"
+                                                                        />
+                                                                    </div>
                                                                 </div>
                                                             )
                                                         })
