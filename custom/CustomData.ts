@@ -93,21 +93,21 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
             total_amount:
                 res?.data?.promotion?.length > 0
                     ? (res?.data?.price?.rent_cost_day - res?.data?.promotion[0]?.price_promotion) *
-                          (numberDay ? numberDay : 1) +
-                      res?.data?.price?.price_insurance_day
+                    (numberDay ? numberDay : 1) +
+                    res?.data?.price?.price_insurance_day
                     : (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
-                      (numberDay ? numberDay : 1),
+                    (numberDay ? numberDay : 1),
 
             // tiền đặt cọc
             price_depoist:
                 res?.data?.promotion?.length > 0
                     ? ((res?.data?.price?.rent_cost_day - res?.data?.promotion[0]?.price_promotion) *
-                          (numberDay ? numberDay : 1) +
-                          res?.data?.price?.price_insurance_day) *
-                      (res?.data?.price?.percent_deposit / 100)
+                        (numberDay ? numberDay : 1) +
+                        res?.data?.price?.price_insurance_day) *
+                    (res?.data?.price?.percent_deposit / 100)
                     : (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
-                      (numberDay ? numberDay : 1) *
-                      (res?.data?.price?.percent_deposit / 100),
+                    (numberDay ? numberDay : 1) *
+                    (res?.data?.price?.percent_deposit / 100),
             // số ngày
             // number_day: +res?.data?.price?.number_day,
             number_day: numberDay ? numberDay : 1,
@@ -115,19 +115,19 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
             cash_on_delivery:
                 res?.data?.promotion?.length > 0
                     ? (+res?.data?.price?.rent_cost_day -
-                          +res?.data?.promotion[0]?.price_promotion +
-                          +res?.data?.price?.price_insurance_day) *
-                          (numberDay ? numberDay : 1) -
-                      (res?.data?.price?.rent_cost_day -
-                          res?.data?.promotion[0]?.price_promotion +
-                          res?.data?.price?.price_insurance_day) *
-                          (numberDay ? numberDay : 1) *
-                          (res?.data?.price?.percent_deposit / 100)
+                        +res?.data?.promotion[0]?.price_promotion +
+                        +res?.data?.price?.price_insurance_day) *
+                    (numberDay ? numberDay : 1) -
+                    (res?.data?.price?.rent_cost_day -
+                        res?.data?.promotion[0]?.price_promotion +
+                        res?.data?.price?.price_insurance_day) *
+                    (numberDay ? numberDay : 1) *
+                    (res?.data?.price?.percent_deposit / 100)
                     : (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
-                          (numberDay ? numberDay : 1) -
-                      (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
-                          (numberDay ? numberDay : 1) *
-                          (res?.data?.price?.percent_deposit / 100),
+                    (numberDay ? numberDay : 1) -
+                    (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
+                    (numberDay ? numberDay : 1) *
+                    (res?.data?.price?.percent_deposit / 100),
             max_money_discount: 0,
         },
         promotion: res?.data?.promotion,
@@ -221,6 +221,13 @@ const CustomDataInfoRentalCar = (res: any) => {
             // khuyến mãi
             promotion: +res?.data?.price?.promotion,
         },
+        type: {
+            delivery_car: res?.data?.delivery_car === 1,
+            book_car_flash: res?.data?.book_car_flash === 1,
+            // thế chấp bị ngược với các tag bình thường thế chấp là 0 còn lại là 1
+            mortgage: res?.data?.car?.mortgage === 0,
+            transmission_search: res?.data?.transmission,
+        }
     };
     return { customDataInfoRentalCar };
 };

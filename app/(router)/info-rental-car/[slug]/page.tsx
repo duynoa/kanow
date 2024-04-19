@@ -22,6 +22,7 @@ import { useResize } from '@/hooks/useResize'
 import { useDataInfoRentalCar, useDataPolicy } from '@/hooks/useDataQueryKey'
 import { CustomDataInfoRentalCar, CustomDataPolicy } from '@/custom/CustomData'
 import { getDataPolicy } from '@/services/cars/policy.services'
+import SkeletonIntroRentalCar from './components/SkeletonIntroRentalCar'
 
 type Props = {
     params: {
@@ -31,7 +32,13 @@ type Props = {
 
 const InfoRentalCar = ({ params }: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
-    const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
+    const {
+        isStateInfoRentalCar,
+        isLoadingSkeletonIntroRentalCar,
+        queryKeyIsStateInfoRentalCar,
+        setIsLoadingSkeletonIntroRentalCar
+    } = useDataInfoRentalCar()
+
     const { queryKeyIsStatePolicy } = useDataPolicy()
     const { isVisibleMobile } = useResize()
 
@@ -79,13 +86,23 @@ const InfoRentalCar = ({ params }: Props) => {
 
     useEffect(() => {
         const fetchStepTransaction = async () => {
-            const { data } = await getInfoDetailCarTransaction(params?.slug);
-            if (data && data.data && data.base) {
-                let { customDataInfoRentalCar } = CustomDataInfoRentalCar(data)
+            try {
+                setIsLoadingSkeletonIntroRentalCar(true)
 
-                queryKeyIsStateInfoRentalCar({
-                    detailRentalCar: customDataInfoRentalCar
-                })
+                const { data } = await getInfoDetailCarTransaction(params?.slug);
+
+                if (data && data.data && data.base) {
+                    let { customDataInfoRentalCar } = CustomDataInfoRentalCar(data)
+
+                    queryKeyIsStateInfoRentalCar({
+                        detailRentalCar: customDataInfoRentalCar
+                    })
+                    setIsLoadingSkeletonIntroRentalCar(false)
+                } else {
+                    setIsLoadingSkeletonIntroRentalCar(false)
+                }
+            } catch (err) {
+                throw err
             }
         }
         const fetchDataPolicy = async () => {
@@ -131,66 +148,74 @@ const InfoRentalCar = ({ params }: Props) => {
 
     return (
         <>
-            <div className='w-full max-w-full bg-white/50'>
-                {
-                    isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status <= 4 ?
-                        <div className='3xl:pt-8 3xl:pb-16 pt-6 pb-12 custom-container flex md:gap-3 gap-2 items-center justify-center caret-transparent md:overflow-hidden overflow-auto'>
+            {
+                isLoadingSkeletonIntroRentalCar
+                    ?
+                    <SkeletonIntroRentalCar />
+                    :
+                    <div>
+                        <div className='w-full max-w-full bg-white/50'>
                             {
-                                dataStep?.map((step, index) => {
-                                    return (
-                                        <div key={step.id} className='flex items-center md:gap-3 gap-2'>
-                                            <div className={`
+                                isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status <= 4 ?
+                                    <div className='3xl:pt-8 3xl:pb-16 pt-6 pb-12 custom-container flex md:gap-3 gap-2 items-center justify-center caret-transparent md:overflow-hidden overflow-auto'>
+                                        {
+                                            dataStep?.map((step, index) => {
+                                                return (
+                                                    <div key={step.id} className='flex items-center md:gap-3 gap-2'>
+                                                        <div className={`
                                         ${isStateInfoRentalCar?.detailRentalCar && index < isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "bg-[#2FB9BD] text-white"}
                                          ${isStateInfoRentalCar?.detailRentalCar && step.status !== 4 && (isStateInfoRentalCar?.detailRentalCar && step.status === isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom) && "border-2 border-[#2FB9BD] bg-[#F1FCFC] text-[#2FB9BD]"} 
                                          ${isStateInfoRentalCar?.detailRentalCar && step.status === 4 && (isStateInfoRentalCar?.detailRentalCar && step.status === isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom) && "bg-[#2FB9BD] text-white"} 
                                          ${isStateInfoRentalCar?.detailRentalCar && step.status > isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "border-2 border-[#B4B8C5] bg-[#F6F6F8] text-[#B4B8C5]"} 
                                         flex justify-center items-center size-6 max-w-6 p-5 rounded-full`}
-                                            >
-                                                <div className='3xl:text-base text-sm'>
-                                                    {
-                                                        (isStateInfoRentalCar?.detailRentalCar?.status?.status === 4) || (isStateInfoRentalCar?.detailRentalCar && (index < isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom)) ?
-                                                            step.icon
-                                                            :
-                                                            index + 1}
-                                                </div>
-                                            </div>
+                                                        >
+                                                            <div className='3xl:text-base text-sm'>
+                                                                {
+                                                                    (isStateInfoRentalCar?.detailRentalCar?.status?.status === 4) || (isStateInfoRentalCar?.detailRentalCar && (index < isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom)) ?
+                                                                        step.icon
+                                                                        :
+                                                                        index + 1}
+                                                            </div>
+                                                        </div>
 
-                                            {
-                                                isVisibleMobile ?
-                                                    null
-                                                    :
-                                                    <div className={`
+                                                        {
+                                                            isVisibleMobile ?
+                                                                null
+                                                                :
+                                                                <div className={`
                                                 ${isStateInfoRentalCar?.detailRentalCar && index < isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && " text-[#585F71]"}
                                                 ${isStateInfoRentalCar?.detailRentalCar && step.status === isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "text-[#2FB9BD]"} 
                                                 ${isStateInfoRentalCar?.detailRentalCar && step.status > isStateInfoRentalCar?.detailRentalCar?.status?.statusCustom && "text-[#585F71]"}
                                                 font-medium w-fit
                                                 `}>
-                                                        {step.title ? step.title : ""}
-                                                    </div>
-                                            }
-                                            {
-                                                dataStep?.length - 1 === index
-                                                    ?
-                                                    null
-                                                    :
-                                                    <div className='md:w-20 w-1 border border-dashed' />
-                                            }
+                                                                    {step.title ? step.title : ""}
+                                                                </div>
+                                                        }
+                                                        {
+                                                            dataStep?.length - 1 === index
+                                                                ?
+                                                                null
+                                                                :
+                                                                <div className='md:w-20 w-1 border border-dashed' />
+                                                        }
 
-                                        </div>
-                                    )
-                                })
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                    :
+                                    null
                             }
                         </div>
-                        :
-                        null
-                }
-            </div>
-            {
-                isStateInfoRentalCar?.detailRentalCar?.status &&
-                <div className='custom-container 3xl:mt-8 mt-4 flex lg:flex-row flex-col gap-6'>
-                    <Information params={params} />
-                    <PriceList params={params} />
-                </div>
+                        {
+                            isStateInfoRentalCar?.detailRentalCar?.status &&
+                            <div className='custom-container 3xl:mt-8 mt-4 flex lg:flex-row flex-col gap-6'>
+                                <Information params={params} />
+                                <PriceList params={params} />
+                            </div>
+                        }
+                    </div>
             }
         </>
     )

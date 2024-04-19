@@ -25,7 +25,7 @@ import {
 import { Check, X } from "lucide-react"
 
 import { useDialogCalendar, useDialogPromotion } from "@/hooks/useOpenDialog";
-import { addDays, differenceInCalendarDays, differenceInDays, differenceInHours, differenceInMinutes, endOfDay, format, isAfter, isSameDay, isSameMinute, parseISO, setHours, setMinutes, startOfDay } from "date-fns";
+import { addDays, addMonths, differenceInCalendarDays, differenceInDays, differenceInHours, differenceInMinutes, endOfDay, endOfMonth, format, isAfter, isSameDay, isSameMinute, parseISO, setHours, setMinutes, startOfDay, startOfMonth, sub } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { Input } from "../ui/input";
 import { v4 as uuidv4 } from 'uuid';
@@ -40,6 +40,7 @@ import { CalendarCustom } from "../ui/calendarCustom";
 import { getListCalendarPriceMonth } from "@/services/cars/calendar.services";
 import { useDataDetailCar } from "@/hooks/useDataQueryKey";
 import { useGeneralKey } from "@/hooks/useGeneralKey";
+import { Calendar } from "../ui/calendar";
 
 type Props = {
 }
@@ -303,9 +304,12 @@ export function DialogCalendar({ }: Props) {
     const [dataTime, setDateTime] = useState<any>(initialDateTime)
 
     const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
-    const { dataPromotions } = useDialogPromotion()
 
+    // Xác định ngày hiện tại
+    const currentDate = new Date();
 
+    // Xác định ngày kết thúc (chỉ hiển thị từ tháng hiện tại đến 4 tháng sau)
+    const endMonth = addMonths(currentDate, 4);
 
     const {
         dateReal,
@@ -427,8 +431,6 @@ export function DialogCalendar({ }: Props) {
         const validateDates = (dataCalendar: any[], startDate: Date, endDate: Date) => {
             const filteredDates = filterDatesByRange(dataCalendar, startDate, endDate);
 
-            console.log('filteredDates ;', filteredDates);
-
             return filteredDates.some((item: any) => {
                 return item.price_detail.some((detail: any) => {
                     return detail.status === 2 || detail.status === 3;
@@ -439,7 +441,6 @@ export function DialogCalendar({ }: Props) {
         if (dateStart && dateEnd) {
             //    validate ngày
             const isValid = validateDates(dataCalendar, dateStart, dateEnd);
-            console.log('isValid :', isValid);
 
             setValidateDateSubmit(isValid);
 
@@ -503,6 +504,12 @@ export function DialogCalendar({ }: Props) {
         // Nếu tất cả điều kiện đều đúng, tiến hành setDate và setNumberDay
         try {
             if (pathname.startsWith('/detail-car/')) {
+                queryKeyIsStateDetailCar({
+                    ...isStateDetailCar,
+                    onSuccess: {
+                        onSuccessPage: true
+                    }
+                })
                 // setDateTemp(dateTimeComponent);
                 setDateTemp({
                     from: dateStart,
@@ -518,10 +525,19 @@ export function DialogCalendar({ }: Props) {
                         infoPromotion: {
                             ...isStateDetailCar?.infoPromotion,
                             activePromotion: null
+                        },
+                        onSuccess: {
+                            onSuccessPage: false
                         }
                     })
                 }
             } else {
+                queryKeyIsStateDetailCar({
+                    ...isStateDetailCar,
+                    onSuccess: {
+                        onSuccessPage: false
+                    }
+                })
                 setDateReal(dateTimeComponent);
             }
             setNumberDay(numberDayComponent);
@@ -560,16 +576,25 @@ export function DialogCalendar({ }: Props) {
                 </DialogHeader>
 
                 <div className='flex flex-col gap-2 overflow-auto'>
-                    <div className='px-2 border m-2 rounded-lg drop-shadow-md max-w-[760px]'>
-                        <CalendarCustom
-                            initialFocus
-                            mode="range"
-                            defaultMonth={dateTimeComponent?.from}
-                            selected={dateTimeComponent}
-                            onSelect={(newDate: any) => handleDateChange(newDate)}
-                        // dataPrice={}
-                        />
-                    </div>
+                    {
+                        pathname.startsWith('/detail-car/') ?
+                            <div className='px-2 border m-2 rounded-lg drop-shadow-md max-w-[760px]'>
+                                <CalendarCustom />
+                            </div>
+                            :
+                            <div className='px-2 border m-2 rounded-lg drop-shadow-md'>
+                                <Calendar
+                                    initialFocus
+                                    mode="range"
+                                    defaultMonth={dateTimeComponent?.from}
+                                    selected={dateTimeComponent}
+                                    onSelect={(newDate: any) => handleDateChange(newDate)}
+                                    numberOfMonths={2}
+                                    fromMonth={dateReal?.from}
+                                    toMonth={endMonth}
+                                />
+                            </div>
+                    }
 
                     <div className='flex flex-row items-center gap-2 px-2 w-full'>
                         <div className='flex flex-col gap-1 w-[50%]'>

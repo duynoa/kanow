@@ -164,10 +164,6 @@ const SearchCars = (props: Props) => {
 
     console.log('isStateListCarAutonomous : ', isStateListCarAutonomous);
 
-
-    
-
-
     // SỬ DỤNG useEffect ĐỂ FETCH LIST CARS LẦN ĐẦU TIÊN VÀO
     const handleFetchListCars = async (page: any) => {
         try {
@@ -180,8 +176,16 @@ const SearchCars = (props: Props) => {
             const dataParams = {
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
-                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`
-                // date_search: "10/04/2024 11:00:00 - 11/04/2024 12:00:00"
+                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
+                company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
+                type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
+                transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
+                star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
+                tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
+                discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
+                book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
+                mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
+                delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
             }
             const { data } = await getListCars(page, isStateListCarAutonomous.limit.limitAllCars, dataParams)
 
@@ -206,15 +210,16 @@ const SearchCars = (props: Props) => {
     }
 
     useEffect(() => {
-        handleFetchListCars(1)
+        // handleFetchListCars(1)
+        handleFetchListCars(isStateListCarAutonomous?.page)
     }, [])
 
     /// hàm lọc địa chỉ thì gọi lại api
     useEffect(() => {
         if (onSubmitFilter) {
             handleFetchListCars(1)
+            queryKeyIsStateListCarAutonomous({ page: 1 })
         }
-        queryKeyIsStateListCarAutonomous({ page: 1 })
     }, [onSubmitFilter])
 
     // LĂN CHUỘT XUỐNG NẾU VƯỢT 60PX THÌ SẼ HIỆN FIXED BỘ LỌC
@@ -401,6 +406,9 @@ const SearchCars = (props: Props) => {
 
     const handleResetFilter = async () => {
         const query = {
+            "lat": valueAddress ? coordinates.lat : undefined,
+            "lon": valueAddress ? coordinates.lng : undefined,
+            date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
             company_car_search: undefined,
             type_car_search: [],
             transmission_search: undefined,
@@ -917,6 +925,7 @@ const SearchCars = (props: Props) => {
                                     className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
                                     href={`/detail-car/${card.id}?${ConvertToSlug(card?.name_car)}`}
                                     prefetch={false}
+                                // target='_blank'
                                 >
                                     {
                                         card?.promotion?.length > 0 ?

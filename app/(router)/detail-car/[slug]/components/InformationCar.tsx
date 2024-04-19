@@ -106,12 +106,17 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                         }
                     </div>
                 </div>
-                <div
-                    onClick={(event) => handleClickFavorite(event)}
-                    className='bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out'
-                >
-                    <TiHeartFullOutline className={`${isStateDetailCar?.dataDetailCar?.favorite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
-                </div>
+                {
+                    isVisibleMobile ?
+                        <div
+                            onClick={(event) => handleClickFavorite(event)}
+                            className='bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out'
+                        >
+                            <TiHeartFullOutline className={`${isStateDetailCar?.dataDetailCar?.favorite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
+                        </div>
+                        :
+                        null
+                }
             </div>
 
             <div id="section-1" className='flex flex-col gap-2 3xl:pb-6 pb-4 border-b'>
@@ -615,7 +620,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                                             </div>
                                         </div>
                                         <div className='3xl:text-base text-sm w-[20%] max-w-[20%] flex justify-end text-[#FA3434] font-medium'>
-                                            {item.value ? `${FormatNumberToDecimal(item.value, 3)}đ` : ""}
+                                            {item.value ? `${FormatNumberToDecimal(item.value, 3)} đ` : ""}
                                         </div>
                                     </div>
                                 ))
