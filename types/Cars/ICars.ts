@@ -218,7 +218,7 @@ interface IDetailRentalCar {
         id: number;
         name: string;
         note: string;
-        value: string;
+        value: number;
         created_at: string;
         updated_at: string;
         pivot: {
@@ -253,6 +253,13 @@ interface IDetailRentalCar {
         // khuyến mãi
         promotion: number,
     },
+    type: {
+        delivery_car: boolean;
+        book_car_flash: boolean;
+        // thế chấp bị ngược với các tag bình thường thế chấp là 0 còn lại là 1
+        mortgage: boolean;
+        transmission_search: string;
+    }
 }
 
 export type {

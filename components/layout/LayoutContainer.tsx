@@ -43,6 +43,8 @@ import { useDialogAddress, useDialogRegisterOwnerDriver } from '@/hooks/useOpenD
 import { useParams } from 'next/navigation';
 import { DialogRegisterOwnerDriver } from '../modals/DialogRegisterOwnerDriver';
 import DialogFilterMyCar from '../modals/DialogFilterMyCar';
+import { DialogPromotion } from '../modals/DialogPromotion';
+import { DialogReportCar } from '../modals/DialogReportCar';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -110,6 +112,19 @@ const LayoutContainer = ({
                 page: 1
             })
         }
+        // if (!pathname.startsWith('/list-car-autonomous') && !pathname.startsWith('/detail-car/')) {
+        //     queryKeyIsStateListCarAutonomous({
+        //         ...isStateListCarAutonomous,
+        //         page: 1
+        //     })
+        //     console.log('checkkkhjkhkhkhkhkhjkhkkkhkhkk');
+        // } else if (pathname.startsWith('/detail-car/')) {
+        //     queryKeyIsStateListCarAutonomous({
+        //         ...isStateListCarAutonomous,
+        //         page: isStateListCarAutonomous?.page - 1
+        //     })
+
+        // }
     }, [pathname])
 
 
@@ -254,6 +269,8 @@ const LayoutContainer = ({
                     <DialogAnswerPolicy />
                     <DialogCancelCar />
                     <DialogFilterAddress />
+                    <DialogPromotion />
+                    <DialogReportCar />
 
                     <AlertDialogCustom />
                     <DialogRegisterOwnerDriver />

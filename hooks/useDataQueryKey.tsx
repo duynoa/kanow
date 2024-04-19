@@ -57,8 +57,8 @@ export const useDataListCarAutonomous = create<isStateListCarAutonomous>((set) =
 // data detail car tự lái
 interface IStateDetailCar {
     isStateDetailCar: IInitialStateDetailCar;
-    shouldFetchData: boolean;
-    setShouldFetchData: (shouldFetchData: boolean) => void;
+    isLoadingSkeletonDetailCar: boolean;
+    setIsLoadingSkeletonDetailCar: (isLoadingSkeletonDetailCar: boolean) => void;
     queryKeyIsStateDetailCar: (key: Partial<IInitialStateDetailCar>) => void;
 }
 
@@ -142,7 +142,7 @@ const isStateDetailCar: IInitialStateDetailCar = {
 
 export const useDataDetailCar = create<IStateDetailCar>((set) => ({
     isStateDetailCar,
-    shouldFetchData: false,
+    isLoadingSkeletonDetailCar: false,
     queryKeyIsStateDetailCar: (key) => set((state) => ({
         isStateDetailCar: {
             ...state.isStateDetailCar,
@@ -150,19 +150,22 @@ export const useDataDetailCar = create<IStateDetailCar>((set) => ({
         }
     }
     )),
-    setShouldFetchData: (shouldFetchData: boolean) => set((state) => ({ ...state, shouldFetchData: shouldFetchData })),
+    setIsLoadingSkeletonDetailCar: (isLoadingSkeletonDetailCar: boolean) => set((state) => ({ ...state, isLoadingSkeletonDetailCar: isLoadingSkeletonDetailCar })),
 }));
 
 // data request rental Car
 interface IStateRentalCar {
     isStateInfoRentalCar: IInitialStateInfoRentalCar;
+    isLoadingSkeletonIntroRentalCar: boolean;
     queryKeyIsStateInfoRentalCar: (key: any) => void;
+    setIsLoadingSkeletonIntroRentalCar: (isLoadingSkeletonIntroRentalCar: boolean) => void;
 }
 
 export const useDataInfoRentalCar = create<IStateRentalCar>((set) => ({
     isStateInfoRentalCar: {
         detailRentalCar: undefined,
     },
+    isLoadingSkeletonIntroRentalCar: false,
     queryKeyIsStateInfoRentalCar: (key: any) => set((state) => ({
         ...state,
         isStateInfoRentalCar: {
@@ -170,6 +173,7 @@ export const useDataInfoRentalCar = create<IStateRentalCar>((set) => ({
             ...key,
         },
     })),
+    setIsLoadingSkeletonIntroRentalCar: (isLoadingSkeletonIntroRentalCar: boolean) => set((state) => ({ ...state, isLoadingSkeletonIntroRentalCar: isLoadingSkeletonIntroRentalCar })),
 }));
 
 // data policy (?)

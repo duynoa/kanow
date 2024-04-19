@@ -66,9 +66,6 @@ export function DialogCancelCar({ }: Props) {
         }
     }, [type])
 
-
-    console.log('type : ', type);
-
     const handleChangeReason = (item: any) => {
         console.log('item : ', item);
         setContentReason(item.note)

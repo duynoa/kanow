@@ -70,6 +70,11 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
         },
     });
 
+    const openInNewTab = (url: string) => {
+        const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+        if (newWindow) newWindow.opener = null
+    }
+
     const onSubmit = async (values: any) => {
         try {
 
@@ -93,8 +98,9 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
             console.log("data", data);
             if (data && data.result) {
                 toastCore.success('Gửi yêu cầu thuê xe thành công!')
-                setOpenDialogRequestCarRental(false)
                 router.push(`/info-rental-car/${data.id}`)
+                // openInNewTab(`/info-rental-car/${data.id}`)
+                setOpenDialogRequestCarRental(false)
                 setCheckPolicy(true)
             } else {
                 toastCore.error(data.message)

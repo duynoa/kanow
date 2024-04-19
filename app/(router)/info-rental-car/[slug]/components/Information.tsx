@@ -11,7 +11,7 @@ import { TiLocation } from 'react-icons/ti'
 
 import { useResize } from '@/hooks/useResize'
 
-import { FormatNumberHundred, FormatPhoneNumber, FormatPointStar } from '@/components/format/FormatNumber'
+import { FormatNumberHundred, FormatNumberToDecimal, FormatPhoneNumber, FormatPointStar } from '@/components/format/FormatNumber'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // import { vi } from 'date-fns/locale';
@@ -41,12 +41,6 @@ const Information = ({
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isVisibleMobile, isVisibleTablet } = useResize()
 
-    const [isMounted, setIsMounted] = useState<boolean>(false)
-
-    useEffect(() => {
-        setIsMounted(true)
-    }, [])
-
     const listComment = [
         {
             id: uuidv4(),
@@ -57,13 +51,11 @@ const Information = ({
         },
     ]
 
-    if (!isMounted) {
-        return null
-    }
+    console.log('isStateInfoRentalCar'), isStateInfoRentalCar;
 
     return (
         <div className='flex flex-col gap-6 xxl:w-[70%] xxl:max-w-[70%] lg:w-[65%] lg:max-w-[65%] w-full max-w-full h-full pb-16 lg:order-none order-2'>
-            <div className='flex md:flex-row flex-col md:items-center 3xl:gap-4 gap-4 3xl:pb-6 pb-4 border border-b border-x-0 border-t-0'>
+            <div className='flex md:flex-row flex-col md:items-center 3xl:gap-4 gap-4 3xl:pb-6 pb-4 border-b'>
                 <div className='md:w-56 md:h-36 w-full h-52'>
                     <Image
                         alt="image"
@@ -113,7 +105,7 @@ const Information = ({
                 </div>
             </div>
 
-            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border border-b border-x-0 border-t-0'>
+            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
                 <div className='3xl:text-2xl text-xl font-semibold'>
                     Thông tin thuê xe
                 </div>
@@ -166,7 +158,7 @@ const Information = ({
                 </div>
             </div>
 
-            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border border-b border-x-0 border-t-0'>
+            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
                 <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                     Chủ xe
                 </div>
@@ -305,7 +297,7 @@ const Information = ({
                 </div>
             }
 
-            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border border-b border-x-0 border-t-0'>
+            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
                 <div className='flex flex-row items-center gap-2'>
                     <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                         Giấy tờ thuê xe
@@ -413,7 +405,7 @@ const Information = ({
                 </div>
             </div>
 
-            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
+            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
                 <div className='flex flex-row items-center gap-2'>
                     <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                         Tài sản thế chấp
@@ -440,53 +432,73 @@ const Information = ({
                             </ActionTooltip>
                     }
                 </div>
-                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#585F71]'>
-                    {isStateInfoRentalCar?.detailRentalCar?.car?.note_mortgage ? isStateInfoRentalCar?.detailRentalCar?.car?.note_mortgage : ""}
-                </div>
+                {
+                    isStateInfoRentalCar?.detailRentalCar?.type?.mortgage ?
+                        <div className='border border-l-[10px] border-y-0 border-r-0 border-[#2FB9BD] bg-[#2FB9BD]/20 rounded-lg px-6 py-4'>
+                            <div className='3xl:text-base text-sm text-[#585F71]'>
+                                Không yêu cầu khách thuê thế chấp Tiền mặt hoặc Xe máy
+                            </div>
+                        </div>
+                        :
+                        <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#585F71]'>
+                            {isStateInfoRentalCar?.detailRentalCar?.car?.note_mortgage ? isStateInfoRentalCar?.detailRentalCar?.car?.note_mortgage : ""}
+                        </div>
+                }
             </div>
 
-            <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b-2'>
+            {/* <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
                 <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                     Phụ phí có thể phát sinh
                 </div>
                 <div className='flex flex-col gap-4'>
-                    {/* {
-                        listSurcharge && listSurcharge?.map((item) => (
-                            <div key={`id-${item.id}`} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
-                                <div className='w-[70%] max-w-[70%] flex flex-col gap-1'>
-                                    <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-semibold'>
-                                        {item.title ? item.title : ""}
-                                    </div>
-                                    <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#585F71]'>
-                                        {item.description ? item.description : ""}
-                                    </div>
-                                </div>
-                                <div className='3xl:text-base lg:text-sm md:text-base text-sm w-[20%] max-w-[20%] flex justify-end text-[#FA3434] font-medium'>
-                                    {item.money ? item.money : ""}
-                                </div>
-                            </div>
-                        ))
-                    } */}
                     {
-                        isStateInfoRentalCar?.detailRentalCar?.surcharge_car && isStateInfoRentalCar?.detailRentalCar?.surcharge_car?.map((item) => (
+                        isStateInfoRentalCar?.detailRentalCar?.surcharge_car?.map((item) => (
                             <div key={`id-${item.id}`} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
                                 <div className='w-[70%] max-w-[70%] flex flex-col gap-1'>
-                                    <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-semibold'>
+                                    <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
                                         {item.name ? item.name : ""}
                                     </div>
-                                    <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#585F71]'>
+                                    <div className='3xl:text-base text-sm text-[#585F71]'>
                                         {item.note ? item.note : ""}
                                     </div>
                                 </div>
-                                <div className='3xl:text-base lg:text-sm md:text-base text-sm w-[20%] max-w-[20%] flex justify-end text-[#FA3434] font-medium'>
-                                    {item.value ? item.value : ""}
+                                <div className='3xl:text-base text-sm w-[20%] max-w-[20%] flex justify-end text-[#FA3434] font-medium'>
+                                    {item.value ? `${FormatNumberToDecimal(item.value, 3)}đ` : ""}
                                 </div>
                             </div>
                         ))
                     }
-
                 </div>
-            </div>
+            </div> */}
+            {
+                isStateInfoRentalCar?.detailRentalCar?.surcharge_car && isStateInfoRentalCar?.detailRentalCar?.surcharge_car.length > 0 ?
+                    <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
+                        <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
+                            Phụ phí có thể phát sinh
+                        </div>
+                        <div className='flex flex-col gap-4'>
+                            {
+                                isStateInfoRentalCar?.detailRentalCar?.surcharge_car?.map((item) => (
+                                    <div key={`id-${item.id}`} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
+                                        <div className='w-[70%] max-w-[70%] flex flex-col gap-1'>
+                                            <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
+                                                {item.name ? item.name : ""}
+                                            </div>
+                                            <div className='3xl:text-base text-sm text-[#585F71]'>
+                                                {item.note ? item.note : ""}
+                                            </div>
+                                        </div>
+                                        <div className='3xl:text-base text-sm w-[20%] max-w-[20%] flex justify-end text-[#FA3434] font-medium'>
+                                            {item.value ? `${FormatNumberToDecimal(item.value, 3)} đ` : ""}
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+                    :
+                    null
+            }
 
             <div className='flex flex-col 3xl:gap-4 gap-2'>
                 <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
