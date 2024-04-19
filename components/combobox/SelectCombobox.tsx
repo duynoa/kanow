@@ -9,14 +9,18 @@ const SelectCombobox = ({ data, onChange, field, onValueChange, placeholderInput
         <Command className="w-full">
             {/* <CommandInput placeholder="Search x..." /> */}
             {/* <CommandInput placeholder="Type 'cat' or 'dog'..." onValueChange={(e) => onValueChange(e)} /> */}
-            <div className="relative">
-                <Input
-                    className="focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-8 text-sm"
-                    onChange={({ target: { value } }) => onValueChange(value)}
-                    placeholder={placeholderInput}
-                />
-                <Search className="w-5 h-5 absolute top-1/2 -translate-y-1/2  left-2 text-[#200E32]" />
-            </div>
+
+            {
+                placeholderInput ?
+                    <div className="relative">
+                        <Input
+                            className="focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-8 text-sm"
+                            onChange={({ target: { value } }) => onValueChange(value)}
+                            placeholder={placeholderInput}
+                        />
+                        <Search className="w-5 h-5 absolute top-1/2 -translate-y-1/2  left-2 text-[#200E32]" />
+                    </div> : null
+            }
             <CommandList>
                 <CommandEmpty>Không có dữ liệu</CommandEmpty>
                 {data && data?.length > 0 ?

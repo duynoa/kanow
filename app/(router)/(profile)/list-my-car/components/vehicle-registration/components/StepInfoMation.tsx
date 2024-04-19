@@ -26,7 +26,7 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                         name="stepInformation.licensePlates"
                         rules={{
                             required: {
-                                value: true,
+                                value: false,
                                 message: 'Vui lòng nhập biển số xe',
                             },
                         }}
@@ -60,7 +60,7 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                                 name="stepInformation.carCompany"
                                 rules={{
                                     required: {
-                                        value: true,
+                                        value: false,
                                         message: 'Vui lòng chọn hãng xe',
                                     },
                                 }}
@@ -115,7 +115,7 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                             name="stepInformation.carModel"
                             rules={{
                                 required: {
-                                    value: true,
+                                    value: false,
                                     message: 'Vui lòng chọn mẫu xe',
                                 },
                             }}
@@ -169,7 +169,7 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                             name="stepInformation.seats"
                             rules={{
                                 required: {
-                                    value: true,
+                                    value: false,
                                     message: 'Vui lòng chọn số ghế',
                                 },
                             }}
@@ -224,7 +224,7 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                             name="stepInformation.yearOfmManufacture"
                             rules={{
                                 required: {
-                                    value: true,
+                                    value: false,
                                     message: 'Vui lòng chọn năm sản xuất',
                                 },
                             }}
@@ -278,7 +278,7 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                             name="stepInformation.move"
                             rules={{
                                 required: {
-                                    value: true,
+                                    value: false,
                                     message: 'Vui lòng chọn chuyển động',
                                 },
                             }}
@@ -332,7 +332,7 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                             name="stepInformation.feuelType"
                             rules={{
                                 required: {
-                                    value: true,
+                                    value: false,
                                     message: 'Vui lòng chọn loại nhiên liệu',
                                 },
                             }}
@@ -390,7 +390,7 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                         name="stepInformation.fuelConsumptionLevel"
                         rules={{
                             required: {
-                                value: true,
+                                value: false,
                                 message: 'Vui lòng nhập mức tiêu thụ nhiên liệu',
                             },
                         }}
@@ -453,7 +453,7 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                                                 return (
                                                     <Label htmlFor={`${item.id}`} key={item.id}
                                                         className={`flex ${field.value?.includes(item.id) ? 'border-[#2FB9BD] text-[#2FB9BD]' : ''}
-                                                             items-center justify-center gap-2 border-2  py-8 col-span-1 rounded-lg cursor-pointer`}
+                                                             items-center justify-center gap-2 border-2  py-8 col-span-1 rounded-lg cursor-pointer md:text-sm text-xs`}
                                                     >
                                                         <div className="size-6">
                                                             <Image src={item.image} alt="" width={1280} height={1024} className="object-cover size-full" />

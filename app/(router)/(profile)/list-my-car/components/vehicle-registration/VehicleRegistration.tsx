@@ -26,6 +26,8 @@ import { ISteps, IVehicleRegistration } from "@/types/Profile/mycar/IMyCar"
 import StepInfoMation from "./components/StepInfoMation"
 import { id } from "date-fns/locale"
 import apiMyCar from "@/services/profile/listMyCar/listMyCar.services"
+import StepLease from "./components/StepLease"
+import StepImages from "./components/StepImages"
 
 type Props = {
 
@@ -49,7 +51,6 @@ const VehicleRegistration = (props: Props) => {
         }
     ];
 
-
     const initialState: IVehicleRegistration = {
         step: "register",
         stateInformation: {
@@ -66,6 +67,18 @@ const VehicleRegistration = (props: Props) => {
             dataMove: [],
             dataFeuelType: [],
             dataFeature: [],
+        },
+        stateLease: {
+            openCity: false,
+            openDistrict: false,
+            openWards: false,
+            dataCity: [],
+            dataDistrict: [],
+            dataWards: [],
+            openWordLimit: false,
+            openUntil: false,
+            dataWordLimit: [],
+            dataUntil: [],
         }
     }
 
@@ -92,6 +105,53 @@ const VehicleRegistration = (props: Props) => {
                 describe: "",
                 // tính năng
                 feature: [],
+            },
+            stepLease: {
+                // Đơn giá thuê mặc định
+                unitPrice: '',
+                // bật tắt Giảm giá
+                discount: {
+                    open: false,
+                    value: ''
+                },
+                // bật tắt Đặt xe nhanh
+                bookCarQuickly: {
+                    open: false,
+                    // giới hạn từ
+                    wordLimit: "",
+                    // cho đến
+                    until: "",
+                },
+                /// địa chỉ xe
+                vehicleAddress: {
+                    city: "",
+                    district: "",
+                    ward: "",
+                    street: ""
+                },
+                //giao xe tận tơi
+                vehicleHanding: {
+                    open: false,
+                    // quảng đường giao 
+                    intersectionSquare: "",
+                    /// phí giao nhận xe cho mỗi km
+                    deliveryFee: "",
+                    // miễn phí giao
+                    freeDelivery: ""
+                },
+                // Giới hạn số km
+                limitedKilometers: {
+                    open: false,
+                    //số km tối đa trong 1 ngày
+                    maximumKilometers: "",
+                    // phí vượt giới hạn
+                    overLimitFee: ""
+                },
+                // Điều khoản thuê xe
+                carRentalConditions: ""
+            },
+            stepImages: {
+                images: []
             }
         }
     })
@@ -118,24 +178,21 @@ const VehicleRegistration = (props: Props) => {
 
     const fetListFeature = async () => {
         try {
-            // const { data } = await apiListFeature()
-            // if (data?.data) {
-            //     console.log("Res", data?.data);
-            //     queryState({
-            //         stateInformation: {
-            //             ...isState.stateInformation,
-            //             dataFeature: data?.data
-            //         }
-            //     })
-            // }
+            const { data } = await apiListFeature()
+            if (data?.data) {
+                console.log("Res", data);
+                queryState({
+                    stateInformation: {
+                        ...isState.stateInformation,
+                        dataFeature: data?.data
+                    }
+                })
+            }
         } catch (error) {
             throw error
 
         }
-
     }
-
-
 
     const onSubmit = async (value: any, step: string) => {
         console.log("value", value);
@@ -165,7 +222,7 @@ const VehicleRegistration = (props: Props) => {
                 onValueChange={(step) => { form.handleSubmit((values) => onSubmit(values, step))() }}
                 value={isState.step}
                 className="w-full flex flex-col gap-4">
-                <TabsList className="flex items-center w-full bg-transparent  mt-10">
+                <TabsList className="flex items-center md:w-1/2 w-[80%] mx-auto bg-transparent  mt-10">
                     {
                         isState.step !== 'register' &&
                         <React.Fragment>
@@ -178,10 +235,10 @@ const VehicleRegistration = (props: Props) => {
                                             className={`border-2
                                         disabled:opacity-100 data-[state=active]:text-[#2FB9BD] 
                                         data-[state=active]:bg-[#2FB9BD]/20 
-                                        ${(isState.step === e.value || index < registerTabIndex) ? "border-[#2FB9BD] text-[#2FB9BD]" : "border-gray-500"
-                                                } rounded-full p-3 font-semibold text-xs leading-[17px] lg:size-[90px] md:size-[80px] size-[70px]`}
+                                        ${(isState.step === e.value || index < registerTabIndex) ? "border-[#2FB9BD] text-[#2FB9BD]" : "border-gray-300"
+                                                } rounded-full p-3 font-semibold md:text-xs text-[11px] leading-[17px] lg:size-[90px] md:size-[80px] size-[70px]`}
                                         >
-                                            {e.name}
+                                            {index + 1}.{e.name}
                                         </TabsTrigger>
                                     </div>
 
@@ -189,7 +246,7 @@ const VehicleRegistration = (props: Props) => {
                                         <div className="w-full flex items-center">
                                             <div
                                                 style={{ backgroundColor: isState.step === e.value || index < registerTabIndex ? "#2FB9BD" : "gray" }}
-                                                className="h-[2px] w-full "
+                                                className="h-[1px] w-full "
                                             ></div>
                                         </div>
                                     }
@@ -226,23 +283,26 @@ const VehicleRegistration = (props: Props) => {
                 </div>
                 <TabsContent value={"information"} className="lg:mt-4 mt-5 flex flex-col gap-4">
                     <StepInfoMation form={form} isState={isState} queryState={queryState} />
-                    <div className="flex items-center justify-end gap-2 mt-2">
+                    <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
                         <Button
                             onClick={() => form.handleSubmit((values) => onSubmit(values, 'lease'))()}
                             type="button"
-                            className={`w-fit text-white border-[#2FB9BD] rounded-xl
+                            className={`md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
                                     border-2 px-10 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
                             Kế tiếp
                         </Button>
                     </div>
                 </TabsContent>
                 <TabsContent value={'lease'} className="lg:mt-4 mt-5">
-                    <UnderDevelopment />
-                    <div className="flex items-center justify-end gap-2 mt-2">
+                    <StepLease form={form} isState={isState} queryState={queryState} />
+                    <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
                         <Button
-                            onClick={() => handlePrevStep()}
+                            onClick={() => {
+                                onScrollTop()
+                                handlePrevStep()
+                            }}
                             type="button" value="information"
-                            className={`w-fit text-white border-[#2FB9BD] rounded-xl
+                            className={`md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
                                     border-2 px-10 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
                             Quay lại
                         </Button>
@@ -251,19 +311,23 @@ const VehicleRegistration = (props: Props) => {
                                 form.handleSubmit((values) => onSubmit(values, 'images'))()
                             }}
                             type="button"
-                            className={`w-fit text-white border-[#2FB9BD] rounded-xl
+                            className={`md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
                                     border-2 px-10 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
                             Kế tiếp
                         </Button>
                     </div>
                 </TabsContent>
                 <TabsContent value={'images'} className="lg:mt-4 mt-5">
-                    <UnderDevelopment />
-                    <div className="flex items-center justify-end gap-2 mt-2">
+                    {/* <UnderDevelopment /> */}
+                    <StepImages form={form} isState={isState} queryState={queryState} />
+                    <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
                         <Button
-                            onClick={() => handlePrevStep()}
+                            onClick={() => {
+                                onScrollTop()
+                                handlePrevStep()
+                            }}
                             type="button" value="information"
-                            className={`w-fit text-white border-[#2FB9BD] rounded-xl
+                            className={`md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
                                     border-2 px-10 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
                             Quay lại
                         </Button>
