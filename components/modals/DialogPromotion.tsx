@@ -114,11 +114,6 @@ export function DialogPromotion({ }: Props) {
         }
 
     }, 300)
-
-    console.log('dataPromotions : ', dataPromotions);
-    console.log('isStateDetailCar : ', isStateDetailCar);
-
-
     return (
         <Dialog modal open={openDialogPromotion} onOpenChange={handleOpenChangeModal}>
             <DialogOverlay />

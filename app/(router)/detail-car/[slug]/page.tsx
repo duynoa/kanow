@@ -272,20 +272,20 @@ const DetailCar = ({ params }: Props) => {
                     })
                     setNumberDay(timeDate)
                 } else {
-                    const startDate = setMinutes(setHours(new Date(), 21), 0);
-                    const endDate = setMinutes(setHours(addDays(new Date(), 1), 20), 0);
-
-                    const minutesDifference = differenceInMinutes(endDate, startDate);
-                    const timeDate = Math.ceil(minutesDifference / 1440)
-
-                    setDateStart(startDate)
-                    setDateEnd(endDate)
+                
+                    // setDateStart(startDate)
+                    // setDateEnd(endDate)
+                    // setDateTemp({
+                    //     from: startDate,
+                    //     to: endDate,
+                    // })
+                    setDateStart(dateReal?.from)
+                    setDateEnd(dateReal?.to)
                     setDateTemp({
-                        from: startDate,
-                        to: endDate,
+                        from: dateReal?.from,
+                        to: dateReal?.to,
                     })
 
-                    setNumberDay(timeDate)
                 }
 
                 queryKeyIsStateDetailCar({
@@ -334,6 +334,8 @@ const DetailCar = ({ params }: Props) => {
     useEffect(() => {
         if (isStateDetailCar?.onSuccess?.onSuccessPage) {
             fetchDataDetailCarSecond()
+            console.log('checksdjaskdjkasjdkjka');
+            
         }
     }, [isStateDetailCar?.onSuccess?.onSuccessPage])
 
@@ -580,17 +582,11 @@ const DetailCar = ({ params }: Props) => {
                                         </div>
                                         <div className='flex flex-row items-center gap-10'>
                                             <div
-                                                onClick={(event) => handleClickFavorite(event)}
-                                                className='bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out'
-                                            >
-                                                <TiHeartFullOutline className={`${isStateDetailCar?.dataDetailCar?.favorite_car ? 'text-[#FA3434]' : 'text-white'} 3xl:text-2xl text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
-                                            </div>
-                                            <div
                                                 onClick={() => router.back()}
-                                                className='flex items-center gap-2 text-[#039fdb] hover:text-[#039fdb]/80 cursor-pointer w-fit group hover:-translate-x-2 duration-200 transition'
+                                                className='flex items-center gap-2 text-[#2FB9BD] hover:text-[#2FB9BD]/80 bg-[#2FB9BD]/20 border px-4 py-2 border-[#2FB9BD] rounded-md cursor-pointer w-fit group hover:-translate-x-2 duration-200 transition'
                                             >
                                                 <FaArrowLeftLong className="3xl:size-5 size-4" />
-                                                <div className='3xl:text-xl text-lg font-medium'>
+                                                <div className='3xl:text-lg text-base font-medium'>
                                                     Trở về
                                                 </div>
                                             </div>

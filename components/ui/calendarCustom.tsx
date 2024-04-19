@@ -1826,17 +1826,6 @@ function CalendarCustom({
                     ${!isEarlier && !isInRange && (dayDataApi?.status === 2 || dayDataApi?.status === 3) ? "text-[#D3D3D3] bg-[#F6F6F7] hover:!text-[#D3D3D3] hover:!bg-[#F6F6F7] cursor-pointer" : ""}
                     rounded-[2px] flex flex-col justify-center items-center w-full h-12 p-2 group`
                     }
-                // className={`
-                // ${isPicked && (dayDataApi.status !== 2 && dayDataApi.status !== 3) ? "bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 text-white hover:text-white cursor-pointer" : ""} 
-                // ${isPicked && (dayDataApi.status === 2 || dayDataApi.status === 3) ? " !text-[#D3D3D3] border-2 border-[#2FB9BD] hover:!text-[#D3D3D3] bg-[#F6F6F7] hover:bg-[#F6F6F7]/80 cursor-pointer" : ""}
-                // ${isInRange && (dayDataApi.status !== 2 && dayDataApi.status !== 3) ? " bg-[#C2F9F9] text-[#2FB9BD] hover:bg-[#2FB9BD] hover:text-white cursor-pointer" : ""}
-                // ${isInRange && (dayDataApi.status === 2 || dayDataApi.status === 3) ? " text-[#D3D3D3] hover:!text-[#D3D3D3] border-2 border-[#C2F9F9] bg-[#F6F6F7] hover:!bg-[#F6F6F7]/80 cursor-pointer" : ""}
-                // ${!isInRange && (dayDataApi.status === 2 || dayDataApi.status === 3) ? " text-[#D3D3D3] hover:text-[#D3D3D3] bg-[#F6F6F7] cursor-pointer" : ""}
-                // ${isEarlier && !isInRange && (dayDataApi?.status !== 2 && dayDataApi?.status !== 3) ? "!cursor-default text-slate-400" : ""}
-                // ${!isEarlier && !isInRange && (dayDataApi?.status !== 2 && dayDataApi?.status !== 3) ? "hover:bg-[#2FB9BD]/80 hover:text-white cursor-pointer" : ""}
-                // ${!isEarlier && !isInRange && (dayDataApi?.status === 2 || dayDataApi?.status === 3) ? "text-[#D3D3D3] bg-[#F6F6F7] hover:!text-[#D3D3D3] hover:!bg-[#F6F6F7] cursor-pointer" : ""}
-                // rounded-[2px] flex flex-col justify-center items-center w-full h-12 p-2 group`
-                // }
                 >
                     <div className='3xl:text-[15px] text-sm font-medium'>
                         {dayData.day}

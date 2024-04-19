@@ -32,12 +32,13 @@ import { useCookie } from '@/hooks/useCookie'
 import { IInitialStateDetailCar } from '@/types/Initial/IInitial'
 import { useDataDetailCar, useDataPolicy } from '@/hooks/useDataQueryKey'
 import { usePathname } from 'next/navigation'
+import { toastCore } from '@/lib/toast'
 
 type Props = {}
 
 const PaymentCar = ({ }: Props) => {
     const pathname = usePathname()
-    const { dateReal, dateTemp, numberDay, validateDateSubmit, setOpenDialogCalendar } = useDialogCalendar()
+    const { dateReal, dateTemp, numberDay, validateDateSubmit, dataCalendar, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogPromotion } = useDialogPromotion()
     const { setOpenDialogReportCar } = useDialogReportCar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
@@ -115,7 +116,9 @@ const PaymentCar = ({ }: Props) => {
     }
 
     const handleSubmitCar = () => {
-        if (getCookie !== "kanow" && getCookie !== undefined) {
+        if (dataCalendar.length === 0 && getCookie !== "kanow" && getCookie !== undefined) {
+            toastCore.error("Vui lòng chọn lại bộ lịch!")
+        } else if (getCookie !== "kanow" && getCookie !== undefined) {
             setDataListRequestCarRental(isStateDetailCar)
             setOpenDialogRequestCarRental(true)
         } else {
