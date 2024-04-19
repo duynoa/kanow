@@ -17,10 +17,15 @@ const apiMyCar = () => {
     };
 
     const apiListStatusFilter = () => {
-        return axios.get(`category/getListStatusCar`);
+        return axios.get(`/category/getListStatusCar`);
     };
 
-    return { apiContract, apiListCar, apiListStatusFilter };
+    //Đăng ký xe
+    // Api danh sách tính năng
+    const apiListFeature = () => {
+        return axios.get(`/category/getListOtherAmenitiesCar`);
+    };
+    return { apiContract, apiListCar, apiListStatusFilter, apiListFeature };
 };
 
 export default apiMyCar;
