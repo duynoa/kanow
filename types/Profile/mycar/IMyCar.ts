@@ -41,4 +41,16 @@ export interface IVehicleRegistration {
         dataFeuelType: IDataCombobox[];
         dataFeature: IDataFeature[];
     };
+    stateLease: {
+        openCity: boolean;
+        openDistrict: boolean;
+        openWards: boolean;
+        dataCity: IDataCombobox[];
+        dataDistrict: IDataCombobox[];
+        dataWards: IDataCombobox[];
+        openWordLimit: boolean;
+        openUntil: boolean;
+        dataWordLimit: IDataCombobox[];
+        dataUntil: IDataCombobox[];
+    };
 }
