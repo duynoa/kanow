@@ -5,7 +5,7 @@ import moment from "moment";
 import StarRatings from 'react-star-ratings';
 
 import { FaRegQuestionCircle, FaStar } from 'react-icons/fa'
-import { FaCircleCheck } from 'react-icons/fa6'
+import { FaArrowLeftLong, FaCircleCheck } from 'react-icons/fa6'
 import { TiHeartFullOutline, TiLocation } from 'react-icons/ti'
 
 import { useResize } from '@/hooks/useResize'
@@ -20,12 +20,14 @@ import { ActionTooltip } from '@/components/tooltip/ActionTooltip';
 import { useDialogAnswerPolicy } from '@/hooks/useOpenDialog';
 import { IInitialStateDetailCar } from '@/types/Initial/IInitial';
 import { useDataDetailCar, useDataPolicy } from '@/hooks/useDataQueryKey';
+import { useRouter } from 'next/navigation';
 
 type Props = {
     handleClickFavorite: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
 const InformationCar = ({ handleClickFavorite }: Props) => {
+    const router = useRouter()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isStatePolicy } = useDataPolicy()
     const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
@@ -59,7 +61,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
     return (
         <div className='flex flex-col gap-6 xxl:w-[70%] xxl:max-w-[70%] lg:w-[65%] lg:max-w-[65%] w-full max-w-full h-full pb-16 lg:order-none order-2'>
             <div className='flex flex-row items-center justify-between 3xl:pb-6 pb-4 border-b'>
-                <div className='flex flex-col gap-2'>
+                <div className='flex flex-col gap-2 max-w-[80%]'>
                     <div className='3xl:text-4xl md:text-3xl text-xl uppercase text-[#09080D] font-bold'>
                         {isStateDetailCar?.dataDetailCar?.name_car ? isStateDetailCar?.dataDetailCar?.name_car : ""}
                     </div>
@@ -106,17 +108,23 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                         }
                     </div>
                 </div>
-                {
-                    isVisibleMobile ?
-                        <div
-                            onClick={(event) => handleClickFavorite(event)}
-                            className='bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out'
-                        >
-                            <TiHeartFullOutline className={`${isStateDetailCar?.dataDetailCar?.favorite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
+                <div className='flex flex-row items-center gap-6'>
+                    <div
+                        onClick={(event) => handleClickFavorite(event)}
+                        className='bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out'
+                    >
+                        <TiHeartFullOutline className={`${isStateDetailCar?.dataDetailCar?.favorite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
+                    </div>
+                    <div
+                        onClick={() => router.back()}
+                        className='flex items-center gap-2 text-[#2FB9BD] hover:text-[#2FB9BD]/80 bg-[#2FB9BD]/20 border px-4 py-2 border-[#2FB9BD] rounded-md cursor-pointer w-fit group hover:-translate-x-2 duration-200 transition'
+                    >
+                        <FaArrowLeftLong className="3xl:size-5 size-4 3xl:max-w-5 max-w-4" />
+                        <div className='3xl:text-lg text-base font-medium'>
+                            Trở về
                         </div>
-                        :
-                        null
-                }
+                    </div>
+                </div>
             </div>
 
             <div id="section-1" className='flex flex-col gap-2 3xl:pb-6 pb-4 border-b'>
