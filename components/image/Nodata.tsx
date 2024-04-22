@@ -23,6 +23,9 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
 
     useEffect(() => {
         switch (type) {
+            case 'list-cars':
+                quertyState({ title: 'Hiện chưa có danh sách xe', image: '/nodata/no-data-amico.png' })
+                break;
             case 'account':
                 quertyState({ title: 'Không tìm thấy xe nào', image: '/profile/account/nodata.png' })
                 break;
@@ -46,24 +49,28 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
     if (!isMounted) return null
 
     // return <div className={`${className}  h-fit  flex flex-col items-center`}>
-    return <div className={`${className}  flex flex-col gap-4 items-center`}>
-        <div className="h-full w-full">
-            {/* <div className="lg:h-[472px] h-fit"> */}
-            <Image
-                src={data.image ? data.image : ""}
-                alt='hi'
-                width={1280}
-                height={1024}
-                className={`object-cover
+    return (
+        <div className={`${className}  flex flex-col gap-4 items-center`}>
+            <div className="h-full w-full">
+                {/* <div className="lg:h-[472px] h-fit"> */}
+                <Image
+                    src={data.image ? data.image : ""}
+                    alt='nodata'
+                    width={1280}
+                    height={1024}
+                    className={`
+                object-contain
+                 ${type == 'list-cars' && (isVisibleMobile ? "size-full" : 'w-full h-[400px] ')} 
                  ${type == 'list-car-favorite' && (isVisibleMobile ? "size-full" : 'size-[30%]')} 
                  ${type == 'account' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
                  ${type == 'mytrip' && (isVisibleMobile ? "size-full" : 'size-[40%]')}
                  ${type == 'address' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
                  ${type == 'list-my-car' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
                  mx-auto`} />
+            </div>
+            <h1 className="3xl:text-lg lg:text-sm text-xs font-medium">{data.title}</h1>
         </div>
-        <h1 className="lg:text-sm text-xs">{data.title}</h1>
-    </div>
+    )
 
 }
 export default Nodata

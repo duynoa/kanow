@@ -139,7 +139,7 @@ export function DialogLogin({ }: Props) {
             formData.append("password", values.password);
             const { data } = await apiLogin(formData);
             if (data?.token) {
-                if (pathname === "/list-car-autonomous") {
+                if (pathname === "/list-cars-autonomous") {
                     window.location.reload()
                 } else {
                     toastCore.success(data?.message);

@@ -41,18 +41,17 @@ import { usePathname } from 'next/navigation';
 
 type Props = {}
 
-const SearchCars = (props: Props) => {
+const ListCarAutonomous = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const { setOpenDialogAddress, valueAddress, onSubmitFilter, setOnSubmitFilter } = useDialogAddress()
 
     // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
-    const { setOpenDialogLogin, setStatusModal } = useDialogLogin()
+    const { setOpenDialogLogin } = useDialogLogin()
     const { dateReal, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogFilterListCars } = useDialogFilterListCars()
     const { getCookie } = useCookie()
     const { coordinates } = useDialogAddress()
-    const pathname = usePathname()
 
     // THÊM MỘT HẰNG SỐ ĐỂ ĐỊNH NGHĨA KHOẢNG ĐỘ CHO PHÉP
     const ALLOWED_OFFSET = 600;
@@ -125,39 +124,6 @@ const SearchCars = (props: Props) => {
         },
     ]
 
-    // const initialState: IInitialStateListCarAutonomous = {
-    //     listCardCars: [],
-    //     isLoadingScroll: false,
-    //     page: 1,
-    //     next: null,
-    //     filter: {
-    //         listTypesCar: [],
-    //         listAutomaker: []
-    //     },
-    //     dataParams: {
-    //         company_car_search: "0",
-    //         transmission_search: "0",
-    //         type_car_search: [],
-    //         tram_search: 0,
-    //         discount_search: 0,
-    //         book_car_flash: 0,
-    //         delivery_car: 0,
-    //         mortgage: 0,
-    //         star_search: 0,
-    //     },
-    //     onSuccess: {
-    //         onSuccessPage: false
-    //     },
-    //     limit: {
-    //         limitFilterCars: 50,
-    //         limitAllCars: 8,
-    //     }
-    // }
-
-    // const [isStateListCarAutonomous, setIsState] = useState<IInitialStateListCarAutonomous | any>(initialState)
-
-    // const queryKeyIsStateListCarAutonomous = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
-
     useEffect(() => {
         setIsMounted(true)
     }, [])
@@ -174,6 +140,7 @@ const SearchCars = (props: Props) => {
                 }
             })
             const dataParams = {
+                type:1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -261,6 +228,7 @@ const SearchCars = (props: Props) => {
 
                         const fetchDataListCar = async () => {
                             const query = {
+                                type:1,
                                 "lat": valueAddress ? coordinates.lat : undefined,
                                 "lon": valueAddress ? coordinates.lng : undefined,
                                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -394,12 +362,6 @@ const SearchCars = (props: Props) => {
         }
     };
 
-    // open dialog login
-    const handleOpenChangeModal = () => {
-        setOpenDialogLogin(false)
-        setStatusModal("login")
-    };
-
     const handleOpenDialog = (type: string) => {
         if (type === 'calendar') {
             setOpenDialogCalendar(true)
@@ -410,6 +372,7 @@ const SearchCars = (props: Props) => {
 
     const handleResetFilter = async () => {
         const query = {
+            type:1,
             "lat": valueAddress ? coordinates.lat : undefined,
             "lon": valueAddress ? coordinates.lng : undefined,
             date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -453,6 +416,7 @@ const SearchCars = (props: Props) => {
             const newStarSearch = isStateListCarAutonomous?.dataParams?.star_search !== item.value ? item.value : 0;
 
             const query = {
+                type:1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -504,6 +468,7 @@ const SearchCars = (props: Props) => {
             const newTramSearch = isStateListCarAutonomous?.dataParams?.tram_search !== item.value ? item.value : 0;
 
             const query = {
+                type:1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -555,6 +520,7 @@ const SearchCars = (props: Props) => {
             const newDiscountSearch = isStateListCarAutonomous?.dataParams?.discount_search !== item.value ? item.value : 0;
 
             const query = {
+                type:1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -606,6 +572,7 @@ const SearchCars = (props: Props) => {
             const newBookCarFlashSearch = isStateListCarAutonomous?.dataParams?.book_car_flash !== item.value ? item.value : 0;
 
             const query = {
+                type:1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -657,6 +624,7 @@ const SearchCars = (props: Props) => {
             const newMortgageSearch = isStateListCarAutonomous?.dataParams?.mortgage !== item.value ? item.value : 0;
 
             const query = {
+                type:1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -708,6 +676,7 @@ const SearchCars = (props: Props) => {
             const newDeliveryCarSearch = isStateListCarAutonomous?.dataParams?.delivery_car !== item.value ? item.value : 0;
 
             const query = {
+                type:1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -757,6 +726,7 @@ const SearchCars = (props: Props) => {
             }
         } else if (!item && type === 'date') {
             const query = {
+                type:1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -1023,17 +993,19 @@ const SearchCars = (props: Props) => {
                                         </div>
                                     </div>
                                     <div className={`flex items-center ${card?.location?.distance ? 'justify-between' : 'justify-start'} gap-2 mt-2`}>
-                                        <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default caret-transparent'>
-                                            {card?.type?.transmission_search ? card?.type?.transmission_search : ""}
-                                        </Badge>
-                                        {
-                                            card?.type?.delivery_car ?
-                                                <Badge className='bg-[#F9ECC9]/35 hover:bg-[#F9ECC9]/50 text-[#FF9900] 3xl:text-sm text-xs font-medium cursor-default'>
-                                                    Giao tận nơi
-                                                </Badge>
-                                                :
-                                                null
-                                        }
+                                        <div className='flex items-center gap-2'>
+                                            <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default caret-transparent'>
+                                                {card?.type?.transmission_search ? card?.type?.transmission_search : ""}
+                                            </Badge>
+                                            {
+                                                card?.type?.delivery_car ?
+                                                    <Badge className='bg-[#F9ECC9]/35 hover:bg-[#F9ECC9]/50 text-[#FF9900] 3xl:text-sm text-xs font-medium cursor-default'>
+                                                        Giao tận nơi
+                                                    </Badge>
+                                                    :
+                                                    null
+                                            }
+                                        </div>
                                         {card?.location?.distance &&
                                             <div className='text-[#1AC5CA] text-xs font-semibold'>~ {card?.location?.distance} km</div>
                                         }
@@ -1150,4 +1122,4 @@ const SearchCars = (props: Props) => {
     )
 }
 
-export default SearchCars
+export default ListCarAutonomous

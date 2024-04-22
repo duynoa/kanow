@@ -51,6 +51,7 @@ const getListCarsRelated = (param?: any) => {
             ...param, // Nối các tham số trong param object
         },
     };
+    
     return axios.get(`/car/getListCarRelated`, config)
 }
 
@@ -59,7 +60,16 @@ const postRequestRentalCar = (data: any) => {
     return axios.post(`/transaction/addTransaction`, data)
 }
 
+// danh sách xe dành cho bạn
+const getListCarsForYou = (param?: any) => {
+    let config: AxiosRequestConfig = {
+        params: {
+            ...param, // Nối các tham số trong param object
+        },
+    };
 
+    return axios.get(`/car/getListCarForYou`, config)
+}
 
 export {
     getListCars,
@@ -68,5 +78,6 @@ export {
     getDataDetailCar,
     postUpdateFavoriteHeartCar,
     getListCarsRelated,
-    postRequestRentalCar
+    postRequestRentalCar,
+    getListCarsForYou,
 };

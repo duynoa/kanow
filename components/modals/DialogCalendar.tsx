@@ -39,7 +39,7 @@ import { useParams, usePathname } from "next/navigation";
 import { toastCore } from "@/lib/toast";
 import { CalendarCustom } from "../ui/calendarCustom";
 import { getListCalendarPriceMonth } from "@/services/cars/calendar.services";
-import { useDataDetailCar, useDataListCarAutonomous } from "@/hooks/useDataQueryKey";
+import { useDataDetailCar, useDataListCarAutonomous, useDataListCarsDriver } from "@/hooks/useDataQueryKey";
 import { useGeneralKey } from "@/hooks/useGeneralKey";
 import { Calendar } from "../ui/calendar";
 
@@ -306,6 +306,7 @@ export function DialogCalendar({ }: Props) {
 
     const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
     const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useDataListCarAutonomous()
+    const { isStateListCarsDriver, queryKeyIsStateListCarsDriver } = useDataListCarsDriver()
 
     // Xác định ngày hiện tại
     const toDate = new Date();
@@ -422,21 +423,34 @@ export function DialogCalendar({ }: Props) {
             )
         };
 
-        console.log('isBeforeInSameYearAndMonth(newDate.from, dateTimeComponent.from : ', isBeforeInSameYearAndMonth(newDate.from, dateTimeComponent.from));
-        console.log('date Time component : ', dateTimeComponent);
+        if (newDate && dateTimeComponent.from && dateTimeComponent.to) {
+            // newDate?.to?.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+            // setDateTimeComponent({
+            //     from: newDate.to,
+            //     to: undefined
+            // })
+            // setFlagSubmit(true)
 
-        if (dateTimeComponent.from && dateTimeComponent.to) {
             if (isBeforeInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
-                newDate.from.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+                newDate?.from?.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
                 console.log('check1');
 
                 setDateTimeComponent((prevState: any) => ({
-                    ...prevState,
-                    from: newDate.from
+                    from: newDate.from,
+                    to: undefined
+                }))
+                setFlagSubmit(true)
+            } else if (isAfterInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
+                newDate?.from?.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+
+                console.log('checkkk 11');
+                setDateTimeComponent((prevState: any) => ({
+                    from: newDate.from,
+                    to: undefined
                 }))
                 setFlagSubmit(true)
             } else {
-                newDate.to.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+                newDate?.to?.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
                 setDateTimeComponent({
                     from: newDate.to,
                     to: undefined
@@ -445,18 +459,18 @@ export function DialogCalendar({ }: Props) {
                 console.log('check111111111');
             }
 
-        } else if (dateTimeComponent.from && !dateTimeComponent.to) {
+        } else if (newDate && dateTimeComponent.from && !dateTimeComponent.to) {
             if (isBeforeInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
                 newDate.from.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
                 console.log('checkkk 2');
 
                 setDateTimeComponent((prevState: any) => ({
-                    ...prevState,
-                    from: newDate.from
+                    from: newDate.from,
+                    to: newDate.to
                 }))
                 setFlagSubmit(true)
             } else if (isAfterInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
-                newDate.from.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+                newDate.to.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
 
                 console.log('checkkk 3');
                 setDateTimeComponent((prevState: any) => ({
@@ -474,6 +488,11 @@ export function DialogCalendar({ }: Props) {
                 }))
                 setFlagSubmit(true)
             }
+        } else {
+            setDateTimeComponent((prevState: any) => ({
+                from: prevState.from,
+                to: undefined
+            }))
         }
     }
 
@@ -555,6 +574,13 @@ export function DialogCalendar({ }: Props) {
             } else {
                 queryKeyIsStateListCarAutonomous({
                     ...isStateListCarAutonomous,
+                    onSuccess: {
+                        onSuccessPage: true
+                    }
+                })
+
+                queryKeyIsStateListCarsDriver({
+                    ...isStateListCarsDriver,
                     onSuccess: {
                         onSuccessPage: true
                     }
@@ -904,7 +930,7 @@ export function DialogCalendar({ }: Props) {
                                 null
                         }
                         {
-                            pathname.startsWith('/detail-car/') && !dateEnd ?
+                            pathname.startsWith('/detail-car/') && !dateEnd || !pathname.startsWith('/detail-car/') && !dateTimeComponent?.to ?
                                 <div className='px-2 mt-4'>
                                     <div className='3xl:text-base text-sm font-normal text-[#2FB9BD]'>
                                         * Vui lòng chọn ngày kết thúc
@@ -945,7 +971,16 @@ export function DialogCalendar({ }: Props) {
 
                         <div>
                             <Button
-                                disabled={pathname.startsWith('/detail-car/') && dataCalendar.length === 0 || pathname.startsWith('/detail-car/') && validateDateSubmit || pathname.startsWith('/detail-car/') && !dateEnd ? true : false}
+                                disabled={
+                                    pathname.startsWith('/detail-car/') && dataCalendar.length === 0 ||
+                                        pathname.startsWith('/detail-car/') && validateDateSubmit ||
+                                        pathname.startsWith('/detail-car/') && !dateEnd ||
+                                        !pathname.startsWith('/detail-car/') && !dateTimeComponent?.to
+                                        ?
+                                        true
+                                        :
+                                        false
+                                }
                                 onClick={() => handleSubmitDateTime()}
                                 className='xl:px-6 xl:py-3 px-4 py-2 xl:text-base text-sm rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 caret-transparent'
                             >

@@ -3,6 +3,17 @@ import { IInfoPromotion } from "../Cars/IPromotions";
 import { IReportCar } from "../Cars/IReportCar";
 import { IDataPolicy } from "../Policy/IPolicy";
 
+// initial Data page home
+interface IInitialStateDataHome {
+    listCardCarsForYou: IDataCardCar[];
+    tabSearch: {
+        tabId: string,
+        type?: string,
+    },
+    loading: {
+        isLoadingListCars: boolean
+    }
+}
 // initial list car autonomous
 interface IInitialStateListCarAutonomous {
     listCardCars: IDataCardCar[];
@@ -78,6 +89,7 @@ interface IInitialStatePolicy {
 }
 
 export type {
+    IInitialStateDataHome,
     IInitialStateListCarAutonomous,
     IInitialStateDetailCar,
     IInitialStateInfoRentalCar,

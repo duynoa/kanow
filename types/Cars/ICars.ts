@@ -38,6 +38,14 @@ interface IDataCardCar {
         percent: number;
         price_promotion: number;
     }[];
+    location: {
+        address: string,
+        distance: string,
+        district: string,
+        latitude: number,
+        longitude: number,
+        province: string
+    }
 }
 
 // filter type(loại) car
