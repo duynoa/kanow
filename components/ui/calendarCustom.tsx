@@ -1733,12 +1733,6 @@ function CalendarCustom({
             };
 
             if (dateStart && dateEnd) {
-
-                // date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
-                // setDateStart(date)
-                // setFlagSubmit(true)
-                // setDateEnd(undefined)
-
                 if (isBeforeInSameYearAndMonth(date, dateStart)) {
                     date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
 
@@ -1746,6 +1740,7 @@ function CalendarCustom({
                     setFlagSubmit(true)
                 } else {
                     date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+                 
                     setDateStart(date)
                     setDateEnd(undefined)
                     setFlagSubmit(true)
@@ -1759,7 +1754,6 @@ function CalendarCustom({
                 } else if (isAfterInSameYearAndMonth(date, dateStart)) {
                     date?.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
 
-                    console.log('checkkk 11');
                     setDateStart(date)
                     setDateEnd(undefined)
                     setFlagSubmit(true)
@@ -1769,7 +1763,6 @@ function CalendarCustom({
                     setDateStart(date)
                     setDateEnd(undefined)
                     setFlagSubmit(true)
-                    console.log('check111111111');
                 }
 
             } else if (dateStart && !dateEnd) {

@@ -424,16 +424,8 @@ export function DialogCalendar({ }: Props) {
         };
 
         if (newDate && dateTimeComponent.from && dateTimeComponent.to) {
-            // newDate?.to?.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
-            // setDateTimeComponent({
-            //     from: newDate.to,
-            //     to: undefined
-            // })
-            // setFlagSubmit(true)
-
             if (isBeforeInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
                 newDate?.from?.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
-                console.log('check1');
 
                 setDateTimeComponent((prevState: any) => ({
                     from: newDate.from,
@@ -443,7 +435,6 @@ export function DialogCalendar({ }: Props) {
             } else if (isAfterInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
                 newDate?.from?.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
 
-                console.log('checkkk 11');
                 setDateTimeComponent((prevState: any) => ({
                     from: newDate.from,
                     to: undefined
@@ -456,13 +447,11 @@ export function DialogCalendar({ }: Props) {
                     to: undefined
                 })
                 setFlagSubmit(true)
-                console.log('check111111111');
             }
 
         } else if (newDate && dateTimeComponent.from && !dateTimeComponent.to) {
             if (isBeforeInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
                 newDate.from.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
-                console.log('checkkk 2');
 
                 setDateTimeComponent((prevState: any) => ({
                     from: newDate.from,
@@ -472,7 +461,6 @@ export function DialogCalendar({ }: Props) {
             } else if (isAfterInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
                 newDate.to.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
 
-                console.log('checkkk 3');
                 setDateTimeComponent((prevState: any) => ({
                     ...prevState,
                     to: newDate.to
@@ -481,7 +469,6 @@ export function DialogCalendar({ }: Props) {
             } else {
                 newDate.to.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
 
-                console.log('checkkk 4');
                 setDateTimeComponent((prevState: any) => ({
                     ...prevState,
                     to: newDate.to

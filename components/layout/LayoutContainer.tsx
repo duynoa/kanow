@@ -276,7 +276,7 @@ const LayoutContainer = ({
                     <DialogRegisterOwnerDriver />
                     <DialogFilterMyCar />
                 </main>
-                {pathname !== "/list-cars-autonomous" && <Footer />}
+                {pathname !== "/list-cars-autonomous" && pathname !== "/list-cars-driver" && <Footer />}
                 <ToastContainer
                     position="top-right"
                     autoClose={5000}
@@ -288,7 +288,7 @@ const LayoutContainer = ({
                     draggable
                     pauseOnHover
                     theme="light"
-                    
+
                 />
             </body>
             {/* <Script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1cC7gG0SKu8ZVC4N5T89u9QfVQVMM_ZY" type="text/javascript" /> */}

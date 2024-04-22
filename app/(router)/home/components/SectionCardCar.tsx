@@ -15,11 +15,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { A11y, Pagination } from 'swiper/modules'
 import { SwiperSlide, Swiper } from 'swiper/react'
 import { useDataHome } from '@/hooks/useDataQueryKey';
-import SkeletonListCar from '../../list-cars-autonomous/components/SkeletonListCar';
 import { useCookie } from '@/hooks/useCookie';
 import { postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
 import { useDialogLogin } from '@/hooks/useOpenDialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
 
 const SectionCardCar = () => {
     const { isVisibleMobile } = useResize()

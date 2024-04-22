@@ -32,12 +32,13 @@ import { getListCars, postUpdateFavoriteHeartCar } from '@/services/cars/cars.se
 import { DialogFilterListCars } from '@/components/modals/DialogFilterListCars';
 import { CustomDataListCars } from '@/custom/CustomData';
 import { useCookie } from '@/hooks/useCookie';
-import SkeletonListCar from './components/SkeletonListCar';
 import { IInitialStateListCarAutonomous } from '@/types/Initial/IInitial';
 import moment from 'moment';
 import { useListCar } from '@/hooks/useQueryKeyList';
 import { useDataListCarAutonomous } from '@/hooks/useDataQueryKey';
 import { usePathname } from 'next/navigation';
+import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
+import Nodata from '@/components/image/Nodata';
 
 type Props = {}
 
@@ -140,7 +141,7 @@ const ListCarAutonomous = (props: Props) => {
                 }
             })
             const dataParams = {
-                type:1,
+                type: 1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -228,7 +229,7 @@ const ListCarAutonomous = (props: Props) => {
 
                         const fetchDataListCar = async () => {
                             const query = {
-                                type:1,
+                                type: 1,
                                 "lat": valueAddress ? coordinates.lat : undefined,
                                 "lon": valueAddress ? coordinates.lng : undefined,
                                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -372,7 +373,7 @@ const ListCarAutonomous = (props: Props) => {
 
     const handleResetFilter = async () => {
         const query = {
-            type:1,
+            type: 1,
             "lat": valueAddress ? coordinates.lat : undefined,
             "lon": valueAddress ? coordinates.lng : undefined,
             date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -416,7 +417,7 @@ const ListCarAutonomous = (props: Props) => {
             const newStarSearch = isStateListCarAutonomous?.dataParams?.star_search !== item.value ? item.value : 0;
 
             const query = {
-                type:1,
+                type: 1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -468,7 +469,7 @@ const ListCarAutonomous = (props: Props) => {
             const newTramSearch = isStateListCarAutonomous?.dataParams?.tram_search !== item.value ? item.value : 0;
 
             const query = {
-                type:1,
+                type: 1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -520,7 +521,7 @@ const ListCarAutonomous = (props: Props) => {
             const newDiscountSearch = isStateListCarAutonomous?.dataParams?.discount_search !== item.value ? item.value : 0;
 
             const query = {
-                type:1,
+                type: 1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -572,7 +573,7 @@ const ListCarAutonomous = (props: Props) => {
             const newBookCarFlashSearch = isStateListCarAutonomous?.dataParams?.book_car_flash !== item.value ? item.value : 0;
 
             const query = {
-                type:1,
+                type: 1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -624,7 +625,7 @@ const ListCarAutonomous = (props: Props) => {
             const newMortgageSearch = isStateListCarAutonomous?.dataParams?.mortgage !== item.value ? item.value : 0;
 
             const query = {
-                type:1,
+                type: 1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -676,7 +677,7 @@ const ListCarAutonomous = (props: Props) => {
             const newDeliveryCarSearch = isStateListCarAutonomous?.dataParams?.delivery_car !== item.value ? item.value : 0;
 
             const query = {
-                type:1,
+                type: 1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -726,7 +727,7 @@ const ListCarAutonomous = (props: Props) => {
             }
         } else if (!item && type === 'date') {
             const query = {
-                type:1,
+                type: 1,
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
@@ -786,7 +787,7 @@ const ListCarAutonomous = (props: Props) => {
         < >
             <div className={`${isFilterFixed ? "fixed bg-[#FCFDFD] z-30 w-full top-0" : "w-full"}`}>
                 <div className='custom-container flex lg:flex-row flex-col lg:gap-16 gap-6 md:items-center lg:justify-start justify-center py-6'>
-                    <div className='xl:w-[30%] xl:max-w-[30%] lg:w-[25%] lg:max-w-[25%] w-full max-w-full lg:text-start text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
+                    <div className='caret-transparent xl:w-[30%] xl:max-w-[30%] lg:w-[25%] lg:max-w-[25%] w-full max-w-full lg:text-start text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
                         Thuê xe tự lái
                     </div>
                     {
@@ -942,165 +943,172 @@ const ListCarAutonomous = (props: Props) => {
                                 ))}
                             </>
                             :
-                            isStateListCarAutonomous?.listCardCars && isStateListCarAutonomous?.listCardCars?.map((card: any, index: number) => (
-                                <Link
-                                    id={`card-${card.id}`}
-                                    key={card.id}
-                                    className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
-                                    href={`/detail-car/${card.id}?${ConvertToSlug(card?.name_car)}`}
-                                    prefetch={false}
-                                // target='_blank'
-                                >
-                                    {
-                                        card?.promotion?.length > 0 ?
-                                            <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
-                                                Giảm {card?.promotion[0]?.percent}% - {card?.promotion[0]?.name ? card?.promotion[0]?.name : ""}
-                                            </div>
-                                            :
-                                            null
-                                    }
-                                    <div className='w-full 3xl:h-[230px] xxl:h-auto xl:h-[180px] h-[180px] relative'>
-                                        <Image
-                                            width={400}
-                                            height={300}
-                                            alt="image_card"
-                                            src={card?.image_car?.length > 0 ? card?.image_car[0]?.name : '/default/default.png'}
-                                            className='w-full h-full object-cover rounded-xl'
-                                        />
-                                        <div
-                                            onClick={(event) => handleClickFavorite(event, card.id, index)}
-                                            className='absolute right-2 top-2 bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out z-20'
+                            (
+                                isStateListCarAutonomous?.listCardCars && isStateListCarAutonomous?.listCardCars?.length > 0 ?
+                                    isStateListCarAutonomous?.listCardCars?.map((card: any, index: number) => (
+                                        <Link
+                                            id={`card-${card.id}`}
+                                            key={card.id}
+                                            className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
+                                            href={`/detail-car/${card.id}?${ConvertToSlug(card?.name_car)}`}
+                                            prefetch={false}
                                         >
-                                            <TiHeartFullOutline className={`${card.favorite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
-                                        </div>
-                                        <div className='flex gap-2 absolute bottom-[10px] left-[10px]'>
-                                            {
-                                                card?.type?.mortgage ?
-                                                    <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
-                                                        Miễn thế chấp
-                                                    </Badge>
-                                                    :
-                                                    null
-                                            }
-                                            {
-                                                card?.type?.book_car_flash ?
-                                                    <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
-                                                        Đặt xe nhanh
-                                                    </Badge>
-                                                    :
-                                                    null
-                                            }
-                                        </div>
-                                    </div>
-                                    <div className={`flex items-center ${card?.location?.distance ? 'justify-between' : 'justify-start'} gap-2 mt-2`}>
-                                        <div className='flex items-center gap-2'>
-                                            <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default caret-transparent'>
-                                                {card?.type?.transmission_search ? card?.type?.transmission_search : ""}
-                                            </Badge>
-                                            {
-                                                card?.type?.delivery_car ?
-                                                    <Badge className='bg-[#F9ECC9]/35 hover:bg-[#F9ECC9]/50 text-[#FF9900] 3xl:text-sm text-xs font-medium cursor-default'>
-                                                        Giao tận nơi
-                                                    </Badge>
-                                                    :
-                                                    null
-                                            }
-                                        </div>
-                                        {card?.location?.distance &&
-                                            <div className='text-[#1AC5CA] text-xs font-semibold'>~ {card?.location?.distance} km</div>
-                                        }
-
-                                    </div>
-                                    <div className='flex gap-3 items-center'>
-                                        <div className='3xl:w-12 3xl:max-w-12 3xl:h-12 w-10 max-w-10 h-10 '>
-                                            <Avatar className='w-full h-full shadow'>
-                                                <AvatarImage
-                                                    src={card?.car_owner?.avatar ? card?.car_owner?.avatar : '/avatar/avatar_default.png'}
-                                                    alt="@kanow"
-                                                />
-                                                <AvatarFallback >
-                                                    <Image
-                                                        width={100}
-                                                        height={100}
-                                                        src='/avatar/avatar_default.png'
-                                                        alt="@kanow"
-                                                        className='w-full h-full'
-                                                    />
-                                                </AvatarFallback>
-                                            </Avatar>
-                                        </div>
-                                        <div className='flex flex-col gap-1 w-[80%] max-w-[80%]'>
-                                            <div className='3xl:text-lg text-base text-[#1D1D1D] font-bold uppercase line-clamp-1'>
-                                                {card.name_car ? card.name_car : ''}
-                                            </div>
-                                            <div className='flex gap-1 items-center'>
-                                                <TiLocation className='text-base text-[#FA3434] w-[16px] max-w-[16px]' />
-                                                <div className='3xl:text-sm text-xs text-[#8C93A3] font-medium w-[90%] max-w-[90%] line-clamp-1'>
-                                                    {card.address ? card.address : ''}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className='border-b border-[#D7D9E0]/50' />
-                                    <div className='flex items-center justify-between 3xl:gap-4 xxl:gap-2 xl:gap-4 lg:gap-1 gap-2 bg-[#F2FCF7] p-2 rounded-lg'>
-                                        <div className='flex items-center 3xl:gap-4 xxl:gap-2 xl:gap-4 lg:gap-1 gap-2'>
-                                            {
-                                                card.point_star ?
-                                                    <div className='flex items-center gap-1'>
-                                                        <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#FFC118]' />
-                                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
-                                                            {card.point_star ? (FormatNumberToDecimal(card.point_star, 1)) : 0}
-                                                        </div>
-                                                    </div>
-                                                    :
-                                                    null
-                                            }
-
-                                            {
-                                                card.total_trip ?
-                                                    <div className='flex items-center gap-1'>
-                                                        <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#3AC996]' />
-                                                        <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
-                                                            {card.total_trip ? FormatNumberHundred(card.total_trip, 100) : 0} Chuyến
-                                                        </div>
-                                                    </div>
-                                                    :
-                                                    <div className='3xl:text-sm text-xs text-[#8C93A3]'>
-                                                        Chưa có chuyến
-                                                    </div>
-                                            }
-                                        </div>
-
-                                        <div className='flex items-center gap-1'>
                                             {
                                                 card?.promotion?.length > 0 ?
-                                                    <>
-                                                        <div className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#D7D9E0] font-medium line-through'>
-                                                            {card.price_before_promotion ? FormatNumberToThousands(card.price_before_promotion) : 0}
-                                                        </div>
-                                                        <div className='flex'>
-                                                            <span className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#1AC5CA] font-medium'>
-                                                                {card.price_after_promotion ? FormatNumberToThousands(card.price_after_promotion) : 0}
-                                                            </span>
-                                                            <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
-                                                                /ngày
-                                                            </span>
-                                                        </div>
-                                                    </>
-                                                    :
-                                                    <div className='flex'>
-                                                        <span className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#1AC5CA] font-medium'>
-                                                            {card.price_before_promotion ? FormatNumberToThousands(card.price_before_promotion) : 0}
-                                                        </span>
-                                                        <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
-                                                            /ngày
-                                                        </span>
+                                                    <div className='w-fit rounded-tl-xl rounded-br-xl absolute top-0 left-0 bg-[#FA3434] px-2 py-1 text-sm font-semibold text-white z-10'>
+                                                        Giảm {card?.promotion[0]?.percent}% - {card?.promotion[0]?.name ? card?.promotion[0]?.name : ""}
                                                     </div>
+                                                    :
+                                                    null
                                             }
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))
+                                            <div className='w-full 3xl:h-[230px] xxl:h-auto xl:h-[180px] h-[180px] relative'>
+                                                <Image
+                                                    width={400}
+                                                    height={300}
+                                                    alt="image_card"
+                                                    src={card?.image_car?.length > 0 ? card?.image_car[0]?.name : '/default/default.png'}
+                                                    className='w-full h-full object-cover rounded-xl'
+                                                />
+                                                <div
+                                                    onClick={(event) => handleClickFavorite(event, card.id, index)}
+                                                    className='absolute right-2 top-2 bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out z-20'
+                                                >
+                                                    <TiHeartFullOutline className={`${card.favorite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
+                                                </div>
+                                                <div className='flex gap-2 absolute bottom-[10px] left-[10px]'>
+                                                    {
+                                                        card?.type?.mortgage ?
+                                                            <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
+                                                                Miễn thế chấp
+                                                            </Badge>
+                                                            :
+                                                            null
+                                                    }
+                                                    {
+                                                        card?.type?.book_car_flash ?
+                                                            <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
+                                                                Đặt xe nhanh
+                                                            </Badge>
+                                                            :
+                                                            null
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div className={`flex items-center ${card?.location?.distance ? 'justify-between' : 'justify-start'} gap-2 mt-2`}>
+                                                <div className='flex items-center gap-2'>
+                                                    <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default caret-transparent'>
+                                                        {card?.type?.transmission_search ? card?.type?.transmission_search : ""}
+                                                    </Badge>
+                                                    {
+                                                        card?.type?.delivery_car ?
+                                                            <Badge className='bg-[#F9ECC9]/35 hover:bg-[#F9ECC9]/50 text-[#FF9900] 3xl:text-sm text-xs font-medium cursor-default'>
+                                                                Giao tận nơi
+                                                            </Badge>
+                                                            :
+                                                            null
+                                                    }
+                                                </div>
+                                                {card?.location?.distance &&
+                                                    <div className='text-[#1AC5CA] text-xs font-semibold'>~ {card?.location?.distance} km</div>
+                                                }
+
+                                            </div>
+                                            <div className='flex gap-3 items-center'>
+                                                <div className='3xl:w-12 3xl:max-w-12 3xl:h-12 w-10 max-w-10 h-10 '>
+                                                    <Avatar className='w-full h-full shadow'>
+                                                        <AvatarImage
+                                                            src={card?.car_owner?.avatar ? card?.car_owner?.avatar : '/avatar/avatar_default.png'}
+                                                            alt="@kanow"
+                                                        />
+                                                        <AvatarFallback >
+                                                            <Image
+                                                                width={100}
+                                                                height={100}
+                                                                src='/avatar/avatar_default.png'
+                                                                alt="@kanow"
+                                                                className='w-full h-full'
+                                                            />
+                                                        </AvatarFallback>
+                                                    </Avatar>
+                                                </div>
+                                                <div className='flex flex-col gap-1 w-[80%] max-w-[80%]'>
+                                                    <div className='3xl:text-lg text-base text-[#1D1D1D] font-bold uppercase line-clamp-1'>
+                                                        {card.name_car ? card.name_car : ''}
+                                                    </div>
+                                                    <div className='flex gap-1 items-center'>
+                                                        <TiLocation className='text-base text-[#FA3434] w-[16px] max-w-[16px]' />
+                                                        <div className='3xl:text-sm text-xs text-[#8C93A3] font-medium w-[90%] max-w-[90%] line-clamp-1'>
+                                                            {card.address ? card.address : ''}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className='border-b border-[#D7D9E0]/50' />
+                                            <div className='flex items-center justify-between 3xl:gap-4 xxl:gap-2 xl:gap-4 lg:gap-1 gap-2 bg-[#F2FCF7] p-2 rounded-lg'>
+                                                <div className='flex items-center 3xl:gap-4 xxl:gap-2 xl:gap-4 lg:gap-1 gap-2'>
+                                                    {
+                                                        card.point_star ?
+                                                            <div className='flex items-center gap-1'>
+                                                                <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#FFC118]' />
+                                                                <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
+                                                                    {card.point_star ? (FormatNumberToDecimal(card.point_star, 1)) : 0}
+                                                                </div>
+                                                            </div>
+                                                            :
+                                                            null
+                                                    }
+
+                                                    {
+                                                        card.total_trip ?
+                                                            <div className='flex items-center gap-1'>
+                                                                <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#3AC996]' />
+                                                                <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
+                                                                    {card.total_trip ? FormatNumberHundred(card.total_trip, 100) : 0} Chuyến
+                                                                </div>
+                                                            </div>
+                                                            :
+                                                            <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                                                Chưa có chuyến
+                                                            </div>
+                                                    }
+                                                </div>
+
+                                                <div className='flex items-center gap-1'>
+                                                    {
+                                                        card?.promotion?.length > 0 ?
+                                                            <>
+                                                                <div className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#D7D9E0] font-medium line-through'>
+                                                                    {card.price_before_promotion ? FormatNumberToThousands(card.price_before_promotion) : 0}
+                                                                </div>
+                                                                <div className='flex'>
+                                                                    <span className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#1AC5CA] font-medium'>
+                                                                        {card.price_after_promotion ? FormatNumberToThousands(card.price_after_promotion) : 0}
+                                                                    </span>
+                                                                    <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
+                                                                        /ngày
+                                                                    </span>
+                                                                </div>
+                                                            </>
+                                                            :
+                                                            <div className='flex'>
+                                                                <span className='3xl:text-lg 2xl:text-base xxl:text-sm md:text-[15px] text-base text-[#1AC5CA] font-medium'>
+                                                                    {card.price_before_promotion ? FormatNumberToThousands(card.price_before_promotion) : 0}
+                                                                </span>
+                                                                <span className='3xl:text-[13px] text-[11px] text-[#585F71] flex justify-start font-semibold capitalize'>
+                                                                    /ngày
+                                                                </span>
+                                                            </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))
+                                    :
+                                    <Nodata
+                                        type="list-cars"
+                                        className="xxl:col-span-4 lg:col-span-3 md:col-span-2 col-span-1"
+                                    />
+                            )
 
                     }
 

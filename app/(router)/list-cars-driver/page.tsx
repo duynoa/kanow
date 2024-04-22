@@ -32,13 +32,13 @@ import { getListCars, postUpdateFavoriteHeartCar } from '@/services/cars/cars.se
 import { DialogFilterListCars } from '@/components/modals/DialogFilterListCars';
 import { CustomDataListCars } from '@/custom/CustomData';
 import { useCookie } from '@/hooks/useCookie';
-import SkeletonListCar from '../list-cars-driver/components/SkeletonListCar';
 import { IInitialStateListCarAutonomous } from '@/types/Initial/IInitial';
 import moment from 'moment';
 import { useListCar } from '@/hooks/useQueryKeyList';
 import { useDataListCarAutonomous, useDataListCarsDriver } from '@/hooks/useDataQueryKey';
 import { usePathname } from 'next/navigation';
 import Nodata from '@/components/image/Nodata';
+import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
 
 type Props = {}
 
@@ -317,6 +317,7 @@ const SearchCars = (props: Props) => {
         if (type === "filter") {
             const newValue: any = isStateListCarsDriver.dataParams
             const value = newValue[key];
+
             return value != 0 && (Array.isArray(value) ? value.length != 0 : true);
         } else if (type === "reset_filter") {
             const { dataParams } = isStateListCarsDriver;
@@ -787,7 +788,7 @@ const SearchCars = (props: Props) => {
         < >
             <div className={`${isFilterFixed ? "fixed bg-[#FCFDFD] z-30 w-full top-0" : "w-full"}`}>
                 <div className='custom-container flex lg:flex-row flex-col lg:gap-16 gap-6 md:items-center lg:justify-start justify-center py-6'>
-                    <div className='xl:w-[30%] xl:max-w-[30%] lg:w-[25%] lg:max-w-[25%] w-full max-w-full lg:text-start text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
+                    <div className='caret-transparent xl:w-[30%] xl:max-w-[30%] lg:w-[25%] lg:max-w-[25%] w-full max-w-full lg:text-start text-center 3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-2xl md:text-[26px] text-[26px] capitalize font-bold text-[#101010]'>
                         Thuê xe có tài
                     </div>
                     {
@@ -952,7 +953,6 @@ const SearchCars = (props: Props) => {
                                             className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
                                             href={`/detail-car/${card.id}?${ConvertToSlug(card?.name_car)}`}
                                             prefetch={false}
-                                        // target='_blank'
                                         >
                                             {
                                                 card?.promotion?.length > 0 ?

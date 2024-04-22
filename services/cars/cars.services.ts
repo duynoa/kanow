@@ -20,13 +20,25 @@ const getListCars = (
 };
 
 // lấy danh sách hãng xe
-const getListAutomaker = () => {
-    return axios.get(`/car/getListCompanyCar`);
+const getListAutomaker = (param: any) => {
+    let config: AxiosRequestConfig = {
+        params: {
+            ...param, // Nối các tham số trong param object
+        },
+    };
+
+    return axios.get(`/car/getListCompanyCar`, config);
 };
 
 // lấy danh sách loại xe
-const getListTypeCars = () => {
-    return axios.get(`/car/getListTypeCar`);
+const getListTypeCars = (param: any) => {
+    let config: AxiosRequestConfig = {
+        params: {
+            ...param, // Nối các tham số trong param object
+        },
+    };
+
+    return axios.get(`/car/getListTypeCar`, config);
 };
 
 // get data detail car
@@ -36,6 +48,7 @@ const getDataDetailCar = (id: string | number, param?: any) => {
             ...param, // Nối các tham số trong param object
         },
     };
+
     return axios.get(`/car/getDetail/${id}`, config);
 };
 
@@ -51,7 +64,7 @@ const getListCarsRelated = (param?: any) => {
             ...param, // Nối các tham số trong param object
         },
     };
-    
+
     return axios.get(`/car/getListCarRelated`, config)
 }
 
