@@ -8,6 +8,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogOverlay,
+    DialogPortal,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
@@ -25,7 +26,7 @@ import {
 import { Check, X } from "lucide-react"
 
 import { useDialogCalendar, useDialogPromotion } from "@/hooks/useOpenDialog";
-import { addDays, addMonths, differenceInCalendarDays, differenceInDays, differenceInHours, differenceInMinutes, endOfDay, endOfMonth, format, isAfter, isBefore, isSameDay, isSameMinute, parseISO, setHours, setMinutes, startOfDay, startOfMonth, sub } from "date-fns";
+import { addDays, addMonths, differenceInCalendarDays, differenceInDays, differenceInHours, differenceInMinutes, endOfDay, endOfMonth, format, getMonth, getYear, isAfter, isBefore, isSameDay, isSameMinute, isSameMonth, isSameYear, parseISO, setHours, setMinutes, startOfDay, startOfMonth, sub } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { Input } from "../ui/input";
 import { v4 as uuidv4 } from 'uuid';
@@ -307,10 +308,9 @@ export function DialogCalendar({ }: Props) {
     const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useDataListCarAutonomous()
 
     // Xác định ngày hiện tại
-    const currentDate = new Date();
-
+    const toDate = new Date();
     // Xác định ngày kết thúc (chỉ hiển thị từ tháng hiện tại đến 4 tháng sau)
-    const endMonth = addMonths(currentDate, 3);
+    const endMonth = addMonths(toDate, 3);
     // Xác định các ngày cần vô hiệu hóa (ngày trước ngày hiện tại)
 
     const {
@@ -331,6 +331,8 @@ export function DialogCalendar({ }: Props) {
         statusDate,
         validateDateSubmit,
         setValidateDateSubmit,
+        flagSubmit,
+        setFlagSubmit
     } = useDialogCalendar()
 
     useEffect(() => {
@@ -339,59 +341,142 @@ export function DialogCalendar({ }: Props) {
 
     // khoá các ngày phía trước của ngày hiện tại lịch mặc định
     const disabledDays = (date: Date) => {
-        return isBefore(date, currentDate);
+        return isBefore(date, startOfDay(toDate));
     };
 
-    const handleOpenChangeModal = () => {
-        setOpenDialogCalendar(!openDialogCalendar)
+
+    const handleCloseModal = (type: string) => {
+        if (validateDateSubmit && type === "close1" || flagSubmit && type === "close1") {
+            // không có hoạt động gì để tránh người dùng tạo bug khi click ra ngoài
+        } else if (validateDateSubmit && type === "close2" || flagSubmit && type === "close2") {
+            toastCore.warning("Vui lòng nhấn áp dụng vì bạn đã thay đổi ngày hoặc giờ!")
+        } else {
+            setOpenDialogCalendar(false)
+        }
     }
 
     // change date in calender default
     const handleDateChange = (newDate: any) => {
+        // Check if new date range is not null
+        console.log('newDate', newDate);
+
         // console.log('newDate', newDate);
-        if (pathname.startsWith('/detail-car/')) {
-            // Check if new date range is not null
-            if (newDate && newDate.from && newDate.to) {
-                // Check if the new from date is different from the current from date
-                if (!isSameDay(dateTemp?.from, newDate.from) && dateTemp?.from) {
-                    // If it's different, keep the time of the current from date and update the date
-                    newDate.from.setHours(dateTemp?.from.getHours(), dateTemp?.from.getMinutes(), dateTemp?.from.getSeconds());
-                }
-                // Check if the new to date is different from the current to date
-                if (!isSameDay(dateTemp?.to, newDate.to) && dateTemp?.to) {
-                    // If it's different, keep the time of the current to dateTemp and update the dateTemp
-                    newDate.to.setHours(dateTemp?.to.getHours(), dateTemp?.to.getMinutes(), dateTemp?.to.getSeconds());
-                }
-                // Update the state with the new date range
-                // setDateTemp(newDate);
-                setDateTimeComponent(newDate);
-            } else if (newDate && newDate.from) {
-                // setDateTemp(newDate);
-                setDateTimeComponent(newDate);
+        // if (pathname.startsWith('/detail-car/')) {
+        //     // Check if new date range is not null
+        //     if (newDate && newDate.from && newDate.to) {
+        //         // Check if the new from date is different from the current from date
+        //         if (!isSameDay(dateTemp?.from, newDate.from) && dateTemp?.from) {
+        //             // If it's different, keep the time of the current from date and update the date
+        //             newDate.from.setHours(dateTemp?.from.getHours(), dateTemp?.from.getMinutes(), dateTemp?.from.getSeconds());
+        //         }
+        //         // Check if the new to date is different from the current to date
+        //         if (!isSameDay(dateTemp?.to, newDate.to) && dateTemp?.to) {
+        //             // If it's different, keep the time of the current to dateTemp and update the dateTemp
+        //             newDate.to.setHours(dateTemp?.to.getHours(), dateTemp?.to.getMinutes(), dateTemp?.to.getSeconds());
+        //         }
+        //         // Update the state with the new date range
+        //         // setDateTemp(newDate);
+        //         setDateTimeComponent(newDate);
+        //     } else if (newDate && newDate.from) {
+        //         // setDateTemp(newDate);
+        //         setDateTimeComponent(newDate);
+        //     }
+
+        // } else {
+        //     // Check if new date range is not null
+        //     if (newDate && newDate.from && newDate.to) {
+        //         // Check if the new from date is different from the current from date
+        //         if (!isSameDay(dateReal?.from, newDate.from) && dateReal?.from) {
+        //             // If it's different, keep the time of the current from date and update the date
+        //             newDate.from.setHours(dateReal?.from.getHours(), dateReal?.from.getMinutes(), dateReal?.from.getSeconds());
+        //         }
+        //         // Check if the new to date is different from the current to date
+        //         if (!isSameDay(dateReal?.to, newDate.to) && dateReal?.to) {
+        //             // If it's different, keep the time of the current to dateReal and update the dateReal
+        //             newDate.to.setHours(dateReal?.to.getHours(), dateReal?.to.getMinutes(), dateReal?.to.getSeconds());
+        //         }
+        //         // Update the state with the new date range
+        //         // setDateReal(newDate);
+        //         setDateTimeComponent(newDate);
+        //     } else if (newDate && newDate.from) {
+        //         // setDateReal(newDate);
+        //         setDateTimeComponent(newDate);
+        //     }
+        // }
+
+
+        const isAfterInSameYearAndMonth = (date: any, compareDate: any) => {
+            return (
+                (isSameYear(date, compareDate) || (getYear(date) > getYear(compareDate))) &&
+                ((isSameMonth(date, compareDate) || (getMonth(date) > getMonth(compareDate))) &&
+                    isAfter(date, compareDate))
+            )
+        };
+
+        // trước ngày dateStart
+        const isBeforeInSameYearAndMonth = (date: any, compareDate: any) => {
+            return (
+                (isSameYear(date, compareDate) || (getYear(date) < getYear(compareDate))) &&
+                ((isSameMonth(date, compareDate) || (getMonth(date) < getMonth(compareDate))) &&
+                    isBefore(date, compareDate))
+            )
+        };
+
+        console.log('isBeforeInSameYearAndMonth(newDate.from, dateTimeComponent.from : ', isBeforeInSameYearAndMonth(newDate.from, dateTimeComponent.from));
+        console.log('date Time component : ', dateTimeComponent);
+
+        if (dateTimeComponent.from && dateTimeComponent.to) {
+            if (isBeforeInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
+                newDate.from.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+                console.log('check1');
+
+                setDateTimeComponent((prevState: any) => ({
+                    ...prevState,
+                    from: newDate.from
+                }))
+                setFlagSubmit(true)
+            } else {
+                newDate.to.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+                setDateTimeComponent({
+                    from: newDate.to,
+                    to: undefined
+                })
+                setFlagSubmit(true)
+                console.log('check111111111');
             }
 
-        } else {
-            // Check if new date range is not null
-            if (newDate && newDate.from && newDate.to) {
-                // Check if the new from date is different from the current from date
-                if (!isSameDay(dateReal?.from, newDate.from) && dateReal?.from) {
-                    // If it's different, keep the time of the current from date and update the date
-                    newDate.from.setHours(dateReal?.from.getHours(), dateReal?.from.getMinutes(), dateReal?.from.getSeconds());
-                }
-                // Check if the new to date is different from the current to date
-                if (!isSameDay(dateReal?.to, newDate.to) && dateReal?.to) {
-                    // If it's different, keep the time of the current to dateReal and update the dateReal
-                    newDate.to.setHours(dateReal?.to.getHours(), dateReal?.to.getMinutes(), dateReal?.to.getSeconds());
-                }
-                // Update the state with the new date range
-                // setDateReal(newDate);
-                setDateTimeComponent(newDate);
-            } else if (newDate && newDate.from) {
-                // setDateReal(newDate);
-                setDateTimeComponent(newDate);
+        } else if (dateTimeComponent.from && !dateTimeComponent.to) {
+            if (isBeforeInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
+                newDate.from.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+                console.log('checkkk 2');
+
+                setDateTimeComponent((prevState: any) => ({
+                    ...prevState,
+                    from: newDate.from
+                }))
+                setFlagSubmit(true)
+            } else if (isAfterInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
+                newDate.from.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+
+                console.log('checkkk 3');
+                setDateTimeComponent((prevState: any) => ({
+                    ...prevState,
+                    to: newDate.to
+                }))
+                setFlagSubmit(true)
+            } else {
+                newDate.to.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+
+                console.log('checkkk 4');
+                setDateTimeComponent((prevState: any) => ({
+                    ...prevState,
+                    to: newDate.to
+                }))
+                setFlagSubmit(true)
             }
         }
     }
+
 
     // change time in calender default
     const handleTimeChange = (value: string, type: string) => {
@@ -402,7 +487,7 @@ export function DialogCalendar({ }: Props) {
                     from: new Date(dateTimeComponent?.from.setHours(+value?.split(":")[0], +value.split(":")[1])),
                 };
 
-                // setDateTemp(updatedDate);
+                setFlagSubmit(true)
                 setDateTimeComponent(updatedDate);
             } else if (dateTimeComponent.to && type === 'to') {
                 const updatedDate = {
@@ -410,7 +495,7 @@ export function DialogCalendar({ }: Props) {
                     to: new Date(dateTimeComponent?.to.setHours(+value?.split(":")[0], +value.split(":")[1])),
                 };
 
-                // setDateTemp(updatedDate);
+                setFlagSubmit(true)
                 setDateTimeComponent(updatedDate);
             }
 
@@ -424,20 +509,19 @@ export function DialogCalendar({ }: Props) {
             if (dateStart && type === 'from') {
                 const updatedDateStart: any = new Date(dateStart.setHours(+value?.split(":")[0], +value.split(":")[1]))
                 // setDateTemp(updatedDate);
+                setFlagSubmit(true)
                 setDateStart(updatedDateStart);
             } else if (dateEnd && type === 'to') {
                 const updatedDateEnd = new Date(dateEnd.setHours(+value?.split(":")[0], +value.split(":")[1]))
+                setFlagSubmit(true)
                 setDateEnd(updatedDateEnd);
             }
         }
     };
 
-
     const handleSubmitDateTime = () => {
         // Nếu tất cả điều kiện đều đúng, tiến hành setDate và setNumberDay
         try {
-
-
             if (pathname.startsWith('/detail-car/')) {
                 queryKeyIsStateDetailCar({
                     ...isStateDetailCar,
@@ -445,10 +529,9 @@ export function DialogCalendar({ }: Props) {
                         onSuccessPage: true
                     }
                 })
-                setDateTemp({
-                    from: dateStart,
-                    to: dateEnd,
-                });
+
+                console.log('check ?? : ',);
+
 
                 if (
                     isStateDetailCar?.dataDetailCar?.price?.number_day &&
@@ -461,21 +544,24 @@ export function DialogCalendar({ }: Props) {
                             ...isStateDetailCar?.infoPromotion,
                             activePromotion: null
                         },
-                        onSuccess: {
-                            onSuccessPage: false
-                        }
                     })
                 }
-            } else {
-                console.log('check');
 
+                setDateTemp({
+                    from: dateStart,
+                    to: dateEnd,
+                });
+                setFlagSubmit(false)
+            } else {
                 queryKeyIsStateListCarAutonomous({
                     ...isStateListCarAutonomous,
                     onSuccess: {
                         onSuccessPage: true
                     }
                 })
+
                 setDateReal(dateTimeComponent);
+                setFlagSubmit(false)
             }
 
             setNumberDay(numberDayComponent);
@@ -491,8 +577,6 @@ export function DialogCalendar({ }: Props) {
         setDateEnd(dateReal?.to)
         setNumberDay(numberDayComponent)
         setDateTimeComponent(dateReal)
-        console.log('chskchskcjskjc');
-
     }, [slug])
 
     useEffect(() => {
@@ -529,7 +613,7 @@ export function DialogCalendar({ }: Props) {
 
             if (dateStart && dateEnd) {
                 //    validate ngày
-                const isValid = validateDates(dataCalendar, dateStart, dateEnd);
+                const isValid = validateDates(dataCalendar, dateStart, dateEnd)
 
                 setValidateDateSubmit(isValid);
 
@@ -542,7 +626,6 @@ export function DialogCalendar({ }: Props) {
                 let minTimeInDay = hoursDifference >= +generalKey.hour_min_car
 
                 console.log('timeDate', timeDate);
-
 
                 if (daysDifference > 0 && isDateEndAfter) {
 
@@ -597,7 +680,15 @@ export function DialogCalendar({ }: Props) {
                 setNumberDayComponent(1)
             }
         }
-    }, [dateStart, dateEnd, slug, dataCalendar, dateTimeComponent?.from, dateTimeComponent?.to, numberDayComponent])
+    }, [
+        dateStart,
+        dateEnd,
+        slug,
+        dataCalendar,
+        dateTimeComponent?.from,
+        dateTimeComponent?.to,
+        numberDayComponent
+    ])
 
     useEffect(() => {
         if (pathname.startsWith('/detail-car/')) {
@@ -609,265 +700,261 @@ export function DialogCalendar({ }: Props) {
         }
     }, [openDialogCalendar, pathname])
 
-    console.log('dateTemp : ', dateTemp);
-    console.log('dateStart : ', dateStart);
-    console.log('dateEnd : ', dateEnd);
-    console.log('dateTimeComponent : ', dateTimeComponent);
-    console.log('numberDayComponent : ', numberDayComponent);
-
     return (
-        <Dialog modal open={openDialogCalendar} onOpenChange={handleOpenChangeModal}>
-            <DialogOverlay />
-            <DialogContent className={`${pathname.startsWith('/detail-car/') ? "h-[95vh]" : ""} p-0 lg:max-w-[800px] md:max-w-[480px] w-fit max-h-[95vh] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
-                <DialogClose
-                    onClick={handleOpenChangeModal}
-                    className="size-8 border border-[#000000] flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-40"
-                >
-                    <X className="size-6 text-[#000000]" />
-                    <span className="sr-only">Close</span>
-                </DialogClose>
+        <Dialog modal open={openDialogCalendar} onOpenChange={() => handleCloseModal('close1')}>
+            <DialogPortal >
+                <DialogOverlay className='z-40' />
+                <DialogContent className={`${pathname.startsWith('/detail-car/') ? "h-[95vh]" : ""} p-0 lg:max-w-[800px] md:max-w-[480px] w-fit max-h-[95vh] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
+                    <DialogClose
+                        onClick={() => handleCloseModal('close2')}
+                        className="size-8 border border-[#000000] flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-40"
+                    >
+                        <X className="size-6 text-[#000000]" />
+                        <span className="sr-only">Close</span>
+                    </DialogClose>
 
-                <DialogHeader className='flex items-center justify-center w-full border-b py-4'>
-                    <DialogTitle className='text-2xl capitalize'>
-                        Thời gian
-                    </DialogTitle>
-                </DialogHeader>
+                    <DialogHeader className='flex items-center justify-center w-full border-b py-4'>
+                        <DialogTitle className='text-2xl capitalize'>
+                            Thời gian
+                        </DialogTitle>
+                    </DialogHeader>
 
-                <div className='flex flex-col gap-2 overflow-auto'>
-                    {
-                        pathname.startsWith('/detail-car/') ?
-                            <div className='px-2 border m-2 rounded-lg drop-shadow-md max-w-[760px]'>
-                                <CalendarCustom />
-                            </div>
-                            :
-                            <div className='px-2 border m-2 rounded-lg drop-shadow-md'>
-                                <Calendar
-                                    initialFocus
-                                    mode="range"
-                                    defaultMonth={dateTimeComponent?.from}
-                                    selected={dateTimeComponent}
-                                    onSelect={(newDate: any) => handleDateChange(newDate)}
-                                    numberOfMonths={2}
-                                    fromMonth={dateTimeComponent?.from}
-                                    toMonth={endMonth}
-                                    disabled={disabledDays}
-                                />
-                            </div>
-                    }
-                    {
-                        pathname.startsWith('/detail-car/') ?
-                            <div className='flex flex-row items-center gap-2 px-2 w-full'>
-                                <div className='flex flex-col gap-1 w-[50%]'>
-                                    <Label>Giờ nhận xe</Label>
-                                    <Select
-                                        value={(dateStart ? format(dateStart, 'HH:mm') : '')}
-                                        onValueChange={(value) => handleTimeChangeCustom(value, 'from')}
-                                        defaultValue={`${(dateStart ? format(dateStart, 'HH:mm') : '00:00')}`}
-                                    >
-                                        <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
-                                            <SelectValue placeholder="Chọn giờ nhận xe" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {
-                                                    dataTime.dataTimeLeft && dataTime.dataTimeLeft.map((item: any) => (
-                                                        <SelectItem
-                                                            key={item.id}
-                                                            value={item.value}
-                                                            className='flex flex-row items-center'
-                                                        >
-                                                            <div>
-                                                                {item.time ? item.time : ''}
-                                                            </div>
-                                                        </SelectItem>
-                                                    ))
-                                                }
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className='flex items-end pb-2 h-full'>
-                                    <BsFillArrowRightCircleFill className='size-6 text-[#1EAAB1]' />
-                                </div>
-                                <div className='flex flex-col gap-1 w-[50%]'>
-                                    <Label>Giờ trả xe</Label>
-                                    <Select
-                                        value={(dateEnd ? format(dateEnd, 'HH:mm') : '')}
-                                        onValueChange={(value) => handleTimeChangeCustom(value, 'to')}
-                                        defaultValue={`${(dateEnd ? format(dateEnd, 'HH:mm') : '00:00')}`}
-                                    >
-                                        <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
-                                            <SelectValue placeholder="Chọn giờ trả xe" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {
-                                                    dataTime.dataTimeRight && dataTime.dataTimeRight.map((item: any) => (
-                                                        <SelectItem
-                                                            key={item.id}
-                                                            value={item.value}
-                                                        >
-                                                            {item.time ? item.time : ''}
-                                                        </SelectItem>
-                                                    ))
-                                                }
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-                            :
-                            <div className='flex flex-row items-center gap-2 px-2 w-full'>
-                                <div className='flex flex-col gap-1 w-[50%]'>
-                                    <Label>Giờ nhận xe</Label>
-                                    <Select
-                                        value={(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '')}
-                                        onValueChange={(value) => handleTimeChange(value, 'from')}
-                                        defaultValue={`${(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '00:00')}`}
-                                    >
-                                        <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
-                                            <SelectValue placeholder="Chọn giờ nhận xe" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {
-                                                    dataTime.dataTimeLeft && dataTime.dataTimeLeft.map((item: any) => (
-                                                        <SelectItem
-                                                            key={item.id}
-                                                            value={item.value}
-                                                            className='flex flex-row items-center'
-                                                        >
-                                                            <div>
-                                                                {item.time ? item.time : ''}
-                                                            </div>
-                                                        </SelectItem>
-                                                    ))
-                                                }
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className='flex items-end pb-2 h-full'>
-                                    <BsFillArrowRightCircleFill className='size-6 text-[#1EAAB1]' />
-                                </div>
-                                <div className='flex flex-col gap-1 w-[50%]'>
-                                    <Label>Giờ trả xe</Label>
-                                    <Select
-                                        value={(dateTimeComponent?.to ? format(dateTimeComponent?.to, 'HH:mm') : '')}
-                                        onValueChange={(value) => handleTimeChange(value, 'to')}
-                                        defaultValue={`${(dateTimeComponent?.to ? format(dateTimeComponent?.to, 'HH:mm') : '00:00')}`}
-                                    >
-                                        <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
-                                            <SelectValue placeholder="Chọn giờ trả xe" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {
-                                                    dataTime.dataTimeRight && dataTime.dataTimeRight.map((item: any) => (
-                                                        <SelectItem
-                                                            key={item.id}
-                                                            value={item.value}
-                                                        >
-                                                            {item.time ? item.time : ''}
-                                                        </SelectItem>
-                                                    ))
-                                                }
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-                    }
-
-                    {
-                        pathname.startsWith('/detail-car/') && isStateDetailCar?.dataDetailCar?.hour_receive_car && isStateDetailCar?.dataDetailCar?.hour_receive_car.length > 0 &&
-                            isStateDetailCar?.dataDetailCar?.hour_back_car && isStateDetailCar?.dataDetailCar?.hour_back_car.length > 0 ?
-                            <div className='px-2 mt-4'>
-                                <div className='bg-[#EDEDED]/40 flex flex-col p-3 rounded-lg'>
-                                    <div className='flex items-center justify-between w-full'>
-                                        <div className='3xl:text-base text-sm text-[#000000] font-light'>
-                                            Thời gian nhận xe
-                                        </div>
-                                        <div className='3xl:text-base text-sm text-[#000000] font-medium'>
-                                            {isStateDetailCar?.dataDetailCar?.hour_receive_car[0]?.hour_start} - {isStateDetailCar?.dataDetailCar?.hour_receive_car[0]?.hour_end}
-                                        </div>
-                                    </div>
-                                    <div className='flex items-center justify-between w-full'>
-                                        <div className='3xl:text-base text-sm text-[#000000] font-light'>
-                                            Thời gian trả xe
-                                        </div>
-                                        <div className='3xl:text-base text-sm text-[#000000] font-medium'>
-                                            {isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_start} - {isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_end}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            :
-                            null
-                    }
-
-                    {
-                        pathname.startsWith('/detail-car/') && validateDateSubmit ?
-                            // validateDateSubmit || statusDate == 2 || statusDate == 3 ?
-                            <div className='px-2 mt-4'>
-                                <div className='3xl:text-base text-sm font-normal text-[#FF0000]'>
-                                    * Xe bận trong khoảng thời gian trên. Vui lòng đặt xe khác hoặc thay đổi lịch trình thích hợp.
-                                </div>
-                            </div>
-                            :
-                            null
-                    }
-                    {
-                        pathname.startsWith('/detail-car/') && !dateEnd ?
-                            <div className='px-2 mt-4'>
-                                <div className='3xl:text-base text-sm font-normal text-[#2FB9BD]'>
-                                    * Vui lòng chọn ngày kết thúc
-                                </div>
-                            </div>
-                            :
-                            null
-                    }
-                    {
-                        pathname.startsWith('/detail-car/') && hoursBetWeenDays && (hoursBetWeenDays < +generalKey.hour_min_car) ?
-                            <div className='px-2 mt-4'>
-                                <div className='3xl:text-base text-sm font-normal text-[#2FB9BD]'>
-                                    * Vui lòng chọn thời gian trả xe lớn hơn thời gian nhận xe {+generalKey.hour_min_car} giờ
-                                </div>
-                            </div>
-                            :
-                            null
-                    }
-                </div>
-
-                <div className='flex items-center justify-between border-t drop-shadow-md py-6 px-4 bg-white rounded-b-lg'>
-                    <div className='flex flex-col'>
+                    <div className='flex flex-col gap-2 overflow-auto'>
                         {
                             pathname.startsWith('/detail-car/') ?
-                                <div className='text-base font-semibold'>
-                                    {dateStart ? format(dateStart, 'HH:mm, dd/MM') : ""}{dateEnd ? ` - ${format(dateEnd, 'HH:mm, dd/MM')}` : ''}
+                                <div className='px-2 border m-2 rounded-lg drop-shadow-md max-w-[760px]'>
+                                    <CalendarCustom />
                                 </div>
                                 :
-                                <div className='text-base font-semibold'>
-                                    {dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm, dd/MM') : ""}{dateTimeComponent?.to ? ` - ${format(dateTimeComponent?.to, 'HH:mm, dd/MM')}` : ''}
+                                <div className='px-2 border m-2 rounded-lg drop-shadow-md'>
+                                    <Calendar
+                                        initialFocus
+                                        mode="range"
+                                        defaultMonth={dateTimeComponent?.from}
+                                        selected={dateTimeComponent}
+                                        onSelect={(newDate: any) => handleDateChange(newDate)}
+                                        numberOfMonths={2}
+                                        fromMonth={toDate}
+                                        toMonth={endMonth}
+                                        disabled={disabledDays}
+                                    />
+                                </div>
+                        }
+                        {
+                            pathname.startsWith('/detail-car/') ?
+                                <div className='flex flex-row items-center gap-2 px-2 w-full'>
+                                    <div className='flex flex-col gap-1 w-[50%]'>
+                                        <Label>Giờ nhận xe</Label>
+                                        <Select
+                                            value={(dateStart ? format(dateStart, 'HH:mm') : '')}
+                                            onValueChange={(value) => handleTimeChangeCustom(value, 'from')}
+                                            defaultValue={`${(dateStart ? format(dateStart, 'HH:mm') : '00:00')}`}
+                                        >
+                                            <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
+                                                <SelectValue placeholder="Chọn giờ nhận xe" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    {
+                                                        dataTime.dataTimeLeft && dataTime.dataTimeLeft.map((item: any) => (
+                                                            <SelectItem
+                                                                key={item.id}
+                                                                value={item.value}
+                                                                className='flex flex-row items-center'
+                                                            >
+                                                                <div>
+                                                                    {item.time ? item.time : ''}
+                                                                </div>
+                                                            </SelectItem>
+                                                        ))
+                                                    }
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className='flex items-end pb-2 h-full'>
+                                        <BsFillArrowRightCircleFill className='size-6 text-[#1EAAB1]' />
+                                    </div>
+                                    <div className='flex flex-col gap-1 w-[50%]'>
+                                        <Label>Giờ trả xe</Label>
+                                        <Select
+                                            value={(dateEnd ? format(dateEnd, 'HH:mm') : '')}
+                                            onValueChange={(value) => handleTimeChangeCustom(value, 'to')}
+                                            defaultValue={`${(dateEnd ? format(dateEnd, 'HH:mm') : '00:00')}`}
+                                        >
+                                            <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
+                                                <SelectValue placeholder="Chọn giờ trả xe" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    {
+                                                        dataTime.dataTimeRight && dataTime.dataTimeRight.map((item: any) => (
+                                                            <SelectItem
+                                                                key={item.id}
+                                                                value={item.value}
+                                                            >
+                                                                {item.time ? item.time : ''}
+                                                            </SelectItem>
+                                                        ))
+                                                    }
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                                :
+                                <div className='flex flex-row items-center gap-2 px-2 w-full'>
+                                    <div className='flex flex-col gap-1 w-[50%]'>
+                                        <Label>Giờ nhận xe</Label>
+                                        <Select
+                                            value={(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '')}
+                                            onValueChange={(value) => handleTimeChange(value, 'from')}
+                                            defaultValue={`${(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '00:00')}`}
+                                        >
+                                            <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
+                                                <SelectValue placeholder="Chọn giờ nhận xe" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    {
+                                                        dataTime.dataTimeLeft && dataTime.dataTimeLeft.map((item: any) => (
+                                                            <SelectItem
+                                                                key={item.id}
+                                                                value={item.value}
+                                                                className='flex flex-row items-center'
+                                                            >
+                                                                <div>
+                                                                    {item.time ? item.time : ''}
+                                                                </div>
+                                                            </SelectItem>
+                                                        ))
+                                                    }
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className='flex items-end pb-2 h-full'>
+                                        <BsFillArrowRightCircleFill className='size-6 text-[#1EAAB1]' />
+                                    </div>
+                                    <div className='flex flex-col gap-1 w-[50%]'>
+                                        <Label>Giờ trả xe</Label>
+                                        <Select
+                                            value={(dateTimeComponent?.to ? format(dateTimeComponent?.to, 'HH:mm') : '')}
+                                            onValueChange={(value) => handleTimeChange(value, 'to')}
+                                            defaultValue={`${(dateTimeComponent?.to ? format(dateTimeComponent?.to, 'HH:mm') : '00:00')}`}
+                                        >
+                                            <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
+                                                <SelectValue placeholder="Chọn giờ trả xe" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    {
+                                                        dataTime.dataTimeRight && dataTime.dataTimeRight.map((item: any) => (
+                                                            <SelectItem
+                                                                key={item.id}
+                                                                value={item.value}
+                                                            >
+                                                                {item.time ? item.time : ''}
+                                                            </SelectItem>
+                                                        ))
+                                                    }
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
                                 </div>
                         }
 
-                        <div>
-                            Số ngày thuê: {numberDayComponent} ngày
-                        </div>
+                        {
+                            pathname.startsWith('/detail-car/') && isStateDetailCar?.dataDetailCar?.hour_receive_car && isStateDetailCar?.dataDetailCar?.hour_receive_car.length > 0 &&
+                                isStateDetailCar?.dataDetailCar?.hour_back_car && isStateDetailCar?.dataDetailCar?.hour_back_car.length > 0 ?
+                                <div className='px-2 mt-4'>
+                                    <div className='bg-[#EDEDED]/40 flex flex-col p-3 rounded-lg'>
+                                        <div className='flex items-center justify-between w-full'>
+                                            <div className='3xl:text-base text-sm text-[#000000] font-light'>
+                                                Thời gian nhận xe
+                                            </div>
+                                            <div className='3xl:text-base text-sm text-[#000000] font-medium'>
+                                                {isStateDetailCar?.dataDetailCar?.hour_receive_car[0]?.hour_start} - {isStateDetailCar?.dataDetailCar?.hour_receive_car[0]?.hour_end}
+                                            </div>
+                                        </div>
+                                        <div className='flex items-center justify-between w-full'>
+                                            <div className='3xl:text-base text-sm text-[#000000] font-light'>
+                                                Thời gian trả xe
+                                            </div>
+                                            <div className='3xl:text-base text-sm text-[#000000] font-medium'>
+                                                {isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_start} - {isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_end}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                :
+                                null
+                        }
+
+                        {
+                            pathname.startsWith('/detail-car/') && validateDateSubmit ?
+                                // validateDateSubmit || statusDate == 2 || statusDate == 3 ?
+                                <div className='px-2 mt-4'>
+                                    <div className='3xl:text-base text-sm font-normal text-[#FF0000]'>
+                                        * Xe bận trong khoảng thời gian trên. Vui lòng đặt xe khác hoặc thay đổi lịch trình thích hợp.
+                                    </div>
+                                </div>
+                                :
+                                null
+                        }
+                        {
+                            pathname.startsWith('/detail-car/') && !dateEnd ?
+                                <div className='px-2 mt-4'>
+                                    <div className='3xl:text-base text-sm font-normal text-[#2FB9BD]'>
+                                        * Vui lòng chọn ngày kết thúc
+                                    </div>
+                                </div>
+                                :
+                                null
+                        }
+                        {
+                            pathname.startsWith('/detail-car/') && hoursBetWeenDays && (hoursBetWeenDays < +generalKey.hour_min_car) ?
+                                <div className='px-2 mt-4'>
+                                    <div className='3xl:text-base text-sm font-normal text-[#2FB9BD]'>
+                                        * Vui lòng chọn thời gian trả xe lớn hơn thời gian nhận xe {+generalKey.hour_min_car} giờ
+                                    </div>
+                                </div>
+                                :
+                                null
+                        }
                     </div>
 
-                    <div>
-                        <Button
-                            disabled={pathname.startsWith('/detail-car/') && dataCalendar.length === 0 || pathname.startsWith('/detail-car/') && validateDateSubmit || pathname.startsWith('/detail-car/') && !dateEnd ? true : false}
-                            onClick={() => handleSubmitDateTime()}
-                            className='xl:px-6 xl:py-3 px-4 py-2 xl:text-base text-sm rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80'
-                        >
-                            Áp dụng
-                        </Button>
+                    <div className='flex items-center justify-between border-t drop-shadow-md py-6 px-4 bg-white rounded-b-lg'>
+                        <div className='flex flex-col'>
+                            {
+                                pathname.startsWith('/detail-car/') ?
+                                    <div className='text-base font-semibold'>
+                                        {dateStart ? format(dateStart, 'HH:mm, dd/MM') : ""}{dateEnd ? ` - ${format(dateEnd, 'HH:mm, dd/MM')}` : ''}
+                                    </div>
+                                    :
+                                    <div className='text-base font-semibold'>
+                                        {dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm, dd/MM') : ""}{dateTimeComponent?.to ? ` - ${format(dateTimeComponent?.to, 'HH:mm, dd/MM')}` : ''}
+                                    </div>
+                            }
+
+                            <div>
+                                Số ngày thuê: {numberDayComponent} ngày
+                            </div>
+                        </div>
+
+                        <div>
+                            <Button
+                                disabled={pathname.startsWith('/detail-car/') && dataCalendar.length === 0 || pathname.startsWith('/detail-car/') && validateDateSubmit || pathname.startsWith('/detail-car/') && !dateEnd ? true : false}
+                                onClick={() => handleSubmitDateTime()}
+                                className='xl:px-6 xl:py-3 px-4 py-2 xl:text-base text-sm rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 caret-transparent'
+                            >
+                                Áp dụng
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            </DialogContent >
+                </DialogContent >
+            </DialogPortal>
         </Dialog >
     )
 }

@@ -46,12 +46,14 @@ interface IOpenDialogCalendar {
     statusDate: number;
     validateDateSubmit: boolean;
     dataCalendar: any[];
+    flagSubmit: boolean;
     setDateReal: (dateReal: DateRange | undefined) => void;
     setDateTemp: (dateTemp: DateRange | undefined) => void;
     setDateStart: (dateStart: Date | undefined) => void;
     setDateEnd: (dateEnd: Date | undefined) => void;
     setOpenDialogCalendar: (key: any, type?: string) => void
     setNumberDay: (numberDay: number) => void;
+    setFlagSubmit: (flagSubmit: boolean) => void;
     setStatusDate: (statusDate: number) => void;
     setValidateDateSubmit: (validateDateSubmit: boolean) => void;
     setDataCalendar: (dataCalenndar: any[]) => void;
@@ -68,9 +70,8 @@ export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     dateTemp: undefined,
     dateStart: undefined,
     dateEnd: undefined,
-    // dateStart: setMinutes(setHours(new Date(), 21), 0),
-    // dateEnd: setMinutes(setHours(addDays(new Date(), 1), 20), 0),
     numberDay: 1,
+    flagSubmit: false,
     statusDate: 0,
     type: "",
     validateDateSubmit: false,
@@ -80,6 +81,7 @@ export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     setDateTemp: (dateTemp: DateRange | undefined) => set((state) => ({ ...state, dateTemp })),
     setDateStart: (dateStart: Date | undefined) => set((state) => ({ ...state, dateStart: dateStart })),
     setDateEnd: (dateEnd: Date | undefined) => set((state) => ({ ...state, dateEnd: dateEnd })),
+    setFlagSubmit: (flagSubmit: boolean) => set((state) => ({ ...state, flagSubmit: flagSubmit })),
     setNumberDay: (numberDay: number) => set((state) => ({ ...state, numberDay: numberDay })),
     setStatusDate: (statusDate: number) => set((state) => ({ ...state, statusDate: statusDate })),
     setValidateDateSubmit: (validateDateSubmit: boolean) => set((state) => ({ ...state, validateDateSubmit: validateDateSubmit })),

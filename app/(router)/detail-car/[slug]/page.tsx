@@ -272,7 +272,7 @@ const DetailCar = ({ params }: Props) => {
                     })
                     setNumberDay(timeDate)
                 } else {
-                
+
                     // setDateStart(startDate)
                     // setDateEnd(endDate)
                     // setDateTemp({
@@ -292,7 +292,7 @@ const DetailCar = ({ params }: Props) => {
                     dataDetailCar: customDataDetailCar
                 })
                 setIsLoadingSkeletonDetailCar(false);
-            }else{
+            } else {
 
                 setIsLoadingSkeletonDetailCar(false);
             }
@@ -330,14 +330,21 @@ const DetailCar = ({ params }: Props) => {
         }
 
     }
-    
+
     useEffect(() => {
         if (isStateDetailCar?.onSuccess?.onSuccessPage) {
             fetchDataDetailCarSecond()
-            console.log('checksdjaskdjkasjdkjka');
-            
+            queryKeyIsStateDetailCar({
+                ...isStateDetailCar,
+                onSuccess: {
+                    onSuccessPage: false
+                }
+            })
         }
     }, [isStateDetailCar?.onSuccess?.onSuccessPage])
+
+    console.log('isStateDetailCar', isStateDetailCar);
+
 
     useEffect(() => {
         const fetchListPromotions = async () => {
@@ -435,6 +442,7 @@ const DetailCar = ({ params }: Props) => {
             }
         })
     }, [numberDay, queryKeyIsStateDetailCar])
+
 
 
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {
