@@ -41,7 +41,9 @@ function CalendarCustom({
         statusDate,
         setStatusDate,
         validateDateSubmit,
-        setValidateDateSubmit
+        setValidateDateSubmit,
+        flagSubmit,
+        setFlagSubmit,
     } = useDialogCalendar()
 
     // const data = [
@@ -1480,23 +1482,23 @@ function CalendarCustom({
         autumn: '🍂'
     };
 
-    const getSeason = (month: Date): string => {
-        const monthNumber = month.getMonth();
-        if (monthNumber >= 0 && monthNumber < 3) return 'winter';
-        if (monthNumber >= 3 && monthNumber < 6) return 'spring';
-        if (monthNumber >= 6 && monthNumber < 9) return 'summer';
+    const getSeason = (month: any): string => {
+        const formatMonthToNumber = +month
+
+        if (formatMonthToNumber >= 0 && formatMonthToNumber < 3) return 'winter';
+        if (formatMonthToNumber >= 3 && formatMonthToNumber < 6) return 'spring';
+        if (formatMonthToNumber >= 6 && formatMonthToNumber < 9) return 'summer';
         else return 'autumn';
     };
 
-    const formatCaption: DateFormatter = (month, options) => {
+    const formatCaption = (month: any) => {
         const season = getSeason(month);
 
         return (
             <>
-                <span role="img" aria-label={season}>
+                <span role="img" aria-label={month}>
                     {seasonEmoji[season]}
                 </span>{' '}
-                {format(month, 'LLLL, yyyy', { locale: options?.locale })}
             </>
         );
     };
@@ -1553,6 +1555,7 @@ function CalendarCustom({
         // Tạo giao diện cho từng tháng dựa trên dữ liệu
         const monthComponents = customDataDate.map((monthItem, index) => {
             const month: any = monthItem.month; // Tháng
+            const formattedMonth = parseInt(month, 10).toString() // tháng format bỏ số 0
             const daysInMonth = monthItem.price_detail.length; // Số ngày trong tháng
 
             // Tạo các component cho từng ngày trong tháng
@@ -1617,7 +1620,7 @@ function CalendarCustom({
             return (
                 <SwiperSlide key={index} className="flex flex-col gap-2 p-0 max-w-[400px]">
                     <div className="w-full text-center text-base font-bold mt-4 mb-2 text-[#166A71]">
-                        Tháng {month}, {currentYear}
+                        {formatCaption(formattedMonth)} Tháng {formattedMonth}, {currentYear}
                     </div>
                     <div className="Month-grid grid grid-cols-7 text-center text-sm font-semibold">
                         {/* Render các ngày trong tuần */}
@@ -1711,16 +1714,7 @@ function CalendarCustom({
             event.stopPropagation()
 
             const date = new Date(Number(item?.year), Number(item?.month) - 1, item?.day);
-            // kiểm tra nếu cùng ngày hoặc ngày sau ngày dateStart
-            // cùng tháng và sau ngày dateStart
-            // lớn hơn tháng và sau ngày dateStart
-            const isSameInSameYearAndMonth = (date: any, compareDate: any) => {
-                return (
-                    isSameYear(date, compareDate) &&
-                    isSameMonth(date, compareDate) &&
-                    isSameDay(date, compareDate)
-                )
-            };
+            // sau ngày dateStart
             const isAfterInSameYearAndMonth = (date: any, compareDate: any) => {
                 return (
                     (isSameYear(date, compareDate) || (getYear(date) > getYear(compareDate))) &&
@@ -1728,6 +1722,8 @@ function CalendarCustom({
                         isAfter(date, compareDate))
                 )
             };
+
+            // trước ngày dateStart
             const isBeforeInSameYearAndMonth = (date: any, compareDate: any) => {
                 return (
                     (isSameYear(date, compareDate) || (getYear(date) < getYear(compareDate))) &&
@@ -1740,13 +1736,18 @@ function CalendarCustom({
                 date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
                 setDateStart(date)
                 setDateEnd(undefined)
+                setFlagSubmit(true)
+
             } else if (dateStart && !dateEnd) {
                 date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
                 if (isBeforeInSameYearAndMonth(date, dateStart)) {
                     setDateStart(date)
+                    setFlagSubmit(true)
                 } else if (isAfterInSameYearAndMonth(date, dateStart)) {
+                    setFlagSubmit(true)
                     setDateEnd(date)
                 } else {
+                    setFlagSubmit(true)
                     setDateEnd(date)
                 }
             }
@@ -1755,7 +1756,7 @@ function CalendarCustom({
         const datesInBetween = dateStart && dateEnd ? datesBetweenDates(dateStart, dateEnd) : [];
 
         const firstDate = new Date(Number(dayDataApi?.year), Number(dayDataApi?.month) - 1, dayDataApi.day)
-        const dayData = dataCalendar.flatMap(item => item.price_detail).find(d => d.date == date.toISOString().split('T')[0]);
+        const dayData = dataCalendar.flatMap((item: any) => item.price_detail).find(d => d.date == date.toISOString().split('T')[0]);
 
         const secondDate = new Date();
         const firstYear = firstDate.getFullYear();
@@ -1815,17 +1816,15 @@ function CalendarCustom({
             return (
                 <div
                     onClick={isEarlier ? () => { } : (event: React.MouseEvent<HTMLDivElement>) => handleChangeDate(event, dayDataApi)}
-                    className={`
-                    ${isPicked && (dayDataApi.status !== 2 && dayDataApi.status !== 3) ? "bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 text-white hover:text-white cursor-pointer" : ""} 
+                    className={`${isPicked && (dayDataApi.status !== 2 && dayDataApi.status !== 3) ? "bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 text-white hover:text-white cursor-pointer" : ""} 
                     ${isPicked && (dayDataApi.status === 2 || dayDataApi.status === 3) ? " !text-[#D3D3D3] border-2 border-[#2FB9BD] hover:!text-[#D3D3D3] bg-[#F6F6F7] hover:bg-[#F6F6F7]/80 cursor-pointer" : ""}
                     ${isInRange && (dayDataApi.status !== 2 && dayDataApi.status !== 3) ? " bg-[#C2F9F9] text-[#2FB9BD] hover:bg-[#2FB9BD] hover:text-white cursor-pointer" : ""}
                     ${isInRange && (dayDataApi.status === 2 || dayDataApi.status === 3) ? " text-[#D3D3D3] hover:!text-[#D3D3D3] border-2 border-[#C2F9F9] bg-[#F6F6F7] hover:!bg-[#F6F6F7]/80 cursor-pointer" : ""}
-                    ${!isInRange && (dayDataApi.status === 2 || dayDataApi.status === 3) ? " text-[#D3D3D3] hover:text-[#D3D3D3] bg-[#F6F6F7] cursor-pointer" : ""}
-                    ${isEarlier && !isInRange && (dayDataApi?.status !== 2 && dayDataApi?.status !== 3) ? "!cursor-default text-[#000000]/40 font-normal text-sm" : ""}
+                    ${isEarlier && !isInRange && (dayDataApi.status === 2 || dayDataApi.status === 3) ? "cursor-default text-[#000000]/40 font-normal text-sm" : ""}
+                    ${isEarlier && !isInRange && (dayDataApi?.status !== 2 && dayDataApi?.status !== 3) ? "cursor-default text-[#000000]/40 font-normal text-sm" : ""}
                     ${!isEarlier && !isInRange && (dayDataApi?.status !== 2 && dayDataApi?.status !== 3) ? "hover:bg-[#2FB9BD]/80 hover:text-white cursor-pointer" : ""}
                     ${!isEarlier && !isInRange && (dayDataApi?.status === 2 || dayDataApi?.status === 3) ? "text-[#D3D3D3] bg-[#F6F6F7] hover:!text-[#D3D3D3] hover:!bg-[#F6F6F7] cursor-pointer" : ""}
-                    rounded-[2px] flex flex-col justify-center items-center w-full h-12 p-2 group`
-                    }
+                    rounded-[2px] flex flex-col justify-center items-center w-full h-12 p-2 group`}
                 >
                     <div className='3xl:text-[15px] text-sm font-medium'>
                         {dayData.day}
