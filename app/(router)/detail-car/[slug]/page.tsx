@@ -20,9 +20,6 @@ import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { FormatNumberHundred, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
-import { DialogReviewImage } from '@/components/modals/DialogReviewImage'
-import { DialogPromotion } from '@/components/modals/DialogPromotion'
-import { DialogCalendar } from '@/components/modals/DialogCalendar'
 
 import PaymentCar from './components/PaymentCar'
 import InformationCar from './components/InformationCar';
@@ -54,9 +51,15 @@ const DetailCar = ({ params }: Props) => {
     const router = useRouter()
     const { getCookie } = useCookie()
     const { setOpenDialogLogin } = useDialogLogin()
-    const { dataListReportCar } = useDialogReportCar()
+    const { dataListReportCar, openDialogReportCar } = useDialogReportCar()
     const { isVisibleMobile, isVisibleTablet } = useResize()
-    const { dataPromotions, setDataPromotions } = useDialogPromotion()
+    const {
+        dataPromotions,
+        openDialogPromotion,
+        isLoadingDataPromotions,
+        setDataPromotions,
+        setIsLoadingDataPromotion,
+    } = useDialogPromotion()
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
 
     const {
@@ -68,12 +71,9 @@ const DetailCar = ({ params }: Props) => {
 
     const { queryKeyIsStatePolicy } = useDataPolicy()
     const {
-        openDialogCalendar,
         dateReal,
         dateTemp,
         numberDay,
-        dateStart,
-        dateEnd,
         setDateTemp,
         setDateStart,
         setDateEnd,
@@ -90,84 +90,6 @@ const DetailCar = ({ params }: Props) => {
         const [hours, minutes] = timeString?.split(':').map(Number);
         return [hours, minutes];
     };
-    // const initialState: IInitialStateDetailCar = {
-    //     dataDetailCar: {
-    //         id: "",
-    //         address: "",
-    //         full_address: "",
-    //         image_car: [],
-    //         car_owner: {
-    //             avatar: "",
-    //             fullname: "",
-    //             id: "",
-    //         },
-    //         type: {
-    //             delivery_car: false,
-    //             book_car_flash: false,
-    //             mortgage: false,
-    //             transmission_search: "",
-    //         },
-    //         favorite_car: false,
-    //         name_car: "",
-    //         point_star: 0,
-    //         total_trip: 0,
-    //         price: {
-    //             percent_deposit: 0,
-    //             price_before_promotion: 0,
-    //             price_after_promotion: 0,
-
-    //             rent_cost: 0,
-    //             rent_cost_day: 0,
-    //             price_insurance_day: 0,
-    //             temp_total_amount: 0,
-    //             total_amount: 0,
-
-    //             max_money_discount: 0,
-    //             // tiền đặt cọc
-    //             price_depoist: 0,
-    //             // số ngày
-    //             number_day: 0,
-    //             // thanh toán khi nhận xe
-    //             cash_on_delivery: 0
-    //         },
-    //         promotion: [],
-    //         trait_car: {
-    //             number_seat: 0,
-    //             number_car: "",
-    //             type_fuel: "",
-    //             year_manu: "",
-    //         },
-    //         describe_car: "",
-    //         other_amenities_car: [],
-    //         info_review_car: {
-    //             review_car: [],
-    //             star: 0,
-    //             total_review_car: 0,
-    //         },
-    //         collateral_car: {
-    //             mortgage: 0,
-    //             mortgage_policy_car: "",
-    //             note_mortgage: "",
-    //         },
-    //         surcharge_car: [],
-    //     },
-    //     infoPromotion: {
-    //         selectPromotion: "0",
-    //         activePromotion: null,
-    //     },
-    //     listCarsRelated: [],
-    //     reportCar: {
-    //         listReportCar: [],
-    //         selectReportCar: "",
-    //         contentReportCar: ""
-    //     },
-    //     onSuccess: {
-    //         onSuccessPage: false
-    //     },
-    // };
-
-    // const [isStateDetailCar, setIsState] = useState<IInitialStateDetailCar>(initialState)
-    // const queryKeyIsStateDetailCar = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
     useEffect(() => {
         setIsMounted(true)
@@ -197,6 +119,7 @@ const DetailCar = ({ params }: Props) => {
         };
     }, []);
 
+    // fetch lisst car related
     const fetchDataListCarsRelated = async () => {
         try {
             const dataListCar = {
@@ -219,7 +142,7 @@ const DetailCar = ({ params }: Props) => {
         }
     }
 
-    // fetch lịch detail
+    // fetch data calendar detail
     const fetchDataListCalendarPriceMonth = async () => {
         try {
             let dataCar = {
@@ -236,6 +159,7 @@ const DetailCar = ({ params }: Props) => {
         }
     }
 
+    // fetch data detail first
     const fetchDataDetailCarFirst = async () => {
         try {
             // Kiểm tra nếu không cần gọi fetchDataDetailCarSecond thì return luôn
@@ -304,6 +228,7 @@ const DetailCar = ({ params }: Props) => {
 
     }
 
+    // fetch data detail second
     const fetchDataDetailCarSecond = async () => {
         try {
             // Kiểm tra nếu không cần gọi fetchDataDetailCarSecond thì return luôn
@@ -346,44 +271,8 @@ const DetailCar = ({ params }: Props) => {
 
     console.log('isStateDetailCar', isStateDetailCar);
 
-
+    // fetch data 
     useEffect(() => {
-        const fetchListPromotions = async () => {
-            if (dataPromotions.length === 0) {
-                try {
-                    const dataSearch = {
-                        code: ""
-                    }
-                    const { data } = await getListPromotions(dataSearch)
-                    if (data && data.data) {
-                        setDataPromotions(data?.data)
-                    }
-                } catch (err) {
-                    throw err
-                }
-            }
-        }
-
-        const fetchListReportCar = async () => {
-            if (dataListReportCar.length === 0) {
-                try {
-                    const { data } = await getListReportCar();
-
-                    if (data && data.data) {
-                        queryKeyIsStateDetailCar({
-                            reportCar: {
-                                ...isStateDetailCar?.reportCar,
-                                listReportCar: data.data
-                            }
-                        })
-                    }
-
-                } catch (err) {
-                    throw err
-                }
-            }
-        }
-
         const fetchDataPolicy = async () => {
             const { data } = await getDataPolicy();
 
@@ -399,9 +288,55 @@ const DetailCar = ({ params }: Props) => {
         fetchDataListCalendarPriceMonth()
         fetchDataPolicy()
         fetchDataListCarsRelated()
-        fetchListPromotions()
-        fetchListReportCar()
     }, [params.slug])
+
+    useEffect(() => {
+        if (openDialogReportCar && isStateDetailCar.reportCar.listReportCar.length === 0) {
+            const fetchListReportCar = async () => {
+                if (dataListReportCar.length === 0) {
+                    try {
+                        const { data } = await getListReportCar();
+
+                        if (data && data.data) {
+                            queryKeyIsStateDetailCar({
+                                reportCar: {
+                                    ...isStateDetailCar?.reportCar,
+                                    listReportCar: data.data
+                                }
+                            })
+                        }
+
+                    } catch (err) {
+                        throw err
+                    }
+                }
+            }
+
+            fetchListReportCar()
+        }
+        if (openDialogPromotion && dataPromotions.length === 0) {
+            const fetchListPromotions = async () => {
+                try {
+                    setIsLoadingDataPromotion(true)
+                    const dataSearch = {
+                        code: null
+                    }
+                    const { data } = await getListPromotions(dataSearch)
+                    if (data && data.data) {
+                        setDataPromotions(data?.data)
+                        setIsLoadingDataPromotion(false)
+                    } else {
+                        setIsLoadingDataPromotion(false)
+                    }
+                } catch (err) {
+                    throw err
+                }
+            }
+
+            fetchListPromotions()
+        }
+    }, [params.slug, openDialogReportCar, openDialogPromotion])
+
 
     useEffect(() => {
         queryKeyIsStateDetailCar({

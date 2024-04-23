@@ -29,7 +29,6 @@ import { vi } from 'date-fns/locale';
 import Image from 'next/image';
 import { getListCars, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
 
-import { DialogFilterListCars } from '@/components/modals/DialogFilterListCars';
 import { CustomDataListCars } from '@/custom/CustomData';
 import { useCookie } from '@/hooks/useCookie';
 import { IInitialStateListCarAutonomous } from '@/types/Initial/IInitial';
@@ -893,7 +892,7 @@ const SearchCars = (props: Props) => {
                             <div className='flex items-center gap-2'>
                                 <div
                                     onClick={() => handleResetFilter()}
-                                    className={`${isValueNonZeroOrNonEmptyArray("", "reset_filter") ? "border border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD]" : "bg-[#F3F3F6] text-[#06282D] hover:bg-[#F3F3F6]/80 "} py-3 px-4 w-fit h-fit rounded-lg cursor-pointer hover:scale-105 duration-200 transition relative`}
+                                    className={`${isValueNonZeroOrNonEmptyArray("", "reset_filter") ? "border border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD]" : "bg-[#F3F3F6] text-[#06282D] hover:bg-[#F3F3F6]/80 "} py-3 px-4 w-fit h-fit rounded-lg cursor-pointer hover:scale-105 duration-200 transition relative caret-transparent`}
                                 >
                                     <LuSettings2 className='3xl:text-2xl text-xl' />
                                     {
@@ -1122,8 +1121,6 @@ const SearchCars = (props: Props) => {
                 <div ref={lastContainerRef} />
             </div>
 
-            {/* <DialogFilterListCars /> */}
-            <DialogFilterListCars />
         </>
     )
 }

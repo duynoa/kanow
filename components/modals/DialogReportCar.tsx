@@ -47,14 +47,16 @@ export function DialogReportCar({ }: Props) {
     });
 
     const handleOpenChangeModal = () => {
-        setOpenDialogReportCar(!openDialogReportCar)
-        queryKeyIsStateDetailCar({
-            reportCar: {
-                ...isStateDetailCar?.reportCar,
-                selectReportCar: ""
-            }
-        })
-        form.reset();
+        setOpenDialogReportCar(false)
+        setTimeout(() => {
+            queryKeyIsStateDetailCar({
+                reportCar: {
+                    ...isStateDetailCar?.reportCar,
+                    selectReportCar: ""
+                }
+            })
+            form.reset();
+        }, 300);
     }
 
     const handleChangeSelectReport = (value: string) => {
@@ -154,12 +156,6 @@ export function DialogReportCar({ }: Props) {
                                             e: React.ChangeEvent<HTMLTextAreaElement>
                                         ) => {
                                             field.onChange(e);
-                                            // queryKeyIsStateDetailCar({
-                                            //     reportCar: {
-                                            //         ...isStateDetailCar?.reportCar,
-                                            //         contentReportCar: e.target.value
-                                            //     }
-                                            // })
                                         }
 
                                         return (

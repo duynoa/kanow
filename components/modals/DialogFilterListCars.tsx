@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 import {
     Dialog,
@@ -26,123 +26,223 @@ import { IInitialStateListCarAutonomous } from "@/types/Initial/IInitial";
 import { useDataListCarAutonomous, useDataListCarsDriver } from "@/hooks/useDataQueryKey";
 import moment from "moment";
 import { usePathname } from "next/navigation";
+import SkeletonDialogFilterListCars from "../skeleton/SkeletonDialogFilterListCars";
 
 type Props = {}
 
-export function DialogFilterListCars({ }: Props) {
+const DialogFilterListCars = ({ }: Props) => {
     // const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useListCar()
 
     const pathname = usePathname()
+    const [paramCompanyCarSearch, setParamCompanyCarSearch] = useState<string>("0")
+    const [paramTransmissionSearch, setParamTransmissionSearch] = useState<string>("0")
 
     const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useDataListCarAutonomous()
     const { isStateListCarsDriver, queryKeyIsStateListCarsDriver } = useDataListCarsDriver()
     const { openDialogFilterListCars, setOpenDialogFilterListCars, type } = useDialogFilterListCars()
 
     const {
-        openDialogAddress,
         valueAddress,
-        setOpenDialogAddress,
-        setValueAddress,
         coordinates,
-        setCoordinates,
-        setOnSubmitFilter
     } = useDialogAddress()
 
     const { dateReal } = useDialogCalendar()
 
     const handleOpenChangeModal = (type?: string) => {
-        if (type === "type_car_search") {
-            setOpenDialogFilterListCars(false)
-        } else {
-            toast("Vui lòng nhấn áp dụng!")
-        }
+        setOpenDialogFilterListCars(false, type)
+        setTimeout(() => {
+            if (pathname.startsWith("/list-cars-autonomous")) {
+                setParamTransmissionSearch(isStateListCarAutonomous?.dataParams?.transmission_search)
+                setParamCompanyCarSearch(isStateListCarAutonomous?.dataParams?.company_car_search)
+            } else if (pathname.startsWith("/list-cars-driver")) {
+                setParamTransmissionSearch(isStateListCarsDriver?.dataParams?.transmission_search)
+                setParamCompanyCarSearch(isStateListCarsDriver?.dataParams?.company_car_search)
+
+            }
+        }, 300);
     }
 
     useEffect(() => {
-        if (type === 'company_car_search' && isStateListCarAutonomous?.filter?.listAutomaker?.length === 0) {
-            const fetchDataListAutomaker = async () => {
-                const dataParams = {
-                    type: pathname.startsWith("/list-cars-autonomous") ? 1 : 2
-                }
-
-                const { data } = await getListAutomaker(dataParams);
-
-                if (data && data.data) {
-                    if (pathname.startsWith("/list-cars-autonomous")) {
+        if (pathname.startsWith("/list-cars-autonomous")) {
+            if (type === 'company_car_search' && openDialogFilterListCars && isStateListCarAutonomous?.filter?.listAutomaker?.length === 0) {
+                const fetchDataListAutomaker = async () => {
+                    try {
                         queryKeyIsStateListCarAutonomous({
-                            filter: {
-                                ...isStateListCarAutonomous.filter,
-                                listAutomaker: data.data,
+                            ...isStateListCarAutonomous,
+                            loading: {
+                                isLoadingDialogFilterListCars: true
                             }
                         })
-                    } else if (pathname.startsWith("/list-cars-driver")) {
-                        queryKeyIsStateListCarsDriver({
-                            filter: {
-                                ...isStateListCarsDriver.filter,
-                                listAutomaker: data.data,
-                            }
-                        })
+
+                        const dataParams = {
+                            type: 1
+                        }
+
+                        const { data } = await getListAutomaker(dataParams);
+
+                        if (data && data.data) {
+                            queryKeyIsStateListCarAutonomous({
+                                ...isStateListCarAutonomous,
+                                filter: {
+                                    ...isStateListCarAutonomous.filter,
+                                    listAutomaker: data.data,
+                                },
+                                loading: {
+                                    isLoadingDialogFilterListCars: false
+                                }
+                            })
+                        } else {
+                            queryKeyIsStateListCarAutonomous({
+                                ...isStateListCarAutonomous,
+                                loading: {
+                                    isLoadingDialogFilterListCars: false
+                                }
+                            })
+
+                        }
+                    } catch (err) {
+                        throw err
                     }
                 }
-            }
 
-            fetchDataListAutomaker()
-        } else if (type === 'type_car_search' && isStateListCarAutonomous?.filter?.listTypesCar?.length === 0) {
-            const fetchDataListTypesCar = async () => {
-                const dataParams = {
-                    type: pathname.startsWith("/list-cars-autonomous") ? 1 : 2
-                }
-
-                const { data } = await getListTypeCars(dataParams);
-
-                if (data && data.data) {
-                    if (pathname.startsWith("/list-cars-autonomous")) {
+                fetchDataListAutomaker()
+            } else if (type === 'type_car_search' && openDialogFilterListCars && isStateListCarAutonomous?.filter?.listTypesCar?.length === 0) {
+                const fetchDataListTypesCar = async () => {
+                    try {
                         queryKeyIsStateListCarAutonomous({
-                            filter: {
-                                ...isStateListCarAutonomous.filter,
-                                listTypesCar: data.data,
+                            ...isStateListCarAutonomous,
+                            loading: {
+                                isLoadingDialogFilterListCars: true
                             }
                         })
-                    } else if (pathname.startsWith("/list-cars-driver")) {
-                        queryKeyIsStateListCarsDriver({
-                            filter: {
-                                ...isStateListCarsDriver.filter,
-                                listTypesCar: data.data,
-                            }
-                        })
+                        const dataParams = {
+                            type: 1
+                        }
+
+                        const { data } = await getListTypeCars(dataParams);
+
+                        if (data && data.data) {
+                            queryKeyIsStateListCarAutonomous({
+                                ...isStateListCarAutonomous,
+                                filter: {
+                                    ...isStateListCarAutonomous.filter,
+                                    listTypesCar: data.data,
+                                },
+                                loading: {
+                                    isLoadingDialogFilterListCars: false
+                                }
+                            })
+                        } else {
+                            queryKeyIsStateListCarAutonomous({
+                                ...isStateListCarAutonomous,
+                                loading: {
+                                    isLoadingDialogFilterListCars: false
+                                }
+                            })
+
+                        }
+                    } catch (err) {
+                        throw err
                     }
                 }
+
+                fetchDataListTypesCar()
             }
+        } else if (pathname.startsWith("/list-cars-driver")) {
+            if (type === 'company_car_search' && openDialogFilterListCars && isStateListCarsDriver?.filter?.listAutomaker?.length === 0) {
+                const fetchDataListAutomaker = async () => {
+                    try {
+                        queryKeyIsStateListCarsDriver({
+                            ...isStateListCarsDriver,
+                            loading: {
+                                isLoadingDialogFilterListCars: true
+                            }
+                        })
 
-            fetchDataListTypesCar()
+                        const dataParams = {
+                            type: 2
+                        }
 
+                        const { data } = await getListAutomaker(dataParams);
+
+                        if (data && data.data) {
+                            queryKeyIsStateListCarsDriver({
+                                ...isStateListCarsDriver,
+                                filter: {
+                                    ...isStateListCarsDriver.filter,
+                                    listAutomaker: data.data,
+                                },
+                                loading: {
+                                    isLoadingDialogFilterListCars: false
+                                }
+                            })
+                        } else {
+                            queryKeyIsStateListCarsDriver({
+                                ...isStateListCarsDriver,
+                                loading: {
+                                    isLoadingDialogFilterListCars: false
+                                }
+                            })
+
+                        }
+                    } catch (err) {
+                        throw err
+                    }
+                }
+
+                fetchDataListAutomaker()
+            } else if (type === 'type_car_search' && openDialogFilterListCars && isStateListCarsDriver?.filter?.listTypesCar?.length === 0) {
+                const fetchDataListTypesCar = async () => {
+                    try {
+                        queryKeyIsStateListCarsDriver({
+                            ...isStateListCarsDriver,
+                            loading: {
+                                isLoadingDialogFilterListCars: true
+                            }
+                        })
+
+                        const dataParams = {
+                            type: 2
+                        }
+
+                        const { data } = await getListTypeCars(dataParams);
+
+                        if (data && data.data) {
+                            queryKeyIsStateListCarsDriver({
+                                ...isStateListCarsDriver,
+                                filter: {
+                                    ...isStateListCarsDriver.filter,
+                                    listTypesCar: data.data,
+                                },
+                                loading: {
+                                    isLoadingDialogFilterListCars: false
+                                }
+                            })
+                        } else {
+                            queryKeyIsStateListCarsDriver({
+                                ...isStateListCarsDriver,
+                                loading: {
+                                    isLoadingDialogFilterListCars: false
+                                }
+                            })
+
+                        }
+                    } catch (err) {
+                        throw err
+                    }
+                }
+
+                fetchDataListTypesCar()
+            }
         }
     }, [
-        type,
-        isStateListCarAutonomous?.filter,
-        queryKeyIsStateListCarAutonomous
+        pathname,
+        openDialogFilterListCars
     ])
-
-    console.log('type : ', type);
-
 
     const handleFilterListCars = async (value: string | any, type: string) => {
         if (type === "company_car_search" && value) {
-            if (pathname.startsWith("/list-cars-autonomous")) {
-                queryKeyIsStateListCarAutonomous({
-                    dataParams: {
-                        ...isStateListCarAutonomous.dataParams,
-                        company_car_search: value,
-                    }
-                })
-            } else if (pathname.startsWith("/list-cars-driver")) {
-                queryKeyIsStateListCarsDriver({
-                    dataParams: {
-                        ...isStateListCarsDriver.dataParams,
-                        company_car_search: value,
-                    }
-                })
-            }
+            setParamCompanyCarSearch(value)
         } else if (type === "type_car_search" && value) {
             if (pathname.startsWith("/list-cars-autonomous")) {
                 const typeId = value.id;
@@ -378,26 +478,9 @@ export function DialogFilterListCars({ }: Props) {
                 }
             }
         } else if (type === "transmission_search" && value) {
-            if (pathname.startsWith("/list-cars-autonomous")) {
-                queryKeyIsStateListCarAutonomous({
-                    dataParams: {
-                        ...isStateListCarAutonomous.dataParams,
-                        transmission_search: value,
-                    }
-                })
-            } else if (pathname.startsWith("/list-cars-driver")) {
-                queryKeyIsStateListCarsDriver({
-                    dataParams: {
-                        ...isStateListCarsDriver.dataParams,
-                        transmission_search: value,
-                    }
-                })
-            }
+            setParamTransmissionSearch(value)
         }
     }
-
-    console.log('pathname', pathname);
-
 
     const handleSubmitFilter = async () => {
         if (pathname.startsWith("/list-cars-autonomous")) {
@@ -406,9 +489,9 @@ export function DialogFilterListCars({ }: Props) {
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-                company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
+                company_car_search: paramCompanyCarSearch == "0" ? undefined : paramCompanyCarSearch,
                 type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
-                transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
+                transmission_search: paramTransmissionSearch == "0" ? undefined : paramTransmissionSearch,
                 star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
                 tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
                 discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
@@ -438,6 +521,11 @@ export function DialogFilterListCars({ }: Props) {
                 queryKeyIsStateListCarAutonomous({
                     ...isStateListCarAutonomous,
                     listCardCars: customDataListCars,
+                    dataParams: {
+                        ...isStateListCarAutonomous.dataParams,
+                        company_car_search: paramCompanyCarSearch,
+                        transmission_search: paramTransmissionSearch,
+                    },
                     page: 2,
                     next: data?.links?.next
                 })
@@ -451,9 +539,9 @@ export function DialogFilterListCars({ }: Props) {
                 "lat": valueAddress ? coordinates.lat : undefined,
                 "lon": valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-                company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
+                company_car_search: paramCompanyCarSearch == "0" ? undefined : paramCompanyCarSearch,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
-                transmission_search: isStateListCarsDriver?.dataParams?.transmission_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.transmission_search,
+                transmission_search: paramTransmissionSearch == "0" ? undefined : paramTransmissionSearch,
                 star_search: isStateListCarsDriver?.dataParams?.star_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.star_search,
                 tram_search: isStateListCarsDriver?.dataParams?.tram_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.tram_search,
                 discount_search: isStateListCarsDriver?.dataParams?.discount_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.discount_search,
@@ -483,6 +571,11 @@ export function DialogFilterListCars({ }: Props) {
                 queryKeyIsStateListCarsDriver({
                     ...isStateListCarsDriver,
                     listCardCars: customDataListCars,
+                    dataParams: {
+                        ...isStateListCarsDriver.dataParams,
+                        company_car_search: paramCompanyCarSearch,
+                        transmission_search: paramTransmissionSearch
+                    },
                     page: 2,
                     next: data?.links?.next
                 })
@@ -493,6 +586,10 @@ export function DialogFilterListCars({ }: Props) {
         }
 
     }
+
+    console.log('type: ', type);
+    console.log('isStateListCarAutonomous: ', isStateListCarAutonomous);
+    console.log('isStateListCarsDriver: ', isStateListCarsDriver);
 
     return (
         <Dialog
@@ -523,308 +620,272 @@ export function DialogFilterListCars({ }: Props) {
 
                 <div className='flex flex-col justify-between h-[500px] gap-3'>
                     <ScrollArea className='md:pl-6 md:pr-6 pl-4 pr-4 h-[50vh] caret-transparent'>
-                        {/* 3 cái bộ lọc này là của trang xe tự lái */}
-
                         {
-                            type === "type_car_search" &&
-                            <div className='grid grid-cols-3 gap-6 w-full'>
-                                {
-                                    pathname.startsWith("/list-cars-autonomous") ?
-                                        (
-                                            isStateListCarAutonomous?.filter?.listTypesCar && isStateListCarAutonomous?.filter?.listTypesCar?.map((item) => {
+                            type === "type_car_search" ?
+                                <div className='grid grid-cols-3 gap-6 w-full'>
+                                    {
+                                        pathname.startsWith("/list-cars-autonomous") ?
+                                            (
+                                                isStateListCarAutonomous.loading.isLoadingDialogFilterListCars ?
+                                                    <SkeletonDialogFilterListCars type="type_car_search" />
+                                                    :
+                                                    isStateListCarAutonomous?.filter?.listTypesCar && isStateListCarAutonomous?.filter?.listTypesCar?.map((item) => {
 
-                                                return (
-                                                    <div
-                                                        key={`typesCarId-${item.id}`}
-                                                        className={`${isStateListCarAutonomous.dataParams?.type_car_search?.includes(item.id) ? "border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD] shadow-md" : "border-[#B4B8C5]"} col-span-1 flex flex-col justify-center items-center h-full border hover:shadow-xl hover:drop-shadow-xl duration-300 transition-all cursor-pointer rounded-xl 3xl:p-4 p-4`}
-                                                        onClick={() => handleFilterListCars(item, "type_car_search")}
+                                                        return (
+                                                            <div
+                                                                key={`typesCarId-${item.id}`}
+                                                                className={`${isStateListCarAutonomous.dataParams?.type_car_search?.includes(item.id) ? "border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD] shadow-md" : "border-[#B4B8C5]"} col-span-1 flex flex-col justify-center items-center h-full border hover:shadow-xl hover:drop-shadow-xl duration-300 transition-all cursor-pointer rounded-xl 3xl:p-4 p-4`}
+                                                                onClick={() => handleFilterListCars(item, "type_car_search")}
+                                                            >
+                                                                <div className='w-20 h-auto'>
+                                                                    <Image
+                                                                        alt="icon"
+                                                                        width={200}
+                                                                        height={200}
+                                                                        src={item?.image ? item?.image : "/default/default.png"}
+                                                                        className={`w-full h-full object-contain`}
+                                                                    />
+                                                                </div>
+                                                                <div className='flex flex-col justify-center items-center gap-1'>
+                                                                    <div className='3xl:text-base text-sm font-medium text-center'>
+                                                                        {item?.name ? item?.name : ""}
+                                                                    </div>
+                                                                    <div className='3xl:text-xs text-xs font-light text-gray-400'>
+                                                                        {item?.total_car ? FormatNumberHundred(item?.total_car, 200) : 0} xe
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    })
+                                            )
+                                            :
+                                            (
+                                                isStateListCarsDriver.loading.isLoadingDialogFilterListCars ?
+                                                    <SkeletonDialogFilterListCars type="type_car_search" />
+                                                    :
+                                                    isStateListCarsDriver?.filter?.listTypesCar && isStateListCarsDriver?.filter?.listTypesCar?.map((item) => {
+
+                                                        return (
+                                                            <div
+                                                                key={`typesCarId-${item.id}`}
+                                                                className={`${isStateListCarsDriver.dataParams?.type_car_search?.includes(item.id) ? "border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD] shadow-md" : "border-[#B4B8C5]"} col-span-1 flex flex-col justify-center items-center h-full border hover:shadow-xl hover:drop-shadow-xl duration-300 transition-all cursor-pointer rounded-xl 3xl:p-4 p-4`}
+                                                                onClick={() => handleFilterListCars(item, "type_car_search")}
+                                                            >
+                                                                <div className='w-20 h-auto'>
+                                                                    <Image
+                                                                        alt="icon"
+                                                                        width={200}
+                                                                        height={200}
+                                                                        src={item?.image ? item?.image : "/default/default.png"}
+                                                                        className={`w-full h-full object-contain`}
+                                                                    />
+                                                                </div>
+                                                                <div className='flex flex-col justify-center items-center gap-1'>
+                                                                    <div className='3xl:text-base text-sm font-medium text-center'>
+                                                                        {item?.name ? item?.name : ""}
+                                                                    </div>
+                                                                    <div className='3xl:text-xs text-xs font-light text-gray-400'>
+                                                                        {item?.total_car ? FormatNumberHundred(item?.total_car, 200) : 0} xe
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    })
+                                            )
+                                    }
+                                </div>
+                                :
+                                null
+                        }
+                        {
+                            type === "company_car_search" ?
+                                <>
+                                    {
+                                        pathname.startsWith("/list-cars-autonomous") ?
+                                            (
+                                                isStateListCarAutonomous.loading.isLoadingDialogFilterListCars ?
+                                                    <SkeletonDialogFilterListCars type="company_car_search" />
+                                                    :
+                                                    <RadioGroup
+                                                        onValueChange={(value) => handleFilterListCars(value, "company_car_search")}
+                                                        defaultValue="0"
+                                                        value={paramCompanyCarSearch}
+                                                        className='grid grid-cols-2 gap-6 w-full'
+                                                        autoFocus={false}
                                                     >
-                                                        <div className='w-20 h-auto'>
-                                                            <Image
-                                                                alt="icon"
-                                                                width={200}
-                                                                height={200}
-                                                                src={item?.image ? item?.image : "/default/default.png"}
-                                                                className={`w-full h-full object-contain`}
+                                                        <div key={'automakerId-0'} className='col-span-1 flex items-center space-x-3 group'>
+                                                            <RadioGroupItem
+                                                                value={`0`}
+                                                                id={`0`}
+                                                                className={`${paramCompanyCarSearch == "0" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
                                                             />
+                                                            <Label
+                                                                htmlFor={`0`}
+                                                                className="flex items-center gap-4 cursor-pointer"
+                                                            >
+                                                                <div className='3xl:text-base text-sm text-[#3A3E4C] font-normal capitalize'>
+                                                                    Tất cả
+                                                                </div>
+                                                            </Label>
                                                         </div>
-                                                        <div className='flex flex-col justify-center items-center gap-1'>
-                                                            <div className='3xl:text-base text-sm font-medium text-center'>
-                                                                {item?.name ? item?.name : ""}
-                                                            </div>
-                                                            <div className='3xl:text-xs text-xs font-light text-gray-400'>
-                                                                {item?.total_car ? FormatNumberHundred(item?.total_car, 200) : 0} xe
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })
-                                        )
-                                        :
-                                        (
-                                            isStateListCarsDriver?.filter?.listTypesCar && isStateListCarsDriver?.filter?.listTypesCar?.map((item) => {
 
-                                                return (
-                                                    <div
-                                                        key={`typesCarId-${item.id}`}
-                                                        className={`${isStateListCarsDriver.dataParams?.type_car_search?.includes(item.id) ? "border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD] shadow-md" : "border-[#B4B8C5]"} col-span-1 flex flex-col justify-center items-center h-full border hover:shadow-xl hover:drop-shadow-xl duration-300 transition-all cursor-pointer rounded-xl 3xl:p-4 p-4`}
-                                                        onClick={() => handleFilterListCars(item, "type_car_search")}
+                                                        {
+                                                            isStateListCarAutonomous?.filter?.listAutomaker && isStateListCarAutonomous?.filter?.listAutomaker?.map((item) => (
+                                                                <div key={`automakerId-${item.id}`} className='col-span-1 flex items-center space-x-3 group'>
+                                                                    <RadioGroupItem
+                                                                        value={`${item.id}`}
+                                                                        id={`${item.id}`}
+                                                                        className={`${paramCompanyCarSearch == `${item.id}` ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
+                                                                    />
+                                                                    <Label
+                                                                        htmlFor={`${item.id}`}
+                                                                        className="flex items-center gap-2 cursor-pointer"
+                                                                    >
+                                                                        <div className='w-10 h-auto'>
+                                                                            <Image
+                                                                                alt="icon"
+                                                                                width={80}
+                                                                                height={80}
+                                                                                src={item?.image ? item?.image : "/default/default.png"}
+                                                                                className='w-full h-full object-contain'
+                                                                            />
+                                                                        </div>
+                                                                        <div className='3xl:text-base text-sm text-[#3A3E4C] font-normal capitalize'>
+                                                                            {item.name ? item.name : ""}
+                                                                        </div>
+                                                                        <div className='3xl:text-sm text-xs text-[#B4B8C5] font-normal'>
+                                                                            ({item.total_car ? item.total_car : 0} xe)
+                                                                        </div>
+                                                                    </Label>
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </RadioGroup>
+                                            )
+                                            :
+                                            (
+                                                isStateListCarsDriver.loading.isLoadingDialogFilterListCars ?
+                                                    <SkeletonDialogFilterListCars type="company_car_search" />
+                                                    :
+                                                    <RadioGroup
+                                                        onValueChange={(value) => handleFilterListCars(value, "company_car_search")}
+                                                        defaultValue="0"
+                                                        value={paramCompanyCarSearch}
+                                                        className='grid grid-cols-2 gap-6 w-full'
+                                                        autoFocus={false}
                                                     >
-                                                        <div className='w-20 h-auto'>
-                                                            <Image
-                                                                alt="icon"
-                                                                width={200}
-                                                                height={200}
-                                                                src={item?.image ? item?.image : "/default/default.png"}
-                                                                className={`w-full h-full object-contain`}
+                                                        <div key={'automakerId-0'} className='col-span-1 flex items-center space-x-3 group'>
+                                                            <RadioGroupItem
+                                                                value={`0`}
+                                                                id={`0`}
+                                                                className={`${paramCompanyCarSearch == "0" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
                                                             />
+                                                            <Label
+                                                                htmlFor={`0`}
+                                                                className="flex items-center gap-4 cursor-pointer"
+                                                            >
+                                                                <div className='3xl:text-base text-sm text-[#3A3E4C] font-normal capitalize'>
+                                                                    Tất cả
+                                                                </div>
+                                                            </Label>
                                                         </div>
-                                                        <div className='flex flex-col justify-center items-center gap-1'>
-                                                            <div className='3xl:text-base text-sm font-medium text-center'>
-                                                                {item?.name ? item?.name : ""}
-                                                            </div>
-                                                            <div className='3xl:text-xs text-xs font-light text-gray-400'>
-                                                                {item?.total_car ? FormatNumberHundred(item?.total_car, 200) : 0} xe
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })
-                                        )
-                                }
-                            </div>
+
+                                                        {
+                                                            isStateListCarsDriver?.filter?.listAutomaker && isStateListCarsDriver?.filter?.listAutomaker?.map((item) => (
+                                                                <div key={`automakerId-${item.id}`} className='col-span-1 flex items-center space-x-3 group'>
+                                                                    <RadioGroupItem value={`${item.id}`} id={`${item.id}`} className={`${paramCompanyCarSearch == `${item.id}` ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`} />
+                                                                    <Label
+                                                                        htmlFor={`${item.id}`}
+                                                                        className="flex items-center gap-2 cursor-pointer"
+                                                                    >
+                                                                        <div className='w-10 h-auto'>
+                                                                            <Image
+                                                                                alt="icon"
+                                                                                width={80}
+                                                                                height={80}
+                                                                                src={item?.image ? item?.image : "/default/default.png"}
+                                                                                className='w-full h-full object-contain'
+                                                                            />
+                                                                        </div>
+                                                                        <div className='3xl:text-base text-sm text-[#3A3E4C] font-normal capitalize'>
+                                                                            {item.name ? item.name : ""}
+                                                                        </div>
+                                                                        <div className='3xl:text-sm text-xs text-[#B4B8C5] font-normal'>
+                                                                            ({item.total_car ? item.total_car : 0} xe)
+                                                                        </div>
+                                                                    </Label>
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </RadioGroup>
+                                            )
+
+                                    }
+                                </>
+                                :
+                                null
                         }
                         {
-                            type === "company_car_search" &&
-                            <>
-                                {
-                                    pathname.startsWith("/list-cars-autonomous") ?
-                                        <RadioGroup
-                                            onValueChange={(value) => handleFilterListCars(value, "company_car_search")}
-                                            defaultValue="0"
-                                            value={isStateListCarAutonomous?.dataParams?.company_car_search}
-                                            className='grid grid-cols-2 gap-6 w-full'
-                                            autoFocus={false}
-                                        >
-                                            <div key={'automakerId-0'} className='col-span-1 flex items-center space-x-3 group'>
-                                                <RadioGroupItem
-                                                    value={`0`}
-                                                    id={`0`}
-                                                    className={`${isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
-                                                />
-                                                <Label
-                                                    htmlFor={`0`}
-                                                    className="flex items-center gap-4 cursor-pointer"
-                                                >
-                                                    <div className='3xl:text-base text-sm text-[#3A3E4C] font-normal capitalize'>
-                                                        Tất cả
-                                                    </div>
-                                                </Label>
-                                            </div>
+                            type === "transmission_search" ?
+                                <>
+                                    <RadioGroup
+                                        defaultValue="0"
+                                        value={paramTransmissionSearch}
+                                        onValueChange={(value) => handleFilterListCars(value, "transmission_search")}
+                                        className='grid grid-cols-1 gap-6 w-full'
+                                        autoFocus={false}
+                                    >
+                                        <div key={'transmissionId-0'} className='col-span-1 flex items-center space-x-3 group w-fit'>
+                                            <RadioGroupItem
+                                                value={`0`}
+                                                id={`0`}
+                                                className={`${paramTransmissionSearch == "0" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
+                                            />
+                                            <Label
+                                                htmlFor={`0`}
+                                                className="flex items-center gap-4 cursor-pointer"
+                                            >
+                                                <div className='3xl:text-base text-sm font-normal capitalize'>
+                                                    Tất cả
+                                                </div>
+                                            </Label>
+                                        </div>
+                                        <div key={'transmissionId-1'} className='col-span-1 flex items-center space-x-3 group w-fit'>
+                                            <RadioGroupItem
+                                                value={`1`}
+                                                id={`1`}
+                                                className={`${paramTransmissionSearch == "1" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
+                                            />
+                                            <Label
+                                                htmlFor={`1`}
+                                                className="flex items-center gap-4 cursor-pointer"
+                                            >
+                                                <div className='3xl:text-base text-sm font-normal capitalize'>
+                                                    Số sàn
+                                                </div>
+                                            </Label>
+                                        </div>
+                                        <div key={'transmissionId-2'} className='col-span-1 flex items-center space-x-3 group w-fit'>
+                                            <RadioGroupItem
+                                                value={`2`}
+                                                id={`2`}
+                                                className={`${paramTransmissionSearch == "2" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
+                                            />
+                                            <Label
+                                                htmlFor={`2`}
+                                                className="flex items-center gap-4 cursor-pointer"
+                                            >
+                                                <div className='3xl:text-base text-sm font-normal capitalize'>
+                                                    Số tự động
+                                                </div>
+                                            </Label>
+                                        </div>
 
-                                            {
-                                                isStateListCarAutonomous?.filter?.listAutomaker && isStateListCarAutonomous?.filter?.listAutomaker?.map((item) => (
-                                                    <div key={`automakerId-${item.id}`} className='col-span-1 flex items-center space-x-3 group'>
-                                                        <RadioGroupItem value={`${item.id}`} id={`${item.id}`} className={`${isStateListCarAutonomous?.dataParams?.company_car_search == `${item.id}` ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`} />
-                                                        <Label
-                                                            htmlFor={`${item.id}`}
-                                                            className="flex items-center gap-2 cursor-pointer"
-                                                        >
-                                                            <div className='w-10 h-auto'>
-                                                                <Image
-                                                                    alt="icon"
-                                                                    width={80}
-                                                                    height={80}
-                                                                    src={item?.image ? item?.image : "/default/default.png"}
-                                                                    className='w-full h-full object-contain'
-                                                                />
-                                                            </div>
-                                                            <div className='3xl:text-base text-sm text-[#3A3E4C] font-normal capitalize'>
-                                                                {item.name ? item.name : ""}
-                                                            </div>
-                                                            <div className='3xl:text-sm text-xs text-[#B4B8C5] font-normal'>
-                                                                ({item.total_car ? item.total_car : 0} xe)
-                                                            </div>
-                                                        </Label>
-                                                    </div>
-                                                ))
-                                            }
-                                        </RadioGroup>
-                                        :
-                                        <RadioGroup
-                                            onValueChange={(value) => handleFilterListCars(value, "company_car_search")}
-                                            defaultValue="0"
-                                            value={isStateListCarsDriver?.dataParams?.company_car_search}
-                                            className='grid grid-cols-2 gap-6 w-full'
-                                            autoFocus={false}
-                                        >
-                                            <div key={'automakerId-0'} className='col-span-1 flex items-center space-x-3 group'>
-                                                <RadioGroupItem
-                                                    value={`0`}
-                                                    id={`0`}
-                                                    className={`${isStateListCarsDriver?.dataParams?.company_car_search == "0" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
-                                                />
-                                                <Label
-                                                    htmlFor={`0`}
-                                                    className="flex items-center gap-4 cursor-pointer"
-                                                >
-                                                    <div className='3xl:text-base text-sm text-[#3A3E4C] font-normal capitalize'>
-                                                        Tất cả
-                                                    </div>
-                                                </Label>
-                                            </div>
-
-                                            {
-                                                isStateListCarsDriver?.filter?.listAutomaker && isStateListCarsDriver?.filter?.listAutomaker?.map((item) => (
-                                                    <div key={`automakerId-${item.id}`} className='col-span-1 flex items-center space-x-3 group'>
-                                                        <RadioGroupItem value={`${item.id}`} id={`${item.id}`} className={`${isStateListCarsDriver?.dataParams?.company_car_search == `${item.id}` ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`} />
-                                                        <Label
-                                                            htmlFor={`${item.id}`}
-                                                            className="flex items-center gap-2 cursor-pointer"
-                                                        >
-                                                            <div className='w-10 h-auto'>
-                                                                <Image
-                                                                    alt="icon"
-                                                                    width={80}
-                                                                    height={80}
-                                                                    src={item?.image ? item?.image : "/default/default.png"}
-                                                                    className='w-full h-full object-contain'
-                                                                />
-                                                            </div>
-                                                            <div className='3xl:text-base text-sm text-[#3A3E4C] font-normal capitalize'>
-                                                                {item.name ? item.name : ""}
-                                                            </div>
-                                                            <div className='3xl:text-sm text-xs text-[#B4B8C5] font-normal'>
-                                                                ({item.total_car ? item.total_car : 0} xe)
-                                                            </div>
-                                                        </Label>
-                                                    </div>
-                                                ))
-                                            }
-                                        </RadioGroup>
-
-                                }
-                            </>
-
+                                    </RadioGroup>
+                                </>
+                                :
+                                null
                         }
-                        {
-                            type === "transmission_search" &&
-                            <>
-                                {
-                                    pathname.startsWith("/list-cars-autonomous") ?
-                                        <RadioGroup
-                                            defaultValue="0"
-                                            value={isStateListCarAutonomous?.dataParams?.transmission_search}
-                                            onValueChange={(value) => handleFilterListCars(value, "transmission_search")}
-                                            className='grid grid-cols-1 gap-6 w-full'
-                                            autoFocus={false}
-                                        >
-                                            <div key={'transmissionId-0'} className='col-span-1 flex items-center space-x-3 group'>
-                                                <RadioGroupItem
-                                                    value={`0`}
-                                                    id={`0`}
-                                                    className={`${isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
-                                                />
-                                                <Label
-                                                    htmlFor={`0`}
-                                                    className="flex items-center gap-4 cursor-pointer"
-                                                >
-                                                    <div className='3xl:text-base text-sm font-normal capitalize'>
-                                                        Tất cả
-                                                    </div>
-                                                </Label>
-                                            </div>
-                                            <div key={'transmissionId-1'} className='col-span-1 flex items-center space-x-3 group'>
-                                                <RadioGroupItem
-                                                    value={`1`}
-                                                    id={`1`}
-                                                    className={`${isStateListCarAutonomous?.dataParams?.transmission_search == "1" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
-                                                />
-                                                <Label
-                                                    htmlFor={`1`}
-                                                    className="flex items-center gap-4 cursor-pointer"
-                                                >
-                                                    <div className='3xl:text-base text-sm font-normal capitalize'>
-                                                        Số sàn
-                                                    </div>
-                                                </Label>
-                                            </div>
-                                            <div key={'transmissionId-2'} className='col-span-1 flex items-center space-x-3 group'>
-                                                <RadioGroupItem
-                                                    value={`2`}
-                                                    id={`2`}
-                                                    className={`${isStateListCarAutonomous?.dataParams?.transmission_search == "2" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
-                                                />
-                                                <Label
-                                                    htmlFor={`2`}
-                                                    className="flex items-center gap-4 cursor-pointer"
-                                                >
-                                                    <div className='3xl:text-base text-sm font-normal capitalize'>
-                                                        Số tự động
-                                                    </div>
-                                                </Label>
-                                            </div>
-
-                                        </RadioGroup>
-                                        :
-                                        <RadioGroup
-                                            defaultValue="0"
-                                            value={isStateListCarsDriver?.dataParams?.transmission_search}
-                                            onValueChange={(value) => handleFilterListCars(value, "transmission_search")}
-                                            className='grid grid-cols-1 gap-6 w-full'
-                                            autoFocus={false}
-                                        >
-                                            <div key={'transmissionId-0'} className='col-span-1 flex items-center space-x-3 group'>
-                                                <RadioGroupItem
-                                                    value={`0`}
-                                                    id={`0`}
-                                                    className={`${isStateListCarsDriver?.dataParams?.transmission_search == "0" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
-                                                />
-                                                <Label
-                                                    htmlFor={`0`}
-                                                    className="flex items-center gap-4 cursor-pointer"
-                                                >
-                                                    <div className='3xl:text-base text-sm font-normal capitalize'>
-                                                        Tất cả
-                                                    </div>
-                                                </Label>
-                                            </div>
-                                            <div key={'transmissionId-1'} className='col-span-1 flex items-center space-x-3 group'>
-                                                <RadioGroupItem
-                                                    value={`1`}
-                                                    id={`1`}
-                                                    className={`${isStateListCarsDriver?.dataParams?.transmission_search == "1" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
-                                                />
-                                                <Label
-                                                    htmlFor={`1`}
-                                                    className="flex items-center gap-4 cursor-pointer"
-                                                >
-                                                    <div className='3xl:text-base text-sm font-normal capitalize'>
-                                                        Số sàn
-                                                    </div>
-                                                </Label>
-                                            </div>
-                                            <div key={'transmissionId-2'} className='col-span-1 flex items-center space-x-3 group'>
-                                                <RadioGroupItem
-                                                    value={`2`}
-                                                    id={`2`}
-                                                    className={`${isStateListCarsDriver?.dataParams?.transmission_search == "2" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
-                                                />
-                                                <Label
-                                                    htmlFor={`2`}
-                                                    className="flex items-center gap-4 cursor-pointer"
-                                                >
-                                                    <div className='3xl:text-base text-sm font-normal capitalize'>
-                                                        Số tự động
-                                                    </div>
-                                                </Label>
-                                            </div>
-
-                                        </RadioGroup>
-                                }
-                            </>
-                        }
-
                     </ScrollArea>
 
                     {
@@ -835,7 +896,7 @@ export function DialogFilterListCars({ }: Props) {
                                 <div className='md:px-6 px-3'>
                                     <Button
                                         type="button"
-                                        className='xl:px-6 xl:py-3 px-4 py-2 xl:text-base text-sm rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full'
+                                        className='caret-transparent xl:px-6 xl:py-3 px-4 py-2 xl:text-base text-sm rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full'
                                         onClick={() => handleSubmitFilter()}
                                     >
                                         Áp dụng
@@ -848,3 +909,5 @@ export function DialogFilterListCars({ }: Props) {
         </Dialog>
     )
 }
+
+export default DialogFilterListCars

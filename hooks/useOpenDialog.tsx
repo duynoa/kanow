@@ -22,15 +22,19 @@ export const useDialogLogin = create<IOpenDialogLogin>((set) => ({
 // dialog promotion
 interface IOpenDialogPromotion {
     openDialogPromotion: boolean;
-    setOpenDialogPromotion: (key: any) => void;
+    isLoadingDataPromotions: boolean;
     dataPromotions: IInfoPromotion[];
+    setOpenDialogPromotion: (key: boolean) => void;
+    setIsLoadingDataPromotion: (key: boolean) => void;
     setDataPromotions: (dataPromotions: IInfoPromotion[]) => void
 }
 
 export const useDialogPromotion = create<IOpenDialogPromotion>((set) => ({
     openDialogPromotion: false,
     dataPromotions: [],
+    isLoadingDataPromotions: false,
     setOpenDialogPromotion: (key: boolean) => set((state) => ({ openDialogPromotion: key })),
+    setIsLoadingDataPromotion: (key: boolean) => set((state) => ({ isLoadingDataPromotions: key })),
     setDataPromotions: (key: IInfoPromotion[]) => set((state) => ({ dataPromotions: key })),
 }));
 
@@ -167,23 +171,27 @@ export const useDialogValidate = create<IOpenDialogValidate>((set) => ({
 
 // dialog cancel car (huỷ xe)
 interface IOpenDialogCancelCar {
-    openDialogCancelCar: boolean;
-    setOpenDialogCancelCar: (key: any, type?: string) => void;
     type?: string;
+    dataInfo?: any;
     dataListReasonsCancel: any[];
-    setDataListReasonsCancel: (dataListReasonsCancel: any[]) => void;
-    dataInfo?: any
+    openDialogCancelCar: boolean;
+    isLoadingDialogCancelCar:boolean;
     setDataInfo: (dataInfo?: any) => void;
+    setOpenDialogCancelCar: (key: boolean, type?: string) => void;
+    setDataListReasonsCancel: (dataListReasonsCancel: any[]) => void;
+    setIsLoadingDialogCancelCar: (key: boolean) => void;
 }
 
 export const useDialogCancelCar = create<IOpenDialogCancelCar>((set) => ({
-    openDialogCancelCar: false,
-    setOpenDialogCancelCar: (key: any, type?: string) => set((state) => ({ openDialogCancelCar: key, type: type })),
     type: "",
-    dataListReasonsCancel: [],
-    setDataListReasonsCancel: (key: any[]) => set((state) => ({ dataListReasonsCancel: key })),
     dataInfo: {},
+    dataListReasonsCancel: [],
+    openDialogCancelCar: false,
+    isLoadingDialogCancelCar:false,
     setDataInfo: (key: any) => set((state) => ({ dataInfo: key })),
+    setOpenDialogCancelCar: (key: boolean, type?: string) => set((state) => ({ openDialogCancelCar: key, type: type })),
+    setDataListReasonsCancel: (key: any[]) => set((state) => ({ dataListReasonsCancel: key })),
+    setIsLoadingDialogCancelCar: (key: boolean) => set((state) => ({ isLoadingDialogCancelCar: key })),    
 }));
 
 // dialog address

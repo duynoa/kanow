@@ -361,51 +361,6 @@ export function DialogCalendar({ }: Props) {
         // Check if new date range is not null
         console.log('newDate', newDate);
 
-        // console.log('newDate', newDate);
-        // if (pathname.startsWith('/detail-car/')) {
-        //     // Check if new date range is not null
-        //     if (newDate && newDate.from && newDate.to) {
-        //         // Check if the new from date is different from the current from date
-        //         if (!isSameDay(dateTemp?.from, newDate.from) && dateTemp?.from) {
-        //             // If it's different, keep the time of the current from date and update the date
-        //             newDate.from.setHours(dateTemp?.from.getHours(), dateTemp?.from.getMinutes(), dateTemp?.from.getSeconds());
-        //         }
-        //         // Check if the new to date is different from the current to date
-        //         if (!isSameDay(dateTemp?.to, newDate.to) && dateTemp?.to) {
-        //             // If it's different, keep the time of the current to dateTemp and update the dateTemp
-        //             newDate.to.setHours(dateTemp?.to.getHours(), dateTemp?.to.getMinutes(), dateTemp?.to.getSeconds());
-        //         }
-        //         // Update the state with the new date range
-        //         // setDateTemp(newDate);
-        //         setDateTimeComponent(newDate);
-        //     } else if (newDate && newDate.from) {
-        //         // setDateTemp(newDate);
-        //         setDateTimeComponent(newDate);
-        //     }
-
-        // } else {
-        //     // Check if new date range is not null
-        //     if (newDate && newDate.from && newDate.to) {
-        //         // Check if the new from date is different from the current from date
-        //         if (!isSameDay(dateReal?.from, newDate.from) && dateReal?.from) {
-        //             // If it's different, keep the time of the current from date and update the date
-        //             newDate.from.setHours(dateReal?.from.getHours(), dateReal?.from.getMinutes(), dateReal?.from.getSeconds());
-        //         }
-        //         // Check if the new to date is different from the current to date
-        //         if (!isSameDay(dateReal?.to, newDate.to) && dateReal?.to) {
-        //             // If it's different, keep the time of the current to dateReal and update the dateReal
-        //             newDate.to.setHours(dateReal?.to.getHours(), dateReal?.to.getMinutes(), dateReal?.to.getSeconds());
-        //         }
-        //         // Update the state with the new date range
-        //         // setDateReal(newDate);
-        //         setDateTimeComponent(newDate);
-        //     } else if (newDate && newDate.from) {
-        //         // setDateReal(newDate);
-        //         setDateTimeComponent(newDate);
-        //     }
-        // }
-
-
         const isAfterInSameYearAndMonth = (date: any, compareDate: any) => {
             return (
                 (isSameYear(date, compareDate) || (getYear(date) > getYear(compareDate))) &&
@@ -486,25 +441,48 @@ export function DialogCalendar({ }: Props) {
 
     // change time in calender default
     const handleTimeChange = (value: string, type: string) => {
-        if (dateTimeComponent) {
+        // if (dateTimeComponent) {
+        //     if (dateTimeComponent.from && type === 'from') {
+        //         const updatedDate = {
+        //             ...dateTimeComponent,
+        //             from: new Date(dateTimeComponent?.from.setHours(+value?.split(":")[0], +value.split(":")[1])),
+        //         };
+
+        //         setFlagSubmit(true)
+        //         setDateTimeComponent(updatedDate);
+        //     } else if (dateTimeComponent.to && type === 'to') {
+        //         const updatedDate = {
+        //             ...dateTimeComponent,
+        //             to: new Date(dateTimeComponent?.to.setHours(+value?.split(":")[0], +value.split(":")[1])),
+        //         };
+
+        //         setFlagSubmit(true)
+        //         setDateTimeComponent(updatedDate);
+        //     }
+
+        // }
+
+        if (dateTimeComponent.from && dateTimeComponent.to) {
             if (dateTimeComponent.from && type === 'from') {
-                const updatedDate = {
-                    ...dateTimeComponent,
-                    from: new Date(dateTimeComponent?.from.setHours(+value?.split(":")[0], +value.split(":")[1])),
-                };
-
+                const updatedDateStart: any = new Date(dateTimeComponent.from.setHours(+value?.split(":")[0], +value.split(":")[1]))
                 setFlagSubmit(true)
-                setDateTimeComponent(updatedDate);
+
+                // setDateTimeComponent(updatedDate);
+
+                // setDateStart(updatedDateStart);
+                setDateTimeComponent((prevState: any) => ({
+                    ...prevState,
+                    from: updatedDateStart,
+                }))
             } else if (dateTimeComponent.to && type === 'to') {
-                const updatedDate = {
-                    ...dateTimeComponent,
-                    to: new Date(dateTimeComponent?.to.setHours(+value?.split(":")[0], +value.split(":")[1])),
-                };
-
+                const updatedDateEnd = new Date(dateTimeComponent.to.setHours(+value?.split(":")[0], +value.split(":")[1]))
                 setFlagSubmit(true)
-                setDateTimeComponent(updatedDate);
+                setDateTimeComponent((prevState: any) => ({
+                    ...prevState,
+                    to: updatedDateEnd,
+                }))
+                // setDateEnd(updatedDateEnd);
             }
-
         }
 
     };
@@ -535,10 +513,6 @@ export function DialogCalendar({ }: Props) {
                         onSuccessPage: true
                     }
                 })
-
-                console.log('check ?? : ',);
-
-
                 if (
                     isStateDetailCar?.dataDetailCar?.price?.number_day &&
                     isStateDetailCar?.infoPromotion?.activePromotion?.number_day &&
@@ -685,12 +659,24 @@ export function DialogCalendar({ }: Props) {
         } else {
             // giờ trong lịch mặc định 
             setDateTime(initialDateTime)
-            const daysDifference = differenceInCalendarDays(`${dateTimeComponent?.to}`, `${dateTimeComponent?.from}`);
-            if (dateTimeComponent?.to && dateTimeComponent?.from && daysDifference) {
-                console.log("Số ngày thuê:", daysDifference);
-                setNumberDayComponent(daysDifference)
-            } else if (dateTimeComponent?.to || dateTimeComponent?.from) {
-                setNumberDayComponent(1)
+
+            // phần này để làm tròn giờ nếu qua ngày mới
+            // state chọn số ngày thuê
+            const daysDifference = differenceInCalendarDays(dateTimeComponent?.to, dateTimeComponent?.from);
+            const hoursDifference = differenceInHours(dateTimeComponent?.to, dateTimeComponent?.from);
+            const minutesDifference = differenceInMinutes(dateTimeComponent?.to, dateTimeComponent?.from);
+            const isDateEndAfter = isAfter(dateTimeComponent?.to, dateTimeComponent?.from);
+            const timeDate = Math.ceil(minutesDifference / 1440)
+
+            if (daysDifference > 0 && isDateEndAfter) {
+
+                setNumberDayComponent(timeDate);
+            } else if (minutesDifference >= 1440 && isDateEndAfter) {
+                setNumberDayComponent(timeDate);
+            } else {
+
+                setHoursBetWeenDays(hoursDifference)
+                setNumberDayComponent(1);
             }
         }
     }, [
