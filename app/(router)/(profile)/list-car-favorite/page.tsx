@@ -215,7 +215,8 @@ const ListCarFavorite = (props: Props) => {
                                     >
                                         <Link
                                             prefetch={false}
-                                            href={`/detail-car/${card.id}?${ConvertToSlug(card?.name_car)}`}
+
+                                            href={`/detail-car/${card.id}?type=1&${ConvertToSlug(card?.name_car)}`}
                                             className='3xl:w-[30%] xxl:w-[35%]  2xl:w-[35%] xl:w-[40%] lg:w-[45%] w-full 3xl:h-[210px] xxl:h-[185px] 2xl:h-[190px] xl:h-[175px] lg:h-[165px] md:h-[280px] h-[180px] relative'>
                                             <Image
                                                 src={card?.image_car?.length > 0 ? card?.image_car[0]?.name : '/default/default.png'}
@@ -363,7 +364,7 @@ const ListCarFavorite = (props: Props) => {
                                             </Button>
                                             <Link
                                                 prefetch={false}
-                                                href={`/detail-car/${card.id}?${ConvertToSlug(card?.name_car)}`}
+                                                href={`/detail-car/${card.id}?type=1&${ConvertToSlug(card?.name_car)}`}
                                                 className={`bg-[#2FB9BD]/80 hover:bg-[#2FB9BD]/80 text-white border-[#2FB9BD] w-full xl:text-sm lg:text-[9px] text-sm text-center
                                                         2xl:py-3 xl:py-2.5 lg:py-1.5 py-2.5  rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  lg:border border-[1.5px] uppercases`}>
                                                 Xem chi tiết

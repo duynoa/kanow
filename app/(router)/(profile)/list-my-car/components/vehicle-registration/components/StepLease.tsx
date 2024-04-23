@@ -1,4 +1,5 @@
 import SelectCombobox from "@/components/combobox/SelectCombobox"
+import SearchAddress from "@/components/searchAddress/SearchAddress"
 import { Button } from "@/components/ui/button"
 import { CustomSlider } from "@/components/ui/customSlider"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -6,16 +7,210 @@ import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { IVehicleRegistration } from "@/types/Profile/mycar/IMyCar"
+import apiAddress from "@/services/profile/listAddress/listAddress.services"
+import apiMyCar from "@/services/profile/listMyCar/listMyCar.services"
+import { IStateLease, TComboboxApi } from "@/types/Profile/mycar/IMyCar"
+import { debounce } from "lodash"
 import { ChevronsUpDown } from "lucide-react"
+import { useEffect, useState } from "react"
 
 type Props = {
     form: any,
-    isState: IVehicleRegistration
-    queryState: (key: any) => void
+    isState: any
+    checkValueArray: (array: any[], field: any) => any
+    converArray: (arr: TComboboxApi[]) => TComboboxApi[]
 }
-const StepLease = ({ form, isState, queryState }: Props) => {
-    console.log("isState", isState);
+const StepLease = ({ form, checkValueArray }: Props) => {
+    const [isMount, setIsMount] = useState(false)
+    const { apiListMoveEndFeuelType } = apiMyCar()
+    const { apiListCity, apiListDistrict, apiListWard } = apiAddress()
+
+    const initialState: IStateLease = {
+        openCombobox: false,
+        typeOpenCombobox: "",
+        dataCity: [],
+        dataDistrict: [],
+        dataWards: [],
+        dataWordLimit: [],
+        dataUntil: [],
+        //giao xe tận tơi
+        vehicleHanding: {
+            // quảng đường giao 
+            intersectionSquare: 0,
+            /// phí giao nhận xe cho mỗi km
+            deliveryFee: 0,
+            // miễn phí giao
+            freeDelivery: 0
+        },
+        discount: 0,
+        // Giới hạn số km
+        limitedKilometers: {
+            //số km tối đa trong 1 ngày
+            maximumKilometers: 0,
+            // phí vượt giới hạn
+            overLimitFee: 0
+        },
+
+        // Đặt xe nhanh
+        bookCarQuickly: {
+            // giới hạn từ
+            wordLimit: [
+                {
+                    value: 6,
+                    label: '6 tiếng tới'
+                }
+            ],
+            // cho đến
+            until: [
+                {
+                    value: 7 * 24,
+                    label: '1 tuần tới'
+                },
+                {
+                    value: 14 * 24,
+                    label: '2 tuần tới'
+                },
+                {
+                    value: 21 * 24,
+                    label: '3 tuần tới'
+                },
+                {
+                    value: 28 * 24,
+                    label: '4 tuần tới'
+                },
+            ],
+        },
+
+    }
+
+    const valuesForm = form.getValues()
+
+
+    const [isState, setIsState] = useState(initialState)
+
+
+    const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
+
+    useEffect(() => {
+        setIsMount(true)
+    }, [])
+
+    const fetListOther = async () => {
+        try {
+            const { data: { other, dtFee } } = await apiListMoveEndFeuelType()
+            if (other || dtFee) {
+                queryState({
+                    vehicleHanding: {
+                        ...isState.vehicleHanding,
+                        deliveryFee: +other?.fee_km_delivery_car,
+                        freeDelivery: +other?.free_km_delivery_car,
+                        intersectionSquare: +other?.km_delivery_car,
+                    },
+                    discount: +other?.percent_discount,
+                    limitedKilometers: {
+                        ...isState.limitedKilometers,
+                        maximumKilometers: +other?.limit_km_day,
+                        overLimitFee: +dtFee?.max
+                    }
+
+                })
+                const db = [
+                    { name: 'stepLease.vehicleHanding.intersectionSquare', value: 20 },
+                    { name: 'stepLease.vehicleHanding.freeDelivery', value: 0 },
+                    { name: 'stepLease.vehicleHanding.deliveryFee', value: 10 },
+                    { name: 'stepLease.discount.value', value: 20 },
+                    { name: 'stepLease.limitedKilometers.maximumKilometers', value: 400 },
+                    { name: 'stepLease.limitedKilometers.overLimitFeeId', value: dtFee?.id },
+                    { name: 'stepLease.limitedKilometers.overLimitFee', value: 3 },
+                ]
+                db.forEach((item: any) => {
+                    form.setValue(item.name, item.value);
+                });
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+
+    const fetchListCity = async (search: any) => {
+        try {
+            const { data } = await apiListCity({ 'search': search })
+            if (data?.data) {
+                const newData = data?.data.map((e: any) => ({ label: e.name, value: e.province_id }))
+                queryState({ dataCity: newData })
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+
+
+    const fetchDistrict = async (search: any) => {
+        try {
+            const { data } = await apiListDistrict({ 'search': search, "province_id": valuesForm.stepLease.vehicleAddress.city })
+            if (data?.data) {
+                const newData = data?.data.map((e: any) => ({ label: e.name, value: e.district_id }))
+                queryState({ dataDistrict: newData })
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+
+    const fetchWards = async (search: any) => {
+        try {
+            const { data } = await apiListWard({ 'search': search, "district_id": valuesForm.stepLease.vehicleAddress.district })
+            if (data?.data) {
+                const newData = data?.data.map((e: any) => ({ label: e.name, value: e.wards_id }))
+                queryState({ dataWards: newData })
+            }
+        } catch (error) {
+            throw error
+
+        }
+    }
+
+    useEffect(() => {
+        fetchListCity("")
+        fetListOther()
+    }, [])
+
+    useEffect(() => {
+        if (isState.typeOpenCombobox === 'city') {
+            fetchListCity("")
+        }
+    }, [isState.openCombobox])
+
+    useEffect(() => {
+        if (valuesForm.stepLease.vehicleAddress.city) {
+            fetchDistrict('')
+        }
+    }, [isState.openCombobox, valuesForm.city])
+
+
+    useEffect(() => {
+        if (valuesForm.stepLease.vehicleAddress.district) {
+            fetchWards('')
+        }
+    }, [isState.openCombobox, valuesForm.district])
+
+    const handleSearchApi = debounce((value, type) => {
+        switch (type) {
+            case 'city':
+                fetchListCity(value)
+                break;
+            case 'district':
+                fetchDistrict(value)
+                break;
+            case 'wards':
+                fetchWards(value)
+                break;
+            default:
+                break;
+        }
+    }, 700)
+
+    if (!isMount) return null
 
     return (
         <>
@@ -31,7 +226,7 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                 name="stepLease.unitPrice"
                                 rules={{
                                     required: {
-                                        value: false,
+                                        value: true,
                                         message: 'Vui lòng nhập đơn giá thuê',
                                     },
                                 }}
@@ -44,10 +239,12 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                             </FormLabel>
                                             <FormControl>
                                                 <Input
+                                                    inputMode="numeric"
                                                     className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
-                                 focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
-                                                    placeholder="390K"
+                                                 focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                                    placeholder="Nhập đơn giá thuê"
                                                     type={'number'}
+                                                    min={0}
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -61,6 +258,7 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                             />
                         </div>
                         <div className="md:col-span-2 col-span-1">
+                            {/* Địa chỉ xe */}
                             <FormField
                                 control={form.control}
                                 name="stepLease.vehicleAddress"
@@ -75,12 +273,13 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                     control={form.control}
                                                     rules={{
                                                         required: {
-                                                            value: false,
+                                                            value: true,
                                                             message: 'Vui lòng chọn tỉnh thành',
                                                         },
                                                     }}
                                                     name="stepLease.vehicleAddress.city"
                                                     render={({ field }) => {
+                                                        const checkValue = checkValueArray(isState.dataCity, field)
                                                         return (
                                                             <FormItem>
                                                                 <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
@@ -89,13 +288,8 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <Popover
-                                                                            open={isState.stateLease.openCity}
-                                                                            onOpenChange={() => queryState({
-                                                                                stateLease: {
-                                                                                    ...isState.stateLease,
-                                                                                    openCity: !isState.stateLease.openCity
-                                                                                }
-                                                                            })}
+                                                                            open={isState.typeOpenCombobox === 'city' && isState.openCombobox}
+                                                                            onOpenChange={() => queryState({ openCombobox: !isState.openCombobox, typeOpenCombobox: 'city' })}
                                                                         >
                                                                             <PopoverTrigger asChild>
                                                                                 <Button
@@ -103,20 +297,21 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                                     role="combobox"
                                                                                     className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                                                 >
-                                                                                    {/* {checkValue ? checkValue : "Chọn hãng xe"} */}
-                                                                                    Chọn tỉnh thành
+                                                                                    {checkValue ? checkValue : "Chọn tỉnh thành"}
                                                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                                                 </Button>
                                                                             </PopoverTrigger>
                                                                             <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-auto">
                                                                                 <SelectCombobox
-                                                                                    data={[]}
+                                                                                    data={isState.dataCity}
                                                                                     field={field}
                                                                                     onChange={(e: any) => {
-                                                                                        // field.onChange(e)
-                                                                                        // queryKeyIsState({ openWards: false })
+                                                                                        field.onChange(e)
+                                                                                        queryState({ openCombobox: false })
+                                                                                        form.setValue('stepLease.vehicleAddress.district', '')
+                                                                                        form.setValue('stepLease.vehicleAddress.wards', '')
                                                                                     }}
-                                                                                    // onValueChange={(e: any) => handleSearchApi(e, 'wards')}
+                                                                                    onValueChange={(e: any) => handleSearchApi(e, 'city')}
                                                                                     placeholderInput="Tìm kiếm tỉnh thành"
 
                                                                                 />
@@ -136,11 +331,12 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                     name="stepLease.vehicleAddress.district"
                                                     rules={{
                                                         required: {
-                                                            value: false,
+                                                            value: true,
                                                             message: 'Vui lòng chọn quận huyện',
                                                         },
                                                     }}
                                                     render={({ field }) => {
+                                                        const checkValue = checkValueArray(isState.dataDistrict, field)
                                                         return (
                                                             <FormItem>
                                                                 <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
@@ -149,13 +345,8 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <Popover
-                                                                            onOpenChange={() => queryState({
-                                                                                stateLease: {
-                                                                                    ...isState.stateLease,
-                                                                                    openDistrict: !isState.stateLease.openDistrict
-                                                                                }
-                                                                            })}
-                                                                            open={isState.stateLease.openDistrict}
+                                                                            open={isState.typeOpenCombobox === 'district' && isState.openCombobox}
+                                                                            onOpenChange={() => queryState({ openCombobox: !isState.openCombobox, typeOpenCombobox: 'district' })}
                                                                         >
                                                                             <PopoverTrigger asChild>
                                                                                 <Button
@@ -163,22 +354,21 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                                     role="combobox"
                                                                                     className="2xl:py-3  w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                                                 >
-                                                                                    {/* {checkValue ? checkValue : "Chọn hãng xe"} */}
-                                                                                    Chọn quận huyện
+                                                                                    {checkValue ? checkValue : "Chọn quận huyện"}
                                                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                                                 </Button>
                                                                             </PopoverTrigger>
                                                                             <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-auto">
                                                                                 <SelectCombobox
-                                                                                    data={[]}
+                                                                                    data={isState.dataDistrict}
                                                                                     field={field}
                                                                                     onChange={(e: any) => {
-                                                                                        // field.onChange(e)
-                                                                                        // queryKeyIsState({ openWards: false })
+                                                                                        field.onChange(e)
+                                                                                        queryState({ openCombobox: false })
+                                                                                        form.setValue('stepLease.vehicleAddress.wards', '')
                                                                                     }}
-                                                                                    // onValueChange={(e: any) => handleSearchApi(e, 'wards')}
+                                                                                    onValueChange={(e: any) => handleSearchApi(e, 'district')}
                                                                                     placeholderInput="Tìm kiếm quận huyện"
-
                                                                                 />
                                                                             </PopoverContent>
                                                                         </Popover>
@@ -195,12 +385,13 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                     control={form.control}
                                                     rules={{
                                                         required: {
-                                                            value: false,
+                                                            value: true,
                                                             message: 'Vui lòng chọn phường/ xã',
                                                         },
                                                     }}
-                                                    name="stepLease.vehicleAddress.ward"
+                                                    name="stepLease.vehicleAddress.wards"
                                                     render={({ field }) => {
+                                                        const checkValue = checkValueArray(isState.dataWards, field)
                                                         return (
                                                             <FormItem>
                                                                 <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
@@ -209,13 +400,8 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <Popover
-                                                                            onOpenChange={() => queryState({
-                                                                                stateLease: {
-                                                                                    ...isState.stateLease,
-                                                                                    openWards: !isState.stateLease.openWards
-                                                                                }
-                                                                            })}
-                                                                            open={isState.stateLease.openWards}
+                                                                            open={isState.typeOpenCombobox === 'wards' && isState.openCombobox}
+                                                                            onOpenChange={() => queryState({ openCombobox: !isState.openCombobox, typeOpenCombobox: 'wards' })}
                                                                         >
                                                                             <PopoverTrigger asChild>
                                                                                 <Button
@@ -223,20 +409,19 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                                     role="combobox"
                                                                                     className="2xl:py-3  w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                                                 >
-                                                                                    {/* {checkValue ? checkValue : "Chọn hãng xe"} */}
-                                                                                    Chọn phường xã
+                                                                                    {checkValue ? checkValue : "Chọn phường xã"}
                                                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                                                 </Button>
                                                                             </PopoverTrigger>
                                                                             <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-auto">
                                                                                 <SelectCombobox
-                                                                                    data={[]}
+                                                                                    data={isState.dataWards}
                                                                                     field={field}
                                                                                     onChange={(e: any) => {
-                                                                                        // field.onChange(e)
-                                                                                        // queryKeyIsState({ openWards: false })
+                                                                                        field.onChange(e)
+                                                                                        queryState({ openCombobox: false })
                                                                                     }}
-                                                                                    // onValueChange={(e: any) => handleSearchApi(e, 'wards')}
+                                                                                    onValueChange={(e: any) => handleSearchApi(e, 'wards')}
                                                                                     placeholderInput="Tìm kiếm phường xã"
 
                                                                                 />
@@ -255,7 +440,7 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                     control={form.control}
                                                     rules={{
                                                         required: {
-                                                            value: false,
+                                                            value: true,
                                                             message: 'Vui lòng nhập tên đường',
                                                         }
                                                     }}
@@ -267,13 +452,15 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                     Tên đường <span className="text-red-500">*</span>
                                                                 </FormLabel>
                                                                 <FormControl>
-                                                                    <Input
-                                                                        className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
-                                                                     focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
-                                                                        placeholder="Nhập tên đường"
-                                                                        type={'text'}
-                                                                        {...field}
-                                                                    />
+                                                                    <SearchAddress onChange={(e: any) => field.onChange(e)} >
+                                                                        <Input
+                                                                            type="text"
+                                                                            className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs  disabled:border-gray-300 disabled:border-2  focus:border-[#2FB9BD]
+                                                                            w-full border-[#E6E8EC] border-2 2xl:py-3 lg:py-2 md:py-2 py-2 rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                                                            placeholder="Nhập địa chỉ của bạn"
+                                                                            {...field}
+                                                                        />
+                                                                    </SearchAddress>
                                                                 </FormControl>
                                                                 {fieldState?.invalid && fieldState?.error && (
                                                                     <FormMessage>{fieldState?.error?.message}</FormMessage>
@@ -288,6 +475,7 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                 }}
                             />
                         </div>
+                        {/* Giảm giá */}
                         <FormField
                             control={form.control}
                             name="stepLease.discount.open"
@@ -320,7 +508,7 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                             <FormControl>
                                                                 <>
                                                                     <CustomSlider
-                                                                        defaultValue={[20]} max={100} step={1}
+                                                                        defaultValue={[20]} max={isState.discount} step={1}
                                                                         onValueChange={field.onChange}
                                                                     />
                                                                 </>
@@ -347,8 +535,7 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                 );
                             }}
                         />
-
-
+                        {/* Đặt xe nhanh */}
                         <FormField
                             control={form.control}
                             name="stepLease.bookCarQuickly.open"
@@ -364,7 +551,12 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                 <Switch
                                                     className="data-[state=checked]:bg-[#2FB9BD] "
                                                     checked={field.value}
-                                                    onCheckedChange={field.onChange}
+                                                    onCheckedChange={(e) => {
+                                                        field.onChange(e)
+                                                        form.setValue('stepLease.bookCarQuickly.wordLimit', '')
+                                                        form.setValue('stepLease.bookCarQuickly.until', '')
+
+                                                    }}
                                                 />
                                             </div>
                                         </FormControl>
@@ -374,6 +566,7 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                     control={form.control}
                                                     name="stepLease.bookCarQuickly.wordLimit"
                                                     render={({ field }) => {
+                                                        const checkValue = checkValueArray(isState.bookCarQuickly.wordLimit, field)
                                                         return (
                                                             <FormItem>
                                                                 <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
@@ -382,8 +575,6 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <Popover
-                                                                        // open={isState.stateInformation.openCarCompany}
-                                                                        // onOpenChange={() => queryState({ stateInformation: !isState.stateInformation.openCarCompany })}
                                                                         >
                                                                             <PopoverTrigger asChild>
                                                                                 <Button
@@ -391,22 +582,17 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                                     role="combobox"
                                                                                     className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                                                 >
-                                                                                    {/* {checkValue ? checkValue : "Chọn hãng xe"} */}
-                                                                                    Giới hạn từ
+                                                                                    {checkValue ? checkValue : " Giới hạn từ"}
                                                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                                                 </Button>
                                                                             </PopoverTrigger>
                                                                             <PopoverContent className="3xl:w-[300px] xxl:w-[280px] 2xl:w-[250px] xl:w-[200px] lg:w-[150px] md:w-[160px] w-auto">
                                                                                 <SelectCombobox
-                                                                                    data={[]}
+                                                                                    data={isState.bookCarQuickly.wordLimit}
                                                                                     field={field}
                                                                                     onChange={(e: any) => {
-                                                                                        // field.onChange(e)
-                                                                                        // queryKeyIsState({ openWards: false })
+                                                                                        field.onChange(e)
                                                                                     }}
-                                                                                // onValueChange={(e: any) => handleSearchApi(e, 'wards')}
-                                                                                // placeholderInput="Tìm kiếm thời gian"
-
                                                                                 />
                                                                             </PopoverContent>
                                                                         </Popover>
@@ -423,38 +609,33 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                     control={form.control}
                                                     name="stepLease.bookCarQuickly.until"
                                                     render={({ field }) => {
+                                                        const checkValue = checkValueArray(isState.bookCarQuickly.until, field)
+
                                                         return (
                                                             <FormItem>
                                                                 <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                                    Giới hạn từ
+                                                                    Cho đến
                                                                 </FormLabel>
                                                                 <FormControl>
                                                                     <>
-                                                                        <Popover
-                                                                        // open={isState.stateInformation.openCarCompany}
-                                                                        // onOpenChange={() => queryState({ stateInformation: !isState.stateInformation.openCarCompany })}
-                                                                        >
+                                                                        <Popover>
                                                                             <PopoverTrigger asChild>
                                                                                 <Button
                                                                                     variant="outline"
                                                                                     role="combobox"
                                                                                     className="2xl:py-3  w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                                                 >
-                                                                                    {/* {checkValue ? checkValue : "Chọn hãng xe"} */}
-                                                                                    Cho đến
+                                                                                    {checkValue ? checkValue : "Cho đến"}
                                                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                                                 </Button>
                                                                             </PopoverTrigger>
                                                                             <PopoverContent className="3xl:w-[300px] xxl:w-[280px] 2xl:w-[250px] xl:w-[200px] lg:w-[150px] md:w-[160px] w-auto">
                                                                                 <SelectCombobox
-                                                                                    data={[]}
+                                                                                    data={isState.bookCarQuickly.until}
                                                                                     field={field}
                                                                                     onChange={(e: any) => {
-                                                                                        // field.onChange(e)
-                                                                                        // queryKeyIsState({ openWards: false })
+                                                                                        field.onChange(e)
                                                                                     }}
-                                                                                // onValueChange={(e: any) => handleSearchApi(e, 'wards')}
-                                                                                // placeholderInput="Tìm kiếm thời gian"
 
                                                                                 />
                                                                             </PopoverContent>
@@ -477,7 +658,6 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                 );
                             }}
                         />
-
                         {/* // giao xe tận nơi*/}
                         <FormField
                             control={form.control}
@@ -512,7 +692,7 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <CustomSlider
-                                                                            defaultValue={[20]} max={50} step={1}
+                                                                            defaultValue={[20]} max={isState.vehicleHanding.intersectionSquare} step={1}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>
@@ -544,14 +724,14 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <CustomSlider
-                                                                            defaultValue={[5]} max={50} step={1}
+                                                                            defaultValue={[10]} max={isState.vehicleHanding.deliveryFee} step={1}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>
                                                                 </FormControl>
                                                                 <div className="flex justify-between">
                                                                     <FormDescription>
-                                                                        Phí đề xuất: đề xuất {3}k
+                                                                        Phí đề xuất: đề xuất {10}k
                                                                     </FormDescription>
                                                                     <FormDescription className='font-bold'>
                                                                         {field.value}k
@@ -576,14 +756,14 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <CustomSlider
-                                                                            defaultValue={[1]} max={50} step={1}
+                                                                            defaultValue={[0]} max={isState.vehicleHanding.freeDelivery} step={1}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>
                                                                 </FormControl>
                                                                 <div className="flex justify-between">
                                                                     <FormDescription>
-                                                                        Quãng đường đề xuất {1}km
+                                                                        Quãng đường đề xuất {0}km
                                                                     </FormDescription>
                                                                     <FormDescription className='font-bold'>
                                                                         {field.value}km
@@ -639,7 +819,7 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <CustomSlider
-                                                                            defaultValue={[400]} max={500} step={1}
+                                                                            defaultValue={[400]} max={isState.limitedKilometers.maximumKilometers} step={1}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>
@@ -671,7 +851,7 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <CustomSlider
-                                                                            defaultValue={[3]} max={5} step={1}
+                                                                            defaultValue={[3]} max={isState.limitedKilometers.overLimitFee} step={1}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>
@@ -693,31 +873,87 @@ const StepLease = ({ form, isState, queryState }: Props) => {
                                                 />
                                             </div>
                                         }
-                                        <FormField
-                                            control={form.control}
-                                            name="stepLease.carRentalConditions"
-                                            render={({ field, fieldState }) => {
-                                                return (
-                                                    <FormItem className="">
-                                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                            Điều khoản thuê xe
-                                                        </FormLabel>
-                                                        <FormControl>
-                                                            <Textarea
-                                                                className={`disabled:bg-[#E6E8EC] min-h-[170px] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
-                                                focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
-                                                                placeholder="Nhập rõ các yêu cầu để khách có thể thuê xe."
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
 
-                                                        {fieldState?.invalid && fieldState?.error && (
-                                                            <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                                        )}
-                                                    </FormItem>
-                                                );
-                                            }}
-                                        />
+                                        {fieldState?.invalid && fieldState?.error && (
+                                            <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                        )}
+                                    </FormItem>
+                                );
+                            }}
+                        />
+                        {/* thế chấp */}
+                        <FormField
+                            control={form.control}
+                            name="stepLease.mortgage.open"
+                            render={({ field, fieldState }) => {
+                                return (
+                                    <FormItem className="">
+                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                            Thế chấp thuê xe
+                                            <h1 className="text-xs text-gray-400">Bật tính năng</h1>
+                                        </FormLabel>
+                                        <FormControl>
+                                            <div className="">
+                                                <Switch
+                                                    className="data-[state=checked]:bg-[#2FB9BD] "
+                                                    checked={field.value}
+                                                    onCheckedChange={field.onChange}
+                                                />
+                                            </div>
+                                        </FormControl>
+                                        {field.value &&
+                                            <div className="flex flex-col gap-4">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="stepLease.mortgage.value"
+                                                    render={({ field }) => {
+                                                        return (
+                                                            <FormItem>
+                                                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                                                    Ghi chú thế chấp
+                                                                </FormLabel>
+                                                                <FormControl>
+                                                                    <Textarea
+                                                                        className={`disabled:bg-[#E6E8EC] min-h-[85px] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
+                                                                    focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                                                        placeholder="Nhập ghi chú thế chấp"
+                                                                        {...field}
+                                                                    />
+                                                                </FormControl>
+                                                                {fieldState?.invalid && fieldState?.error && (
+                                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                                )}
+                                                            </FormItem>
+                                                        );
+                                                    }}
+                                                />
+                                            </div>
+                                        }
+                                        {fieldState?.invalid && fieldState?.error && (
+                                            <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                        )}
+                                    </FormItem>
+                                );
+                            }}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="stepLease.carRentalConditions"
+                            render={({ field, fieldState }) => {
+                                return (
+                                    <FormItem className="">
+                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                            Điều khoản thuê xe
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                className={`disabled:bg-[#E6E8EC] min-h-[170px] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
+                                                focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                                placeholder="Nhập rõ các yêu cầu để khách có thể thuê xe."
+                                                {...field}
+                                            />
+                                        </FormControl>
+
                                         {fieldState?.invalid && fieldState?.error && (
                                             <FormMessage>{fieldState?.error?.message}</FormMessage>
                                         )}

@@ -21,11 +21,53 @@ const apiMyCar = () => {
     };
 
     //Đăng ký xe
+
+    // api danh sách hãng xe
+    const apiListCarCompany = (nameSearch: any, typePage: string | number, param?: any) => {
+        let config: AxiosRequestConfig = {
+            params: {
+                name_search: nameSearch,
+                type: typePage,
+                ...param, // Nối các tham số trong param object
+            },
+        };
+        return axios.get(`/category/getListCompanyCar`, config);
+    };
+    // danh sách loại xe
+    const apiListCarModel = (nameSearch: any, typePage: string | number, param?: any) => {
+        let config: AxiosRequestConfig = {
+            params: {
+                name_search: nameSearch,
+                type: typePage,
+                ...param, // Nối các tham số trong param object
+            },
+        };
+        return axios.get(`/category/getListTypeCar`, config);
+    };
+
+    // danh sách chuyển động, nhiên liệu
+    const apiListMoveEndFeuelType = () => {
+        return axios.get(`/category/getListUtilitiesCar`);
+    };
+
     // Api danh sách tính năng
     const apiListFeature = () => {
         return axios.get(`/category/getListOtherAmenitiesCar`);
     };
-    return { apiContract, apiListCar, apiListStatusFilter, apiListFeature };
+    /// api lưu đăng ký xe tự lái
+    const apiAddCar = (data: any) => {
+        return axios.post(`/car/addCar`, data);
+    };
+    return {
+        apiContract,
+        apiListCar,
+        apiListStatusFilter,
+        apiListFeature,
+        apiListCarCompany,
+        apiListCarModel,
+        apiListMoveEndFeuelType,
+        apiAddCar,
+    };
 };
 
 export default apiMyCar;
