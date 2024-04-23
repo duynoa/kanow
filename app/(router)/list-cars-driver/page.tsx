@@ -33,9 +33,7 @@ import { CustomDataListCars } from '@/custom/CustomData';
 import { useCookie } from '@/hooks/useCookie';
 import { IInitialStateListCarAutonomous } from '@/types/Initial/IInitial';
 import moment from 'moment';
-import { useListCar } from '@/hooks/useQueryKeyList';
-import { useDataListCarAutonomous, useDataListCarsDriver } from '@/hooks/useDataQueryKey';
-import { usePathname } from 'next/navigation';
+import { useDataListCarsDriver } from '@/hooks/useDataQueryKey';
 import Nodata from '@/components/image/Nodata';
 import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
 
