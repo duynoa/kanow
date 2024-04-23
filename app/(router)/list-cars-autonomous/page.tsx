@@ -33,7 +33,6 @@ import moment from 'moment';
 import { useDataListCarAutonomous } from '@/hooks/useDataQueryKey';
 import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
 import Nodata from '@/components/image/Nodata';
-import { useSearchParams } from 'next/navigation';
 
 type Props = {}
 
