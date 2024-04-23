@@ -1,5 +1,6 @@
 import LayoutVehicleManagement from '@/components/layout/LayoutVehicleManagement'
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
     title: 'Kanow - Quản lý xe',
@@ -12,8 +13,10 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <LayoutVehicleManagement>
-            {children}
-        </LayoutVehicleManagement>
+        <Suspense>
+            <LayoutVehicleManagement>
+                {children}
+            </LayoutVehicleManagement>
+        </Suspense>
     )
 }
