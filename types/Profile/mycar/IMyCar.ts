@@ -8,49 +8,56 @@ export interface IMyCar {
     tab: number | string;
 }
 
+// danh sách step
 export interface ISteps {
     name: string;
     value: string;
 }
 
-export interface IDataCombobox {
-    id: string | number;
-    name: string;
-}
-
-export interface IDataFeature {
-    id: string | number;
-    name: string;
-    image: string;
-}
-
 export interface IVehicleRegistration {
     step: string;
-    stateInformation: {
-        openCarCompany: boolean;
-        openCarModel: boolean;
-        openSeats: boolean;
-        openYearOfManufacture: boolean;
-        openMove: boolean;
-        openFeuelType: boolean;
-        dataCarCompany: IDataCombobox[];
-        dataCarModel: IDataCombobox[];
-        dataSeats: IDataCombobox[];
-        dataYearOfManufacture: IDataCombobox[];
-        dataMove: IDataCombobox[];
-        dataFeuelType: IDataCombobox[];
-        dataFeature: IDataFeature[];
+    typePage: number;
+}
+
+export interface TComboboxApi {
+    value: string | number;
+    label: string;
+}
+
+interface ICommonType {
+    openCombobox: boolean;
+    typeOpenCombobox: string;
+}
+
+export interface IStateInfomation extends ICommonType {
+    loadFeature: boolean;
+    dataCarCompany: TComboboxApi[];
+    dataCarModel: TComboboxApi[];
+    dataSeats: TComboboxApi[];
+    dataYearOfManufacture: TComboboxApi[];
+    dataMove: TComboboxApi[];
+    dataFeuelType: TComboboxApi[];
+    dataFeature: TComboboxApi[];
+}
+
+export interface IStateLease extends ICommonType {
+    dataCity: any[];
+    dataDistrict: any[];
+    dataWards: any[];
+    dataWordLimit: any[];
+    dataUntil: any[];
+    vehicleHanding: {
+        intersectionSquare: number;
+        deliveryFee: number;
+        freeDelivery: number;
     };
-    stateLease: {
-        openCity: boolean;
-        openDistrict: boolean;
-        openWards: boolean;
-        dataCity: IDataCombobox[];
-        dataDistrict: IDataCombobox[];
-        dataWards: IDataCombobox[];
-        openWordLimit: boolean;
-        openUntil: boolean;
-        dataWordLimit: IDataCombobox[];
-        dataUntil: IDataCombobox[];
+    discount: number;
+    limitedKilometers: {
+        maximumKilometers: number;
+        overLimitFee: number;
+    };
+    bookCarQuickly: {
+        wordLimit: TComboboxApi[];
+        until: TComboboxApi[];
     };
 }

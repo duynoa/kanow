@@ -109,15 +109,15 @@ const MyCar = ({ isState }: Props) => {
                                 </div>
                             </div>
                         </div>
-                        <div className='3xl:w-[20%] xxl:w-[20%] 2xl:w-[20%] xl:w-[20%] lg:w-[15%] w-full flex lg:flex-col flex-row justify-start items-center gap-4  mt-2'>
+                        <div className='3xl:w-[20%] xxl:w-[20%] 2xl:w-[20%] xl:w-[20%] lg:w-[15%] w-full flex lg:flex-col flex-row justify-center items-center gap-4 my-auto'>
                             <Link
-                                href={`#`}
+                                href={`/vehicle-management/information?id=${e.id}`}
                                 className={`bg-[#2FB9BD]/80 hover:bg-[#2FB9BD]/80 text-white border-[#2FB9BD] w-full xl:text-sm lg:text-[9px] text-sm text-center
                                 2xl:py-3 xl:py-2.5 lg:py-1.5 py-2.5  rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  lg:border border-[1.5px] uppercases`}>
                                 Quản lý xe
                             </Link>
                             <Link
-                                href={`/detail-car/${e.id}?${ConvertToSlug(e?.name_car)}`}
+                                href={`/detail-car/${e.id}?type=1&${ConvertToSlug(e?.name_car)}`}
                                 className={` hover:bg-[#2FB9BD]/80 text-[#2FB9BD] hover:text-white border-[#2FB9BD] w-full xl:text-sm lg:text-[9px] text-sm text-center
                                  2xl:py-3 xl:py-2.5 lg:py-1.5 py-2.5  rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  lg:border border-[1.5px] uppercases`}>
                                 Xem chi tiết

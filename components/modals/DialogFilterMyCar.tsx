@@ -15,16 +15,17 @@ type Props = {
 const DialogFilterMyCar = ({ children }: Props) => {
     const { dataFilter, openDialogFilterCar, setOpenDialogFilterCar, setValueFilter, valueFilter } = useDialogFilterMyCar()
 
-    const [valueModel, setValueModel] = useState<any>(-1)
+    const [valueModel, setValueModel] = useState<any>(valueFilter ?? -1)
 
     const handleSubmitFilter = () => {
         setValueFilter(valueModel)
         setOpenDialogFilterCar(!openDialogFilterCar)
     }
 
+
     useEffect(() => {
         if (openDialogFilterCar) {
-            setValueModel(valueFilter ? valueFilter : -1)
+            setValueModel(valueFilter ?? -1)
         }
     }, [openDialogFilterCar])
 

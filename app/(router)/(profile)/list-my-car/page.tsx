@@ -73,7 +73,7 @@ const ListMyCar = (props: Props) => {
 
     const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
-    const { setDataFilter, setValueFilter, valueFilter, setOpenDialogFilterCar } = useDialogFilterMyCar()
+    const { setDataFilter, setValueFilter, valueFilter, setOpenDialogFilterCar, openDialogFilterCar } = useDialogFilterMyCar()
 
 
     const { isVisibleMobile, isVisibleTablet } = useResize()
@@ -179,7 +179,6 @@ const ListMyCar = (props: Props) => {
                 setDataFilter([{
                     id: -1,
                     name: "Tất cả",
-                    index: 0,
                     color: "black",
                 }, ...data?.data])
             }
@@ -190,9 +189,12 @@ const ListMyCar = (props: Props) => {
     }
 
     useEffect(() => {
-        handleFetchListCars(isState.page)
-        setValueFilter(-1)
+        if (isState.tab == 1) {
+            handleFetchListCars(isState.page)
+            setValueFilter(-1)
+        }
     }, [isState.tab])
+    console.log(valueFilter);
 
     useEffect(() => {
         handleFetchListStatusFilter()
@@ -214,7 +216,7 @@ const ListMyCar = (props: Props) => {
                     </Button>
                 }
             </div>
-            <Tabs defaultValue="1" onValueChange={value => queryState({ tab: value, page: 1, dataMyCar: [] })} className="w-full">
+            <Tabs defaultValue="1" value={`${isState.tab}`} onValueChange={value => queryState({ tab: value, page: 1, dataMyCar: [] })} className="w-full">
                 <TabsList className='bg-transparent border-b border-b-[#F6F6F8] rounded-none w-full justify-start overflow-x-auto overflow-y-hidden gap-8 p-0'>
                     {
                         TAB.map((e) => (
@@ -266,7 +268,7 @@ const ListMyCar = (props: Props) => {
                     <MyWallet />
                 </TabsContent>
                 <TabsContent value="4">
-                    <VehicleRegistration />
+                    <VehicleRegistration queryState={queryState} />
                 </TabsContent>
             </Tabs>
         </BackgroundUiProfile>

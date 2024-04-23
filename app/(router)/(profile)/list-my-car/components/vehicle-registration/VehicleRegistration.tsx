@@ -1,41 +1,31 @@
 "use client"
+import Image from "next/image"
+import dynamic from "next/dynamic"
+import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import React, { useEffect, useState } from "react"
 import {
     Tabs,
     TabsContent,
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import Image from "next/image"
-import React, { useEffect, useState } from "react"
-import { StepRegister } from "./components/StepRegister"
-import UnderDevelopment from "@/components/underDevelopment/UnderDevelopment"
-import { toastCore } from "@/lib/toast"
-import { useForm } from "react-hook-form"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-// import { useSignal } from '@preact/signals-react';
-import { Textarea } from "@/components/ui/textarea"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { ChevronsUpDown } from "lucide-react"
-import SelectCombobox from "@/components/combobox/SelectCombobox"
-import { MdNavigateNext } from "react-icons/md";
-import { GrLinkNext } from "react-icons/gr";
-import { ISteps, IVehicleRegistration } from "@/types/Profile/mycar/IMyCar"
-import StepInfoMation from "./components/StepInfoMation"
-import { id } from "date-fns/locale"
+import { ISteps, IVehicleRegistration, TComboboxApi } from "@/types/Profile/mycar/IMyCar"
 import apiMyCar from "@/services/profile/listMyCar/listMyCar.services"
+import { debounce } from "lodash"
+
+import StepRegister from "./components/StepRegister"
+import StepInfoMation from "./components/StepInfoMation"
 import StepLease from "./components/StepLease"
 import StepImages from "./components/StepImages"
-
+import { useDialogAddress } from "@/hooks/useOpenDialog"
+import { toastCore } from "@/lib/toast"
 type Props = {
-
+    queryState: (key: any) => void
 }
 
 
-const VehicleRegistration = (props: Props) => {
-
+const VehicleRegistration = ({ queryState: queryStateParent }: Props) => {
     const dataSteps: ISteps[] = [
         {
             name: "Thông tin",
@@ -51,40 +41,17 @@ const VehicleRegistration = (props: Props) => {
         }
     ];
 
+
     const initialState: IVehicleRegistration = {
         step: "register",
-        stateInformation: {
-            openCarCompany: false,
-            openCarModel: false,
-            openSeats: false,
-            openYearOfManufacture: false,
-            openMove: false,
-            openFeuelType: false,
-            dataCarCompany: [],
-            dataCarModel: [],
-            dataSeats: [],
-            dataYearOfManufacture: [],
-            dataMove: [],
-            dataFeuelType: [],
-            dataFeature: [],
-        },
-        stateLease: {
-            openCity: false,
-            openDistrict: false,
-            openWards: false,
-            dataCity: [],
-            dataDistrict: [],
-            dataWards: [],
-            openWordLimit: false,
-            openUntil: false,
-            dataWordLimit: [],
-            dataUntil: [],
-        }
+        typePage: 3,
     }
 
     const form = useForm({
         defaultValues: {
             stepInformation: {
+                //ten xe
+                nameCar: "",
                 // Biển số xe
                 licensePlates: "",
                 //Hãng xe
@@ -95,7 +62,7 @@ const VehicleRegistration = (props: Props) => {
                 seats: "",
                 // năm sx
                 yearOfmManufacture: "",
-                // chueyern động
+                // truyền động
                 move: "",
                 // Loại nhiên liệu,
                 feuelType: "",
@@ -111,7 +78,7 @@ const VehicleRegistration = (props: Props) => {
                 unitPrice: '',
                 // bật tắt Giảm giá
                 discount: {
-                    open: false,
+                    open: true,
                     value: ''
                 },
                 // bật tắt Đặt xe nhanh
@@ -126,12 +93,12 @@ const VehicleRegistration = (props: Props) => {
                 vehicleAddress: {
                     city: "",
                     district: "",
-                    ward: "",
+                    wards: "",
                     street: ""
                 },
                 //giao xe tận tơi
                 vehicleHanding: {
-                    open: false,
+                    open: true,
                     // quảng đường giao 
                     intersectionSquare: "",
                     /// phí giao nhận xe cho mỗi km
@@ -141,11 +108,17 @@ const VehicleRegistration = (props: Props) => {
                 },
                 // Giới hạn số km
                 limitedKilometers: {
-                    open: false,
+                    open: true,
                     //số km tối đa trong 1 ngày
                     maximumKilometers: "",
                     // phí vượt giới hạn
-                    overLimitFee: ""
+                    overLimitFee: "",
+                    overLimitFeeId: ""
+                },
+                // thế chấp
+                mortgage: {
+                    open: false,
+                    value: ''
                 },
                 // Điều khoản thuê xe
                 carRentalConditions: ""
@@ -155,12 +128,27 @@ const VehicleRegistration = (props: Props) => {
             }
         }
     })
-
-    const { apiListFeature } = apiMyCar()
+    const { coordinates } = useDialogAddress()
 
     const [isState, setIsState] = useState(initialState)
 
+    const { apiAddCar } = apiMyCar()
+
     const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
+
+
+    const checkValueArray = (array: any[], field: any) => {
+        return array.find((x: any) => x.value === field.value)?.label
+    }
+
+    const converArray = (arr: TComboboxApi[]) => {
+        return arr?.map((x: any) => {
+            return {
+                label: x.name,
+                value: x.id
+            }
+        })
+    }
 
 
     const handlePrevStep = () => {
@@ -176,53 +164,92 @@ const VehicleRegistration = (props: Props) => {
     }
 
 
-    const fetListFeature = async () => {
-        try {
-            const { data } = await apiListFeature()
-            if (data?.data) {
-                console.log("Res", data);
-                queryState({
-                    stateInformation: {
-                        ...isState.stateInformation,
-                        dataFeature: data?.data
-                    }
+    const onSubmit = async (value: any, step?: string) => {
+        if (step != 'submit') {
+            const currentIndex = dataSteps.findIndex(x => x.value === isState.step);
+            const nextIndex = dataSteps.findIndex(x => x.value === step);
+
+            if (currentIndex === 0 && nextIndex === dataSteps.length - 1) {
+                // Ngăn chặn chuyển từ tab "information" đến tab cuối cùng
+                return;
+            }
+            if (currentIndex === dataSteps.length - 1) {
+                handlePrevStep();
+                return;
+            }
+            onScrollTop()
+            queryState({ step });
+            return
+        } else {
+            let formData = new FormData()
+            formData.append('name', value.stepInformation.nameCar)
+            formData.append('number_car', value.stepInformation.licensePlates)
+            formData.append('year_manu', value.stepInformation.yearOfmManufacture)
+            formData.append('company_car_id', value.stepInformation.carCompany)
+            formData.append('type_car_id', value.stepInformation.carModel)
+            formData.append('number_seat', value.stepInformation.seats)
+            formData.append('fuel_consumption', value.stepInformation.fuelConsumptionLevel)
+            formData.append('detail', value.stepInformation.describe)
+            formData.append('other_amenities_car', `${value.stepInformation.feature.map((x: any) => x).join(',')}`);
+            formData.append('type_fuel', value.stepInformation.feuelType)
+            formData.append('transmission_id', value.stepInformation.move)
+            formData.append('rent_cost', value.stepLease.unitPrice)
+            formData.append('rules', value.stepLease.carRentalConditions)
+            formData.append('province_id', value.stepLease.vehicleAddress.city)
+            formData.append('district_id', value.stepLease.vehicleAddress.district)
+            formData.append('wards_id', value.stepLease.vehicleAddress.wards)
+            formData.append('address', value.stepLease.vehicleAddress.street)
+            formData.append('latitude', `${coordinates?.lat}`)
+            formData.append('longitude', `${coordinates?.lng}`)
+            formData.append('limit_km', `${value.stepLease.limitedKilometers.open ? 1 : 0}`)
+            formData.append('total_km_day', value.stepLease.limitedKilometers.maximumKilometers)
+            formData.append('fee_id', value.stepLease.limitedKilometers.overLimitFeeId)
+            formData.append('fee_value', value.stepLease.limitedKilometers.overLimitFee)
+            formData.append('discount', `${value.stepLease.discount.open ? 1 : 0}`)
+            formData.append('percent_discount', value.stepLease.discount.value)
+            formData.append('book_car_flash', `${value.stepLease.bookCarQuickly.open ? 1 : 0}`)
+            formData.append('from_book_car_flash', value.stepLease.bookCarQuickly.wordLimit)
+            formData.append('to_book_car_flash', value.stepLease.bookCarQuickly.until)
+            formData.append("delivery_car", `${value.stepLease.vehicleHanding.open ? 1 : 0}`)
+            formData.append("km_delivery_car", value.stepLease.vehicleHanding.intersectionSquare)
+            formData.append("fee_km_delivery_car", value.stepLease.vehicleHanding.deliveryFee)
+            formData.append("free_km_delivery_car", value.stepLease.vehicleHanding.freeDelivery)
+            formData.append("mortgage", `${value.stepLease.mortgage.open ? 1 : 0}`)
+            formData.append("note_mortgage", value.stepLease.mortgage.value)
+            if (value.stepImages.images?.length > 0) {
+                value.stepImages.images.forEach((x: any, index: number) => {
+                    formData.append(`image[${index}]`, x)
                 })
             }
-        } catch (error) {
-            throw error
+            const { data: { result, message } } = await apiAddCar(formData)
+            if (result) {
+                queryStateParent({ tab: 1, page: 1 })
+                toastCore.success(message)
+                return
+            }
+            toastCore.error(message)
 
         }
-    }
-
-    const onSubmit = async (value: any, step: string) => {
-        console.log("value", value);
-        const currentIndex = dataSteps.findIndex(x => x.value === isState.step);
-        const nextIndex = dataSteps.findIndex(x => x.value === step);
-
-        if (currentIndex === 0 && nextIndex === dataSteps.length - 1) {
-            // Ngăn chặn chuyển từ tab "information" đến tab cuối cùng
-            return;
-        }
-
-        if (currentIndex === dataSteps.length - 1) {
-            handlePrevStep();
-            return;
-        }
-        onScrollTop()
-        queryState({ step });
     };
 
-    useEffect(() => {
-        fetListFeature()
-    }, [])
+
+    const shareProps: any = { isState, queryState, form, checkValueArray, converArray }
 
     return (
         <>
-            <Tabs defaultValue={isState.step}
-                onValueChange={(step) => { form.handleSubmit((values) => onSubmit(values, step))() }}
+            <Tabs
+                defaultValue={isState.step}
+                onValueChange={(step) => {
+
+                    // form.handleSubmit((values) => onSubmit(values, 'information'))()
+                    // queryState({ step: 'information' })
+                    if (isState.step != 'lease' && isState.step != 'images') {
+                        queryState({ step: 'information' })
+                    }
+                }}
                 value={isState.step}
                 className="w-full flex flex-col gap-4">
-                <TabsList className="flex items-center md:w-1/2 w-[80%] mx-auto bg-transparent  mt-10">
+                <TabsList className="flex items-center md:w-1/2 w-[100%] mx-auto bg-transparent  mt-10">
                     {
                         isState.step !== 'register' &&
                         <React.Fragment>
@@ -236,7 +263,7 @@ const VehicleRegistration = (props: Props) => {
                                         disabled:opacity-100 data-[state=active]:text-[#2FB9BD] 
                                         data-[state=active]:bg-[#2FB9BD]/20 
                                         ${(isState.step === e.value || index < registerTabIndex) ? "border-[#2FB9BD] text-[#2FB9BD]" : "border-gray-300"
-                                                } rounded-full p-3 font-semibold md:text-xs text-[11px] leading-[17px] lg:size-[90px] md:size-[80px] size-[70px]`}
+                                                } rounded-full p-3 font-semibold md:text-xs text-[11px] leading-[17px] lg:size-[90px] md:size-[80px] size-[70px] cursor-default`}
                                         >
                                             {index + 1}.{e.name}
                                         </TabsTrigger>
@@ -282,7 +309,7 @@ const VehicleRegistration = (props: Props) => {
                     </TabsContent>
                 </div>
                 <TabsContent value={"information"} className="lg:mt-4 mt-5 flex flex-col gap-4">
-                    <StepInfoMation form={form} isState={isState} queryState={queryState} />
+                    <StepInfoMation {...shareProps} />
                     <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
                         <Button
                             onClick={() => form.handleSubmit((values) => onSubmit(values, 'lease'))()}
@@ -294,14 +321,14 @@ const VehicleRegistration = (props: Props) => {
                     </div>
                 </TabsContent>
                 <TabsContent value={'lease'} className="lg:mt-4 mt-5">
-                    <StepLease form={form} isState={isState} queryState={queryState} />
+                    <StepLease {...shareProps} />
                     <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
                         <Button
                             onClick={() => {
                                 onScrollTop()
                                 handlePrevStep()
                             }}
-                            type="button" value="information"
+                            type="button"
                             className={`md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
                                     border-2 px-10 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
                             Quay lại
@@ -318,22 +345,30 @@ const VehicleRegistration = (props: Props) => {
                     </div>
                 </TabsContent>
                 <TabsContent value={'images'} className="lg:mt-4 mt-5">
-                    {/* <UnderDevelopment /> */}
-                    <StepImages form={form} isState={isState} queryState={queryState} />
+                    <StepImages {...shareProps} />
                     <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
                         <Button
                             onClick={() => {
                                 onScrollTop()
                                 handlePrevStep()
                             }}
-                            type="button" value="information"
+                            type="button"
                             className={`md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
                                     border-2 px-10 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
                             Quay lại
                         </Button>
+                        <Button
+                            onClick={() => {
+                                form.handleSubmit((values) => onSubmit(values, 'submit'))()
+                            }}
+                            type="button"
+                            className={`md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
+                                    border-2 px-10 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
+                            Đăng ký
+                        </Button>
                     </div>
                 </TabsContent>
-            </Tabs>
+            </Tabs >
         </>
 
     )

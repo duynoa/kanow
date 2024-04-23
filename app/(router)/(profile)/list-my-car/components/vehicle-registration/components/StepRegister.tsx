@@ -1,7 +1,7 @@
 import { uuidv4 } from "@/lib/uuid";
 import { id } from "date-fns/locale";
 
-export const StepRegister = () => {
+const StepRegister = () => {
     const step = [
         {
             id: uuidv4(),
@@ -43,3 +43,4 @@ export const StepRegister = () => {
         </div>
     );
 };
+export default StepRegister

@@ -1,70 +1,240 @@
+import Image from "next/image"
+import { debounce } from "lodash"
+import { useEffect, useState } from "react"
 import { ChevronsUpDown } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
 import SelectCombobox from "@/components/combobox/SelectCombobox"
-import { IVehicleRegistration } from "@/types/Profile/mycar/IMyCar"
+import { IStateInfomation, TComboboxApi } from "@/types/Profile/mycar/IMyCar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
-import Image from "next/image"
+import apiMyCar from "@/services/profile/listMyCar/listMyCar.services"
+import SkeletonFeature from "../../Skeleton/SkeletonFeature"
 
 type Props = {
     form: any,
-    isState: IVehicleRegistration
-    queryState: (key: any) => void
+    isState: any,
+    checkValueArray: (array: any[], field: any) => any,
+    converArray: (arr: TComboboxApi[]) => TComboboxApi[]
 }
-const StepInfoMation = ({ form, isState, queryState }: Props) => {
+const StepInfoMation = ({ form, checkValueArray, converArray, isState: { typePage } }: Props) => {
+    const [isMount, setIsMount] = useState(false)
+    useEffect(() => {
+        setIsMount(true)
+    }, [])
+
+    // danh sách số ghế
+    const handleSearchApi = debounce((value, type) => {
+        switch (type) {
+            case 'carCompany':
+                // hãng xe
+                fetListCarCompany(value)
+                break;
+            case 'carModel':
+                // loại xe
+                fetListCarModel(value)
+                break;
+            default:
+                break;
+        }
+    }, 700)
+
+
+    const listSeats: TComboboxApi[] = [...Array(17)].map((_, i) => ({
+        label: `${i + 4}`,
+        value: i + 4
+    }));
+
+    // danh sách năm sản xuất
+    const currentYear = new Date().getFullYear();
+    const yearArray: TComboboxApi[] = [...Array(currentYear - 2004)].map((_, i) => ({
+        label: `${2005 + i}`,
+        value: 2005 + i,
+    }));
+
+    const initialState: IStateInfomation = {
+        loadFeature: false,
+        openCombobox: false,
+        typeOpenCombobox: "",
+        dataCarCompany: [],
+        dataCarModel: [],
+        dataSeats: listSeats,
+        dataYearOfManufacture: yearArray,
+        dataMove: [],
+        dataFeuelType: [],
+        dataFeature: [],
+    }
+    const { apiListFeature, apiListCarCompany, apiListCarModel, apiListMoveEndFeuelType } = apiMyCar()
+
+    const [isState, setIsState] = useState(initialState)
+
+    const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
+
+    //Danh sách hãng xe
+    const fetListCarCompany = async (value: any) => {
+        try {
+            const { data } = await apiListCarCompany(value, typePage)
+            if (data?.data) {
+                queryState({ dataCarCompany: converArray(data?.data) })
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+    // danh sách loại xe
+    const fetListCarModel = async (value: any) => {
+        try {
+            const { data } = await apiListCarModel(value, typePage)
+            if (data?.data) {
+                queryState({ dataCarModel: converArray(data?.data) })
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+    // danh sách tính năng, chuyển động, loại nhiên liệu
+    const fetListFeature = async () => {
+        queryState({ loadFeature: true })
+        try {
+            const { data } = await apiListFeature()
+            if (data?.data) {
+                queryState({ dataFeature: data?.data })
+            }
+        } catch (error) {
+            throw error
+        } finally {
+            queryState({ loadFeature: false })
+        }
+    }
+    // danh sách chuyển động và loại nhiên liệu
+    const fetListMoveEndFeuelType = async () => {
+        try {
+            const { data: { dtTransmission, dtTypeFuel } } = await apiListMoveEndFeuelType()
+            if (dtTransmission || dtTypeFuel) {
+                queryState({ dataMove: converArray(dtTransmission), dataFeuelType: converArray(dtTypeFuel), })
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+
+    useEffect(() => {
+        fetListFeature()
+        fetListMoveEndFeuelType()
+        fetListCarCompany('')
+        fetListCarModel('')
+    }, [])
+
+    useEffect(() => {
+        if (!isState.openCombobox) return
+        switch (isState.typeOpenCombobox) {
+            case 'carCompany':
+                fetListCarCompany('')
+                break;
+            case 'carModel':
+                fetListCarModel('')
+                break;
+            default:
+                break;
+        }
+
+    }, [isState.openCombobox])
+
+    if (!isMount) return null
+
     return (
         <Form  {...form}>
             <div className="flex flex-col gap-8">
                 <div className="flex flex-col gap-4">
                     <h1 className='text-[#3E424E] text-base font-medium'>Thông tin cơ bản  <span className="text-red-500 text-xs font-semibold">(Lưu ý: Thông tin cơ bản không thể thay đổi sau khi đăng kí)</span></h1>
-                    <FormField
-                        control={form.control}
-                        name="stepInformation.licensePlates"
-                        rules={{
-                            required: {
-                                value: false,
-                                message: 'Vui lòng nhập biển số xe',
-                            },
-                        }}
-                        render={({ field, fieldState }) => {
-                            return (
-                                <FormItem>
-                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                        Biển số xe <span className="text-red-500">*</span>
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
-                                 focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
-                                            placeholder="Nhập biển số xe"
-                                            type={'text'}
-                                            {...field}
-                                        />
-                                    </FormControl>
-
-                                    {fieldState?.invalid && fieldState?.error && (
-                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                    )}
-                                </FormItem>
-                            );
-                        }}
-                    />
                     <div className="grid md:grid-cols-2 grid-cols-1 md:gap-6 gap-4">
+                        <FormField
+                            control={form.control}
+                            name="stepInformation.nameCar"
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'Vui lòng nhập tên xe',
+                                },
+                            }}
+                            render={({ field, fieldState }) => {
+                                return (
+                                    <FormItem>
+                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                            Tên xe <span className="text-red-500">*</span>
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
+                                 focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                                placeholder="Nhập tên xe"
+                                                type={'text'}
+                                                {...field}
+                                            />
+                                        </FormControl>
+
+                                        {fieldState?.invalid && fieldState?.error && (
+                                            <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                        )}
+                                    </FormItem>
+                                );
+                            }}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="stepInformation.licensePlates"
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'Vui lòng nhập biển số xe',
+                                },
+                                minLength: {
+                                    value: 8,
+                                    message: "Biển số xe phải có ít nhất 8 ký tự",
+                                },
+                                maxLength: {
+                                    value: 9,
+                                    message: "Biển số xe tối đa 9 ký tự",
+                                }
+                            }}
+                            render={({ field, fieldState }) => {
+                                return (
+                                    <FormItem>
+                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                            Biển số xe <span className="text-red-500">*</span>
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
+                                 focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                                placeholder="Nhập biển số xe"
+                                                type={'text'}
+                                                {...field}
+                                            />
+                                        </FormControl>
+
+                                        {fieldState?.invalid && fieldState?.error && (
+                                            <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                        )}
+                                    </FormItem>
+                                );
+                            }}
+                        />
                         <div className="w-full">
                             <FormField
                                 control={form.control}
                                 name="stepInformation.carCompany"
                                 rules={{
                                     required: {
-                                        value: false,
+                                        value: true,
                                         message: 'Vui lòng chọn hãng xe',
                                     },
                                 }}
                                 render={({ field, fieldState }) => {
+                                    const checkValue = checkValueArray(isState.dataCarCompany, field)
                                     return (
                                         <FormItem className="flex flex-col gap-1 w-full max-w-full">
                                             <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
@@ -72,8 +242,8 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                                             </FormLabel>
                                             <FormControl>
                                                 <Popover
-                                                    open={isState.stateInformation.openCarCompany}
-                                                    onOpenChange={() => queryState({ stateInformation: !isState.stateInformation.openCarCompany })}
+                                                    open={isState.typeOpenCombobox === 'carCompany' && isState.openCombobox}
+                                                    onOpenChange={() => queryState({ openCombobox: !isState.openCombobox, typeOpenCombobox: 'carCompany' })}
                                                 >
                                                     <PopoverTrigger asChild>
                                                         <Button
@@ -81,20 +251,19 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                                                             role="combobox"
                                                             className="2xl:py-3 lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                         >
-                                                            {/* {checkValue ? checkValue : "Chọn hãng xe"} */}
-                                                            Chọn hãng xe
+                                                            {checkValue ? checkValue : "Chọn hãng xe"}
                                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                         </Button>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-auto">
+                                                    <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-full">
                                                         <SelectCombobox
-                                                            data={[]}
+                                                            data={isState.dataCarCompany}
                                                             field={field}
                                                             onChange={(e: any) => {
-                                                                // field.onChange(e)
-                                                                // queryKeyIsState({ openWards: false })
+                                                                field.onChange(e)
+                                                                queryState({ openCombobox: false })
                                                             }}
-                                                            // onValueChange={(e: any) => handleSearchApi(e, 'wards')}
+                                                            onValueChange={(e: any) => handleSearchApi(e, 'carCompany')}
                                                             placeholderInput="Tìm kiếm hãng xe"
 
                                                         />
@@ -115,20 +284,21 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                             name="stepInformation.carModel"
                             rules={{
                                 required: {
-                                    value: false,
-                                    message: 'Vui lòng chọn mẫu xe',
+                                    value: true,
+                                    message: 'Vui lòng chọn loại xe',
                                 },
                             }}
                             render={({ field, fieldState }) => {
+                                const checkValue = checkValueArray(isState.dataCarModel, field)
                                 return (
                                     <FormItem className="flex flex-col gap-1 w-full max-w-full">
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                            Mẫu xe <span className="text-red-500">*</span>
+                                            Loại xe <span className="text-red-500">*</span>
                                         </FormLabel>
                                         <FormControl>
                                             <Popover
-                                                open={isState.stateInformation.openCarModel}
-                                                onOpenChange={() => queryState({ stateInformation: !isState.stateInformation.openCarModel })}
+                                                open={isState.typeOpenCombobox === 'carModel' && isState.openCombobox}
+                                                onOpenChange={() => queryState({ openCombobox: !isState.openCombobox, typeOpenCombobox: 'carModel' })}
                                             >
                                                 <PopoverTrigger asChild>
                                                     <Button
@@ -136,21 +306,20 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                                                         role="combobox"
                                                         className="2xl:py-3 lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                     >
-                                                        {/* {checkValue ? checkValue : "Chọn mẫu xe"} */}
-                                                        Chọn mẫu xe
+                                                        {checkValue ? checkValue : "Chọn loại xe"}
                                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                     </Button>
                                                 </PopoverTrigger>
-                                                <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-auto">
+                                                <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-full">
                                                     <SelectCombobox
-                                                        data={[]}
+                                                        data={isState.dataCarModel}
                                                         field={field}
                                                         onChange={(e: any) => {
-                                                            // field.onChange(e)
-                                                            // queryKeyIsState({ openWards: false })
+                                                            field.onChange(e)
+                                                            queryState({ openCombobox: false })
                                                         }}
-                                                        // onValueChange={(e: any) => handleSearchApi(e, 'wards')}
-                                                        placeholderInput="Tìm kiếm mẫu xe"
+                                                        onValueChange={(e: any) => handleSearchApi(e, 'carModel')}
+                                                        placeholderInput="Tìm kiếm loại xe"
 
                                                     />
                                                 </PopoverContent>
@@ -169,11 +338,12 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                             name="stepInformation.seats"
                             rules={{
                                 required: {
-                                    value: false,
+                                    value: true,
                                     message: 'Vui lòng chọn số ghế',
                                 },
                             }}
                             render={({ field, fieldState }) => {
+                                const checkValue = checkValueArray(isState.dataSeats, field)
                                 return (
                                     <FormItem className="flex flex-col gap-1 w-full max-w-full">
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
@@ -181,8 +351,8 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                                         </FormLabel>
                                         <FormControl>
                                             <Popover
-                                                open={isState.stateInformation.openSeats}
-                                                onOpenChange={() => queryState({ stateInformation: !isState.stateInformation.openSeats })}
+                                                open={isState.typeOpenCombobox === 'seats' && isState.openCombobox}
+                                                onOpenChange={() => queryState({ openCombobox: !isState.openCombobox, typeOpenCombobox: 'seats' })}
                                             >
                                                 <PopoverTrigger asChild>
                                                     <Button
@@ -190,22 +360,19 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                                                         role="combobox"
                                                         className="2xl:py-3 lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                     >
-                                                        {/* {checkValue ? checkValue : "Chọn số ghế"} */}
-                                                        Chọn số ghế
+                                                        {checkValue ? checkValue : "Chọn số ghế"}
                                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                     </Button>
                                                 </PopoverTrigger>
-                                                <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-auto">
+                                                <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-full">
                                                     <SelectCombobox
-                                                        data={[]}
+                                                        data={isState.dataSeats}
                                                         field={field}
                                                         onChange={(e: any) => {
-                                                            // field.onChange(e)
-                                                            // queryKeyIsState({ openWards: false })
+                                                            field.onChange(e)
+                                                            queryState({ openCombobox: false })
                                                         }}
-                                                        // onValueChange={(e: any) => handleSearchApi(e, 'wards')}
-                                                        placeholderInput="Tìm kiếm số ghế"
-
+                                                        onValueChange={(e: any) => { }}
                                                     />
                                                 </PopoverContent>
                                             </Popover>
@@ -224,11 +391,12 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                             name="stepInformation.yearOfmManufacture"
                             rules={{
                                 required: {
-                                    value: false,
+                                    value: true,
                                     message: 'Vui lòng chọn năm sản xuất',
                                 },
                             }}
                             render={({ field, fieldState }) => {
+                                const checkValue = checkValueArray(isState.dataYearOfManufacture, field)
                                 return (
                                     <FormItem className="flex flex-col gap-1 w-full max-w-full">
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
@@ -236,8 +404,8 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                                         </FormLabel>
                                         <FormControl>
                                             <Popover
-                                                open={isState.stateInformation.openYearOfManufacture}
-                                                onOpenChange={() => queryState({ stateInformation: !isState.stateInformation.openYearOfManufacture })}
+                                                open={isState.typeOpenCombobox === 'yearOfmManufacture' && isState.openCombobox}
+                                                onOpenChange={() => queryState({ openCombobox: !isState.openCombobox, typeOpenCombobox: 'yearOfmManufacture' })}
                                             >
                                                 <PopoverTrigger asChild>
                                                     <Button
@@ -245,22 +413,19 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                                                         role="combobox"
                                                         className="2xl:py-3 lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                     >
-                                                        {/* {checkValue ? checkValue : "Chọn năm sản xuất"} */}
-                                                        Chọn năm sản xuất
+                                                        {checkValue ? checkValue : "Chọn năm sản xuất"}
                                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                     </Button>
                                                 </PopoverTrigger>
-                                                <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-auto">
+                                                <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-full">
                                                     <SelectCombobox
-                                                        data={[]}
+                                                        data={isState.dataYearOfManufacture}
                                                         field={field}
                                                         onChange={(e: any) => {
-                                                            // field.onChange(e)
-                                                            // queryKeyIsState({ openWards: false })
+                                                            field.onChange(e)
+                                                            queryState({ openCombobox: false })
                                                         }}
-                                                        // onValueChange={(e: any) => handleSearchApi(e, 'wards')}
-                                                        placeholderInput="Tìm kiếm năm sản xuất"
-
+                                                        onValueChange={(e: any) => { }}
                                                     />
                                                 </PopoverContent>
                                             </Popover>
@@ -278,20 +443,21 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                             name="stepInformation.move"
                             rules={{
                                 required: {
-                                    value: false,
-                                    message: 'Vui lòng chọn chuyển động',
+                                    value: true,
+                                    message: 'Vui lòng chọn truyền động',
                                 },
                             }}
                             render={({ field, fieldState }) => {
+                                const checkValue = checkValueArray(isState.dataMove, field)
                                 return (
                                     <FormItem className="flex flex-col gap-1 w-full max-w-full">
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                            Chuyển động <span className="text-red-500">*</span>
+                                            Truyền động <span className="text-red-500">*</span>
                                         </FormLabel>
                                         <FormControl>
                                             <Popover
-                                                open={isState.stateInformation.openYearOfManufacture}
-                                                onOpenChange={() => queryState({ stateInformation: !isState.stateInformation.openYearOfManufacture })}
+                                                open={isState.typeOpenCombobox === 'move' && isState.openCombobox}
+                                                onOpenChange={() => queryState({ openCombobox: !isState.openCombobox, typeOpenCombobox: 'move' })}
                                             >
                                                 <PopoverTrigger asChild>
                                                     <Button
@@ -299,22 +465,19 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                                                         role="combobox"
                                                         className="2xl:py-3 lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                     >
-                                                        {/* {checkValue ? checkValue : "Chọn chuyển động"} */}
-                                                        Chọn chuyển động
+                                                        {checkValue ? checkValue : "Chọn truyền động"}
                                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                     </Button>
                                                 </PopoverTrigger>
-                                                <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-auto">
+                                                <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-full">
                                                     <SelectCombobox
-                                                        data={[]}
+                                                        data={isState.dataMove}
                                                         field={field}
                                                         onChange={(e: any) => {
-                                                            // field.onChange(e)
-                                                            // queryKeyIsState({ openWards: false })
+                                                            field.onChange(e)
+                                                            queryState({ openCombobox: false })
                                                         }}
-                                                        // onValueChange={(e: any) => handleSearchApi(e, 'wards')}
-                                                        placeholderInput="Tìm kiếm chuyển động"
-
+                                                        onValueChange={(e: any) => { }}
                                                     />
                                                 </PopoverContent>
                                             </Popover>
@@ -332,11 +495,12 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                             name="stepInformation.feuelType"
                             rules={{
                                 required: {
-                                    value: false,
+                                    value: true,
                                     message: 'Vui lòng chọn loại nhiên liệu',
                                 },
                             }}
                             render={({ field, fieldState }) => {
+                                const checkValue = checkValueArray(isState.dataFeuelType, field)
                                 return (
                                     <FormItem className="flex flex-col gap-1 w-full max-w-full">
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
@@ -344,8 +508,8 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                                         </FormLabel>
                                         <FormControl>
                                             <Popover
-                                                open={isState.stateInformation.openYearOfManufacture}
-                                                onOpenChange={() => queryState({ stateInformation: !isState.stateInformation.openYearOfManufacture })}
+                                                open={isState.typeOpenCombobox === 'feuelType' && isState.openCombobox}
+                                                onOpenChange={() => queryState({ openCombobox: !isState.openCombobox, typeOpenCombobox: 'feuelType' })}
                                             >
                                                 <PopoverTrigger asChild>
                                                     <Button
@@ -353,22 +517,19 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                                                         role="combobox"
                                                         className="2xl:py-3 lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                     >
-                                                        {/* {checkValue ? checkValue : "Chọn loại nhiên liệu"} */}
-                                                        Chọn loại nhiên liệu
+                                                        {checkValue ? checkValue : "Chọn loại nhiên liệu"}
                                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                     </Button>
                                                 </PopoverTrigger>
-                                                <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-auto">
+                                                <PopoverContent className="3xl:w-[620px] xxl:w-[480px] 2xl:w-[500px] xl:w-[400px] lg:w-[310px] md:w-[310px] w-full">
                                                     <SelectCombobox
-                                                        data={[]}
+                                                        data={isState.dataFeuelType}
                                                         field={field}
                                                         onChange={(e: any) => {
-                                                            // field.onChange(e)
-                                                            // queryKeyIsState({ openWards: false })
+                                                            field.onChange(e)
+                                                            queryState({ openCombobox: false })
                                                         }}
-                                                        // onValueChange={(e: any) => handleSearchApi(e, 'wards')}
-                                                        placeholderInput="Tìm kiếm loại nhiên liệu"
-
+                                                        onValueChange={(e: any) => { }}
                                                     />
                                                 </PopoverContent>
                                             </Popover>
@@ -390,7 +551,7 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                         name="stepInformation.fuelConsumptionLevel"
                         rules={{
                             required: {
-                                value: false,
+                                value: true,
                                 message: 'Vui lòng nhập mức tiêu thụ nhiên liệu',
                             },
                         }}
@@ -449,72 +610,43 @@ const StepInfoMation = ({ form, isState, queryState }: Props) => {
                                     </FormLabel>
                                     <FormControl >
                                         <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-3">
-                                            {isState.stateInformation.dataFeature && isState.stateInformation.dataFeature.map((item) => {
-                                                return (
-                                                    <Label htmlFor={`${item.id}`} key={item.id}
-                                                        className={`flex ${field.value?.includes(item.id) ? 'border-[#2FB9BD] text-[#2FB9BD]' : ''}
+                                            {isState.loadFeature ?
+                                                <>
+                                                    {
+                                                        [...Array(5)].map((_, index) => {
+                                                            return <SkeletonFeature key={index} />
+                                                        })
+                                                    }
+                                                </>
+                                                : isState.dataFeature.map((item: any) => {
+                                                    return (
+                                                        <Label htmlFor={`${item.id}`} key={item.id}
+                                                            className={`flex ${field.value?.includes(item.id) ? 'border-[#2FB9BD] text-[#2FB9BD]' : ''}
                                                              items-center justify-center gap-2 border-2  py-8 col-span-1 rounded-lg cursor-pointer md:text-sm text-xs`}
-                                                    >
-                                                        <div className="size-6">
-                                                            <Image src={item.image} alt="" width={1280} height={1024} className="object-cover size-full" />
-                                                        </div>
-                                                        <Checkbox
-                                                            checked={field.value?.includes(item.id)}
-                                                            onCheckedChange={(checked) => {
-                                                                return checked
-                                                                    ? field.onChange([...field.value, item.id])
-                                                                    : field.onChange(
-                                                                        field.value?.filter(
-                                                                            (value: any) => value !== item.id
+                                                        >
+                                                            <div className="size-6">
+                                                                <Image src={item.image} alt="" width={1280} height={1024} className="object-cover size-full" />
+                                                            </div>
+                                                            <Checkbox
+                                                                checked={field.value?.includes(item.id)}
+                                                                onCheckedChange={(checked) => {
+                                                                    return checked
+                                                                        ? field.onChange([...field.value, item.id])
+                                                                        : field.onChange(
+                                                                            field.value?.filter(
+                                                                                (value: any) => value !== item.id
+                                                                            )
                                                                         )
-                                                                    )
-                                                            }}
-                                                            hidden
-                                                            id={`${item.id}`}
-                                                        />
-                                                        {item.name}
-                                                    </Label>
-                                                )
-                                            })}
+                                                                }}
+                                                                hidden
+                                                                id={`${item.id}`}
+                                                            />
+                                                            {item.name}
+                                                        </Label>
+                                                    )
+                                                })}
                                         </div>
                                     </FormControl>
-                                    {/* {isState.stateInformation.dataFeuelType.map((item) => (
-                                            <FormField
-                                                key={item.id}
-                                                control={form.control}
-                                                name="stepInformation.feature"
-                                                render={({ field }) => {
-                                                    return (
-                                                        <FormItem
-                                                            key={item.id}
-                                                            className={`flex
-                                                             ${field.value?.includes(item.id) ? 'bg-[#2FB9BD]' : ''}
-                                                             items-center justify-center gap-2 border-2 min-w-[200px] min-h-[100px]`}
-                                                        >
-                                                            <Label htmlFor={`${item.id}`} className="font-normal">
-                                                                <FormControl>
-                                                                    <Checkbox
-                                                                        checked={field.value?.includes(item.id)}
-                                                                        onCheckedChange={(checked) => {
-                                                                            return checked
-                                                                                ? field.onChange([...field.value, item.id])
-                                                                                : field.onChange(
-                                                                                    field.value?.filter(
-                                                                                        (value: any) => value !== item.id
-                                                                                    )
-                                                                                )
-                                                                        }}
-                                                                        hidden
-                                                                        id={`${item.id}`}
-                                                                    />
-                                                                </FormControl>
-                                                                {item.name}
-                                                            </Label>
-                                                        </FormItem>
-                                                    )
-                                                }}
-                                            />
-                                        ))} */}
                                 </FormItem>
                             );
                         }}
