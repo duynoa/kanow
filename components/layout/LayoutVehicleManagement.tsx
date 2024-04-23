@@ -30,6 +30,7 @@ const LayoutVehicleManagement = ({
     children: React.ReactNode
 }) => {
     const href = usePathname()
+
     const param = useSearchParams()
 
     const id = param.get('id')
@@ -39,6 +40,7 @@ const LayoutVehicleManagement = ({
     const router = useRouter()
 
     const { informationUser } = useAuth()
+
     const { isVisibleTablet } = useResize()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
@@ -170,6 +172,10 @@ const LayoutVehicleManagement = ({
             openTalented: false,
         }
     })
+
+    console.log(['openSelf', 'openTalented'].map((e: any) => {
+        return form.getValues(e)
+    }));
 
 
     useEffect(() => {

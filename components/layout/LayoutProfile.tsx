@@ -65,65 +65,69 @@ const LayoutProfile = ({
     const queryState = (key: any) => sIsState((prev: any) => ({ ...prev, ...key }))
 
     // desktop
-    const listSidebarGeneralInformation = [
+
+    const listNavbar = [
         {
             id: 1,
-            name: 'Tài khoản của tôi',
-            icon_inactive: '/icon/account/inactive/user_square.png',
-            icon_active: '/icon/account/active/user_square.png',
-            link: "/account",
+            lable: 'Thông tin chung',
+            list: [
+                {
+                    id: 1,
+                    name: 'Tài khoản của tôi',
+                    icon_inactive: '/icon/account/inactive/user_square.png',
+                    icon_active: '/icon/account/active/user_square.png',
+                    link: "/account",
+                },
+                {
+                    id: 2,
+                    name: 'Xe yêu thích',
+                    icon_inactive: '/icon/account/inactive/heart.png',
+                    icon_active: '/icon/account/active/heart.png',
+                    link: "/list-car-favorite",
+                },
+                {
+                    id: 3,
+                    name: 'Xe của tôi',
+                    icon_inactive: '/icon/account/inactive/driving.png',
+                    icon_active: '/icon/account/active/driving.png',
+                    link: "/list-my-car",
+                },
+                {
+                    id: 4,
+                    name: 'Chuyến của tôi',
+                    icon_inactive: '/icon/account/inactive/radar.png',
+                    icon_active: '/icon/account/active/radar.png',
+                    link: "/my-trips",
+                },
+                {
+                    id: 5,
+                    name: 'Sổ địa chỉ',
+                    icon_inactive: '/icon/account/inactive/stickynote.png',
+                    icon_active: '/icon/account/active/stickynote.png',
+                    link: "/list-address",
+                },
+            ]
         },
         {
             id: 2,
-            name: 'Xe yêu thích',
-            icon_inactive: '/icon/account/inactive/heart.png',
-            icon_active: '/icon/account/active/heart.png',
-            link: "/list-car-favorite",
-        },
-        {
-            id: 3,
-            name: 'Xe của tôi',
-            icon_inactive: '/icon/account/inactive/driving.png',
-            icon_active: '/icon/account/active/driving.png',
-            link: "/list-my-car",
-        },
-        {
-            id: 4,
-            name: 'Chuyến của tôi',
-            icon_inactive: '/icon/account/inactive/radar.png',
-            icon_active: '/icon/account/active/radar.png',
-            link: "/my-trips",
-        },
-        // {
-        //     id: 5,
-        //     name: 'Đơn hàng cho thuê dài hạn',
-        //     icon_inactive: '/icon/account/inactive/archive_book.png',
-        //     icon_active: '/icon/account/active/archive_book.png',
-        //     link: "/list-my-trip",
-        // },
-        {
-            id: 6,
-            name: 'Sổ địa chỉ',
-            icon_inactive: '/icon/account/inactive/stickynote.png',
-            icon_active: '/icon/account/active/stickynote.png',
-            link: "/list-address",
-        },
-    ]
-    const listSettingAccount = [
-        {
-            id: 7,
-            name: 'Đổi mật khẩu',
-            icon_inactive: '/icon/account/inactive/lock.png',
-            icon_active: '/icon/account/active/lock.png',
-            link: "/change-password",
-        },
-        {
-            id: 8,
-            name: 'Yêu cầu xoá tài khoản',
-            icon_inactive: '/icon/account/inactive/trash.png',
-            icon_active: '/icon/account/active/trash.png',
-            link: "/delete-account",
-        },
+            lable: 'Cài đặt tài khoản',
+            list: [
+                {
+                    id: 6,
+                    name: 'Đổi mật khẩu',
+                    icon_inactive: '/icon/account/inactive/lock.png',
+                    icon_active: '/icon/account/active/lock.png',
+                    link: "/change-password",
+                },
+                {
+                    id: 7,
+                    name: 'Yêu cầu xoá tài khoản',
+                    icon_inactive: '/icon/account/inactive/trash.png',
+                    icon_active: '/icon/account/active/trash.png',
+                    link: "/delete-account",
+                },
+            ]
+        }
     ]
 
     // tablet mobile
@@ -156,13 +160,6 @@ const LayoutProfile = ({
             icon_active: '/icon/account/active/radar.png',
             link: "/my-trips",
         },
-        // {
-        //     id: 5,
-        //     name: 'Đơn hàng cho thuê dài hạn',
-        //     icon_inactive: '/icon/account/inactive/archive_book.png',
-        //     icon_active: '/icon/account/active/archive_book.png',
-        //     link: "/list-my-trip",
-        // },
         {
             id: 6,
             name: 'Sổ địa chỉ',
@@ -384,100 +381,50 @@ const LayoutProfile = ({
                                 :
                                 <>
                                     <Separator orientation='horizontal' />
+                                    {
+                                        listNavbar && listNavbar.map((e) => {
+                                            return (
+                                                <>
 
-                                    <div className='flex flex-col gap-3 caret-transparent'>
-                                        <div className='xxl:text-xs text-[11px] uppercase font-semibold text-[#6F7689]'>
-                                            Thông tin chung
-                                        </div>
-
-                                        <div className='flex flex-col gap-4'>
-                                            {
-                                                listSidebarGeneralInformation?.map((item, index) => (
-                                                    <Link
-                                                        key={item.id}
-                                                        href={item.link}
-                                                        className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
-                                                    >
-                                                        <div className='3xl:size-6 size-5'>
-                                                            <Image
-                                                                width={100}
-                                                                height={100}
-                                                                alt="@kanow"
-                                                                className='w-full h-full'
-                                                                src={pathname === item.link ? item.icon_active : item.icon_inactive}
-                                                            />
+                                                    <div className='flex flex-col gap-3 caret-transparent'>
+                                                        <div className='xxl:text-xs text-[11px] uppercase font-semibold text-[#6F7689]'>
+                                                            {e.lable}
                                                         </div>
-                                                        <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
-                                                            {item.name}
+
+                                                        <div className='flex flex-col gap-4'>
+                                                            {
+                                                                e.list?.map((item, index) => (
+                                                                    <Link
+                                                                        key={item.id}
+                                                                        href={item.link}
+                                                                        className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
+                                                                    >
+                                                                        <div className='3xl:size-6 size-5'>
+                                                                            <Image
+                                                                                width={100}
+                                                                                height={100}
+                                                                                alt="@kanow"
+                                                                                className='w-full h-full'
+                                                                                src={pathname === item.link ? item.icon_active : item.icon_inactive}
+                                                                            />
+                                                                        </div>
+                                                                        <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
+                                                                            {item.name}
+                                                                        </div>
+                                                                    </Link>
+                                                                ))
+                                                            }
                                                         </div>
-                                                    </Link>
-                                                ))
-                                            }
-                                        </div>
-                                    </div>
-
-                                    <Separator orientation='horizontal' />
-
-                                    <div className='flex flex-col gap-3 caret-transparent'>
-                                        <div className='xxl:text-xs text-[11px] uppercase font-semibold text-[#6F7689]'>
-                                            Cài đặt tài khoản
-                                        </div>
-
-                                        <div className='flex flex-col gap-4'>
-                                            {
-                                                listSettingAccount?.map((item, index) => (
-                                                    <Link
-                                                        key={item.id}
-                                                        href={item.link}
-                                                        className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
-                                                    >
-                                                        <div className='3xl:size-6 size-5'>
-                                                            <Image
-                                                                width={100}
-                                                                height={100}
-                                                                alt="@kanow"
-                                                                className='w-full h-full'
-                                                                src={pathname === item.link ? item.icon_active : item.icon_inactive}
-                                                            />
-                                                        </div>
-                                                        <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
-                                                            {item.name}
-                                                        </div>
-                                                    </Link>
-                                                ))
-                                            }
-                                        </div>
-                                    </div>
-
+                                                    </div>
+                                                    <Separator orientation='horizontal' />
+                                                </>
+                                            )
+                                        })
+                                    }
                                     <div className='flex items-center justify-center caret-transparent'>
                                         <div onClick={() => setOpenAlertDialogLogout(true)} className={`3xl:text-sm text-xs text-[#FA3434] font-semibold w-fit cursor-pointer hover:text-[#FA3434]/80 duration-200 transition`}>
                                             Đăng xuất
                                         </div>
-                                        {/* <AlertDialog>
-                                            <AlertDialogContent className='max-w-[380px]'>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>Bạn có muốn đăng xuất không?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        Xác nhận đăng xuất
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel
-                                                        type="button"
-                                                        className='3xl:text-base text-sm w-fit py-2 px-4 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
-                                                    >
-                                                        Hủy
-                                                    </AlertDialogCancel>
-                                                    <AlertDialogAction
-                                                        onClick={handleLogout}
-                                                        type="button"
-                                                        className='3xl:text-base text-sm  w-fit py-2 px-4 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-[#14555B]/80 transition-all overflow-hidden bg-[#14555B] text-white'
-                                                    >
-                                                        Đăng xuất
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog> */}
                                     </div>
                                 </>
                         }
