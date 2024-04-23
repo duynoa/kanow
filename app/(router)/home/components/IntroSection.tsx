@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useDialogAddress, useDialogCalendar } from '@/hooks/useOpenDialog';
 import { vi } from 'date-fns/locale';
+import { useDataHome } from '@/hooks/useDataQueryKey';
 
 const IntroSection = () => {
     const { isVisibleMobile } = useResize()
@@ -21,36 +22,50 @@ const IntroSection = () => {
     const { dateReal, numberDay, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogAddress, valueAddress } = useDialogAddress()
 
+    const { isStateDataHome, queryKeyIsStateDataHome } = useDataHome()
+
     const tabSearch = [
         {
             id: "232",
             name: "Xe tự lái",
             icon_active: "/icon/home/icon_car_active_1.png",
             icon_no_active: "/icon/home/icon_car_no_active_1.png",
+            type: "list-cars-autonomous",
         },
         {
             id: "4343",
             name: "Xe có tài xế",
             icon_active: "/icon/home/icon_car_active_2.png",
             icon_no_active: "/icon/home/icon_car_no_active_2.png",
-        }
-        // ,
-        // {
-        //     id: "5454",
-        //     name: "Tìm tài xế",
-        //     icon_active: "/icon/home/icon_car_active_3.png",
-        //     icon_no_active: "/icon/home/icon_car_no_active_3.png",
-        // },
+            type: "list-cars-driver",
+        },
+        {
+            id: "5454",
+            name: "Tìm tài xế",
+            icon_active: "/icon/home/icon_car_active_3.png",
+            icon_no_active: "/icon/home/icon_car_no_active_3.png",
+            type: "search-driver",
+        },
     ]
 
-    const [tabId, setTabId] = useState<string>("")
-
     useEffect(() => {
-        setTabId(tabSearch[0].id)
+        queryKeyIsStateDataHome({
+            ...isStateDataHome,
+            tabSearch: {
+                tabId: tabSearch[0].id,
+                type: tabSearch[0].type
+            }
+        })
     }, [])
 
-    const handleTabChange = (id: string) => {
-        setTabId(id)
+    const handleTabChange = (item: any) => {
+        queryKeyIsStateDataHome({
+            ...isStateDataHome,
+            tabSearch: {
+                tabId: item.id,
+                type: item.type
+            }
+        })
     }
 
     const handleOpenDialog = (type: string) => {
@@ -58,6 +73,16 @@ const IntroSection = () => {
             setOpenDialogCalendar(true)
         }
     };
+
+    const handleSearchCar = () => {
+        if (isStateDataHome.tabSearch.type === 'list-cars-autonomous') {
+            router.push('/list-cars-autonomous')
+        } else if (isStateDataHome.tabSearch.type === 'list-cars-driver') {
+            router.push('/list-cars-driver')
+        } else if (isStateDataHome.tabSearch.type === 'search-driver') {
+            router.push('/search-driver')
+        }
+    }
 
     var heroTitle: string = "KANOW - Đồng hành mọi chuyến đi của bạn";
     var heroPerTitle: { letter: string, id: number }[] = heroTitle.split('').map((letter, index) => ({ letter: letter, id: index + 1 }));
@@ -128,15 +153,15 @@ const IntroSection = () => {
                                 tabSearch && tabSearch.map((tab) => (
                                     <div
                                         key={tab.id}
-                                        className={`${tab.id == tabId ? "bg-white" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} caret-transparent flex items-center gap-2 xl:px-6 xl:py-3 px-4 py-2 rounded-t-xl cursor-pointer`}
-                                        // className={`${tab.id == tabId ? "bg-white underline underline-offset-[6px] decoration-[3px] decoration-[#2FB9BD]" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} flex items-center gap-2 xl:px-6 xl:py-3 px-4 py-2 rounded-t-xl cursor-pointer`}
-                                        onClick={() => handleTabChange(tab.id)}
+                                        className={`${tab.id == isStateDataHome.tabSearch.tabId ? "bg-white" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} caret-transparent flex items-center gap-2 xl:px-6 xl:py-3 px-4 py-2 rounded-t-xl cursor-pointer`}
+                                        // className={`${tab.id == isStateDataHome.tabSearch.tabId ? "bg-white underline underline-offset-[6px] decoration-[3px] decoration-[#2FB9BD]" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} flex items-center gap-2 xl:px-6 xl:py-3 px-4 py-2 rounded-t-xl cursor-pointer`}
+                                        onClick={() => handleTabChange(tab)}
                                     >
                                         <div className='relative flex gap-1 items-center w-fit'>
                                             <div className='w-5 h-full'>
                                                 <Image
                                                     alt="icon_active"
-                                                    src={tab.id == tabId ? (tab.icon_active ? tab.icon_active : "/default/default.png") : (tab.icon_no_active ? tab.icon_no_active : "/default/default.png")}
+                                                    src={tab.id == isStateDataHome.tabSearch.tabId ? (tab.icon_active ? tab.icon_active : "/default/default.png") : (tab.icon_no_active ? tab.icon_no_active : "/default/default.png")}
                                                     width={80}
                                                     height={80}
                                                     className="w-full h-full object-contain"
@@ -147,7 +172,7 @@ const IntroSection = () => {
                                                 {tab.name ? tab.name : ""}
                                             </div>
 
-                                            {tab.id == tabId && (
+                                            {tab.id == isStateDataHome.tabSearch.tabId && (
                                                 <div className="absolute -bottom-2 left-0 right-0 h-[3px] w-full bg-[#2FB9BD]"></div>
                                             )}
                                         </div>
@@ -207,11 +232,13 @@ const IntroSection = () => {
                                 </div>
 
                             </div>
+
+
                             <Button
                                 type='button'
                                 size="basic"
                                 className='3xl:text-base text-sm w-full 3xl:py-4 xl:py-3 py-2 text-center uppercase text-white bg-[#FF9900] hover:bg-[#FF9900]/80 font-bold rounded-xl caret-transparent'
-                                onClick={() => router.push('/list-car-autonomous')}
+                                onClick={() => handleSearchCar()}
                             >
                                 <span>Tìm xe</span>
                             </Button>

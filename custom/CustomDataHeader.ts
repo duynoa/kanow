@@ -18,7 +18,7 @@ const CustomDataHeader = [
     {
         id: uuidv4(),
         name: "Chuyến của tôi",
-        link: "/list-car-autonomous",
+        link: "/list-cars-autonomous",
         children: false,
         visible: false,
     },

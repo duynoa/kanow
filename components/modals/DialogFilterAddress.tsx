@@ -74,7 +74,7 @@ export function DialogFilterAddress({ }: Props) {
     const [dataPlane, setDataPlane] = useState<IPlace[]>([])
 
     const onSubmit = async (dataAddress: any) => {
-        if (pathname.startsWith('/list-car-autonomous')) {
+        if (pathname.startsWith('/list-cars-autonomous')) {
             console.log('valueAddress', valueAddress);
 
             const query = {

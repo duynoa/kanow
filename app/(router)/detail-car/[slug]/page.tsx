@@ -200,8 +200,9 @@ const DetailCar = ({ params }: Props) => {
     const fetchDataListCarsRelated = async () => {
         try {
             const dataListCar = {
+                type: 1,
                 car_id: params.slug,
-                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`
+                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
             }
 
             const { data } = await getListCarsRelated(dataListCar)
@@ -591,7 +592,7 @@ const DetailCar = ({ params }: Props) => {
                                         <div className='flex flex-row items-center gap-10'>
                                             <div
                                                 onClick={() => router.back()}
-                                                className='flex items-center gap-2 text-[#2FB9BD] hover:text-[#2FB9BD]/80 bg-[#2FB9BD]/20 border px-4 py-2 border-[#2FB9BD] rounded-md cursor-pointer w-fit group hover:-translate-x-2 duration-200 transition'
+                                                className='flex items-center gap-2 text-[#2FB9BD] hover:text-[#2FB9BD]/80 bg-[#2FB9BD]/20 border px-4 py-2 border-[#2FB9BD] rounded-md cursor-pointer w-fit group hover:-translate-x-2 duration-200 transition caret-transparent'
                                             >
                                                 <FaArrowLeftLong className="3xl:size-5 size-4" />
                                                 <div className='3xl:text-lg text-base font-medium'>

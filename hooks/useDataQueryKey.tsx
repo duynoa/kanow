@@ -1,4 +1,5 @@
 import {
+    IInitialStateDataHome,
     IInitialStateDetailCar,
     IInitialStateInfoRentalCar,
     IInitialStateListCarAutonomous,
@@ -8,6 +9,34 @@ import {
 import { addDays, setHours, setMinutes } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 import { create } from 'zustand';
+
+// data trang chủ
+interface isStateDataHome {
+    isStateDataHome: IInitialStateDataHome;
+    queryKeyIsStateDataHome: (key: Partial<IInitialStateDataHome>) => void;
+}
+
+const isStateDataHome: IInitialStateDataHome = {
+    listCardCarsForYou: [],
+    tabSearch: {
+        tabId: "0",
+        // type?: ,
+    },
+    loading: {
+        isLoadingListCars: false
+    }
+};
+
+export const useDataHome = create<isStateDataHome>((set) => ({
+    isStateDataHome,
+    queryKeyIsStateDataHome: (key) => set((state) => ({
+        isStateDataHome: {
+            ...state.isStateDataHome,
+            ...key
+        }
+    }
+    )),
+}));
 
 // data list car tự lái
 interface isStateListCarAutonomous {
@@ -151,6 +180,52 @@ export const useDataDetailCar = create<IStateDetailCar>((set) => ({
     }
     )),
     setIsLoadingSkeletonDetailCar: (isLoadingSkeletonDetailCar: boolean) => set((state) => ({ ...state, isLoadingSkeletonDetailCar: isLoadingSkeletonDetailCar })),
+}));
+
+// data list car có tài xế
+interface isStateListCarsDriver {
+    isStateListCarsDriver: IInitialStateListCarAutonomous;
+    queryKeyIsStateListCarsDriver: (key: Partial<IInitialStateListCarAutonomous>) => void;
+}
+
+const isStateListCarsDriver: IInitialStateListCarAutonomous = {
+    listCardCars: [],
+    isLoadingScroll: false,
+    page: 1,
+    next: null,
+    filter: {
+        listTypesCar: [],
+        listAutomaker: []
+    },
+    dataParams: {
+        company_car_search: "0",
+        transmission_search: "0",
+        type_car_search: [],
+        tram_search: 0,
+        discount_search: 0,
+        book_car_flash: 0,
+        delivery_car: 0,
+        mortgage: 0,
+        star_search: 0,
+    },
+    onSuccess: {
+        onSuccessPage: false
+    },
+    limit: {
+        limitFilterCars: 50,
+        limitAllCars: 8,
+    }
+};
+
+export const useDataListCarsDriver = create<isStateListCarsDriver>((set) => ({
+    isStateListCarsDriver,
+    queryKeyIsStateListCarsDriver: (key) => set((state) => ({
+        isStateListCarsDriver: {
+            ...state.isStateListCarsDriver,
+            ...key
+        }
+    }
+    )),
 }));
 
 // data request rental Car

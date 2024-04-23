@@ -117,7 +117,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                     </div>
                     <div
                         onClick={() => router.back()}
-                        className='flex items-center gap-2 text-[#2FB9BD] hover:text-[#2FB9BD]/80 bg-[#2FB9BD]/20 border px-4 py-2 border-[#2FB9BD] rounded-md cursor-pointer w-fit group hover:-translate-x-2 duration-200 transition'
+                        className='flex items-center gap-2 text-[#2FB9BD] hover:text-[#2FB9BD]/80 bg-[#2FB9BD]/20 border px-4 py-2 border-[#2FB9BD] rounded-md cursor-pointer w-fit group hover:-translate-x-2 duration-200 transition caret-transparent'
                     >
                         <FaArrowLeftLong className="3xl:size-5 size-4 3xl:max-w-5 max-w-4" />
                         <div className='3xl:text-lg text-base font-medium'>

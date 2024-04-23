@@ -9,13 +9,60 @@ import SectionTripCarServices from "./components/SectionTripCarServices";
 import SectitonWhyWe from "./components/SectitonWhyWe";
 import SectionShowApp from "./components/SectionShowApp";
 import SectionArticle from "./components/SectionArticle";
+import { getListCarsForYou } from "@/services/cars/cars.services";
+import { useDataHome } from "@/hooks/useDataQueryKey";
+import { CustomDataListCars } from "@/custom/CustomData";
 
 export default function Home() {
     const [isMounted, setIsMounted] = useState<boolean>(false)
 
+    const { isStateDataHome, queryKeyIsStateDataHome } = useDataHome()
+
     useEffect(() => {
         setIsMounted(true)
     }, [])
+
+    useEffect(() => {
+        const fetchListCarsForYou = async () => {
+            const params = {
+                type: 1
+            }
+
+            queryKeyIsStateDataHome({
+                ...isStateDataHome,
+                loading: {
+                    isLoadingListCars: true
+                }
+            })
+
+            const { data } = await getListCarsForYou(params)
+
+            console.log('data: ', data);
+            if (data && data.data && data.base) {
+                let { customDataListCars } = CustomDataListCars(data)
+
+                queryKeyIsStateDataHome({
+                    listCardCarsForYou: customDataListCars,
+                    loading: {
+                        isLoadingListCars: false
+                    }
+                })
+            } else {
+                queryKeyIsStateDataHome({
+                    ...isStateDataHome,
+                    loading: {
+                        isLoadingListCars: false
+                    }
+                })
+            }
+
+        }
+
+        fetchListCarsForYou()
+    }, [])
+
+    console.log('isStateDataHome', isStateDataHome);
+
 
     if (!isMounted) {
         return null;
