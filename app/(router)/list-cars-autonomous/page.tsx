@@ -4,7 +4,6 @@ import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -23,20 +22,15 @@ import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
 import { useResize } from '@/hooks/useResize';
 
 import { useDialogAddress, useDialogCalendar, useDialogFilterListCars, useDialogLogin } from '@/hooks/useOpenDialog';
-import { DialogCalendar } from '@/components/modals/DialogCalendar';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import Image from 'next/image';
 import { getListCars, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
 
-import { DialogFilterListCars } from '@/components/modals/DialogFilterListCars';
 import { CustomDataListCars } from '@/custom/CustomData';
 import { useCookie } from '@/hooks/useCookie';
-import { IInitialStateListCarAutonomous } from '@/types/Initial/IInitial';
 import moment from 'moment';
-import { useListCar } from '@/hooks/useQueryKeyList';
 import { useDataListCarAutonomous } from '@/hooks/useDataQueryKey';
-import { usePathname } from 'next/navigation';
 import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
 import Nodata from '@/components/image/Nodata';
 
@@ -892,7 +886,7 @@ const ListCarAutonomous = (props: Props) => {
                             <div className='flex items-center gap-2'>
                                 <div
                                     onClick={() => handleResetFilter()}
-                                    className={`${isValueNonZeroOrNonEmptyArray("", "reset_filter") ? "border border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD]" : "bg-[#F3F3F6] text-[#06282D] hover:bg-[#F3F3F6]/80 "} py-3 px-4 w-fit h-fit rounded-lg cursor-pointer hover:scale-105 duration-200 transition relative`}
+                                    className={`${isValueNonZeroOrNonEmptyArray("", "reset_filter") ? "border border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD]" : "bg-[#F3F3F6] text-[#06282D] hover:bg-[#F3F3F6]/80 "} py-3 px-4 w-fit h-fit rounded-lg cursor-pointer hover:scale-105 duration-200 transition relative caret-transparent`}
                                 >
                                     <LuSettings2 className='3xl:text-2xl text-xl' />
                                     {
@@ -1123,9 +1117,6 @@ const ListCarAutonomous = (props: Props) => {
                 }
                 <div ref={lastContainerRef} />
             </div>
-
-            {/* <DialogFilterListCars /> */}
-            <DialogFilterListCars />
         </>
     )
 }

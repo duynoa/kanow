@@ -14,7 +14,7 @@ interface IInitialStateDataHome {
         isLoadingListCars: boolean
     }
 }
-// initial list car autonomous
+// initial list cars autonomous
 interface IInitialStateListCarAutonomous {
     listCardCars: IDataCardCar[];
     page: number;
@@ -38,6 +38,42 @@ interface IInitialStateListCarAutonomous {
     onSuccess: {
         onSuccessPage: boolean;
     };
+    loading: {
+        isLoadingDialogFilterListCars: boolean;
+    }
+    limit: {
+        limitFilterCars: number;
+        limitAllCars: number;
+    };
+}
+
+// initial list cars driver 
+interface IInitialStateListCarsDriver {
+    listCardCars: IDataCardCar[];
+    page: number;
+    isLoadingScroll: boolean;
+    next: any;
+    filter: {
+        listTypesCar: ITypesCar[];
+        listAutomaker: IAutomaker[];
+    };
+    dataParams: {
+        company_car_search: string;
+        type_car_search: number[];
+        tram_search: number;
+        discount_search: number;
+        transmission_search: string;
+        book_car_flash: number;
+        delivery_car: number;
+        mortgage: number;
+        star_search: number;
+    };
+    onSuccess: {
+        onSuccessPage: boolean;
+    };
+    loading: {
+        isLoadingDialogFilterListCars: boolean;
+    }
     limit: {
         limitFilterCars: number;
         limitAllCars: number;
@@ -91,8 +127,9 @@ interface IInitialStatePolicy {
 export type {
     IInitialStateDataHome,
     IInitialStateListCarAutonomous,
+    IInitialStateListCarsDriver,
     IInitialStateDetailCar,
     IInitialStateInfoRentalCar,
     IInitialStatePayment,
-    IInitialStatePolicy
+    IInitialStatePolicy,
 }

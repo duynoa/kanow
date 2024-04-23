@@ -28,16 +28,19 @@ import { useForm } from "react-hook-form";
 import { getListReasonsCancel, postReasonCancelCar } from "@/services/cars/cancelCar.services";
 import { Badge } from "../ui/badge";
 import { toastCore } from "@/lib/toast";
+import SkeletonDialogCancelCar from "../skeleton/SkeletonDialogCancelCar";
 type Props = {}
 
 export function DialogCancelCar({ }: Props) {
     const {
-        openDialogCancelCar,
-        setOpenDialogCancelCar,
-        dataListReasonsCancel,
-        setDataListReasonsCancel,
         type,
-        dataInfo
+        dataInfo,
+        openDialogCancelCar,
+        dataListReasonsCancel,
+        isLoadingDialogCancelCar,
+        setOpenDialogCancelCar,
+        setDataListReasonsCancel,
+        setIsLoadingDialogCancelCar,
     } = useDialogCancelCar()
 
     const [contentReason, setContentReason] = useState<string>("");
@@ -54,17 +57,26 @@ export function DialogCancelCar({ }: Props) {
     }
 
     useEffect(() => {
-        if (openDialogCancelCar) {
+        if (openDialogCancelCar && dataListReasonsCancel.length === 0) {
             const fetchListReasonsCancel = async () => {
-                const { data } = await getListReasonsCancel(type)
-                console.log('data data Dtaa:', data);
-                if (data && data.data) {
-                    setDataListReasonsCancel(data.data)
+                try {
+                    setIsLoadingDialogCancelCar(true)
+                    const { data } = await getListReasonsCancel(type)
+                    console.log('data data Dtaa:', data);
+
+                    if (data && data.data) {
+                        setDataListReasonsCancel(data.data)
+                        setIsLoadingDialogCancelCar(false)
+                    } else {
+                        setIsLoadingDialogCancelCar(false)
+                    }
+                } catch (err) {
+                    throw err
                 }
             }
             fetchListReasonsCancel()
         }
-    }, [type])
+    }, [type, openDialogCancelCar])
 
     const handleChangeReason = (item: any) => {
         console.log('item : ', item);
@@ -121,75 +133,80 @@ export function DialogCancelCar({ }: Props) {
                     </DialogTitle>
                 </DialogHeader>
 
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit((values) => onSubmit(values))}>
-                        <div className='flex flex-col gap-6 md:px-6 px-3'>
-                            <div className='flex flex-col gap-2'>
-                                <Label className='text-base text-[#000000] font-semibold'>Lí do huỷ chuyến:</Label>
+                {
+                    isLoadingDialogCancelCar ?
+                        <SkeletonDialogCancelCar />
+                        :
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit((values) => onSubmit(values))}>
+                                <div className='flex flex-col gap-6 md:px-6 px-3'>
+                                    <div className='flex flex-col gap-2'>
+                                        <Label className='text-base text-[#000000] font-semibold'>Lí do huỷ chuyến:</Label>
 
-                                <div className='flex flex-wrap gap-2'>
-                                    {
-                                        dataListReasonsCancel && dataListReasonsCancel?.map((item) => (
-                                            <React.Fragment key={`reason-${item.id}`}>
-                                                <Badge onClick={() => handleChangeReason(item)} className='px-4 py-2 text-sm w-fit cursor-pointer caret-transparent bg-white border-[#2FB9BD] text-[#2FB9BD] hover:bg-[#2FB9BD]/20 duration-200 transition'>
-                                                    {item.note}
-                                                </Badge>
-                                            </React.Fragment>
-                                        ))
-                                    }
+                                        <div className='flex flex-wrap gap-2'>
+                                            {
+                                                dataListReasonsCancel && dataListReasonsCancel?.map((item) => (
+                                                    <React.Fragment key={`reason-${item.id}`}>
+                                                        <Badge onClick={() => handleChangeReason(item)} className='px-4 py-2 text-sm w-fit cursor-pointer caret-transparent bg-white border-[#2FB9BD] text-[#2FB9BD] hover:bg-[#2FB9BD]/20 duration-200 transition'>
+                                                            {item.note}
+                                                        </Badge>
+                                                    </React.Fragment>
+                                                ))
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-col gap-2'>
+                                        <Label className='text-base text-[#000000] font-semibold'>Nội dung</Label>
+                                        <FormField
+                                            control={form.control}
+                                            name="content"
+                                            render={({ field, fieldState }) => {
+                                                const handleTextareaChange = (
+                                                    e: React.ChangeEvent<HTMLTextAreaElement>
+                                                ) => {
+                                                    field.onChange(e);
+                                                    setContentReason(e.target.value)
+                                                }
+
+                                                return (
+                                                    <FormItem>
+                                                        <div>
+                                                            <FormControl>
+                                                                <Textarea
+                                                                    disabled={form.formState.isSubmitting}
+                                                                    placeholder="Nhập nội dung"
+                                                                    className={`3xl:h-40 h-36 resize border rounded-lg bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0`}
+                                                                    onChange={handleTextareaChange}
+                                                                    value={contentReason}
+                                                                />
+                                                            </FormControl>
+                                                        </div>
+                                                    </FormItem>
+                                                );
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className='flex flex-col gap-2'>
-                                <Label className='text-base text-[#000000] font-semibold'>Nội dung</Label>
-                                <FormField
-                                    control={form.control}
-                                    name="content"
-                                    render={({ field, fieldState }) => {
-                                        const handleTextareaChange = (
-                                            e: React.ChangeEvent<HTMLTextAreaElement>
-                                        ) => {
-                                            field.onChange(e);
-                                            setContentReason(e.target.value)
-                                        }
 
-                                        return (
-                                            <FormItem>
-                                                <div>
-                                                    <FormControl>
-                                                        <Textarea
-                                                            disabled={form.formState.isSubmitting}
-                                                            placeholder="Nhập nội dung"
-                                                            className={`3xl:h-40 h-36 resize border rounded-lg bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0`}
-                                                            onChange={handleTextareaChange}
-                                                            value={contentReason}
-                                                        />
-                                                    </FormControl>
-                                                </div>
-                                            </FormItem>
-                                        );
-                                    }}
-                                />
-                            </div>
-                        </div>
+                                <div className='pt-8 md:px-6 px-3 flex flex-row gap-2 justify-end bg-white caret-transparent'>
+                                    <Button
+                                        type="button"
+                                        onClick={handleOpenChangeModal}
+                                        className='3xl:text-base text-sm w-fit py-3 px-6 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
+                                    >
+                                        Hủy
+                                    </Button>
 
-                        <div className='pt-8 md:px-6 px-3 flex flex-row gap-2 justify-end bg-white caret-transparent'>
-                            <Button
-                                type="button"
-                                onClick={handleOpenChangeModal}
-                                className='3xl:text-base text-sm w-fit py-3 px-6 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
-                            >
-                                Hủy
-                            </Button>
-
-                            <Button
-                                type="submit"
-                                className='3xl:text-base text-sm w-fit py-3 px-6 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-red-500/80 transition-all overflow-hidden bg-red-500 text-white'
-                            >
-                                Huỷ chuyến
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
+                                    <Button
+                                        type="submit"
+                                        className='3xl:text-base text-sm w-fit py-3 px-6 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-red-500/80 transition-all overflow-hidden bg-red-500 text-white'
+                                    >
+                                        Huỷ chuyến
+                                    </Button>
+                                </div>
+                            </form>
+                        </Form>
+                }
             </DialogContent>
         </Dialog>
     )

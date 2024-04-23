@@ -16,13 +16,7 @@ import { ToastContainer } from 'react-toastify';
 import { usePathname } from 'next/navigation';
 
 import AlertDialogLogout from '../alert/AlertDialogLogout';
-import { DialogLogin } from '../modals/DialogLogin';
-import { DialogCalendar } from '../modals/DialogCalendar';
-import { DialogReviewImage } from '../modals/DialogReviewImage';
-import { DialogRequestCarRental } from '../modals/DialogRequestCarRental';
-import { DialogValidate } from '../modals/DialogValidate';
 import AlertCancel from '../alert/AlertCancel';
-import { DialogAnswerPolicy } from '../modals/DialogAnswerPolicy';
 
 import AlertDialogCustom from '../alert/AlertDialogCustom';
 import useAuthenticationAPI from '@/services/auth/auth.services';
@@ -36,15 +30,23 @@ import 'swiper/css/autoplay'
 import "aos/dist/aos.css";
 import '@/styles/globals.scss';
 import 'react-toastify/dist/ReactToastify.css';
+
 import { useDataInfoRentalCar, useDataListCarAutonomous } from '@/hooks/useDataQueryKey';
-import { DialogCancelCar } from '../modals/DialogCancelCar';
-import { DialogFilterAddress } from '../modals/DialogFilterAddress';
 import { useDialogAddress, useDialogRegisterOwnerDriver } from '@/hooks/useOpenDialog';
-import { useParams } from 'next/navigation';
-import { DialogRegisterOwnerDriver } from '../modals/DialogRegisterOwnerDriver';
-import DialogFilterMyCar from '../modals/DialogFilterMyCar';
-import { DialogPromotion } from '../modals/DialogPromotion';
-import { DialogReportCar } from '../modals/DialogReportCar';
+
+import DialogFilterMyCar from '@/components/modals/DialogFilterMyCar';
+import DialogFilterListCars from '@/components/modals/DialogFilterListCars';
+import { DialogLogin } from '@/components/modals/DialogLogin';
+import { DialogCalendar } from '@/components/modals/DialogCalendar';
+import { DialogReviewImage } from '@/components/modals/DialogReviewImage';
+import { DialogRequestCarRental } from '@/components/modals/DialogRequestCarRental';
+import { DialogValidate } from '@/components/modals/DialogValidate';
+import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy';
+import { DialogCancelCar } from '@/components/modals/DialogCancelCar';
+import { DialogFilterAddress } from '@/components/modals/DialogFilterAddress';
+import { DialogRegisterOwnerDriver } from '@/components/modals/DialogRegisterOwnerDriver';
+import { DialogReportCar } from '@/components/modals/DialogReportCar';
+import { DialogPromotions } from '@/components/modals/DialogPromotions';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -269,12 +271,13 @@ const LayoutContainer = ({
                     <DialogAnswerPolicy />
                     <DialogCancelCar />
                     <DialogFilterAddress />
-                    <DialogPromotion />
+                    <DialogPromotions />
                     <DialogReportCar />
 
                     <AlertDialogCustom />
                     <DialogRegisterOwnerDriver />
                     <DialogFilterMyCar />
+                    <DialogFilterListCars />
                 </main>
                 {pathname !== "/list-cars-autonomous" && pathname !== "/list-cars-driver" && <Footer />}
                 <ToastContainer

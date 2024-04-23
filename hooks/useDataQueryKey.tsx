@@ -3,6 +3,7 @@ import {
     IInitialStateDetailCar,
     IInitialStateInfoRentalCar,
     IInitialStateListCarAutonomous,
+    IInitialStateListCarsDriver,
     IInitialStatePayment,
     IInitialStatePolicy
 } from '@/types/Initial/IInitial';
@@ -38,7 +39,7 @@ export const useDataHome = create<isStateDataHome>((set) => ({
     )),
 }));
 
-// data list car tự lái
+// data list car tự lái (type === 1)
 interface isStateListCarAutonomous {
     isStateListCarAutonomous: IInitialStateListCarAutonomous;
     queryKeyIsStateListCarAutonomous: (key: Partial<IInitialStateListCarAutonomous>) => void;
@@ -66,6 +67,9 @@ const isStateListCarAutonomous: IInitialStateListCarAutonomous = {
     },
     onSuccess: {
         onSuccessPage: false
+    },
+    loading: {
+        isLoadingDialogFilterListCars: false
     },
     limit: {
         limitFilterCars: 50,
@@ -182,13 +186,13 @@ export const useDataDetailCar = create<IStateDetailCar>((set) => ({
     setIsLoadingSkeletonDetailCar: (isLoadingSkeletonDetailCar: boolean) => set((state) => ({ ...state, isLoadingSkeletonDetailCar: isLoadingSkeletonDetailCar })),
 }));
 
-// data list car có tài xế
+// data list car có tài xế (type === 2)
 interface isStateListCarsDriver {
-    isStateListCarsDriver: IInitialStateListCarAutonomous;
-    queryKeyIsStateListCarsDriver: (key: Partial<IInitialStateListCarAutonomous>) => void;
+    isStateListCarsDriver: IInitialStateListCarsDriver;
+    queryKeyIsStateListCarsDriver: (key: Partial<IInitialStateListCarsDriver>) => void;
 }
 
-const isStateListCarsDriver: IInitialStateListCarAutonomous = {
+const isStateListCarsDriver: IInitialStateListCarsDriver = {
     listCardCars: [],
     isLoadingScroll: false,
     page: 1,
@@ -210,6 +214,9 @@ const isStateListCarsDriver: IInitialStateListCarAutonomous = {
     },
     onSuccess: {
         onSuccessPage: false
+    },
+    loading: {
+        isLoadingDialogFilterListCars: false
     },
     limit: {
         limitFilterCars: 50,

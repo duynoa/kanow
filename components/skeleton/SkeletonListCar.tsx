@@ -1,12 +1,8 @@
-import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
 
 const SkeletonListCar = () => {
     return (
-        <div
-            className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
-        >
+        <div className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'>
             <div className='w-full 3xl:h-[230px] xxl:h-[160px] xl:h-[180px] h-[180px] relative'>
                 <Skeleton className='h-full w-full' />
             </div>
