@@ -105,20 +105,7 @@ const InfoRentalCar = ({ params }: Props) => {
                 throw err
             }
         }
-        const fetchDataPolicy = async () => {
-            const { data } = await getDataPolicy();
-
-            if (data) {
-                let { customDataPolicy } = CustomDataPolicy(data)
-
-                queryKeyIsStatePolicy({
-                    dataPolicy: customDataPolicy
-                })
-            }
-        }
-
         fetchStepTransaction()
-        fetchDataPolicy()
     }, [])
 
     // Hàm để đếm số cụm từ trong một chuỗi (dùng để chỉnh vị trí chữ trong step nhìn cho tương đối)

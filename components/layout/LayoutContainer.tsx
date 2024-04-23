@@ -31,7 +31,7 @@ import "aos/dist/aos.css";
 import '@/styles/globals.scss';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { useDataInfoRentalCar, useDataListCarAutonomous } from '@/hooks/useDataQueryKey';
+import { useDataInfoRentalCar, useDataListCarAutonomous, useDataPolicy } from '@/hooks/useDataQueryKey';
 import { useDialogAddress, useDialogRegisterOwnerDriver } from '@/hooks/useOpenDialog';
 
 import DialogFilterMyCar from '@/components/modals/DialogFilterMyCar';
@@ -47,6 +47,8 @@ import { DialogFilterAddress } from '@/components/modals/DialogFilterAddress';
 import { DialogRegisterOwnerDriver } from '@/components/modals/DialogRegisterOwnerDriver';
 import { DialogReportCar } from '@/components/modals/DialogReportCar';
 import { DialogPromotions } from '@/components/modals/DialogPromotions';
+import { getDataPolicy } from '@/services/cars/policy.services';
+import { CustomDataPolicy } from '@/custom/CustomData';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -72,6 +74,8 @@ const LayoutContainer = ({
     const { openDialogRegisterOwnerDriver } = useDialogRegisterOwnerDriver();
     const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useDataListCarAutonomous()
 
+    const { isStatePolicy, queryKeyIsStatePolicy } = useDataPolicy()
+
     const {
         isVisibleMobile,
         isVisibleTablet,
@@ -81,34 +85,13 @@ const LayoutContainer = ({
         onCloseResizeTablet
     } = useResize()
 
-
-    // if (typeof document !== 'undefined') {
-    //     document.addEventListener('visibilitychange', () => {
-    //         if (document.visibilityState === 'hidden') {
-    //             console.log('Tab không được nhìn thấy');
-    //         } else {
-    //             navigator.geolocation.getCurrentPosition((position) => {
-    //                 console.log('position', position);
-
-    //                 // setCoordinates({
-    //                 //     defaultLat: position.coords.latitude,
-    //                 //     defaultLng: position.coords.longitude,
-    //                 //     lat: position.coords.latitude,
-    //                 //     lng: position.coords.longitude
-    //                 // })
-    //             })
-    //         }
-    //     });
-    // }
-
     useEffect(() => {
         const scrollTop = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         scrollTop()
 
-
-        if (!pathname.startsWith('/list-cars-autonomous')) {
+        if (!pathname.startsWith('/list-cars-autonomous') && !pathname.startsWith('/list-cars-driver')) {
             queryKeyIsStateListCarAutonomous({
                 ...isStateListCarAutonomous,
                 page: 1
@@ -129,12 +112,25 @@ const LayoutContainer = ({
         // }
     }, [pathname])
 
-
     useEffect(() => {
         Aos.init({
             duration: 1800,
             once: true
         });
+
+        const fetchDataPolicy = async () => {
+            const { data } = await getDataPolicy();
+            console.log('data', data);
+
+
+            if (data) {
+                let { customDataPolicy } = CustomDataPolicy(data)
+                queryKeyIsStatePolicy({
+                    dataPolicy: customDataPolicy
+                })
+            }
+        }
+        fetchDataPolicy()
     }, []);
 
     // ẩn/hiện khi chuyển qua màn hình nhỏ khi không dùng chung div để tránh xung đột 
@@ -208,8 +204,6 @@ const LayoutContainer = ({
     //         setLongitude(position.coords.longitude)
     //     })
     // }
-
-
 
     useEffect(() => {
         if (generalKey && generalKey?.pusher && generalKey?.cluster) {

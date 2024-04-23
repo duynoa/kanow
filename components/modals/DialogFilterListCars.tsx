@@ -20,9 +20,7 @@ import { getListAutomaker, getListCars, getListTypeCars } from "@/services/cars/
 import { ScrollArea } from "../ui/scroll-area";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
-import { toast } from "react-toastify";
 import { CustomDataListCars } from "@/custom/CustomData";
-import { IInitialStateListCarAutonomous } from "@/types/Initial/IInitial";
 import { useDataListCarAutonomous, useDataListCarsDriver } from "@/hooks/useDataQueryKey";
 import moment from "moment";
 import { usePathname } from "next/navigation";
@@ -586,10 +584,6 @@ const DialogFilterListCars = ({ }: Props) => {
         }
 
     }
-
-    console.log('type: ', type);
-    console.log('isStateListCarAutonomous: ', isStateListCarAutonomous);
-    console.log('isStateListCarsDriver: ', isStateListCarsDriver);
 
     return (
         <Dialog

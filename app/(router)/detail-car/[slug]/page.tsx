@@ -37,7 +37,7 @@ import { useDataDetailCar, useDataPolicy } from '@/hooks/useDataQueryKey'
 import moment from 'moment'
 import { getListCalendarPriceMonth } from '@/services/cars/calendar.services'
 import { addDays, differenceInMinutes, setHours, setMinutes } from 'date-fns'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import SkeletonDetailCar from './components/SkeletonDetailCar'
 
 type Props = {
@@ -48,6 +48,10 @@ type Props = {
 
 const DetailCar = ({ params }: Props) => {
     const pathname = usePathname()
+    const searchParams = useSearchParams()
+
+    const typeCarDetail = searchParams.get('type')
+
     const router = useRouter()
     const { getCookie } = useCookie()
     const { setOpenDialogLogin } = useDialogLogin()
@@ -123,7 +127,7 @@ const DetailCar = ({ params }: Props) => {
     const fetchDataListCarsRelated = async () => {
         try {
             const dataListCar = {
-                type: 1,
+                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
                 car_id: params.slug,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
             }
@@ -146,6 +150,7 @@ const DetailCar = ({ params }: Props) => {
     const fetchDataListCalendarPriceMonth = async () => {
         try {
             let dataCar = {
+                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
                 car_id: params.slug
             }
 
@@ -168,6 +173,7 @@ const DetailCar = ({ params }: Props) => {
             setIsLoadingSkeletonDetailCar(true)
 
             let dataParams = {
+                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
                 date_search: `${dateTemp ? `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}` : `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`} `
             }
             const { data } = await getDataDetailCar(params.slug, dataParams)
@@ -197,13 +203,6 @@ const DetailCar = ({ params }: Props) => {
                     })
                     setNumberDay(timeDate)
                 } else {
-
-                    // setDateStart(startDate)
-                    // setDateEnd(endDate)
-                    // setDateTemp({
-                    //     from: startDate,
-                    //     to: endDate,
-                    // })
                     setDateStart(dateReal?.from)
                     setDateEnd(dateReal?.to)
                     setDateTemp({
@@ -236,7 +235,12 @@ const DetailCar = ({ params }: Props) => {
             setIsLoadingSkeletonDetailCar(true)
 
             let dataParams = {
-                date_search: `${dateTemp ? `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}` : `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`} `
+                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
+                date_search: `${dateTemp ?
+                    `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}`
+                    :
+                    `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`} 
+                    `
             }
             const { data } = await getDataDetailCar(params.slug, dataParams)
 
@@ -273,20 +277,9 @@ const DetailCar = ({ params }: Props) => {
 
     // fetch data 
     useEffect(() => {
-        const fetchDataPolicy = async () => {
-            const { data } = await getDataPolicy();
-
-            if (data) {
-                let { customDataPolicy } = CustomDataPolicy(data)
-                queryKeyIsStatePolicy({
-                    dataPolicy: customDataPolicy
-                })
-            }
-        }
 
         fetchDataDetailCarFirst()
         fetchDataListCalendarPriceMonth()
-        fetchDataPolicy()
         fetchDataListCarsRelated()
     }, [params.slug])
 
@@ -337,7 +330,6 @@ const DetailCar = ({ params }: Props) => {
         }
     }, [params.slug, openDialogReportCar, openDialogPromotion])
 
-
     useEffect(() => {
         queryKeyIsStateDetailCar({
             dataDetailCar: {
@@ -378,8 +370,6 @@ const DetailCar = ({ params }: Props) => {
             }
         })
     }, [numberDay, queryKeyIsStateDetailCar])
-
-
 
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {
         e.stopPropagation()
@@ -461,7 +451,7 @@ const DetailCar = ({ params }: Props) => {
     }
 
     return (
-        <>
+        <div className='caret-transparent'>
             {
                 isLoadingSkeletonDetailCar ?
                     <SkeletonDetailCar />
@@ -678,7 +668,7 @@ const DetailCar = ({ params }: Props) => {
                                                             key={card.id}
                                                             id={`card-${card.id}`}
                                                             className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0'
-                                                            href={`/detail-car/${card.id}?${ConvertToSlug(card?.name_car)}`}
+                                                            href={`/detail-car/${card.id}?type=${typeCarDetail}&${ConvertToSlug(card?.name_car)}`}
                                                         >
                                                             {
                                                                 card?.promotion?.length > 0 ?
@@ -834,7 +824,7 @@ const DetailCar = ({ params }: Props) => {
                                                         key={card.id}
                                                         id={`card-${card.id}`}
                                                         className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
-                                                        href={`/detail-car/${card.id}?${ConvertToSlug(card?.name_car)}`}
+                                                        href={`/detail-car/${card.id}?type=${typeCarDetail}&${ConvertToSlug(card?.name_car)}`}
                                                     >
                                                         {
                                                             card?.promotion?.length > 0 ?
@@ -986,7 +976,7 @@ const DetailCar = ({ params }: Props) => {
                         </div>
                     </div>
             }
-        </>
+        </div>
     )
 }
 

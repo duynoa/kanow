@@ -23,7 +23,7 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { FormatNumberDot, FormatNumberToThousands } from '@/components/format/FormatNumber'
+import { FormatNumberDot, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
 import { ActionTooltip } from '@/components/tooltip/ActionTooltip'
 import { useResize } from '@/hooks/useResize'
 
@@ -31,14 +31,24 @@ import { FaDeleteLeft } from 'react-icons/fa6'
 import { useCookie } from '@/hooks/useCookie'
 import { IInitialStateDetailCar } from '@/types/Initial/IInitial'
 import { useDataDetailCar, useDataPolicy } from '@/hooks/useDataQueryKey'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { toastCore } from '@/lib/toast'
 
 type Props = {}
 
 const PaymentCar = ({ }: Props) => {
     const pathname = usePathname()
-    const { dateReal, dateTemp, numberDay, validateDateSubmit, dataCalendar, setOpenDialogCalendar } = useDialogCalendar()
+    const searchParams = useSearchParams()
+    const typeCarDetail = searchParams.get('type')
+
+    const {
+        dateReal,
+        dateTemp,
+        numberDay,
+        validateDateSubmit,
+        dataCalendar,
+        setOpenDialogCalendar
+    } = useDialogCalendar()
     const { setOpenDialogPromotion } = useDialogPromotion()
     const { setOpenDialogReportCar } = useDialogReportCar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
@@ -125,6 +135,9 @@ const PaymentCar = ({ }: Props) => {
             setOpenDialogLogin(true)
         }
     }
+
+    console.log('isStatePolicy:', isStatePolicy);
+
 
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
@@ -288,6 +301,121 @@ const PaymentCar = ({ }: Props) => {
                         </div>
                     </div> */}
                 </div>
+                {
+                    typeCarDetail == "2" ?
+                        <div className='flex flex-col gap-2 bg-[#2FB9BD]/10 p-4 rounded-lg'>
+                            <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
+                                Lộ trình
+                            </div>
+
+                            <div className='flex flex-row items-center gap-1'>
+                                <div className='3xl:text-sm text-xs text-[#767676]'>
+                                    Di chuyển liên tỉnh, trả khách tại điểm đón.
+                                </div>
+                                {
+                                    isVisibleTablet ?
+                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                            <FaRegQuestionCircle className='text-[#767676] text-lg cursor-pointer' />
+                                        </div>
+                                        :
+                                        <ActionTooltip
+                                            side="bottom"
+                                            align="center"
+                                            label={(
+                                                <div className='2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
+                                                    {/* <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} /> */}
+                                                chưa có
+                                                </div>
+                                            )}
+                                        >
+                                            <div>
+                                                <FaRegQuestionCircle className='text-[#767676] lg:text-lg text-base cursor-pointer' />
+                                            </div>
+                                        </ActionTooltip>
+                                }
+                            </div>
+
+                            <div>
+                                MAP
+                            </div>
+
+                            <div>
+                                Điểm đón
+                            </div>
+
+                            <div>
+                                Điểm đến
+                            </div>
+
+                            <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
+                                Thông tin lộ trình
+                            </div>
+
+                            <div className='flex flex-col gap-2'>
+                                <div className='flex flex-row items-center justify-between'>
+                                    <div className='3xl:text-base text-sm text-[#16171B] font-thin'>
+                                        Tổng lộ trình
+                                    </div>
+                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
+                                        737.7km
+                                    </div>
+                                </div>
+                                <div className='flex flex-row items-center justify-between'>
+                                    <div className='flex flex-row items-center gap-1'>
+                                        <div className='3xl:text-base text-sm text-[#16171B] font-thin'>
+                                            Số km được đi
+                                        </div>
+                                        {
+                                            isVisibleTablet ?
+                                                <div onClick={() => setOpenDialogAnswerPolicy(true, "total_km_car_talent")}>
+                                                    <FaRegQuestionCircle className='text-[#767676] text-lg cursor-pointer' />
+                                                </div>
+                                                :
+                                                <ActionTooltip
+                                                    side="bottom"
+                                                    align="center"
+                                                    label={(
+                                                        <div className='max-w-[320px]'>
+                                                            <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_talent?.total_km_car_talent ? isStatePolicy?.dataPolicy?.car_talent?.total_km_car_talent : ''}` }} />
+                                                        </div>
+                                                    )}
+                                                >
+                                                    <div>
+                                                        <FaRegQuestionCircle className='text-[#767676] lg:text-lg text-base cursor-pointer' />
+                                                    </div>
+                                                </ActionTooltip>
+                                        }
+                                    </div>
+                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
+                                        812km
+                                    </div>
+                                </div>
+                                {
+                                    isStateDetailCar?.dataDetailCar?.surcharge_car && isStateDetailCar?.dataDetailCar?.surcharge_car.length > 0 ?
+                                        <>
+                                            {
+                                                isStateDetailCar?.dataDetailCar?.surcharge_car?.map((item) => (
+                                                    <div key={`id-${item.id}`} className='flex flex-row items-center justify-between'>
+                                                        <div className='3xl:text-base text-sm text-[#16171B] font-thin'>
+                                                            {item.name ? item.name : ""}
+                                                        </div>
+                                                        <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
+                                                            {item.value ? `${FormatNumberToDecimal(item.value, 3)} đ/ngày` : ""}
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            }
+                                        </>
+                                        :
+                                        null
+                                }
+                            </div>
+
+                        </div>
+                        :
+                        null
+                }
+
 
                 <div className='flex flex-col gap-2'>
                     <div className='flex flex-col gap-2 pb-3 border-b'>
@@ -306,8 +434,8 @@ const PaymentCar = ({ }: Props) => {
                                             side="bottom"
                                             align="center"
                                             label={(
-                                                <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} />
+                                                <div className='2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
+                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_price_policy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} />
                                                 </div>
                                             )}
                                         >
@@ -338,7 +466,7 @@ const PaymentCar = ({ }: Props) => {
                                             side="bottom"
                                             align="center"
                                             label={(
-                                                <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
+                                                <div className='2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
                                                     <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_insurance_policy ? isStatePolicy?.dataPolicy?.car_insurance_policy : ''}` }} />
                                                 </div>
                                             )}

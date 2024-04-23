@@ -50,6 +50,7 @@ export function DialogAnswerPolicy({ }: Props) {
                         {type === "cancellation_policy" && "Thủ tục hoàn tiền & đền cọc"}
                         {type === "car_deposit_policy" && "Chính sách cọc"}
                         {type === "car_payment_policy" && "Thanh toán khi nhận xe"}
+                        {type === "total_km_car_talent" && "Chính sách di chuyển"}
                     </DialogTitle>
                 </DialogHeader>
 
@@ -88,6 +89,10 @@ export function DialogAnswerPolicy({ }: Props) {
                     {
                         type === "car_payment_policy" &&
                         <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund ? isStatePolicy?.dataPolicy?.cancel_trip?.compensation_refund : ''}` }} />
+                    }
+                    {
+                        type === "total_km_car_talent" &&
+                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_talent?.total_km_car_talent ? isStatePolicy?.dataPolicy?.car_talent?.total_km_car_talent : ''}` }} />
                     }
                 </div>
             </DialogContent>

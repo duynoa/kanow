@@ -20,7 +20,7 @@ import { ActionTooltip } from '@/components/tooltip/ActionTooltip';
 import { useDialogAnswerPolicy } from '@/hooks/useOpenDialog';
 import { IInitialStateDetailCar } from '@/types/Initial/IInitial';
 import { useDataDetailCar, useDataPolicy } from '@/hooks/useDataQueryKey';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 type Props = {
     handleClickFavorite: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
@@ -28,6 +28,9 @@ type Props = {
 
 const InformationCar = ({ handleClickFavorite }: Props) => {
     const router = useRouter()
+    const searchParams = useSearchParams()
+    const typeCarDetail = searchParams.get('type')
+
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isStatePolicy } = useDataPolicy()
     const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
@@ -610,7 +613,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
             </div>
 
             {
-                isStateDetailCar?.dataDetailCar?.surcharge_car && isStateDetailCar?.dataDetailCar?.surcharge_car.length > 0 ?
+                typeCarDetail == "1" && isStateDetailCar?.dataDetailCar?.surcharge_car && isStateDetailCar?.dataDetailCar?.surcharge_car.length > 0 ?
                     <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
                         <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                             Phụ phí có thể phát sinh
