@@ -572,7 +572,7 @@ export function DialogCalendar({ }: Props) {
                 const dataBetweens = dataCalendar?.map((item: any) => {
                     return {
                         ...item,
-                        price_detail: item.price_detail.filter((detail: any) => {
+                        price_detail: item?.price_detail?.filter((detail: any) => {
                             const date = new Date(detail.date);
                             const startOfDay = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
                             const endOfDay = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
@@ -591,8 +591,8 @@ export function DialogCalendar({ }: Props) {
             const validateDates = (dataCalendar: any[], startDate: Date, endDate: Date) => {
                 const filteredDates = filterDatesByRange(dataCalendar, startDate, endDate);
 
-                return filteredDates.some((item: any) => {
-                    return item.price_detail.some((detail: any) => {
+                return filteredDates?.some((item: any) => {
+                    return item?.price_detail?.some((detail: any) => {
                         return detail.status === 2 || detail.status === 3;
                     });
                 });
@@ -611,8 +611,6 @@ export function DialogCalendar({ }: Props) {
                 const isDateEndAfter = isAfter(dateEnd, dateStart);
                 const timeDate = Math.ceil(minutesDifference / 1440)
                 let minTimeInDay = hoursDifference >= +generalKey.hour_min_car
-
-                console.log('timeDate', timeDate);
 
                 if (daysDifference > 0 && isDateEndAfter) {
 

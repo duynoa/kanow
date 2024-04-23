@@ -1537,15 +1537,15 @@ function CalendarCustom({
         }
 
         const currentDate = new Date(); // Lấy ngày hiện tại
-        const currentMonth = `0${currentDate.getMonth()}`.slice(-2); // Lấy tháng hiện tại với định dạng 2 chữ số
-        const currentYear = currentDate.getFullYear(); // Lấy năm hiện tại
+        const currentMonth = `0${currentDate?.getMonth()}`.slice(-2); // Lấy tháng hiện tại với định dạng 2 chữ số
+        const currentYear = currentDate?.getFullYear(); // Lấy năm hiện tại
 
         // Tạo dữ liệu cho các tháng từ data
-        const monthData = dataCalendar.filter(item => +item.year === currentYear);
+        const monthData = dataCalendar?.filter(item => +item?.year === currentYear);
 
-        const customDataDate = monthData.map((item) => ({
+        const customDataDate = monthData?.map((item) => ({
             ...item,
-            price_detail: item.price_detail.map((itemDate: any) => ({
+            price_detail: item?.price_detail?.map((itemDate: any) => ({
                 ...itemDate,
                 month: item.month,
                 year: item.year
@@ -1553,10 +1553,10 @@ function CalendarCustom({
         }))
 
         // Tạo giao diện cho từng tháng dựa trên dữ liệu
-        const monthComponents = customDataDate.map((monthItem, index) => {
-            const month: any = monthItem.month; // Tháng
-            const formattedMonth = parseInt(month, 10).toString() // tháng format bỏ số 0
-            const daysInMonth = monthItem.price_detail.length; // Số ngày trong tháng
+        const monthComponents = customDataDate?.map((monthItem, index) => {
+            const month: any = monthItem?.month; // Tháng
+            const formattedMonth = parseInt(month, 10)?.toString() // tháng format bỏ số 0
+            const daysInMonth = monthItem?.price_detail?.length; // Số ngày trong tháng
 
             // Tạo các component cho từng ngày trong tháng
             const dayComponents: any[] = [];
@@ -1570,18 +1570,18 @@ function CalendarCustom({
             const lastDayOfMonth = new Date(currentYear, month, 1);
 
             // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
-            const firstDayOfWeek = firstDayOfMonth.getDay();
-            const lastDayOfWeek = lastDayOfMonth.getDay();
+            const firstDayOfWeek = firstDayOfMonth?.getDay();
+            const lastDayOfWeek = lastDayOfMonth?.getDay();
 
             // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
             const startOfPreviousWeek = new Date(firstDayOfMonth);
-            startOfPreviousWeek.setDate(startOfPreviousWeek.getDate() - firstDayOfWeek);
+            startOfPreviousWeek?.setDate(startOfPreviousWeek?.getDate() - firstDayOfWeek);
 
             const endOfNextWeek = new Date(lastDayOfMonth);
-            endOfNextWeek.setDate(endOfNextWeek.getDate() + (6 - lastDayOfWeek));
+            endOfNextWeek?.setDate(endOfNextWeek?.getDate() + (6 - lastDayOfWeek));
 
             // Render các ngày của tháng trước
-            for (let d = new Date(startOfPreviousWeek); d < firstDayOfMonth; d.setDate(d.getDate() + 1)) {
+            for (let d = new Date(startOfPreviousWeek); d < firstDayOfMonth; d?.setDate(d?.getDate() + 1)) {
                 dayComponents.push(
                     <div key={`prev-${d}`} className='col-span-1 text-center text-[#000000]/40 font-normal 3xl:text-[15px] text-sm'>
                         {/* Hiển thị ngày của tháng trước */}

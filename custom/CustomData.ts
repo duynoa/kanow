@@ -241,6 +241,7 @@ const CustomDataPolicy = (res: any) => {
         car_insurance_policy: res?.setting_insurance_car,
         car_price_policy: res?.setting_price_car,
         cancel_trip: res?.cancel_trip,
+        car_talent: res?.car_talent
     };
     return { customDataPolicy };
 };
