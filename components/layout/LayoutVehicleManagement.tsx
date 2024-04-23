@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 import Image from 'next/image'
@@ -218,7 +218,7 @@ const LayoutVehicleManagement = ({
                                 <SelectContent>
                                     {listNavbar.map((e) => {
                                         return (
-                                            <SelectGroup key={e.id}>
+                                            <SelectGroup key={`e-${e.id}`}>
                                                 <SelectLabel className='flex justify-between'>
                                                     <h1>{e.lable}</h1>
                                                     {e.id != 1 ?
@@ -248,12 +248,11 @@ const LayoutVehicleManagement = ({
                                                 </SelectLabel>
                                                 {e.list && e.list.map((item) => (
                                                     <SelectItemNocheck
-                                                        key={item.id}
+                                                        key={`item-${item.id}`}
                                                         value={`${item.link}`}
                                                         className='flex flex-row items-center'
                                                     >
-                                                        {<div
-                                                            key={item.id}
+                                                        <div
                                                             className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
                                                         >
                                                             <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} size-5`}>
@@ -263,7 +262,6 @@ const LayoutVehicleManagement = ({
                                                                 {item.name}
                                                             </div>
                                                         </div>
-                                                        }
                                                     </SelectItemNocheck>
                                                 ))}
                                             </SelectGroup>
@@ -274,8 +272,8 @@ const LayoutVehicleManagement = ({
                             </Select>
                             : listNavbar.map((e) => {
                                 return (
-                                    <>
-                                        <div key={e.id} className='flex flex-col gap-3 caret-transparent'>
+                                    <div key={`e-${e.id}`}>
+                                        <div className='flex flex-col gap-3 caret-transparent'>
                                             <div className='xxl:text-xs text-[11px] uppercase font-semibold text-[#6F7689] flex items-center justify-between'>
                                                 <h1>{e.lable}</h1>
                                                 {e.id != 1 ?
@@ -305,7 +303,7 @@ const LayoutVehicleManagement = ({
                                             <div className='flex flex-col gap-4'>
                                                 {e.list?.map((item) => {
                                                     return <Link
-                                                        key={item.id}
+                                                        key={`item-${item.id}`}
                                                         href={item.link}
                                                         className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
                                                     >
@@ -321,13 +319,15 @@ const LayoutVehicleManagement = ({
                                             </div>
                                         </div>
                                         <Separator orientation='horizontal' />
-                                    </>
+                                    </div>
                                 )
                             })
                         }
                     </div>
                     <div className='xl:col-span-10 lg:col-span-9 col-span-12 w-full h-auto'>
-                        {children}
+                        <Suspense>
+                            {children}
+                        </Suspense>
                     </div>
                 </div>
             </div>
