@@ -270,9 +270,9 @@ const LayoutVehicleManagement = ({
 
                                 </SelectContent>
                             </Select>
-                            : listNavbar.map((e) => {
+                            : listNavbar.map((e, index) => {
                                 return (
-                                    <div key={`e-${e.id}`}>
+                                    <div key={`e-${e.id}`} className=''>
                                         <div className='flex flex-col gap-3 caret-transparent'>
                                             <div className='xxl:text-xs text-[11px] uppercase font-semibold text-[#6F7689] flex items-center justify-between'>
                                                 <h1>{e.lable}</h1>
@@ -317,15 +317,14 @@ const LayoutVehicleManagement = ({
                                                 })
                                                 }
                                             </div>
+                                            {index != listNavbar.length - 1 ? <Separator orientation='horizontal' className='my-3' /> : null}
                                         </div>
-                                        <Separator orientation='horizontal' />
                                     </div>
                                 )
                             })
                         }
                     </div>
                     <div className='xl:col-span-10 lg:col-span-9 col-span-12 w-full h-auto'>
-
                         {children}
                     </div>
                 </div>
