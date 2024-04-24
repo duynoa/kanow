@@ -16,7 +16,6 @@ import { useEffect, useState } from "react"
 
 type Props = {
     form: any,
-    isState: any
     checkValueArray: (array: any[], field: any) => any
     converArray: (arr: TComboboxApi[]) => TComboboxApi[]
 }

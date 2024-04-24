@@ -1,13 +1,3 @@
-export interface IMyCar {
-    dataMyCar: any[];
-    page: number;
-    next: any;
-    limit: number;
-    isLoadingScroll: boolean;
-    isLoadingCar: boolean;
-    tab: number | string;
-}
-
 // danh sách step
 export interface ISteps {
     name: string;
@@ -38,6 +28,7 @@ export interface IStateInfomation extends ICommonType {
     dataMove: TComboboxApi[];
     dataFeuelType: TComboboxApi[];
     dataFeature: TComboboxApi[];
+    dataSampleCar: TComboboxApi[];
 }
 
 export interface IStateLease extends ICommonType {

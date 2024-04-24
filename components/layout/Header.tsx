@@ -33,6 +33,7 @@ import { ScrollArea } from '../ui/scroll-area';
 import { Badge } from '../ui/badge';
 import { useNotification } from '@/hooks/useNotification';
 import DropdownHeaderNotification from '../dropdown/DropdownHeaderNotification';
+import { useDataProfileMyCar } from '@/hooks/useDataQueryKey';
 const Header = () => {
     // lấy thông tin user
     const router = useRouter()
@@ -51,6 +52,7 @@ const Header = () => {
 
     const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
 
+    const { queryKeyIsStateProfileMyCar } = useDataProfileMyCar()
     // const [statusModal, setStatusModal] = useState<string>("login")
 
     const dataHeader = [
@@ -174,6 +176,10 @@ const Header = () => {
         setTimeout(() => {
             setIsZoomAnimated(false);
         }, 200);
+
+        if (getCookie && getCookie != "kanow" && informationUser) {
+            queryKeyIsStateProfileMyCar({ tab: 4 })
+        }
     };
 
     const zoomedStyle = {
@@ -198,6 +204,10 @@ const Header = () => {
     const _ToogleIsOff = (): void => {
         setIsScrollBlocked(false);
         setShowActive(false)
+
+        if (getCookie && getCookie != "kanow" && informationUser) {
+            queryKeyIsStateProfileMyCar({ tab: 4 })
+        }
     }
 
     const handleOpenChangeModal = (type: string) => {
@@ -381,7 +391,8 @@ const Header = () => {
                                                                             <Link
                                                                                 key={item.id}
                                                                                 onClick={_ToogleIsOff}
-                                                                                href={`/partner/${item.link}`}
+                                                                                // href={`/partner/${item.link}`}
+                                                                                href={`${getCookie && getCookie != "kanow" && informationUser && item.link != '/driver' ? '/list-my-car' : `/partner${item.link}`}`}
                                                                                 className={`${(item.link === '/' && pathname === '/') || (pathname.includes(item.link) && item.link !== '/') ? 'bg-[#C2F9F9]' : ''} flex flex-row items-center gap-3 group hover:bg-[#F6F6F6] py-2 px-8 rounded-lg cursor-pointer`}
                                                                                 prefetch={false}
                                                                             >
@@ -456,7 +467,8 @@ const Header = () => {
                                                                     dataPartnerKanow && dataPartnerKanow?.map((item) => (
                                                                         <Link
                                                                             key={item.id}
-                                                                            href={`/partner/${item.link}`}
+                                                                            // href={`/partner/${item.link}`}
+                                                                            href={`${getCookie && getCookie != "kanow" && informationUser && item.link != '/driver' ? '/list-my-car' : `/partner${item.link}`}`}
                                                                             className={`${(item.link === '/' && pathname === '/') || (pathname.includes(item.link) && item.link !== '/') ? 'bg-[#C2F9F9]' : ''} focus:scale-105 flex flex-row items-center gap-3 group hover:bg-[#C2F9F9] py-2 px-8 rounded-xl cursor-pointer`}
                                                                             style={zoomedStyle}
                                                                             onClick={handleClickToZoom}

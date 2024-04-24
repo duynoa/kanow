@@ -5,7 +5,8 @@ import {
     IInitialStateListCarAutonomous,
     IInitialStateListCarsDriver,
     IInitialStatePayment,
-    IInitialStatePolicy
+    IInitialStatePolicy,
+    IInitialStateProfileMyCar
 } from '@/types/Initial/IInitial';
 import { addDays, setHours, setMinutes } from 'date-fns';
 import { DateRange } from 'react-day-picker';
@@ -295,6 +296,32 @@ export const useDataPaymentRental = create<IStatePaymentRental>((set) => ({
         ...state,
         isStatePaymentRental: {
             ...state.isStatePaymentRental,
+            ...key,
+        },
+    })),
+}));
+
+
+// State profile xe của tôi
+interface IStateProfileMyCar {
+    isStateProfileMyCar: IInitialStateProfileMyCar;
+    queryKeyIsStateProfileMyCar: (key: any) => void;
+}
+
+export const useDataProfileMyCar = create<IStateProfileMyCar>((set) => ({
+    isStateProfileMyCar: {
+        isLoadingCar: false,
+        isLoadingScroll: false,
+        limit: 4,
+        page: 1,
+        dataMyCar: [],
+        next: "",
+        tab: 1
+    },
+    queryKeyIsStateProfileMyCar: (key: any) => set((state) => ({
+        ...state,
+        isStateProfileMyCar: {
+            ...state.isStateProfileMyCar,
             ...key,
         },
     })),

@@ -44,6 +44,17 @@ const apiMyCar = () => {
         };
         return axios.get(`/category/getListTypeCar`, config);
     };
+    /// danh sách mẫu xe
+    const apiListSampleCar = (nameSearch: any, id: any, param?: any) => {
+        let config: AxiosRequestConfig = {
+            params: {
+                name_search: nameSearch,
+                company_car_id: id,
+                ...param, // Nối các tham số trong param object
+            },
+        };
+        return axios.get(`/category/getListModelCar`, config);
+    };
 
     // danh sách chuyển động, nhiên liệu
     const apiListMoveEndFeuelType = () => {
@@ -67,6 +78,7 @@ const apiMyCar = () => {
         apiListCarModel,
         apiListMoveEndFeuelType,
         apiAddCar,
+        apiListSampleCar,
     };
 };
 

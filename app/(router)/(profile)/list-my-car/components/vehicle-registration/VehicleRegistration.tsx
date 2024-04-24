@@ -20,12 +20,13 @@ import StepLease from "./components/StepLease"
 import StepImages from "./components/StepImages"
 import { useDialogAddress } from "@/hooks/useOpenDialog"
 import { toastCore } from "@/lib/toast"
+import { useDataProfileMyCar } from "@/hooks/useDataQueryKey"
 type Props = {
-    queryState: (key: any) => void
 }
 
 
-const VehicleRegistration = ({ queryState: queryStateParent }: Props) => {
+const VehicleRegistration = ({ }: Props) => {
+    const { isStateProfileMyCar, queryKeyIsStateProfileMyCar } = useDataProfileMyCar()
     const dataSteps: ISteps[] = [
         {
             name: "Thông tin",
@@ -72,6 +73,8 @@ const VehicleRegistration = ({ queryState: queryStateParent }: Props) => {
                 describe: "",
                 // tính năng
                 feature: [],
+                // mẫu xe
+                sampleCar: "",
             },
             stepLease: {
                 // Đơn giá thuê mặc định
@@ -130,11 +133,11 @@ const VehicleRegistration = ({ queryState: queryStateParent }: Props) => {
     })
     const { coordinates } = useDialogAddress()
 
-    const [isState, setIsState] = useState(initialState)
+    const [isStateChild, setIsStateChild] = useState(initialState)
 
     const { apiAddCar } = apiMyCar()
 
-    const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
+    const queryStateChild = (key: any) => setIsStateChild((prev: any) => ({ ...prev, ...key }))
 
 
     const checkValueArray = (array: any[], field: any) => {
@@ -152,10 +155,10 @@ const VehicleRegistration = ({ queryState: queryStateParent }: Props) => {
 
 
     const handlePrevStep = () => {
-        const currentIndex = dataSteps.findIndex(x => x.value === isState.step);
+        const currentIndex = dataSteps.findIndex(x => x.value === isStateChild.step);
         if (currentIndex > 0) {
             const prevStep = dataSteps[currentIndex - 1].value;
-            queryState({ step: prevStep });
+            queryStateChild({ step: prevStep });
         }
     };
 
@@ -166,7 +169,7 @@ const VehicleRegistration = ({ queryState: queryStateParent }: Props) => {
 
     const onSubmit = async (value: any, step?: string) => {
         if (step != 'submit') {
-            const currentIndex = dataSteps.findIndex(x => x.value === isState.step);
+            const currentIndex = dataSteps.findIndex(x => x.value === isStateChild.step);
             const nextIndex = dataSteps.findIndex(x => x.value === step);
 
             if (currentIndex === 0 && nextIndex === dataSteps.length - 1) {
@@ -178,7 +181,7 @@ const VehicleRegistration = ({ queryState: queryStateParent }: Props) => {
                 return;
             }
             onScrollTop()
-            queryState({ step });
+            queryStateChild({ step });
             return
         } else {
             let formData = new FormData()
@@ -193,6 +196,7 @@ const VehicleRegistration = ({ queryState: queryStateParent }: Props) => {
             formData.append('other_amenities_car', `${value.stepInformation.feature.map((x: any) => x).join(',')}`);
             formData.append('type_fuel', value.stepInformation.feuelType)
             formData.append('transmission_id', value.stepInformation.move)
+            formData.append("model_car_id", value.stepInformation.sampleCar)
             formData.append('rent_cost', value.stepLease.unitPrice)
             formData.append('rules', value.stepLease.carRentalConditions)
             formData.append('province_id', value.stepLease.vehicleAddress.city)
@@ -216,6 +220,7 @@ const VehicleRegistration = ({ queryState: queryStateParent }: Props) => {
             formData.append("free_km_delivery_car", value.stepLease.vehicleHanding.freeDelivery)
             formData.append("mortgage", `${value.stepLease.mortgage.open ? 1 : 0}`)
             formData.append("note_mortgage", value.stepLease.mortgage.value)
+
             if (value.stepImages.images?.length > 0) {
                 value.stepImages.images.forEach((x: any, index: number) => {
                     formData.append(`image[${index}]`, x)
@@ -223,7 +228,7 @@ const VehicleRegistration = ({ queryState: queryStateParent }: Props) => {
             }
             const { data: { result, message } } = await apiAddCar(formData)
             if (result) {
-                queryStateParent({ tab: 1, page: 1 })
+                queryKeyIsStateProfileMyCar({ tab: 1, page: 1 })
                 toastCore.success(message)
                 return
             }
@@ -232,68 +237,75 @@ const VehicleRegistration = ({ queryState: queryStateParent }: Props) => {
         }
     };
 
+    useEffect(() => {
+        if (isStateProfileMyCar.tab != 4) return
+        var element = document.getElementById('information');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [isStateProfileMyCar.tab])
 
-    const shareProps: any = { isState, queryState, form, checkValueArray, converArray }
+    const shareProps: any = { isStateChild, queryStateChild, form, checkValueArray, converArray }
 
     return (
         <>
             <Tabs
-                defaultValue={isState.step}
+                defaultValue={isStateChild.step}
                 onValueChange={(step) => {
 
                     // form.handleSubmit((values) => onSubmit(values, 'information'))()
-                    // queryState({ step: 'information' })
-                    if (isState.step != 'lease' && isState.step != 'images') {
-                        queryState({ step: 'information' })
+                    // queryStateChild({ step: 'information' })
+                    if (isStateChild.step != 'lease' && isStateChild.step != 'images') {
+                        queryStateChild({ step: 'information' })
                     }
                 }}
-                value={isState.step}
+                value={isStateChild.step}
                 className="w-full flex flex-col gap-4">
-                <TabsList className="flex items-center md:w-1/2 w-[100%] mx-auto bg-transparent  mt-10">
-                    {
-                        isState.step !== 'register' &&
-                        <React.Fragment>
-                            {dataSteps.map((e, index) => {
-                                const registerTabIndex = dataSteps.findIndex(step => step.value === isState.step)
-                                return <React.Fragment key={index}>
-                                    <div className="">
-                                        <TabsTrigger
-                                            value={e.value}
-                                            className={`border-2
+                {isStateChild.step !== 'register' &&
+                    <TabsList className={`flex items-center lg:w-1/2 md:w-[75%] w-[100%] mx-auto bg-transparent  ${isStateChild.step != 'register' ? 'mt-10' : ''}`}>
+                        {dataSteps.map((e, index) => {
+                            const registerTabIndex = dataSteps.findIndex(step => step.value === isStateChild.step)
+                            return <React.Fragment key={index}>
+                                <div className="relative">
+                                    <TabsTrigger
+                                        value={e.value}
+                                        className={`border-2
                                         disabled:opacity-100 data-[state=active]:text-[#2FB9BD] 
                                         data-[state=active]:bg-[#2FB9BD]/20 
-                                        ${(isState.step === e.value || index < registerTabIndex) ? "border-[#2FB9BD] text-[#2FB9BD]" : "border-gray-300"
-                                                } rounded-full p-3 font-semibold md:text-xs text-[11px] leading-[17px] lg:size-[90px] md:size-[80px] size-[70px] cursor-default`}
-                                        >
-                                            {index + 1}.{e.name}
-                                        </TabsTrigger>
+                                        ${(isStateChild.step === e.value || index < registerTabIndex) ? "border-[#2FB9BD] text-[#2FB9BD]" : "border-[#9ca3af] text-[#9ca3af]"}
+                                                } rounded-full p-3 font-semibold md:text-xl text-lg leading-[17px] lg:size-[70px] md:size-[60px] size-[65px] cursor-default`}
+                                    >
+                                        {index + 1}
+                                    </TabsTrigger>
+                                    <h1 className={`${(isStateChild.step === e.value || index < registerTabIndex) ? " text-[#2FB9BD]" : "text-[#9ca3af]"
+                                        } uppercase whitespace-nowrap block absolute -bottom-[40%] ${index != 0 ? 'left-1/2' : 'left-[45%]'} -translate-x-1/2 w-full text-center lg:text-sm md:text-xs text-[11px] font-semibold`}>{e.name}</h1>
+                                </div>
+
+                                {index != dataSteps.length - 1 &&
+                                    <div className="w-full flex items-center">
+                                        <div
+                                            style={{ backgroundColor: isStateChild.step === e.value || index < registerTabIndex ? "#2FB9BD" : "#9ca3af" }}
+                                            className="h-[1px] w-full "
+                                        ></div>
                                     </div>
+                                }
 
-                                    {index != dataSteps.length - 1 &&
-                                        <div className="w-full flex items-center">
-                                            <div
-                                                style={{ backgroundColor: isState.step === e.value || index < registerTabIndex ? "#2FB9BD" : "gray" }}
-                                                className="h-[1px] w-full "
-                                            ></div>
-                                        </div>
-                                    }
-                                </React.Fragment>
-                            })}
-                        </React.Fragment>
-                    }
-                </TabsList>
+                            </React.Fragment>
+                        })}
+                    </TabsList>
+                }
 
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-4">
                     <TabsContent value="register" className="" >
                         <div className="w-full h-full flex items-center justify-center">
-                            <Image src={'/profile/listMyCar/vehicleRegistration/images.png'} alt="" width={1280} height={1024} className="size-[40%] object-cover" />
+                            <Image src={'/profile/listMyCar/vehicleRegistration/images.png'} alt="" width={1280} height={1024} className="lg:size-[40%] size-1/2 object-cover" />
                         </div>
                     </TabsContent>
-                    {isState.step == 'register' &&
-                        <TabsList className=" items-center w-full bg-transparent">
+                    {isStateChild.step == 'register' &&
+                        <TabsList id="information" className=" items-center w-full bg-transparent">
                             <TabsTrigger value="information"
                                 className={`col-span-11 w-fit text-white border-[#2FB9BD] rounded-xl
-                                    border-2 px-8 py-4 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
+                                    border-2 px-8 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
                                 Đăng ký xe tự lái
                             </TabsTrigger>
                         </TabsList>
@@ -309,16 +321,17 @@ const VehicleRegistration = ({ queryState: queryStateParent }: Props) => {
                     </TabsContent>
                 </div>
                 <TabsContent value={"information"} className="lg:mt-4 mt-5 flex flex-col gap-4">
-                    <StepInfoMation {...shareProps} />
-                    <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
-                        <Button
-                            onClick={() => form.handleSubmit((values) => onSubmit(values, 'lease'))()}
-                            type="button"
-                            className={`md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
+                    <StepInfoMation {...shareProps}>
+                        <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
+                            <Button
+                                onClick={() => form.handleSubmit((values) => onSubmit(values, 'lease'))()}
+                                type="button"
+                                className={`md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
                                     border-2 px-10 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
-                            Kế tiếp
-                        </Button>
-                    </div>
+                                Kế tiếp
+                            </Button>
+                        </div>
+                    </StepInfoMation>
                 </TabsContent>
                 <TabsContent value={'lease'} className="lg:mt-4 mt-5">
                     <StepLease {...shareProps} />
