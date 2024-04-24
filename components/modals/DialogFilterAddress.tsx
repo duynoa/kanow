@@ -26,7 +26,7 @@ import useAirportCarDeliveryApi from "@/services/filter/listAirport/airportCarDe
 import { useGeolocated } from "react-geolocated";
 import { usePathname } from "next/navigation";
 import { getListCars } from "@/services/cars/cars.services";
-import { useDataListCarAutonomous } from "@/hooks/useDataQueryKey";
+import { useDataListCarAutonomous, useDataListCarsDriver } from "@/hooks/useDataQueryKey";
 import { CustomDataListCars } from "@/custom/CustomData";
 import moment from "moment";
 
@@ -45,41 +45,43 @@ interface IPlace {
 }
 
 export function DialogFilterAddress({ }: Props) {
-    const { generalKey } = useGeneralKey()
     const pathname = usePathname()
+    const { generalKey } = useGeneralKey()
 
     const { apiGetAddress } = useGoogleApi()
 
     const { apiGetListAirportCarDelivery } = useAirportCarDeliveryApi()
     const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useDataListCarAutonomous()
+    const { isStateListCarsDriver, queryKeyIsStateListCarsDriver } = useDataListCarsDriver()
     const { dateReal } = useDialogCalendar()
 
     const {
-        openDialogAddress,
-        valueAddress,
-        setOpenDialogAddress,
-        setValueAddress,
+        type,
         coordinates,
+        indexAddressDestination,
+        openDialogAddress,
+        valueAddressPickup,
+        valueAddressDestination,
+        setOpenDialogAddress,
+        setValueAddressPickup,
+        setValueAddressDestination,
         setCoordinates,
         setOnSubmitFilter
     } = useDialogAddress()
 
     const form = useForm({
         defaultValues: {
-            valueAddres: ""
+            valueAddress: ""
         },
     })
-
 
     const [dataPlane, setDataPlane] = useState<IPlace[]>([])
 
     const onSubmit = async (dataAddress: any) => {
         if (pathname.startsWith('/list-cars-autonomous')) {
-            console.log('valueAddress', valueAddress);
-
             const query = {
-                "lat": dataAddress.valueAddres ? coordinates.lat : undefined,
-                "lon": dataAddress.valueAddres ? coordinates.lng : undefined,
+                "lat": dataAddress.valueAddress ? coordinates.lat : undefined,
+                "lon": dataAddress.valueAddress ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
                 type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
@@ -116,17 +118,86 @@ export function DialogFilterAddress({ }: Props) {
                     next: data?.links?.next
                 })
 
-                setValueAddress(dataAddress.valueAddres)
+                setValueAddressPickup(dataAddress.valueAddress)
+                setOpenDialogAddress(false)
+            }
+
+        } else if (pathname.startsWith('/list-cars-driver')) {
+            const query = {
+                "lat": dataAddress.valueAddress ? coordinates.lat : undefined,
+                "lon": dataAddress.valueAddress ? coordinates.lng : undefined,
+                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
+                company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
+                type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
+                transmission_search: isStateListCarsDriver?.dataParams?.transmission_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.transmission_search,
+                star_search: isStateListCarsDriver?.dataParams?.star_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.star_search,
+                tram_search: isStateListCarsDriver?.dataParams?.tram_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.tram_search,
+                discount_search: isStateListCarsDriver?.dataParams?.discount_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.discount_search,
+                book_car_flash: isStateListCarsDriver?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarsDriver?.dataParams?.book_car_flash,
+                mortgage: isStateListCarsDriver?.dataParams?.mortgage == 0 ? undefined : isStateListCarsDriver?.dataParams?.mortgage,
+                delivery_car: isStateListCarsDriver?.dataParams?.delivery_car == 0 ? undefined : isStateListCarsDriver?.dataParams?.delivery_car,
+            }
+
+            let limit = isStateListCarsDriver.limit.limitAllCars;
+
+            if (
+                isStateListCarsDriver.dataParams?.company_car_search === "0" &&
+                isStateListCarsDriver.dataParams?.type_car_search?.length === 0 &&
+                isStateListCarsDriver?.dataParams?.transmission_search == "0" &&
+                isStateListCarsDriver.dataParams?.star_search === 0
+            ) {
+                limit = isStateListCarsDriver.limit.limitAllCars;
+            } else {
+                limit = isStateListCarsDriver.limit.limitFilterCars;
+            }
+
+            const { data } = await getListCars(1, limit, query)
+
+            if (data && data.data && data.base) {
+                let { customDataListCars } = CustomDataListCars(data)
+
+                queryKeyIsStateListCarsDriver({
+                    listCardCars: customDataListCars,
+                    page: 2,
+                    next: data?.links?.next
+                })
+
+                setValueAddressPickup(dataAddress.valueAddress)
                 setOpenDialogAddress(false)
             }
 
         } else {
-            setValueAddress(dataAddress.valueAddres)
-            setOpenDialogAddress(false)
-            setOnSubmitFilter(true)
-        }
+            if (type === "address_pickup") {
+                console.log('dataAddress', dataAddress);
+                setValueAddressPickup(dataAddress.valueAddress)
+                setOpenDialogAddress(false)
+                setOnSubmitFilter(true)
+            } else if (type === "address_destination") {
+                // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
+                const updatedAddressDestination = [...valueAddressDestination];
+                updatedAddressDestination[indexAddressDestination] = {
+                    id: valueAddressDestination[indexAddressDestination].id,
+                    valueAddress: dataAddress.valueAddress
+                };
 
+                console.log('dataAddress', dataAddress);
+                console.log('updatedAddressDestination', updatedAddressDestination);
+
+
+                // Đặt lại giá trị của mảng điểm đến với điểm đến được cập nhật
+                setValueAddressDestination(updatedAddressDestination);
+
+                // Đóng dialog địa chỉ
+                setOpenDialogAddress(false);
+
+                // Đặt cờ để gửi bộ lọc
+                setOnSubmitFilter(true);
+            }
+        }
     }
+
+    console.log('valueAddressDestination: ', valueAddressDestination);
+
 
     const getGeolocated = useGeolocated({
         onSuccess(position) {
@@ -156,8 +227,6 @@ export function DialogFilterAddress({ }: Props) {
         }
     };
 
-
-
     // lấy địa chỉ theo vị trí hiên tại của google
     const fetchLocationName = async (lat: any, lng: any) => {
         try {
@@ -165,13 +234,8 @@ export function DialogFilterAddress({ }: Props) {
             const data = response.data;
             if (data.status === 'OK') {
                 const address = data.results[0].formatted_address
-                // const address = data.results[0].formatted_address.split(',').slice(1).join(',');
-                // const address = data.results[0].address_components?.map((e: any) => {
-                //     return ["street_number", "route", 'plus_code'].includes(e.types[0]) ? undefined : e.long_name;
-                // }).filter(Boolean).join(', ')
-                form.setValue("valueAddres", address);
-                // setValueMount(address)
-                // form.setValue("valueAddres", address.split(',').slice(1).join(','));
+
+                form.setValue("valueAddress", address);
                 return
             }
             console.log('Không tìm thấy thông tin vị trí.');
@@ -180,38 +244,18 @@ export function DialogFilterAddress({ }: Props) {
         }
     };
 
-
     // lấy định vị tọa độ hiện tại
     useEffect(() => {
-        // if (generalKey.google_api_key) {
-        //     navigator.geolocation.watchPosition((position) => {
-        // setCoordinates({
-        //     defaultLat: position.coords.latitude,
-        //     defaultLng: position.coords.longitude,
-        //     lat: position.coords.latitude,
-        //     lng: position.coords.longitude
-        // })
-        //     })
-        // }
         if (openDialogAddress) {
             fetchAirportCarDelivery()
-            if (valueAddress) {
-                form.setValue("valueAddres", valueAddress)
+            if (valueAddressPickup) {
+                form.setValue("valueAddress", valueAddressPickup)
                 return
             }
             form.reset()
             return
         }
     }, [openDialogAddress, generalKey.google_api_key])
-
-
-
-    // useEffect(() => {
-    //     if (generalKey.google_api_key && openDialogAddress && !valueMount && coordinates.defaultLat && coordinates.defaultLng) {
-    //         fetchLocationName()
-    //     }
-    // }, [generalKey.google_api_key, openDialogAddress])
-
 
     return (
         <>
@@ -239,23 +283,22 @@ export function DialogFilterAddress({ }: Props) {
                         <Form {...form}>
                             <FormField
                                 control={form.control}
-                                name="valueAddres"
+                                name="valueAddress"
                                 render={({ field }) => {
                                     return (
                                         <FormItem>
                                             <FormControl>
                                                 <>
                                                     <div className="relative">
-                                                        <TiLocation className="text-xl text-[#1EAAB1] absolute top-1/2 -translate-y-1/2 left-1" />
+                                                        <TiLocation className="size-5 text-[#1EAAB1] absolute top-1/2 -translate-y-1/2 left-2" />
                                                         <SearchAddress onChange={(e: any) => {
                                                             field.onChange(e)
-                                                            // field.onChange(e.split(',').slice(1).join(','))
                                                         }}
                                                         >
                                                             <Input
                                                                 type="text"
                                                                 className={`disabled:bg-[#E6E8EC] lg:text-base text-sm  disabled:border-gray-300 disabled:border-2  focus:border-[#2FB9BD]
-                                                            w-full border-[#E6E8EC] !pl-7 !pr-[38px] border-2 lg:py-3 py-2 rounded-2xl   px-3 focus-visible:ring-0 text-black font-medium focus-visible:ring-offset-0 `}
+                                                            w-full border-[#E6E8EC] !pl-7 !pr-[38px] border-2 lg:py-3 py-2 rounded-2xl px-3 focus-visible:ring-0 text-black font-medium focus-visible:ring-offset-0 `}
                                                                 placeholder="Nhập địa điểm"
                                                                 onKeyUp={() => {
                                                                     setCoordinates({ lat: 0, lng: 0 })
@@ -263,10 +306,13 @@ export function DialogFilterAddress({ }: Props) {
                                                                 {...field}
                                                             />
                                                         </SearchAddress>
-                                                        {field.value &&
+                                                        {
+                                                            field.value &&
                                                             <X
                                                                 onClick={() => form.reset()}
-                                                                className="absolute cursor-pointer right-0 -translate-x-1/2 top-1/2 -translate-y-1/2 text-xs text-white bg-[#2FB9BD] p-1 rounded-full" />}
+                                                                className="absolute cursor-pointer right-0 -translate-x-1/2 top-1/2 -translate-y-1/2 text-xs text-white bg-[#2FB9BD] p-1 rounded-full"
+                                                            />
+                                                        }
                                                     </div>
                                                 </>
                                             </FormControl>
@@ -276,7 +322,7 @@ export function DialogFilterAddress({ }: Props) {
                             />
 
                             <div onClick={() => handleAddressCurent()} className="lg:py-3 py-2 px-1 flex items-center gap-2 cursor-pointer hover:bg-gray-100  rounded-2xl transition-all duration-150 ease-linear">
-                                <TiLocation className="text-xl text-[#1EAAB1]" />
+                                <TiLocation className="size-5 text-[#1EAAB1]" />
                                 <h1 className="font-medium lg:text-base text-sm">Vị trí hiện tại</h1>
                             </div>
                             <Separator />
@@ -284,7 +330,7 @@ export function DialogFilterAddress({ }: Props) {
                                 <h1 className="font-medium lg:text-base text-sm">Giao xe sân bay</h1>
                                 <FormField
                                     control={form.control}
-                                    name="valueAddres"
+                                    name="valueAddress"
                                     render={({ field }) => {
                                         return (
                                             <FormItem>
@@ -298,7 +344,8 @@ export function DialogFilterAddress({ }: Props) {
                                                                         setCoordinates({ lat: e.latitude, lng: e.longitude })
                                                                     }}
                                                                     variant="outline"
-                                                                    className={`${field.value == e.address ? "border-[#2FB9BD]" : "border-[#E6E8EC]"} font-medium py-2 px-4 cursor-pointer hover:bg-gray-100 hover:border-[#2FB9BD] border-2 flex items-center gap-1 lg:text-base text-sm`}>
+                                                                    className={`${field.value == e.address ? "border-[#2FB9BD]" : "border-[#E6E8EC]"} font-medium py-2 px-4 cursor-pointer hover:bg-gray-100 hover:border-[#2FB9BD] border-2 flex items-center gap-1 lg:text-base text-sm`}
+                                                                    >
                                                                     <LuPlane className="" />
                                                                     <span className="capitalize">{e.name}</span>
                                                                 </Badge>

@@ -547,6 +547,23 @@ export function DialogCalendar({ }: Props) {
                     }
                 })
 
+                setTimeout(() => {
+                    queryKeyIsStateListCarAutonomous({
+                        ...isStateListCarAutonomous,
+                        onSuccess: {
+                            onSuccessPage: false
+                        }
+                    })
+
+                    queryKeyIsStateListCarsDriver({
+                        ...isStateListCarsDriver,
+                        onSuccess: {
+                            onSuccessPage: false
+                        }
+                    })
+
+                }, 300);
+
                 setDateReal(dateTimeComponent);
                 setFlagSubmit(false)
             }

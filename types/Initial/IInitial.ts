@@ -8,7 +8,8 @@ interface IInitialStateDataHome {
     listCardCarsForYou: IDataCardCar[];
     tabSearch: {
         tabId: string,
-        type?: string,
+        type: string,
+        tab: number,
     },
     loading: {
         isLoadingListCars: boolean

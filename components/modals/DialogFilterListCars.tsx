@@ -40,7 +40,7 @@ const DialogFilterListCars = ({ }: Props) => {
     const { openDialogFilterListCars, setOpenDialogFilterListCars, type } = useDialogFilterListCars()
 
     const {
-        valueAddress,
+        valueAddressPickup,
         coordinates,
     } = useDialogAddress()
 
@@ -254,8 +254,8 @@ const DialogFilterListCars = ({ }: Props) => {
 
                     const query = {
                         type: pathname.startsWith("/list-cars-autonomous") ? 1 : 2,
-                        "lat": valueAddress ? coordinates.lat : undefined,
-                        "lon": valueAddress ? coordinates.lng : undefined,
+                        "lat": valueAddressPickup ? coordinates.lat : undefined,
+                        "lon": valueAddressPickup ? coordinates.lng : undefined,
                         date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                         company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
                         type_car_search: updatedTypeSearch && updatedTypeSearch.length === 0 ? [] : updatedTypeSearch,
@@ -309,8 +309,8 @@ const DialogFilterListCars = ({ }: Props) => {
 
                     const query = {
                         type: pathname.startsWith("/list-cars-autonomous") ? 1 : 2,
-                        "lat": valueAddress ? coordinates.lat : undefined,
-                        "lon": valueAddress ? coordinates.lng : undefined,
+                        "lat": valueAddressPickup ? coordinates.lat : undefined,
+                        "lon": valueAddressPickup ? coordinates.lng : undefined,
                         date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                         company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
                         type_car_search: updatedTypeSearch && updatedTypeSearch.length === 0 ? [] : updatedTypeSearch,
@@ -371,8 +371,8 @@ const DialogFilterListCars = ({ }: Props) => {
 
                     const query = {
                         type: pathname.startsWith("/list-cars-autonomous") ? 1 : 2,
-                        "lat": valueAddress ? coordinates.lat : undefined,
-                        "lon": valueAddress ? coordinates.lng : undefined,
+                        "lat": valueAddressPickup ? coordinates.lat : undefined,
+                        "lon": valueAddressPickup ? coordinates.lng : undefined,
                         date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                         company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                         type_car_search: updatedTypeSearch && updatedTypeSearch.length === 0 ? [] : updatedTypeSearch,
@@ -426,8 +426,8 @@ const DialogFilterListCars = ({ }: Props) => {
 
                     const query = {
                         type: pathname.startsWith("/list-cars-autonomous") ? 1 : 2,
-                        "lat": valueAddress ? coordinates.lat : undefined,
-                        "lon": valueAddress ? coordinates.lng : undefined,
+                        "lat": valueAddressPickup ? coordinates.lat : undefined,
+                        "lon": valueAddressPickup ? coordinates.lng : undefined,
                         date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                         company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                         type_car_search: updatedTypeSearch && updatedTypeSearch.length === 0 ? [] : updatedTypeSearch,
@@ -484,8 +484,8 @@ const DialogFilterListCars = ({ }: Props) => {
         if (pathname.startsWith("/list-cars-autonomous")) {
             const query = {
                 type: pathname.startsWith("/list-cars-autonomous") ? 1 : 2,
-                "lat": valueAddress ? coordinates.lat : undefined,
-                "lon": valueAddress ? coordinates.lng : undefined,
+                "lat": valueAddressPickup ? coordinates.lat : undefined,
+                "lon": valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: paramCompanyCarSearch == "0" ? undefined : paramCompanyCarSearch,
                 type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
@@ -534,8 +534,8 @@ const DialogFilterListCars = ({ }: Props) => {
         } else if (pathname.startsWith("/list-cars-driver")) {
             const query = {
                 type: pathname.startsWith("/list-cars-autonomous") ? 1 : 2,
-                "lat": valueAddress ? coordinates.lat : undefined,
-                "lon": valueAddress ? coordinates.lng : undefined,
+                "lat": valueAddressPickup ? coordinates.lat : undefined,
+                "lon": valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: paramCompanyCarSearch == "0" ? undefined : paramCompanyCarSearch,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,

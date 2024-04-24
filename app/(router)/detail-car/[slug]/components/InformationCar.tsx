@@ -47,14 +47,14 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
 
     const latitude = 10.796455918645478; // Thay đổi giá trị này bằng vĩ độ thực tế
     const longitude = 106.63445664322627; // Thay đổi giá trị này bằng kinh độ thực tế
+    const dataMaps = {
+        google_map_link: ""
+    }
 
     useEffect(() => {
         setIsMounted(true)
     }, [])
 
-    const dataMaps = {
-        google_map_link: ""
-    }
 
 
     if (!isMounted) {
