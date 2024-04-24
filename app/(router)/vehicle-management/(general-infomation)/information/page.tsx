@@ -15,6 +15,9 @@ import Map from "@/components/map/Maps";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
+import apiMyCar from "@/services/profile/listMyCar/listMyCar.services";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toastCore } from "@/lib/toast";
 type Props = {}
 
 interface ObjFeature {
@@ -59,7 +62,9 @@ export default function VehicleInformation(props: Props) {
         }
     })
 
-    const { apiDetailCar, } = apiVehicleCommon()
+    const { apiDetailCar } = apiVehicleCommon()
+
+    const { apiListFeature } = apiMyCar()
 
     const { dataDetail: { data }, idCar } = useVehicleManage()
 
@@ -67,6 +72,20 @@ export default function VehicleInformation(props: Props) {
     const [isState, setIsState] = useState(initialState)
 
     const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
+
+    const fetListFeature = async () => {
+        queryState({ loadFeature: true })
+        try {
+            const { data } = await apiListFeature()
+            if (data?.data) {
+                queryState({ dataFeature: data?.data })
+            }
+        } catch (error) {
+            throw error
+        } finally {
+            queryState({ loadFeature: false })
+        }
+    }
 
 
     useEffect(() => {
@@ -80,7 +99,8 @@ export default function VehicleInformation(props: Props) {
             form.setValue('feuelType', data?.type_fuel)
             form.setValue('fuelConsumptionLevel', data?.fuel_consumption)
             form.setValue('describe', data?.detail)
-            //other_amenities_car tính năng
+            form.setValue('feature', data?.other_amenities_car ? data?.other_amenities_car.map((e: any) => e.id) : [])
+            fetListFeature()
         } else {
             form.reset()
         }
@@ -89,6 +109,7 @@ export default function VehicleInformation(props: Props) {
 
     const onSubmit = async (value: any) => {
         console.log(value)
+        toastCore.error('Chức năng đang phát triển')
     }
 
     const latitude = 10.796455918645478; // Thay đổi giá trị này bằng vĩ độ thực tế
@@ -342,8 +363,7 @@ export default function VehicleInformation(props: Props) {
                                                 <>
                                                     {
                                                         [...Array(5)].map((_, index) => {
-                                                            return ''
-                                                            // return <SkeletonFeature key={index} />
+                                                            return <Skeleton key={index} className='h-[90px] w-full' />
                                                         })
                                                     }
                                                 </>
@@ -384,7 +404,6 @@ export default function VehicleInformation(props: Props) {
                     />
                 </div>
                 <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
-
                     <Button
                         onClick={() => {
                             form.handleSubmit((values) => onSubmit(values))()
