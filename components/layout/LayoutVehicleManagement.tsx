@@ -1,28 +1,27 @@
 'use client'
 
-import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
-import React, { Suspense, useEffect, useState } from 'react'
+import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 
-import Image from 'next/image'
 
 import { useResize } from '@/hooks/useResize'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'
-import { SelectItemNocheck } from '../ui/selectNocheck'
-import { useAlertDialogLogout } from '@/hooks/useAlertDialog'
-import { Separator } from '../ui/separator'
-import { FaCalendarAlt, FaCarSide, FaRegImage, FaSuitcase } from 'react-icons/fa'
-import { FileImage } from 'lucide-react'
-import { BsCardHeading } from 'react-icons/bs'
-import { MdOutlinePriceChange } from 'react-icons/md'
-import { IoIosSettings } from 'react-icons/io'
-import { GrMap } from "react-icons/gr";
-import { TbReportMoney } from 'react-icons/tb'
-import { IoNewspaperOutline } from 'react-icons/io5'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form'
-import { Switch } from '../ui/switch'
 import { useForm } from 'react-hook-form'
+import { BsCardHeading } from 'react-icons/bs'
+import { FaCalendarAlt, FaCarSide, FaRegImage, FaSuitcase } from 'react-icons/fa'
+import { GrMap } from "react-icons/gr"
+import { IoIosSettings } from 'react-icons/io'
+import { IoNewspaperOutline } from 'react-icons/io5'
+import { MdOutlinePriceChange } from 'react-icons/md'
+import { TbReportMoney } from 'react-icons/tb'
+import { Form, FormControl, FormField, FormItem } from '../ui/form'
+import { Select, SelectContent, SelectGroup, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'
+import { SelectItemNocheck } from '../ui/selectNocheck'
+import { Separator } from '../ui/separator'
+import { Switch } from '../ui/switch'
+import { useVehicleManage } from '@/hooks/useVehicleManage'
+import apiVehicleCommon from '@/services/vehicle-management/vehicle-common.services'
 
 const LayoutVehicleManagement = ({
     children
@@ -33,7 +32,7 @@ const LayoutVehicleManagement = ({
 
     const param = useSearchParams()
 
-    const id = param.get('id')
+    const id = param.get('id') || ''
 
     const pathname = `${href}?id=${id}`
 
@@ -177,6 +176,24 @@ const LayoutVehicleManagement = ({
         return form.getValues(e)
     }));
 
+    const { apiDetailCar } = apiVehicleCommon()
+
+    const { dataDetail, setIdCar, setDataDetail } = useVehicleManage()
+
+
+    const fetchData = async () => {
+        const { data } = await apiDetailCar(id, { type: 1, car_owner: 1 })
+        if (data) {
+            setDataDetail(data)
+        }
+    }
+
+    useEffect(() => {
+        if (id) {
+            fetchData()
+            setIdCar(id)
+        }
+    }, [id, pathname])
 
     useEffect(() => {
         setIsMounted(true)

@@ -15,20 +15,23 @@ import { FaStar } from "react-icons/fa"
 import { FaCircleCheck } from "react-icons/fa6"
 import { TiLocation } from "react-icons/ti"
 import SkeletonMyCar from "../Skeleton/SkeletonMyCar"
+import { useDataProfileMyCar } from "@/hooks/useDataQueryKey"
 
 type Props = {
-    isState: IMyCar
+
 }
 
-const MyCar = ({ isState }: Props) => {
+const MyCar = ({ }: Props) => {
+    const { isStateProfileMyCar } = useDataProfileMyCar()
+
     return (
         <>
-            {isState.isLoadingCar ?
+            {isStateProfileMyCar.isLoadingCar ?
                 [...Array(3)].map((_, index) => (
                     <SkeletonMyCar key={index} />
                 ))
                 :
-                isState.dataMyCar?.length > 0 ? isState.dataMyCar.map((e, index) => (
+                isStateProfileMyCar.dataMyCar?.length > 0 ? isStateProfileMyCar.dataMyCar.map((e, index) => (
                     <Link
                         key={e.id}
                         id={`e-${e.id}`}

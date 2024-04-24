@@ -8,10 +8,8 @@ import { MdClear } from "react-icons/md"
 
 type Props = {
     form: any,
-    isState: IVehicleRegistration
-    queryState: (key: any) => void
 }
-const StepImages = ({ form, isState, queryState }: Props) => {
+const StepImages = ({ form }: Props) => {
 
     return (
         <Form  {...form}>

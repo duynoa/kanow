@@ -12,8 +12,8 @@ interface IInitialStateDataHome {
         tab: number,
     },
     loading: {
-        isLoadingListCars: boolean
-    }
+        isLoadingListCars: boolean;
+    };
 }
 // initial list cars autonomous
 interface IInitialStateListCarAutonomous {
@@ -41,14 +41,14 @@ interface IInitialStateListCarAutonomous {
     };
     loading: {
         isLoadingDialogFilterListCars: boolean;
-    }
+    };
     limit: {
         limitFilterCars: number;
         limitAllCars: number;
     };
 }
 
-// initial list cars driver 
+// initial list cars driver
 interface IInitialStateListCarsDriver {
     listCardCars: IDataCardCar[];
     page: number;
@@ -74,7 +74,7 @@ interface IInitialStateListCarsDriver {
     };
     loading: {
         isLoadingDialogFilterListCars: boolean;
-    }
+    };
     limit: {
         limitFilterCars: number;
         limitAllCars: number;
@@ -85,44 +85,55 @@ interface IInitialStateListCarsDriver {
 interface IInitialStateDetailCar {
     dataDetailCar: IDataDetailCar;
     infoPromotion: {
-        selectPromotion: string,
-        activePromotion: IInfoPromotion | null,
-    },
-    listCarsRelated: IDataCardCar[],
+        selectPromotion: string;
+        activePromotion: IInfoPromotion | null;
+    };
+    listCarsRelated: IDataCardCar[];
     reportCar: {
-        listReportCar: IReportCar[],
-        selectReportCar: string,
-        contentReportCar: string,
-    },
+        listReportCar: IReportCar[];
+        selectReportCar: string;
+        contentReportCar: string;
+    };
     onSuccess: {
         onSuccessPage: boolean;
-    },
+    };
 }
 
 // initial rental car
 interface IInitialStateInfoRentalCar {
-    detailRentalCar?: IDetailRentalCar
+    detailRentalCar?: IDetailRentalCar;
 }
 
 // initial payment car
 interface IInitialStatePayment {
-    detailRentalCar?: IDetailRentalCar,
+    detailRentalCar?: IDetailRentalCar;
     listPaymentMode: {
-        id: number,
-        image: string,
-        name: string,
-        note: string,
-        type: number
-    }[],
+        id: number;
+        image: string;
+        name: string;
+        note: string;
+        type: number;
+    }[];
     payment: {
-        idActivePaymentMethod: number | string,
-        indexPaymentMethod: number
-    }
+        idActivePaymentMethod: number | string;
+        indexPaymentMethod: number;
+    };
 }
 
 // initial policy
 interface IInitialStatePolicy {
-    dataPolicy?: IDataPolicy
+    dataPolicy?: IDataPolicy;
+}
+
+// ininitial profile xe của tôi
+interface IInitialStateProfileMyCar {
+    dataMyCar: any[];
+    page: number;
+    next: any;
+    limit: number;
+    isLoadingScroll: boolean;
+    isLoadingCar: boolean;
+    tab: number | string;
 }
 
 export type {
@@ -133,4 +144,5 @@ export type {
     IInitialStateInfoRentalCar,
     IInitialStatePayment,
     IInitialStatePolicy,
-}
+    IInitialStateProfileMyCar,
+};

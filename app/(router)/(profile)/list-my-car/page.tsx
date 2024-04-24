@@ -1,19 +1,10 @@
 "use client"
 
-import UnderDevelopment from "@/components/underDevelopment/UnderDevelopment"
-import DialogFilterMyCar from "../../../../components/modals/DialogFilterMyCar"
 import { useEffect, useRef, useState } from "react"
 import { useResize } from "@/hooks/useResize"
 import apiMyCar from "@/services/profile/listMyCar/listMyCar.services"
 import { CustomDataMyCar } from "@/custom/CustomData"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import Link from "next/link"
-import Image from "next/image"
-import { IMyCar } from "@/types/Profile/mycar/IMyCar"
-import { TiLocation } from "react-icons/ti"
-import { FaCircleCheck } from "react-icons/fa6"
-import { FaStar } from "react-icons/fa"
-import { FormatNumberHundred, FormatNumberToDecimal, FormatNumberToThousands } from "@/components/format/FormatNumber"
 import BackgroundUiProfile from "@/themes/profile/BackgroundUiProfile"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Contract from "./components/contract/Contract"
@@ -22,6 +13,7 @@ import VehicleRegistration from "./components/vehicle-registration/VehicleRegist
 import MyCar from "./components/mycar/MyCar"
 import { Button } from "@/components/ui/button"
 import { useDialogFilterMyCar } from "@/hooks/useOpenDialog"
+import { useDataProfileMyCar } from "@/hooks/useDataQueryKey"
 
 type Props = {
 
@@ -60,18 +52,7 @@ const TAB = [
 ]
 
 const ListMyCar = (props: Props) => {
-    const initialState: IMyCar = {
-        isLoadingCar: false,
-        isLoadingScroll: false,
-        limit: 4,
-        page: 1,
-        dataMyCar: [],
-        next: "",
-        tab: 1
-    }
-    const [isState, setIsState] = useState<IMyCar>(initialState)
-
-    const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
+    const { queryKeyIsStateProfileMyCar, isStateProfileMyCar } = useDataProfileMyCar()
 
     const { setDataFilter, setValueFilter, valueFilter, setOpenDialogFilterCar, openDialogFilterCar } = useDialogFilterMyCar()
 
@@ -86,14 +67,14 @@ const ListMyCar = (props: Props) => {
 
     const handleFetchListCars = async (page: any) => {
 
-        queryState({ isLoadingCar: true })
+        queryKeyIsStateProfileMyCar({ isLoadingCar: true })
         try {
-            const { data } = await apiListCar(page, isState.limit, { car_owner: 1, status_car: valueFilter })
+            const { data } = await apiListCar(page, isStateProfileMyCar.limit, { car_owner: 1, status_car: valueFilter })
             if (data && data.data && data.base) {
                 const { customDataMyCar } = CustomDataMyCar(data)
-                queryState({
+                queryKeyIsStateProfileMyCar({
                     dataMyCar: customDataMyCar,
-                    page: isState.page + 1,
+                    page: isStateProfileMyCar.page + 1,
                     next: data?.links?.next,
                 })
             }
@@ -103,7 +84,7 @@ const ListMyCar = (props: Props) => {
             throw err
         }
         finally {
-            queryState({ isLoadingCar: false })
+            queryKeyIsStateProfileMyCar({ isLoadingCar: false })
         }
 
     }
@@ -115,7 +96,7 @@ const ListMyCar = (props: Props) => {
             const scrollContainer = scrollContainerRef.current;
             const lastContainer = lastContainerRef.current;
 
-            if (!scrollContainer || !lastContainer || isState.isLoadingScroll) return;
+            if (!scrollContainer || !lastContainer || isStateProfileMyCar.isLoadingScroll) return;
 
             const scrollContainerBottom = Math.floor(scrollContainer.getBoundingClientRect().bottom);
             const lastContainerBottom = Math.floor(lastContainer.getBoundingClientRect().bottom);
@@ -124,35 +105,35 @@ const ListMyCar = (props: Props) => {
             const threshold = containerHeight * 0.1; // 10% của kích thước containe
 
             if (scrollContainerBottom <= lastContainerBottom + threshold) {
-                if (isState.dataMyCar && isState.next !== null) {
-                    queryState({ isLoadingScroll: true });
+                if (isStateProfileMyCar.dataMyCar && isStateProfileMyCar.next !== null) {
+                    queryKeyIsStateProfileMyCar({ isLoadingScroll: true });
                     const fetchDataListCar = async () => {
                         try {
                             await new Promise(resolve => setTimeout(resolve, 1500));
 
-                            const { data } = await apiListCar(isState.page, isState.limit, { car_owner: 1, status_car: valueFilter });
+                            const { data } = await apiListCar(isStateProfileMyCar.page, isStateProfileMyCar.limit, { car_owner: 1, status_car: valueFilter });
 
                             if (data && data?.links && data?.data && data?.base) {
                                 let { customDataMyCar } = CustomDataMyCar(data)
-                                if (!isState.isLoadingScroll) {
-                                    queryState({
-                                        dataMyCar: [...(isState.dataMyCar || []), ...customDataMyCar],
+                                if (!isStateProfileMyCar.isLoadingScroll) {
+                                    queryKeyIsStateProfileMyCar({
+                                        dataMyCar: [...(isStateProfileMyCar.dataMyCar || []), ...customDataMyCar],
                                         next: data?.links?.next,
-                                        page: isState.page + 1,
+                                        page: isStateProfileMyCar.page + 1,
                                     })
                                 }
                                 return
                             }
-                            queryState({
-                                listCardCars: isState.dataMyCar,
+                            queryKeyIsStateProfileMyCar({
+                                listCardCars: isStateProfileMyCar.dataMyCar,
                                 next: data?.links?.next,
-                                page: data?.links?.next !== null ? isState.page + 1 : isState.page,
+                                page: data?.links?.next !== null ? isStateProfileMyCar.page + 1 : isStateProfileMyCar.page,
                                 isLoadingScroll: false,
                             });
                         } catch (error) {
                             throw error
                         } finally {
-                            queryState({ isLoadingScroll: false });
+                            queryKeyIsStateProfileMyCar({ isLoadingScroll: false });
                         }
 
                     };
@@ -170,7 +151,7 @@ const ListMyCar = (props: Props) => {
         return () => {
             scrollCurrent?.removeEventListener(isVisibleMobile ? "touchmove" : "wheel", handleWheel);
         };
-    }, [scrollContainerRef, isState.next, isState.page, isState.isLoadingScroll,]);
+    }, [scrollContainerRef, isStateProfileMyCar.next, isStateProfileMyCar.page, isStateProfileMyCar.isLoadingScroll,]);
 
     const handleFetchListStatusFilter = async () => {
         try {
@@ -189,12 +170,11 @@ const ListMyCar = (props: Props) => {
     }
 
     useEffect(() => {
-        if (isState.tab == 1) {
-            handleFetchListCars(isState.page)
+        if (isStateProfileMyCar.tab == 1) {
+            handleFetchListCars(isStateProfileMyCar.page)
             setValueFilter(-1)
         }
-    }, [isState.tab])
-    console.log(valueFilter);
+    }, [isStateProfileMyCar.tab])
 
     useEffect(() => {
         handleFetchListStatusFilter()
@@ -208,7 +188,7 @@ const ListMyCar = (props: Props) => {
         <BackgroundUiProfile className={'space-y-4  lg:pr-2 pr-3'}>
             <div className="flex justify-between items-center">
                 <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Xe của tôi</h1>
-                {isState.tab == 1 &&
+                {isStateProfileMyCar.tab == 1 &&
                     <Button onClick={() => setOpenDialogFilterCar(true)} className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
                              md:block hidden    px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}
                     >
@@ -216,7 +196,7 @@ const ListMyCar = (props: Props) => {
                     </Button>
                 }
             </div>
-            <Tabs defaultValue="1" value={`${isState.tab}`} onValueChange={value => queryState({ tab: value, page: 1, dataMyCar: [] })} className="w-full">
+            <Tabs defaultValue="1" value={`${isStateProfileMyCar.tab}`} onValueChange={value => queryKeyIsStateProfileMyCar({ tab: value, page: 1, dataMyCar: [] })} className="w-full">
                 <TabsList className='bg-transparent border-b border-b-[#F6F6F8] rounded-none w-full justify-start overflow-x-auto overflow-y-hidden gap-8 p-0'>
                     {
                         TAB.map((e) => (
@@ -241,15 +221,15 @@ const ListMyCar = (props: Props) => {
                     <ScrollArea
                         ref={scrollContainerRef}
                         id='scroll-container'
-                        className={`${isState.dataMyCar?.length > 0 &&
-                            isVisibleMobile ? isState.dataMyCar?.length > 3 ? 'h-[1380px]' : 'h-auto' :
-                            isVisibleTablet ? isState.dataMyCar?.length > 3 ? 'h-[1680px]' : 'h-auto' : isState.dataMyCar?.length >= 3 ? 'h-[780px]' : 'h-[550px]'} lg:pr-6 pr-3`}
+                        className={`${isStateProfileMyCar.dataMyCar?.length > 0 &&
+                            isVisibleMobile ? isStateProfileMyCar.dataMyCar?.length > 3 ? 'h-[1380px]' : 'h-auto' :
+                            isVisibleTablet ? isStateProfileMyCar.dataMyCar?.length > 3 ? 'h-[1680px]' : 'h-auto' : isStateProfileMyCar.dataMyCar?.length >= 3 ? 'h-[780px]' : 'h-[550px]'} lg:pr-6 pr-3`}
                     >
                         <div className='flex flex-col gap-4'>
-                            <MyCar isState={isState} />
+                            <MyCar />
                         </div>
                         {
-                            isState?.isLoadingScroll && (
+                            isStateProfileMyCar?.isLoadingScroll && (
                                 <div className="w-full 3xl:h-[80px] h-[60px] flex justify-center items-center gap-2">
                                     <div className="text-[#2FB9BD] inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
                                     <span className="text-[#2FB9BD] 3xl:text-xl text-base">Loading...</span>
@@ -268,7 +248,7 @@ const ListMyCar = (props: Props) => {
                     <MyWallet />
                 </TabsContent>
                 <TabsContent value="4">
-                    <VehicleRegistration queryState={queryState} />
+                    <VehicleRegistration />
                 </TabsContent>
             </Tabs>
         </BackgroundUiProfile>
