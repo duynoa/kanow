@@ -1,26 +1,35 @@
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { TiLocation } from 'react-icons/ti';
 
 import { Button } from "@/components/ui/button"
-import { DatePickerWithRange } from '@/components/datePicker/DatePickerWithRange';
 import { useResize } from '@/hooks/useResize';
 import { useRouter } from 'next/navigation';
-import { FaCalendarAlt } from 'react-icons/fa';
+import { FaCalendarAlt, FaPlusCircle } from 'react-icons/fa';
 
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useDialogAddress, useDialogCalendar } from '@/hooks/useOpenDialog';
 import { vi } from 'date-fns/locale';
 import { useDataHome } from '@/hooks/useDataQueryKey';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { uuidv4 } from '@/lib/uuid';
 
 const IntroSection = () => {
+    const MAX_DESTINATIONS = 4;
+
     const { isVisibleMobile } = useResize()
     const router = useRouter()
     const { dateReal, numberDay, setOpenDialogCalendar } = useDialogCalendar()
-    const { setOpenDialogAddress, valueAddress } = useDialogAddress()
+    const {
+        valueAddressPickup,
+        valueAddressDestination,
+        setType,
+        setIndexAddressDestination,
+        setOpenDialogAddress,
+        setValueAddressDestination,
+    } = useDialogAddress()
 
     const { isStateDataHome, queryKeyIsStateDataHome } = useDataHome()
 
@@ -31,6 +40,7 @@ const IntroSection = () => {
             icon_active: "/icon/home/icon_car_active_1.png",
             icon_no_active: "/icon/home/icon_car_no_active_1.png",
             type: "list-cars-autonomous",
+            tab: 1,
         },
         {
             id: "4343",
@@ -38,6 +48,7 @@ const IntroSection = () => {
             icon_active: "/icon/home/icon_car_active_2.png",
             icon_no_active: "/icon/home/icon_car_no_active_2.png",
             type: "list-cars-driver",
+            tab: 2,
         },
         {
             id: "5454",
@@ -45,6 +56,7 @@ const IntroSection = () => {
             icon_active: "/icon/home/icon_car_active_3.png",
             icon_no_active: "/icon/home/icon_car_no_active_3.png",
             type: "search-driver",
+            tab: 3,
         },
     ]
 
@@ -53,9 +65,20 @@ const IntroSection = () => {
             ...isStateDataHome,
             tabSearch: {
                 tabId: tabSearch[0].id,
-                type: tabSearch[0].type
+                type: tabSearch[0].type,
+                tab: tabSearch[0].tab,
             }
         })
+        // Kiểm tra xem mảng valueAddressDestination có rỗng không
+        if (valueAddressDestination.length === 0) {
+            // Thêm một điểm đến mặc định vào mảng valueAddressDestination
+            setValueAddressDestination([
+                {
+                    id: 1,
+                    valueAddress: ""
+                }
+            ]);
+        }
     }, [])
 
     const handleTabChange = (item: any) => {
@@ -63,7 +86,8 @@ const IntroSection = () => {
             ...isStateDataHome,
             tabSearch: {
                 tabId: item.id,
-                type: item.type
+                type: item.type,
+                tab: item.tab
             }
         })
     }
@@ -86,6 +110,26 @@ const IntroSection = () => {
 
     var heroTitle: string = "KANOW - Đồng hành mọi chuyến đi của bạn";
     var heroPerTitle: { letter: string, id: number }[] = heroTitle.split('').map((letter, index) => ({ letter: letter, id: index + 1 }));
+
+    const handleAddDestination = () => {
+        if (valueAddressDestination.length < MAX_DESTINATIONS) {
+            setValueAddressDestination([
+                ...valueAddressDestination,
+                {
+                    id: uuidv4(),
+                    valueAddress: ''
+                }
+            ]);
+        }
+    };
+
+    const handleOpenDialogAddress = (type: string, index?: number) => {
+        setOpenDialogAddress(true)
+        setType(type)
+        if (index) {
+            setIndexAddressDestination(index)
+        }
+    }
 
     return (
         <div className='xl:h-[100vh] lg:h-[80vh] md:h-[80svh] h-[100svh] w-full relative '>
@@ -130,12 +174,11 @@ const IntroSection = () => {
                     </>
             }
             <div
-                className='xl:h-[60vh] h-[40vh]'
+                className='xl:h-[60vh] h-[40vh] '
                 style={{ background: "linear-gradient(0deg, rgba(3, 107, 116, 0.04) -75.88%, rgba(0, 0, 0, 0.00) 129.69%), rgba(194, 249, 249, 0.60)" }}
             >
                 <div className='custom-container relative'>
-                    <div className='3xl:text-[3.75rem] 2xl:text-[3rem] xxl:text-[2.25rem] xl:text-[2.25rem] lg:text-[1.875rem] md:text-[1.5rem] text-[2rem] font-bold md:max-w-[45%] max-w-full 3xl:py-24 2xl:py-16 xl:py-16 py-10 capitalize leading-tight'>
-                        {/* KANOW - Đồng hành mọi chuyến đi của bạn */}
+                    <div className='3xl:py-16 2xl:py-12 xl:py-12 py-8 3xl:text-[3.75rem] 2xl:text-[3rem] xxl:text-[2.25rem] xl:text-[2.25rem] lg:text-[1.875rem] md:text-[1.5rem] text-[2rem] font-bold md:max-w-[45%] max-w-full capitalize leading-tight'>
                         {
                             heroPerTitle.map(e => (
                                 <span
@@ -180,73 +223,240 @@ const IntroSection = () => {
                                 ))
                             }
                         </div>
-                        <div className='flex flex-col gap-4 bg-white w-full h-full rounded-tr-xl rounded-b-xl xl:px-6 xl:py-4 p-4'>
-                            <div className='flex flex-col gap-2'>
-                                <Label className='text-sm text-[#6F7689]' htmlFor="place">
-                                    Địa điểm
-                                </Label>
-                                <div className="relative">
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <TiLocation className="text-xl text-[#1EAAB1]" />
-                                    </span>
-                                    <div
-                                        id="place"
-                                        onClick={() => setOpenDialogAddress(true)}
-                                        className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+
+                        {
+                            isStateDataHome.tabSearch.tab === 1 &&
+                            <div className='flex flex-col gap-4 bg-white w-full h-full rounded-tr-xl rounded-b-xl xl:px-6 xl:py-4 p-4'>
+                                <div className='flex flex-col gap-2'>
+                                    <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                        Địa điểm
+                                    </Label>
+                                    <div className="relative">
+                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                            <TiLocation className="text-xl text-[#1EAAB1]" />
+                                        </span>
+                                        <div
+                                            id="place"
+                                            onClick={() => handleOpenDialogAddress('address_pickup')}
+                                            className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
                                         focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
-                                    >
-                                        {valueAddress ? valueAddress : 'Chọn địa điểm'}
+                                        >
+                                            {valueAddressPickup ? valueAddressPickup : 'Chọn địa điểm'}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className='flex flex-col gap-2'>
-                                <Label className='text-sm text-[#6F7689] w-fit' htmlFor="date">
-                                    Thời gian thuê
-                                </Label>
-                                {/* <DatePickerWithRange className='w-full' classNameButton="px-4 py-3" /> */}
 
-                                <div className=''>
-                                    <Button
-                                        id="date"
-                                        variant={"outline"}
-                                        className={cn(
-                                            `3xl:py-4 3xl:px-3 px-3 py-3.5 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs`,
-                                            !dateReal && "text-muted-foreground"
-                                        )}
-                                        onClick={() => handleOpenDialog('calendar')}
-                                    >
-                                        <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
-                                        {dateReal?.from ? (
-                                            dateReal.to ? (
-                                                <>
-                                                    {format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
-                                                    {format(dateReal.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
-                                                </>
+                                <div className='flex flex-col gap-2'>
+                                    <Label className='text-sm text-[#6F7689] w-fit' htmlFor="date">
+                                        Thời gian thuê
+                                    </Label>
+
+                                    <div className=''>
+                                        <Button
+                                            id="date"
+                                            variant={"outline"}
+                                            className={cn(
+                                                `3xl:py-4 3xl:px-3 px-3 py-3.5 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs`,
+                                                !dateReal && "text-muted-foreground"
+                                            )}
+                                            onClick={() => handleOpenDialog('calendar')}
+                                        >
+                                            <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
+                                            {dateReal?.from ? (
+                                                dateReal.to ? (
+                                                    <>
+                                                        {format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                                        {format(dateReal.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                                    </>
+                                                ) : (
+                                                    format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                                )
                                             ) : (
-                                                format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
-                                            )
-                                        ) : (
-                                            <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
-                                        )}
-                                    </Button>
+                                                <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
+                                            )}
+                                        </Button>
+                                    </div>
+
                                 </div>
 
+                                <Button
+                                    type='button'
+                                    size="basic"
+                                    className='3xl:text-base text-sm w-full 3xl:py-4 xl:py-3 py-2 text-center uppercase text-white bg-[#FF9900] hover:bg-[#FF9900]/80 font-bold rounded-xl caret-transparent'
+                                    onClick={() => handleSearchCar()}
+                                >
+                                    <span>Tìm xe</span>
+                                </Button>
                             </div>
+                        }
+                        {
+                            isStateDataHome.tabSearch.tab === 2 &&
+                            <div className=' flex flex-col gap-4 bg-white h-[380px] max-h-[400px] overflow-y-auto w-full rounded-tr-xl rounded-b-xl xl:px-6 xl:py-4 p-4'>
+                                <div className='flex flex-col gap-2 w-full'>
+                                    <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                        Địa điểm đón
+                                    </Label>
+                                    <div className="relative">
+                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                            <TiLocation className="text-xl text-[#1EAAB1]" />
+                                        </span>
+                                        <div
+                                            id="place"
+                                            onClick={() => handleOpenDialogAddress('address_pickup')}
+                                            className='pl-10  cursor-pointer pr-2 py-3 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                        focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                        >
+                                            {valueAddressPickup ? valueAddressPickup : 'Chọn địa điểm đón'}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {
+                                    valueAddressDestination && valueAddressDestination.map((destination, index) => (
+                                        <div className='flex flex-col gap-2 w-full' key={index}>
+                                            <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                                Địa điểm đến {valueAddressDestination.length === 1 ? "" : index + 1}
+                                            </Label>
+                                            <div className="relative">
+                                                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                    <TiLocation className="text-xl text-[#1EAAB1]" />
+                                                </span>
+                                                <div
+                                                    id="place"
+                                                    onClick={() => handleOpenDialogAddress('address_destination', index)}
+                                                    className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                        focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                                >
+                                                    {valueAddressDestination[index].valueAddress ? valueAddressDestination[index].valueAddress : 'Chọn địa điểm đến'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
+
+                                {/* Nút để thêm điểm đến mới (setup trước)*/}
+                                {/* {valueAddressDestination.length < MAX_DESTINATIONS && (
+                                    <div>
+                                        <FaPlusCircle onClick={handleAddDestination} className='size-10 text-green-500' />
+                                    </div>
+                                )} */}
 
 
-                            <Button
-                                type='button'
-                                size="basic"
-                                className='3xl:text-base text-sm w-full 3xl:py-4 xl:py-3 py-2 text-center uppercase text-white bg-[#FF9900] hover:bg-[#FF9900]/80 font-bold rounded-xl caret-transparent'
-                                onClick={() => handleSearchCar()}
-                            >
-                                <span>Tìm xe</span>
-                            </Button>
-                        </div>
+                                <div className='flex flex-col gap-2'>
+                                    <Label className='text-sm text-[#6F7689] w-fit' htmlFor="date">
+                                        Thời gian thuê
+                                    </Label>
+
+                                    <div className=''>
+                                        <Button
+                                            id="date"
+                                            variant={"outline"}
+                                            className={cn(
+                                                `3xl:py-4 3xl:px-3 px-3 py-3.5 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs`,
+                                                !dateReal && "text-muted-foreground"
+                                            )}
+                                            onClick={() => handleOpenDialog('calendar')}
+                                        >
+                                            <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
+                                            {dateReal?.from ? (
+                                                dateReal.to ? (
+                                                    <>
+                                                        {format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                                        {format(dateReal.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                                    </>
+                                                ) : (
+                                                    format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                                )
+                                            ) : (
+                                                <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
+                                            )}
+                                        </Button>
+                                    </div>
+
+                                </div>
+
+                                <Button
+                                    type='button'
+                                    size="basic"
+                                    className='3xl:text-base text-sm w-full 3xl:py-4 xl:py-3 py-2 text-center uppercase text-white bg-[#FF9900] hover:bg-[#FF9900]/80 font-bold rounded-xl caret-transparent'
+                                    onClick={() => handleSearchCar()}
+                                >
+                                    <span>Tìm xe</span>
+                                </Button>
+                            </div>
+                        }
+                        {
+                            isStateDataHome.tabSearch.tab === 3 &&
+                            <div className='flex flex-col gap-4 bg-white w-full h-full rounded-tr-xl rounded-b-xl xl:px-6 xl:py-4 p-4'>
+                                {/* <div className='flex flex-col gap-2'>
+                                    <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                        Địa điểm
+                                    </Label>
+                                    <div className="relative">
+                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                            <TiLocation className="text-xl text-[#1EAAB1]" />
+                                        </span>
+                                        <div
+                                            id="place"
+                                            onClick={() => setOpenDialogAddress(true)}
+                                            className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                        focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                        >
+                                            {valueAddressPickup ? valueAddressPickup : 'Chọn địa điểm'}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className='flex flex-col gap-2'>
+                                    <Label className='text-sm text-[#6F7689] w-fit' htmlFor="date">
+                                        Thời gian thuê
+                                    </Label>
+
+                                    <div className=''>
+                                        <Button
+                                            id="date"
+                                            variant={"outline"}
+                                            className={cn(
+                                                `3xl:py-4 3xl:px-3 px-3 py-3.5 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs`,
+                                                !dateReal && "text-muted-foreground"
+                                            )}
+                                            onClick={() => handleOpenDialog('calendar')}
+                                        >
+                                            <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
+                                            {dateReal?.from ? (
+                                                dateReal.to ? (
+                                                    <>
+                                                        {format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
+                                                        {format(dateReal.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
+                                                    </>
+                                                ) : (
+                                                    format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
+                                                )
+                                            ) : (
+                                                <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
+                                            )}
+                                        </Button>
+                                    </div>
+
+                                </div>
+
+                                <Button
+                                    type='button'
+                                    size="basic"
+                                    className='3xl:text-base text-sm w-full 3xl:py-4 xl:py-3 py-2 text-center uppercase text-white bg-[#FF9900] hover:bg-[#FF9900]/80 font-bold rounded-xl caret-transparent'
+                                    onClick={() => handleSearchCar()}
+                                >
+                                    <span>Tìm xe</span>
+                                </Button> */}
+                                <div className='h-40'>
+
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

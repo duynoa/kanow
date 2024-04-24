@@ -175,7 +175,7 @@ interface IOpenDialogCancelCar {
     dataInfo?: any;
     dataListReasonsCancel: any[];
     openDialogCancelCar: boolean;
-    isLoadingDialogCancelCar:boolean;
+    isLoadingDialogCancelCar: boolean;
     setDataInfo: (dataInfo?: any) => void;
     setOpenDialogCancelCar: (key: boolean, type?: string) => void;
     setDataListReasonsCancel: (dataListReasonsCancel: any[]) => void;
@@ -187,54 +187,68 @@ export const useDialogCancelCar = create<IOpenDialogCancelCar>((set) => ({
     dataInfo: {},
     dataListReasonsCancel: [],
     openDialogCancelCar: false,
-    isLoadingDialogCancelCar:false,
+    isLoadingDialogCancelCar: false,
     setDataInfo: (key: any) => set((state) => ({ dataInfo: key })),
     setOpenDialogCancelCar: (key: boolean, type?: string) => set((state) => ({ openDialogCancelCar: key, type: type })),
     setDataListReasonsCancel: (key: any[]) => set((state) => ({ dataListReasonsCancel: key })),
-    setIsLoadingDialogCancelCar: (key: boolean) => set((state) => ({ isLoadingDialogCancelCar: key })),    
+    setIsLoadingDialogCancelCar: (key: boolean) => set((state) => ({ isLoadingDialogCancelCar: key })),
 }));
 
-// dialog address
+// dialog address filter
 interface IOpenDialogAddress {
+    type: string,
+    indexAddressDestination: number,
     openDialogAddress: boolean;
-    setOpenDialogAddress: (key: any) => void;
-    valueAddress: any,
-    setValueAddress: (value: any) => void
+    valueAddressPickup: any,
+    valueAddressDestination: {
+        id: string,
+        valueAddress: string
+    }[],
     coordinates: {
         defaultLat: Number,
         defaultLng: Number,
         lat: Number,
         lng: Number,
     },
-    setCoordinates: (value: any) => void
     onSubmitFilter: boolean,
+    setType: (type: string) => void;
+    setIndexAddressDestination: (indexAddressDestination: number) => void;
+    setOpenDialogAddress: (key: any) => void;
+    setValueAddressPickup: (value: any) => void
+    setValueAddressDestination: (value: any[]) => void
+    setCoordinates: (value: any) => void
     setOnSubmitFilter: (value: any) => void
 }
 
-
 export const useDialogAddress = create<IOpenDialogAddress>((set) => ({
+    type: "",
+    indexAddressDestination: 0,
+    onSubmitFilter: false,
+    openDialogAddress: false,
+    valueAddressPickup: "",
+    valueAddressDestination: [],
     coordinates: {
         defaultLat: 0,
         defaultLng: 0,
         lat: 0,
         lng: 0,
     },
-    onSubmitFilter: false,
-    setOnSubmitFilter: (value: boolean) => set((state) => ({ onSubmitFilter: value })),
+    setType: (type: string) => set((state) => ({ type: type })),
+    setIndexAddressDestination: (index: number) => set((state) => ({ indexAddressDestination: index })),
     setCoordinates: (value: any) => set((state) => ({
         coordinates: {
             ...state.coordinates,
             ...value
         }
     })),
-    openDialogAddress: false,
+    setOnSubmitFilter: (value: boolean) => set((state) => ({ onSubmitFilter: value })),
     setOpenDialogAddress: (key: any) => set((state) => ({ openDialogAddress: key })),
-    valueAddress: "",
-    setValueAddress: (value: any) => set((state) => ({ valueAddress: value })),
+    setValueAddressPickup: (value: any) => set((state) => ({ valueAddressPickup: value })),
+    setValueAddressDestination: (value: any[]) => set((state) => ({ valueAddressDestination: value })),
 }));
 
 
-// Đăng ký xe cho thuê ở trang menu dropdow
+// dialog đăng ký xe cho thuê ở trang menu dropdow
 interface IOpenDialogRegisterOwnerDriver {
     type?: string
     openDialogRegisterOwnerDriver: boolean;
@@ -248,7 +262,7 @@ export const useDialogRegisterOwnerDriver = create<IOpenDialogRegisterOwnerDrive
 }));
 
 
-// Dia log bộ lọc xe của tôi, chuyến của tôi
+// Dialog bộ lọc xe của tôi, chuyến của tôi
 interface IOpenDialogFilterCar {
     type?: string;
     valueFilter?: any;

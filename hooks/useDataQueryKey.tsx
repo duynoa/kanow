@@ -22,7 +22,8 @@ const isStateDataHome: IInitialStateDataHome = {
     listCardCarsForYou: [],
     tabSearch: {
         tabId: "0",
-        // type?: ,
+        type: "",
+        tab: 1,
     },
     loading: {
         isLoadingListCars: false

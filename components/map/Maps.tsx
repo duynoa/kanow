@@ -1,3 +1,4 @@
+import { useGeneralKey } from '@/hooks/useGeneralKey';
 import { GoogleMap, Marker, LoadScript, InfoWindow } from '@react-google-maps/api';
 
 type Props = {
@@ -12,7 +13,10 @@ const Map = ({ latitude, longitude, data }: Props) => {
         lng: longitude,
     };
 
+    const { generalKey } = useGeneralKey()
+
     return (
+        // <LoadScript  libraries={["marker"]} googleMapsApiKey={`${generalKey.google_api_key}`}>
         <LoadScript googleMapsApiKey="AIzaSyBtYQtozFnAVu1CwrJfmJKIxw1_sMUgzqo">
             <GoogleMap
                 mapContainerClassName={'custom-container-map'}

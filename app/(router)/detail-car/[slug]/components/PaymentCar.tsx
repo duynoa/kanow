@@ -5,11 +5,12 @@ import { cn } from '@/lib/utils'
 import { vi } from 'date-fns/locale'
 import { format } from 'date-fns'
 
-import { TiArrowSortedUp } from 'react-icons/ti'
+import { TiArrowSortedUp, TiLocation } from 'react-icons/ti'
 import { PiShieldCheckFill } from "react-icons/pi";
 import { FaCalendarAlt, FaRegQuestionCircle } from 'react-icons/fa'
 
 import {
+    useDialogAddress,
     useDialogAnswerPolicy,
     useDialogCalendar,
     useDialogLogin,
@@ -33,6 +34,7 @@ import { IInitialStateDetailCar } from '@/types/Initial/IInitial'
 import { useDataDetailCar, useDataPolicy } from '@/hooks/useDataQueryKey'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { toastCore } from '@/lib/toast'
+import Map from '@/components/map/Maps'
 
 type Props = {}
 
@@ -56,9 +58,17 @@ const PaymentCar = ({ }: Props) => {
     const { isStatePolicy } = useDataPolicy()
     const { setDataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
     const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
+    
+    const { setOpenDialogAddress, valueAddressPickup } = useDialogAddress()
 
     const { getCookie } = useCookie()
     const { isVisibleTablet } = useResize()
+
+    const latitude = 10.796455918645478; // Thay đổi giá trị này bằng vĩ độ thực tế
+    const longitude = 106.63445664322627; // Thay đổi giá trị này bằng kinh độ thực tế
+    const dataMaps = {
+        google_map_link: ""
+    }
 
     const handleOpenDialog = async (type: string, typeTime?: string) => {
         if (type === 'custom_promotion') {
@@ -324,7 +334,7 @@ const PaymentCar = ({ }: Props) => {
                                             label={(
                                                 <div className='2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
                                                     {/* <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} /> */}
-                                                chưa có
+                                                    chưa có
                                                 </div>
                                             )}
                                         >
@@ -335,16 +345,46 @@ const PaymentCar = ({ }: Props) => {
                                 }
                             </div>
 
-                            <div>
-                                MAP
+                            <div className='w-full h-full'>
+                                <Map latitude={latitude} longitude={longitude} data={dataMaps} />
                             </div>
 
-                            <div>
-                                Điểm đón
+                            <div className='flex flex-col gap-2'>
+                                <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                    Điểm đón
+                                </Label>
+                                <div className="relative">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                        <TiLocation className="text-xl text-[#1EAAB1]" />
+                                    </span>
+                                    <div
+                                        id="place"
+                                        onClick={() => setOpenDialogAddress(true)}
+                                        className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                        focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                    >
+                                        {valueAddressPickup ? valueAddressPickup : 'Chọn điểm đón'}
+                                    </div>
+                                </div>
                             </div>
 
-                            <div>
-                                Điểm đến
+                            <div className='flex flex-col gap-2'>
+                                <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                    Điểm đến
+                                </Label>
+                                <div className="relative">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                        <TiLocation className="text-xl text-[#1EAAB1]" />
+                                    </span>
+                                    <div
+                                        id="place"
+                                        onClick={() => setOpenDialogAddress(true)}
+                                        className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                        focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                    >
+                                        {valueAddressPickup ? valueAddressPickup : 'Chọn điểm đến'}
+                                    </div>
+                                </div>
                             </div>
 
                             <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>

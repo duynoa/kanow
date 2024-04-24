@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
 import LayoutContainer from '@/components/layout/LayoutContainer';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-
 
 export const metadata: Metadata = {
     title: 'Kanow - Trang chủ',
@@ -14,12 +12,13 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <>
-            <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>
-                <LayoutContainer>
-                    {children}
-                </LayoutContainer>
-            </GoogleOAuthProvider>
-        </>
+        <html lang="en">
+            <head>
+                <meta name="google-site-verification" content="ig4H1SE4hArs-pmvzmAmlMSVutXaQoJ3yB5UfRUiO_s" />
+            </head>
+            <LayoutContainer>
+                {children}
+            </LayoutContainer>
+        </html>
     )
 }

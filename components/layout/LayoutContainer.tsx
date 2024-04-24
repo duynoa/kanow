@@ -31,7 +31,7 @@ import "aos/dist/aos.css";
 import '@/styles/globals.scss';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { useDataInfoRentalCar, useDataListCarAutonomous, useDataPolicy } from '@/hooks/useDataQueryKey';
+import { useDataInfoRentalCar, useDataListCarAutonomous, useDataListCarsDriver, useDataPolicy } from '@/hooks/useDataQueryKey';
 import { useDialogAddress, useDialogRegisterOwnerDriver } from '@/hooks/useOpenDialog';
 
 import DialogFilterMyCar from '@/components/modals/DialogFilterMyCar';
@@ -49,6 +49,8 @@ import { DialogReportCar } from '@/components/modals/DialogReportCar';
 import { DialogPromotions } from '@/components/modals/DialogPromotions';
 import { getDataPolicy } from '@/services/cars/policy.services';
 import { CustomDataPolicy } from '@/custom/CustomData';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import Head from 'next/head';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -73,6 +75,7 @@ const LayoutContainer = ({
 
     const { openDialogRegisterOwnerDriver } = useDialogRegisterOwnerDriver();
     const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useDataListCarAutonomous()
+    const { isStateListCarsDriver, queryKeyIsStateListCarsDriver } = useDataListCarsDriver()
 
     const { isStatePolicy, queryKeyIsStatePolicy } = useDataPolicy()
 
@@ -94,6 +97,10 @@ const LayoutContainer = ({
         if (!pathname.startsWith('/list-cars-autonomous') && !pathname.startsWith('/list-cars-driver')) {
             queryKeyIsStateListCarAutonomous({
                 ...isStateListCarAutonomous,
+                page: 1
+            })
+            queryKeyIsStateListCarsDriver({
+                ...isStateListCarsDriver,
                 page: 1
             })
         }
@@ -120,8 +127,6 @@ const LayoutContainer = ({
 
         const fetchDataPolicy = async () => {
             const { data } = await getDataPolicy();
-            console.log('data', data);
-
 
             if (data) {
                 let { customDataPolicy } = CustomDataPolicy(data)
@@ -174,8 +179,6 @@ const LayoutContainer = ({
         const getKey = async () => {
             try {
                 const { data } = await getKeySettings()
-
-                console.log('data Key: ', data);
 
                 if (data) {
                     setGeneralKey(data)
@@ -249,7 +252,7 @@ const LayoutContainer = ({
     }, [generalKey, isStateInfoRentalCar, queryKeyIsStateInfoRentalCar]);
 
     return (
-        <html lang="en">
+        <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>
             <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
                 <Header />
                 <main className='overflow-hidden w-full h-full'>
@@ -285,11 +288,9 @@ const LayoutContainer = ({
                     draggable
                     pauseOnHover
                     theme="light"
-
                 />
             </body>
-            {/* <Script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1cC7gG0SKu8ZVC4N5T89u9QfVQVMM_ZY" type="text/javascript" /> */}
-        </html >
+        </GoogleOAuthProvider>
     )
 }
 

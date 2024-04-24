@@ -41,7 +41,7 @@ type Props = {}
 
 const SearchCars = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
-    const { setOpenDialogAddress, valueAddress, onSubmitFilter, setOnSubmitFilter } = useDialogAddress()
+    const { setOpenDialogAddress, valueAddressPickup, onSubmitFilter, setOnSubmitFilter } = useDialogAddress()
 
     // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
@@ -139,8 +139,8 @@ const SearchCars = (props: Props) => {
             })
             const dataParams = {
                 type: 2,
-                "lat": valueAddress ? coordinates.lat : undefined,
-                "lon": valueAddress ? coordinates.lng : undefined,
+                "lat": valueAddressPickup ? coordinates.lat : undefined,
+                "lon": valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -184,12 +184,18 @@ const SearchCars = (props: Props) => {
         if (onSubmitFilter) {
             handleFetchListCars(1)
             queryKeyIsStateListCarsDriver({ page: 1 })
+            console.log('chjeckkkdasda');
+
         }
 
         if (isStateListCarsDriver.onSuccess.onSuccessPage) {
+            console.log('chjeckkkdasda23123');
             handleFilterClick(undefined, "date")
         }
     }, [onSubmitFilter, isStateListCarsDriver.onSuccess.onSuccessPage])
+
+    console.log('isStateListCarsDriver', isStateListCarsDriver);
+
 
     // LĂN CHUỘT XUỐNG NẾU VƯỢT 60PX THÌ SẼ HIỆN FIXED BỘ LỌC
     useEffect(() => {
@@ -227,8 +233,8 @@ const SearchCars = (props: Props) => {
                         const fetchDataListCar = async () => {
                             const query = {
                                 type: 2,
-                                "lat": valueAddress ? coordinates.lat : undefined,
-                                "lon": valueAddress ? coordinates.lng : undefined,
+                                "lat": valueAddressPickup ? coordinates.lat : undefined,
+                                "lon": valueAddressPickup ? coordinates.lng : undefined,
                                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                                 // date_search: "10/04/2024 11:00:00 - 11/04/2024 12:00:00",
                                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
@@ -372,8 +378,8 @@ const SearchCars = (props: Props) => {
     const handleResetFilter = async () => {
         const query = {
             type: 2,
-            "lat": valueAddress ? coordinates.lat : undefined,
-            "lon": valueAddress ? coordinates.lng : undefined,
+            "lat": valueAddressPickup ? coordinates.lat : undefined,
+            "lon": valueAddressPickup ? coordinates.lng : undefined,
             date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
             company_car_search: undefined,
             type_car_search: [],
@@ -416,8 +422,8 @@ const SearchCars = (props: Props) => {
 
             const query = {
                 type: 2,
-                "lat": valueAddress ? coordinates.lat : undefined,
-                "lon": valueAddress ? coordinates.lng : undefined,
+                "lat": valueAddressPickup ? coordinates.lat : undefined,
+                "lon": valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -468,8 +474,8 @@ const SearchCars = (props: Props) => {
 
             const query = {
                 type: 2,
-                "lat": valueAddress ? coordinates.lat : undefined,
-                "lon": valueAddress ? coordinates.lng : undefined,
+                "lat": valueAddressPickup ? coordinates.lat : undefined,
+                "lon": valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -520,8 +526,8 @@ const SearchCars = (props: Props) => {
 
             const query = {
                 type: 2,
-                "lat": valueAddress ? coordinates.lat : undefined,
-                "lon": valueAddress ? coordinates.lng : undefined,
+                "lat": valueAddressPickup ? coordinates.lat : undefined,
+                "lon": valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -572,8 +578,8 @@ const SearchCars = (props: Props) => {
 
             const query = {
                 type: 2,
-                "lat": valueAddress ? coordinates.lat : undefined,
-                "lon": valueAddress ? coordinates.lng : undefined,
+                "lat": valueAddressPickup ? coordinates.lat : undefined,
+                "lon": valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -624,8 +630,8 @@ const SearchCars = (props: Props) => {
 
             const query = {
                 type: 2,
-                "lat": valueAddress ? coordinates.lat : undefined,
-                "lon": valueAddress ? coordinates.lng : undefined,
+                "lat": valueAddressPickup ? coordinates.lat : undefined,
+                "lon": valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -676,8 +682,8 @@ const SearchCars = (props: Props) => {
 
             const query = {
                 type: 2,
-                "lat": valueAddress ? coordinates.lat : undefined,
-                "lon": valueAddress ? coordinates.lng : undefined,
+                "lat": valueAddressPickup ? coordinates.lat : undefined,
+                "lon": valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -726,8 +732,8 @@ const SearchCars = (props: Props) => {
         } else if (!item && type === 'date') {
             const query = {
                 type: 2,
-                "lat": valueAddress ? coordinates.lat : undefined,
-                "lon": valueAddress ? coordinates.lng : undefined,
+                "lat": valueAddressPickup ? coordinates.lat : undefined,
+                "lon": valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -797,7 +803,7 @@ const SearchCars = (props: Props) => {
                                         onClick={() => setOpenDialogAddress(true)}
                                         className='w-full text-xs truncate cursor-pointer text-[#16171B] rounded-xl border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 ' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
                                     >
-                                        {valueAddress ? valueAddress : 'Chọn địa điểm'}
+                                        {valueAddressPickup ? valueAddressPickup : 'Chọn địa điểm'}
                                     </div>
                                     <div>
                                         <Button
@@ -846,7 +852,7 @@ const SearchCars = (props: Props) => {
                                         onClick={() => setOpenDialogAddress(true)}
                                         className='3xl:py-4 py-3.5 pl-11 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate cursor-pointer text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 ' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
                                     >
-                                        {valueAddress ? valueAddress : 'Chọn địa điểm'}
+                                        {valueAddressPickup ? valueAddressPickup : 'Chọn địa điểm'}
                                     </div>
                                 </div>
 
