@@ -28,7 +28,7 @@ interface ISTate {
     };
     arraySurcharge: ArraySurcharge
 }
-type ValidNameType = "limitedKilometers" | "arraySurcharge" | "limitedKilometers.open" | "limitedKilometers.maximumKilometers" | "limitedKilometers.overLimitFee" | `arraySurcharge.${number}` | `arraySurcharge.${number}.open` | `arraySurcharge.${number}.value`;
+// type ValidNameType = "limitedKilometers" | "arraySurcharge" | "limitedKilometers.open" | "limitedKilometers.maximumKilometers" | "limitedKilometers.overLimitFee" | `arraySurcharge.${number}` | `arraySurcharge.${number}.open` | `arraySurcharge.${number}.value`;
 
 export default function SelftSurcharge(props: Props) {
 
@@ -93,7 +93,7 @@ export default function SelftSurcharge(props: Props) {
         queryState({
             arraySurcharge: data.data
         })
-        form.setValue('arraySurcharge', data.data.map((x: any) => ({ open: true, value: 0 })))
+        form.setValue('arraySurcharge', data.data.map((x: any) => ({ ...x, open: true, value: 0 })))
     }
     useEffect(() => {
         fetchListSurcharge()
@@ -225,8 +225,8 @@ export default function SelftSurcharge(props: Props) {
                         return (
                             <div key={index}>
                                 <Controller
-                                    // name={`arraySurcharge.${index}.open`}
-                                    name={`arraySurcharge[${index}].open` as ValidNameType}
+                                    name={`arraySurcharge.${index}.open`}
+                                    // name={`arraySurcharge[${index}].open` as ValidNameType}
                                     control={form.control}
                                     rules={{ required: false }}
                                     render={({ field, fieldState }: any) => {
@@ -248,8 +248,8 @@ export default function SelftSurcharge(props: Props) {
                                                     <div className="flex flex-col gap-4">
                                                         <FormField
                                                             control={form.control}
-                                                            // name={`arraySurcharge.${index}.value`}
-                                                            name={`arraySurcharge[${index}].value` as ValidNameType}
+                                                            name={`arraySurcharge.${index}.value`}
+                                                            // name={`arraySurcharge[${index}].value` as ValidNameType}
                                                             render={({ field }: any) => {
                                                                 return (
                                                                     <FormItem>
