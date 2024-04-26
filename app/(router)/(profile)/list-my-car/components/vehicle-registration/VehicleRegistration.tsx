@@ -30,7 +30,7 @@ const VehicleRegistration = ({ }: Props) => {
     const dataSteps: ISteps[] = [
         {
             name: "Thông tin",
-            value: "information"
+            value: "infomation"
         },
         {
             name: "Cho thuê",
@@ -173,7 +173,7 @@ const VehicleRegistration = ({ }: Props) => {
             const nextIndex = dataSteps.findIndex(x => x.value === step);
 
             if (currentIndex === 0 && nextIndex === dataSteps.length - 1) {
-                // Ngăn chặn chuyển từ tab "information" đến tab cuối cùng
+                // Ngăn chặn chuyển từ tab "infomation" đến tab cuối cùng
                 return;
             }
             if (currentIndex === dataSteps.length - 1) {
@@ -239,7 +239,7 @@ const VehicleRegistration = ({ }: Props) => {
 
     useEffect(() => {
         if (isStateProfileMyCar.tab != 4) return
-        var element = document.getElementById('information');
+        var element = document.getElementById('infomation');
         if (element) {
             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
@@ -253,14 +253,14 @@ const VehicleRegistration = ({ }: Props) => {
                 defaultValue={isStateChild.step}
                 onValueChange={(step) => {
 
-                    // form.handleSubmit((values) => onSubmit(values, 'information'))()
-                    // queryStateChild({ step: 'information' })
+                    // form.handleSubmit((values) => onSubmit(values, 'infomation'))()
+                    // queryStateChild({ step: 'infomation' })
                     if (isStateChild.step != 'lease' && isStateChild.step != 'images') {
-                        queryStateChild({ step: 'information' })
+                        queryStateChild({ step: 'infomation' })
                     }
                 }}
                 value={isStateChild.step}
-                className="w-full flex flex-col gap-4">
+                className="w-full h-full">
                 {isStateChild.step !== 'register' &&
                     <TabsList className={`flex items-center lg:w-1/2 md:w-[75%] w-[100%] mx-auto bg-transparent  ${isStateChild.step != 'register' ? 'mt-10' : ''}`}>
                         {dataSteps.map((e, index) => {
@@ -294,33 +294,25 @@ const VehicleRegistration = ({ }: Props) => {
                         })}
                     </TabsList>
                 }
-
-                <div className="flex flex-col gap-4">
-                    <TabsContent value="register" className="" >
-                        <div className="w-full h-full flex items-center justify-center">
-                            <Image src={'/profile/listMyCar/vehicleRegistration/images.png'} alt="" width={1280} height={1024} className="lg:size-[40%] size-1/2 object-cover" />
-                        </div>
-                    </TabsContent>
+                <TabsContent value="register" className="lg:mt-10 mt-8 flex flex-col gap-4 ">
                     {isStateChild.step == 'register' &&
-                        <TabsList id="information" className=" items-center w-full bg-transparent">
-                            <TabsTrigger value="information"
+                        <TabsList id="infomation" className=" items-center w-full bg-transparent">
+                            <TabsTrigger value="infomation"
                                 className={`col-span-11 w-fit text-white border-[#2FB9BD] rounded-xl
                                     border-2 px-8 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
                                 Đăng ký xe tự lái
                             </TabsTrigger>
                         </TabsList>
                     }
-                    <TabsContent value="register" className="flex flex-col gap-4">
-                        <h1 className="text-[#3E424E] lg:text-xl text-base font-semibold text-center">Gia tăng thu nhập từ 5-10tr/tháng cùng Kanow</h1>
-                        <div className="w-full flex items-center justify-center">
-                            <div className="bg-gray-100 rounded-xl shadow p-5 flex flex-col gap-2">
-                                <h1 className="text-[#3E424E] text-base font-semibold text-center my-4">Thủ tục đăng ký 4 bước đơn giản & nhanh chóng:</h1>
-                                <StepRegister />
-                            </div>
+                    <h1 className="text-[#3E424E] lg:text-xl text-base font-semibold md:text-center text-start">Gia tăng thu nhập hàng tháng ngay với KANOW!</h1>
+                    <div className="w-full flex items-center justify-center">
+                        <div className="bg-gray-100 rounded-xl shadow p-5 flex flex-col gap-2">
+                            <h1 className="text-[#3E424E] text-base font-semibold md:text-center text-start my-4">Thủ tục đăng ký 4 bước đơn giản & nhanh chóng:</h1>
+                            <StepRegister />
                         </div>
-                    </TabsContent>
-                </div>
-                <TabsContent value={"information"} className="lg:mt-4 mt-5 flex flex-col gap-4">
+                    </div>
+                </TabsContent>
+                <TabsContent value={"infomation"} className="lg:mt-4 mt-5 flex flex-col gap-4">
                     <StepInfoMation {...shareProps}>
                         <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
                             <Button

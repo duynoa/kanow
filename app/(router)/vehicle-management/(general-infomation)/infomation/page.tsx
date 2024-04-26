@@ -18,19 +18,12 @@ import { useVehicleManage } from "@/hooks/useVehicleManage";
 import apiMyCar from "@/services/profile/listMyCar/listMyCar.services";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toastCore } from "@/lib/toast";
+import { IStateVehicleInfomation } from "@/types/VehicleManagement/GeneralInfomation/IInfomation";
+import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 type Props = {}
 
-interface ObjFeature {
-    id: number | string;
-    name: string;
-    image: string;
-}
-interface IState {
-    loadFeature: boolean
-    dataFeature: ObjFeature[]
-}
-export default function VehicleInformation(props: Props) {
-    const initialState: IState = {
+export default function VehicleInfomation(props: Props) {
+    const initialState: IStateVehicleInfomation = {
         loadFeature: false,
         dataFeature: [],
     }
@@ -87,23 +80,30 @@ export default function VehicleInformation(props: Props) {
         }
     }
 
+    useEffect(() => {
+        fetListFeature()
+    }, [])
+
 
     useEffect(() => {
         if (data) {
             console.log(data, idCar);
-            form.setValue('nameCar', data?.name)
-            form.setValue('licensePlates', data?.number_car)
-            form.setValue('address', data?.location.address)
-            form.setValue('seats', data?.number_seat)
-            form.setValue('move', data?.transmission)
-            form.setValue('feuelType', data?.type_fuel)
-            form.setValue('fuelConsumptionLevel', data?.fuel_consumption)
-            form.setValue('describe', data?.detail)
-            form.setValue('feature', data?.other_amenities_car ? data?.other_amenities_car.map((e: any) => e.id) : [])
-            fetListFeature()
-        } else {
-            form.reset()
+            const { name, number_car, location, number_seat, transmission, type_fuel, fuel_consumption, detail, other_amenities_car } = data;
+            const arr = [
+                ['nameCar', name],
+                ['licensePlates', number_car],
+                ['address', location.address],
+                ['seats', number_seat],
+                ['move', transmission],
+                ['feuelType', type_fuel],
+                ['fuelConsumptionLevel', fuel_consumption],
+                ['describe', detail],
+                ['feature', other_amenities_car?.map((e: any) => e.id)]
+            ]
+            arr.forEach(([key, value]) => form.setValue(key, value))
+            return
         }
+        form.reset()
     }, [data])
 
 
@@ -111,9 +111,6 @@ export default function VehicleInformation(props: Props) {
         console.log(value)
         toastCore.error('Chức năng đang phát triển')
     }
-
-    const latitude = 10.796455918645478; // Thay đổi giá trị này bằng vĩ độ thực tế
-    const longitude = 106.63445664322627; // Thay đổi giá trị này bằng kinh độ thực tế
 
 
     return (
@@ -404,15 +401,7 @@ export default function VehicleInformation(props: Props) {
                     />
                 </div>
                 <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
-                    <Button
-                        onClick={() => {
-                            form.handleSubmit((values) => onSubmit(values))()
-                        }}
-                        type="button"
-                        className={`md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
-                                    border-2 px-10 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
-                        Lưu thông tin
-                    </Button>
+                    <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} />
                 </div>
             </Form>
         </BackgroundUiVehicle>

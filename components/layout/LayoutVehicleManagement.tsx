@@ -23,6 +23,7 @@ import { Switch } from '../ui/switch'
 import { useVehicleManage } from '@/hooks/useVehicleManage'
 import apiVehicleCommon from '@/services/vehicle-management/vehicle-common.services'
 import apiMyCar from '@/services/profile/listMyCar/listMyCar.services'
+import Image from 'next/image'
 
 const LayoutVehicleManagement = ({
     children
@@ -62,26 +63,26 @@ const LayoutVehicleManagement = ({
                 {
                     id: 1,
                     name: 'Thông tin',
-                    link: `/vehicle-management/information?id=${id}`,
-                    icon: <FaCarSide className='size-full' />,
+                    link: `/vehicle-management/infomation?id=${id}`,
+                    icon: 'infomation.png',
                 },
                 {
                     id: 2,
                     name: 'Hình ảnh',
                     link: `/vehicle-management/images?id=${id}`,
-                    icon: <FaRegImage className='size-full' />,
+                    icon: 'images.png',
                 },
                 {
                     id: 3,
                     name: 'Giấy tờ xe',
                     link: `/vehicle-management/registration?id=${id}`,
-                    icon: <BsCardHeading className='size-full' />,
+                    icon: 'registration.png',
                 },
                 {
                     id: 4,
                     name: 'Quản lý chuyến',
                     link: `/vehicle-management/trip?id=${id}`,
-                    icon: <FaSuitcase className='size-full' />,
+                    icon: 'trip.png',
                 },
             ]
 
@@ -94,37 +95,37 @@ const LayoutVehicleManagement = ({
                     id: 1,
                     name: 'Giá cho thuê',
                     link: `/vehicle-management/self-rental-price?id=${id}`,
-                    icon: <MdOutlinePriceChange className='size-full' />,
+                    icon: 'rental-price.png',
                 },
                 {
                     id: 2,
                     name: 'Thiết lập thời gian cho thuê',
                     link: `/vehicle-management/self-set-time?id=${id}`,
-                    icon: <IoIosSettings className='size-full' />,
+                    icon: 'set-time.png',
                 },
                 {
                     id: 3,
                     name: 'Lịch xe',
                     link: `/vehicle-management/self-calendar?id=${id}`,
-                    icon: <FaCalendarAlt className='size-full' />,
+                    icon: 'calendar.png',
                 },
                 {
                     id: 4,
                     name: 'Giao xe tận nơi',
                     link: `/vehicle-management/selt-vehicle-handing?id=${id}`,
-                    icon: <GrMap className='size-full' />,
+                    icon: 'vehicle-handing.png',
                 },
                 {
                     id: 5,
                     name: 'Phụ phí',
                     link: `/vehicle-management/self-surcharge?id=${id}`,
-                    icon: <TbReportMoney className='size-full' />,
+                    icon: 'surcharge.png',
                 },
                 {
                     id: 6,
                     name: 'Thủ tục cho thuê',
                     link: `/vehicle-management/selt-procedure?id=${id}`,
-                    icon: <IoNewspaperOutline className='size-full' />,
+                    icon: 'procedure.png',
                 },
             ]
         },
@@ -136,31 +137,31 @@ const LayoutVehicleManagement = ({
                     id: 11,
                     name: 'Giá cho thuê',
                     link: `/vehicle-management/talented-rental-price?id=${id}`,
-                    icon: <MdOutlinePriceChange className='size-full' />,
+                    icon: 'rental-price.png',
                 },
                 {
                     id: 12,
                     name: 'Thiết lập thời gian cho thuê',
                     link: `/vehicle-management/talented-set-time?id=${id}`,
-                    icon: <IoIosSettings className='size-full' />,
+                    icon: 'set-time.png',
                 },
                 {
                     id: 13,
                     name: 'Lịch xe',
                     link: `/vehicle-management/talented-calendar?id=${id}`,
-                    icon: <FaCalendarAlt className='size-full' />,
+                    icon: 'calendar.png',
                 },
                 {
                     id: 14,
                     name: 'Đưa đón tận nơi',
                     link: `/vehicle-management/talented-shuttle?id=${id}`,
-                    icon: <GrMap className='size-full' />,
+                    icon: 'vehicle-handing.png',
                 },
                 {
                     id: 15,
                     name: 'Thủ tục cho thuê',
                     link: `/vehicle-management/talented-procedure?id=${id}`,
-                    icon: <IoNewspaperOutline className='size-full' />,
+                    icon: 'procedure.png',
                 },
             ]
         },
@@ -173,9 +174,9 @@ const LayoutVehicleManagement = ({
         }
     })
 
-    console.log(['openSelf', 'openTalented'].map((e: any) => {
-        return form.getValues(e)
-    }));
+    // console.log(['openSelf', 'openTalented'].map((e: any) => {
+    //     return form.getValues(e)
+    // }));
 
     const { apiDetailCar } = apiVehicleCommon()
 
@@ -273,8 +274,14 @@ const LayoutVehicleManagement = ({
                                                         <div
                                                             className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
                                                         >
-                                                            <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} size-5`}>
-                                                                {item.icon}
+                                                            <div className="size-5">
+                                                                <Image
+                                                                    width={100}
+                                                                    height={100}
+                                                                    alt="@kanow"
+                                                                    className='w-full h-full'
+                                                                    src={`/vehicle/tab/${pathname === item.link ? 'active' : 'noactive'}/${item.icon}`}
+                                                                />
                                                             </div>
                                                             <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
                                                                 {item.name}
@@ -325,8 +332,14 @@ const LayoutVehicleManagement = ({
                                                         href={item.link}
                                                         className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
                                                     >
-                                                        <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} size-5`}>
-                                                            {item.icon}
+                                                        <div className="size-6">
+                                                            <Image
+                                                                width={100}
+                                                                height={100}
+                                                                alt="@kanow"
+                                                                className='w-full h-full object-cover'
+                                                                src={`/vehicle/tab/${pathname === item.link ? 'active' : 'noactive'}/${item.icon}`}
+                                                            />
                                                         </div>
                                                         <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
                                                             {item.name}
