@@ -15,6 +15,7 @@ import { vi } from 'date-fns/locale';
 import { useDataHome } from '@/hooks/useDataQueryKey';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { uuidv4 } from '@/lib/uuid';
+import { toastCore } from '@/lib/toast';
 
 const IntroSection = () => {
     const MAX_DESTINATIONS = 4;
@@ -23,8 +24,10 @@ const IntroSection = () => {
     const router = useRouter()
     const { dateReal, numberDay, setOpenDialogCalendar } = useDialogCalendar()
     const {
+        coordinates,
         valueAddressPickup,
         valueAddressDestination,
+        indexAddressDestination,
         setType,
         setIndexAddressDestination,
         setOpenDialogAddress,
@@ -102,7 +105,11 @@ const IntroSection = () => {
         if (isStateDataHome.tabSearch.type === 'list-cars-autonomous') {
             router.push('/list-cars-autonomous')
         } else if (isStateDataHome.tabSearch.type === 'list-cars-driver') {
-            router.push('/list-cars-driver')
+            if (valueAddressPickup && valueAddressDestination[indexAddressDestination].valueAddress) {
+                router.push('/list-cars-driver')
+            } else {
+                toastCore.error("Vui lòng chọn địa điểm đón và địa điểm đến!")
+            }
         } else if (isStateDataHome.tabSearch.type === 'search-driver') {
             router.push('/search-driver')
         }
@@ -130,6 +137,9 @@ const IntroSection = () => {
             setIndexAddressDestination(index)
         }
     }
+
+    console.log('valueAddressDestination', valueAddressDestination);
+
 
     return (
         <div className='xl:h-[100vh] lg:h-[80vh] md:h-[80svh] h-[100svh] w-full relative '>
@@ -193,7 +203,7 @@ const IntroSection = () => {
                     <div className='flex flex-col xl:w-[500px] md:w-[400px] w-full'>
                         <div className='flex gap-[2px] items-center bg-white/0'>
                             {
-                                tabSearch && tabSearch.map((tab) => (
+                                tabSearch && tabSearch.map((tab: any) => (
                                     <div
                                         key={tab.id}
                                         className={`${tab.id == isStateDataHome.tabSearch.tabId ? "bg-white" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} caret-transparent flex items-center gap-2 xl:px-6 xl:py-3 px-4 py-2 rounded-t-xl cursor-pointer`}
@@ -312,7 +322,7 @@ const IntroSection = () => {
                                 </div>
 
                                 {
-                                    valueAddressDestination && valueAddressDestination.map((destination, index) => (
+                                    valueAddressDestination && valueAddressDestination?.map((destination, index) => (
                                         <div className='flex flex-col gap-2 w-full' key={index}>
                                             <Label className='text-sm text-[#6F7689]' htmlFor="place">
                                                 Địa điểm đến {valueAddressDestination.length === 1 ? "" : index + 1}

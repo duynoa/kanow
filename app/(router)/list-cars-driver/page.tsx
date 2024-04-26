@@ -22,7 +22,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
 import { useResize } from '@/hooks/useResize';
 
-import { useDialogAddress, useDialogCalendar, useDialogFilterListCars, useDialogLogin } from '@/hooks/useOpenDialog';
+import { useDialogAddress, useDialogCalendar, useDialogFilterListCars, useDialogLogin, useDialogRouteAddress } from '@/hooks/useOpenDialog';
 import { DialogCalendar } from '@/components/modals/DialogCalendar';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -41,7 +41,9 @@ type Props = {}
 
 const SearchCars = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
+    const [flagFirstFetchApi, setFlagFirstFetchApi] = useState<boolean>(false)
     const { setOpenDialogAddress, valueAddressPickup, onSubmitFilter, setOnSubmitFilter } = useDialogAddress()
+    const { openDialogRouteAddress, valueTwoAddress, setOpenDialogRouteAddress, setValueTwoAddress } = useDialogRouteAddress()
 
     // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
@@ -131,40 +133,45 @@ const SearchCars = (props: Props) => {
     // SỬ DỤNG useEffect ĐỂ FETCH LIST CARS LẦN ĐẦU TIÊN VÀO
     const handleFetchListCars = async (page: any) => {
         try {
-
-            queryKeyIsStateListCarsDriver({
-                onSuccess: {
-                    onSuccessPage: true
-                }
-            })
-            const dataParams = {
-                type: 2,
-                "lat": valueAddressPickup ? coordinates.lat : undefined,
-                "lon": valueAddressPickup ? coordinates.lng : undefined,
-                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-                company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
-                type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
-                transmission_search: isStateListCarsDriver?.dataParams?.transmission_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.transmission_search,
-                star_search: isStateListCarsDriver?.dataParams?.star_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.star_search,
-                tram_search: isStateListCarsDriver?.dataParams?.tram_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.tram_search,
-                discount_search: isStateListCarsDriver?.dataParams?.discount_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.discount_search,
-                book_car_flash: isStateListCarsDriver?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarsDriver?.dataParams?.book_car_flash,
-                mortgage: isStateListCarsDriver?.dataParams?.mortgage == 0 ? undefined : isStateListCarsDriver?.dataParams?.mortgage,
-                delivery_car: isStateListCarsDriver?.dataParams?.delivery_car == 0 ? undefined : isStateListCarsDriver?.dataParams?.delivery_car,
-            }
-            const { data } = await getListCars(page, isStateListCarsDriver.limit.limitAllCars, dataParams)
-
-            if (data && data.data && data.base) {
-                let { customDataListCars } = CustomDataListCars(data)
+            const savedCoordinates = localStorage.getItem('coordinates');
+            if (savedCoordinates) {
+                const parseCoordinates = JSON.parse(savedCoordinates)
 
                 queryKeyIsStateListCarsDriver({
-                    listCardCars: customDataListCars,
-                    page: isStateListCarsDriver.page + 1,
-                    next: data?.links?.next,
                     onSuccess: {
-                        onSuccessPage: false
+                        onSuccessPage: true
                     }
                 })
+                const dataParams = {
+                    type: 2,
+                    lat: parseCoordinates ? parseCoordinates.lat : undefined,
+                    lon: parseCoordinates ? parseCoordinates.lng : undefined,
+                    date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
+                    company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
+                    type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
+                    transmission_search: isStateListCarsDriver?.dataParams?.transmission_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.transmission_search,
+                    star_search: isStateListCarsDriver?.dataParams?.star_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.star_search,
+                    tram_search: isStateListCarsDriver?.dataParams?.tram_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.tram_search,
+                    discount_search: isStateListCarsDriver?.dataParams?.discount_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.discount_search,
+                    book_car_flash: isStateListCarsDriver?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarsDriver?.dataParams?.book_car_flash,
+                    mortgage: isStateListCarsDriver?.dataParams?.mortgage == 0 ? undefined : isStateListCarsDriver?.dataParams?.mortgage,
+                    delivery_car: isStateListCarsDriver?.dataParams?.delivery_car == 0 ? undefined : isStateListCarsDriver?.dataParams?.delivery_car,
+                }
+                const { data } = await getListCars(page, isStateListCarsDriver.limit.limitAllCars, dataParams)
+
+                if (data && data.data && data.base) {
+                    let { customDataListCars } = CustomDataListCars(data)
+
+                    queryKeyIsStateListCarsDriver({
+                        listCardCars: customDataListCars,
+                        page: isStateListCarsDriver.page + 1,
+                        next: data?.links?.next,
+                        onSuccess: {
+                            onSuccessPage: false
+                        }
+                    })
+                    setFlagFirstFetchApi(true)
+                }
             }
 
         } catch (err) {
@@ -188,7 +195,7 @@ const SearchCars = (props: Props) => {
 
         }
 
-        if (isStateListCarsDriver.onSuccess.onSuccessPage) {
+        if (isStateListCarsDriver.onSuccess.onSuccessPage && flagFirstFetchApi) {
             console.log('chjeckkkdasda23123');
             handleFilterClick(undefined, "date")
         }
@@ -841,18 +848,12 @@ const SearchCars = (props: Props) => {
                                     <span className="absolute inset-y-0 left-0 flex items-center pl-4">
                                         <TiLocation className="3xl:text-2xl text-xl text-[#1EAAB1]" />
                                     </span>
-                                    {/* <Input
-                                        id="place"
-                                        type='text'
-                                        placeholder='Nhập địa điểm'
-                                        className='3xl:py-[18px] p-3 pl-12 text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#B4B8C5] placeholder:font-medium' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
-                                    /> */}
                                     <div
                                         id="place"
-                                        onClick={() => setOpenDialogAddress(true)}
+                                        onClick={() => setOpenDialogRouteAddress(true)}
                                         className='3xl:py-4 py-3.5 pl-11 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate cursor-pointer text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 ' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
                                     >
-                                        {valueAddressPickup ? valueAddressPickup : 'Chọn địa điểm'}
+                                        {valueTwoAddress ? valueTwoAddress : 'Chọn địa điểm'}
                                     </div>
                                 </div>
 

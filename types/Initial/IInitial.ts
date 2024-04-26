@@ -7,10 +7,10 @@ import { IDataPolicy } from "../Policy/IPolicy";
 interface IInitialStateDataHome {
     listCardCarsForYou: IDataCardCar[];
     tabSearch: {
-        tabId: string;
-        type: string;
-        tab: number;
-    };
+        tabId: string,
+        type: string,
+        tab: number,
+    },
     loading: {
         isLoadingListCars: boolean;
     };

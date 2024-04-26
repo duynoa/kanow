@@ -33,12 +33,14 @@ import moment from 'moment';
 import { useDataListCarAutonomous } from '@/hooks/useDataQueryKey';
 import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
 import Nodata from '@/components/image/Nodata';
+import useGoogleApi from '@/services/filter/google/google.services';
 
 type Props = {}
 
 const ListCarAutonomous = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
-    const { setOpenDialogAddress, valueAddressPickup, onSubmitFilter, setOnSubmitFilter } = useDialogAddress()
+    const [flagFirstFetchApi, setFlagFirstFetchApi] = useState<boolean>(false)
+
 
     // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
@@ -46,7 +48,20 @@ const ListCarAutonomous = (props: Props) => {
     const { dateReal, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogFilterListCars } = useDialogFilterListCars()
     const { getCookie } = useCookie()
-    const { coordinates } = useDialogAddress()
+    const {
+        coordinates,
+        onSubmitFilter,
+        valueAddressPickup,
+        valueAddressDestination,
+        indexAddressDestination,
+        setType,
+        setValueAddressPickup,
+        setValueAddressDestination,
+        setIndexAddressDestination,
+        setCoordinates,
+        setOnSubmitFilter,
+        setOpenDialogAddress,
+    } = useDialogAddress()
 
     // THÊM MỘT HẰNG SỐ ĐỂ ĐỊNH NGHĨA KHOẢNG ĐỘ CHO PHÉP
     const ALLOWED_OFFSET = 600;
@@ -61,6 +76,9 @@ const ListCarAutonomous = (props: Props) => {
 
     const [isFilterFixed, setIsFilterFixed] = useState<boolean>(false);
     const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useDataListCarAutonomous()
+
+    const { apiGetCurrentPosition } = useGoogleApi()
+
     // DATA BỘ LỌC FILTER
     const listFilter = [
         {
@@ -123,45 +141,51 @@ const ListCarAutonomous = (props: Props) => {
         setIsMounted(true)
     }, [])
 
+    console.log('valueAddressPickup : ', valueAddressPickup);
     console.log('isStateListCarAutonomous : ', isStateListCarAutonomous);
 
     // SỬ DỤNG useEffect ĐỂ FETCH LIST CARS LẦN ĐẦU TIÊN VÀO
     const handleFetchListCars = async (page: any) => {
         try {
-
-            queryKeyIsStateListCarAutonomous({
-                onSuccess: {
-                    onSuccessPage: true
-                }
-            })
-            const dataParams = {
-                type: 1,
-                "lat": valueAddressPickup ? coordinates.lat : undefined,
-                "lon": valueAddressPickup ? coordinates.lng : undefined,
-                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-                company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
-                type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
-                transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
-                star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
-                tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
-                discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
-                book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
-                mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
-                delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
-            }
-            const { data } = await getListCars(page, isStateListCarAutonomous.limit.limitAllCars, dataParams)
-
-            if (data && data.data && data.base) {
-                let { customDataListCars } = CustomDataListCars(data)
-
+            const savedCoordinates = localStorage.getItem('coordinates');
+            if(savedCoordinates){
+                const parseCoordinates = JSON.parse(savedCoordinates)
+                
                 queryKeyIsStateListCarAutonomous({
-                    listCardCars: customDataListCars,
-                    page: isStateListCarAutonomous.page + 1,
-                    next: data?.links?.next,
                     onSuccess: {
-                        onSuccessPage: false
+                        onSuccessPage: true
                     }
                 })
+                const dataParams = {
+                    type: 1,
+                    "lat": parseCoordinates ? parseCoordinates.lat : undefined,
+                    "lon": parseCoordinates ? parseCoordinates.lng : undefined,
+                    date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
+                    company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
+                    type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
+                    transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
+                    star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
+                    tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
+                    discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
+                    book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
+                    mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
+                    delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
+                }
+                const { data } = await getListCars(page, isStateListCarAutonomous.limit.limitAllCars, dataParams)
+    
+                if (data && data.data && data.base) {
+                    let { customDataListCars } = CustomDataListCars(data)
+    
+                    queryKeyIsStateListCarAutonomous({
+                        listCardCars: customDataListCars,
+                        page: isStateListCarAutonomous.page + 1,
+                        next: data?.links?.next,
+                        onSuccess: {
+                            onSuccessPage: false
+                        }
+                    })
+                    setFlagFirstFetchApi(true)
+                }
             }
 
         } catch (err) {
@@ -172,23 +196,22 @@ const ListCarAutonomous = (props: Props) => {
     }
 
     useEffect(() => {
-        // handleFetchListCars(1)
         handleFetchListCars(isStateListCarAutonomous?.page)
     }, [])
 
-    /// hàm lọc địa chỉ thì gọi lại api
+    // event reload api...
     useEffect(() => {
         if (onSubmitFilter) {
             handleFetchListCars(1)
             queryKeyIsStateListCarAutonomous({ page: 1 })
         }
 
-        if (isStateListCarAutonomous.onSuccess.onSuccessPage) {
+        if (isStateListCarAutonomous.onSuccess.onSuccessPage && flagFirstFetchApi) {
             handleFilterClick(undefined, "date")
         }
     }, [onSubmitFilter, isStateListCarAutonomous.onSuccess.onSuccessPage])
 
-    // LĂN CHUỘT XUỐNG NẾU VƯỢT 60PX THÌ SẼ HIỆN FIXED BỘ LỌC
+    // scroll down > 60px show header 2
     useEffect(() => {
         const handleScroll = () => {
             const topOffset = window.scrollY || document.documentElement.scrollTop;
@@ -207,7 +230,7 @@ const ListCarAutonomous = (props: Props) => {
         };
     }, []);
 
-    // SCROLL XUỐNG ĐẾN CUỐI MẢNG THÌ SẼ FETCH LẠI DATA ĐỂ THỰC HIỆN SỰ KIỆN LOADMORE
+    // event loadmore
     useEffect(() => {
         const handleWheel = () => {
             const lastScrollCurrentRef = lastContainerRef.current;
@@ -307,6 +330,12 @@ const ListCarAutonomous = (props: Props) => {
         isVisibleMobile
     ]);
 
+    // handle open modal address
+    const handleOpenDialogAddress = (type: string, index?: number) => {
+        setOpenDialogAddress(true)
+        setType(type)
+    }
+
     const isValueNonZeroOrNonEmptyArray = (key: string, type: string) => {
         if (type === "filter") {
             const newValue: any = isStateListCarAutonomous.dataParams
@@ -319,6 +348,7 @@ const ListCarAutonomous = (props: Props) => {
         }
     };
 
+    // handle On/Off favorite car
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {
         e.stopPropagation()
         e.preventDefault();
@@ -357,6 +387,7 @@ const ListCarAutonomous = (props: Props) => {
         }
     };
 
+    // handle Opendialog with type
     const handleOpenDialog = (type: string) => {
         if (type === 'calendar') {
             setOpenDialogCalendar(true)
@@ -365,6 +396,7 @@ const ListCarAutonomous = (props: Props) => {
         }
     };
 
+    // handle Reset Filter
     const handleResetFilter = async () => {
         const query = {
             type: 1,
@@ -406,6 +438,7 @@ const ListCarAutonomous = (props: Props) => {
         }
     };
 
+    // handle Click filter search
     const handleFilterClick = async (item: any, type?: string) => {
         if (item?.type === "star_search") {
             const newStarSearch = isStateListCarAutonomous?.dataParams?.star_search !== item.value ? item.value : 0;
@@ -839,7 +872,7 @@ const ListCarAutonomous = (props: Props) => {
                                     /> */}
                                     <div
                                         id="place"
-                                        onClick={() => setOpenDialogAddress(true)}
+                                        onClick={() => handleOpenDialogAddress('address_pickup')}
                                         className='3xl:py-4 py-3.5 pl-11 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate cursor-pointer text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 ' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
                                     >
                                         {valueAddressPickup ? valueAddressPickup : 'Chọn địa điểm'}
