@@ -253,7 +253,7 @@ export default function SelftSurcharge(props: Props) {
                                                             render={({ field }: any) => {
                                                                 return (
                                                                     <FormItem>
-                                                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                                                        <FormLabel className="text-xs text-gray-400">
                                                                             {item.note}
                                                                         </FormLabel>
                                                                         <FormControl>
