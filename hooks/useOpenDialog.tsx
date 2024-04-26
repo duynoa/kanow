@@ -205,10 +205,12 @@ interface IOpenDialogAddress {
         valueAddress: string
     }[],
     coordinates: {
-        defaultLat: Number,
-        defaultLng: Number,
+        latCurrent: Number,
+        lngCurrent: Number,
         lat: Number,
         lng: Number,
+        latTo: Number,
+        lngTo: Number,
     },
     onSubmitFilter: boolean,
     setType: (type: string) => void;
@@ -226,25 +228,53 @@ export const useDialogAddress = create<IOpenDialogAddress>((set) => ({
     onSubmitFilter: false,
     openDialogAddress: false,
     valueAddressPickup: "",
-    valueAddressDestination: [],
+    valueAddressDestination: [
+        {
+            id: "1",
+            valueAddress: ""
+        }
+    ],
     coordinates: {
-        defaultLat: 0,
-        defaultLng: 0,
+        latCurrent: 0,
+        lngCurrent: 0,
         lat: 0,
         lng: 0,
+        latTo: 0,
+        lngTo: 0,
     },
-    setType: (type: string) => set((state) => ({ type: type })),
-    setIndexAddressDestination: (index: number) => set((state) => ({ indexAddressDestination: index })),
+
+    setType: (type: string) => set((state) => ({ ...state, type: type })),
+    setIndexAddressDestination: (index: number) => set((state) => ({ ...state, indexAddressDestination: index })),
     setCoordinates: (value: any) => set((state) => ({
+        ...state,
         coordinates: {
             ...state.coordinates,
             ...value
         }
     })),
-    setOnSubmitFilter: (value: boolean) => set((state) => ({ onSubmitFilter: value })),
-    setOpenDialogAddress: (key: any) => set((state) => ({ openDialogAddress: key })),
-    setValueAddressPickup: (value: any) => set((state) => ({ valueAddressPickup: value })),
-    setValueAddressDestination: (value: any[]) => set((state) => ({ valueAddressDestination: value })),
+    setOnSubmitFilter: (value: boolean) => set((state) => ({ ...state, onSubmitFilter: value })),
+    setOpenDialogAddress: (key: any) => set((state) => ({ ...state, openDialogAddress: key })),
+    setValueAddressPickup: (value: any) => set((state) => ({ ...state, valueAddressPickup: value })),
+    setValueAddressDestination: (value: any[]) => set((state) => ({ ...state, valueAddressDestination: value })),
+}));
+
+// Dialog lộ trình 2 chiều
+interface IOpenDialogRouteAddress {
+    valueTwoAddress: string,
+    dataTotalAddress: any,
+    openDialogRouteAddress: boolean;
+    setOpenDialogRouteAddress: (key: any) => void;
+    setValueTwoAddress: (valueTwoAddress: any) => void
+    setDataTotalAddress: (valueTwoAddress: any) => void
+}
+
+export const useDialogRouteAddress = create<IOpenDialogRouteAddress>((set) => ({
+    valueTwoAddress: "",
+    openDialogRouteAddress: false,
+    dataTotalAddress: {},
+    setOpenDialogRouteAddress: (key: any) => set((state) => ({ ...state, openDialogRouteAddress: key })),
+    setValueTwoAddress: (valueTwoAddress: any) => set((state) => ({ ...state, valueTwoAddress: valueTwoAddress })),
+    setDataTotalAddress: (dataTotalAddress: any) => set((state) => ({ ...state, dataTotalAddress: dataTotalAddress })),
 }));
 
 

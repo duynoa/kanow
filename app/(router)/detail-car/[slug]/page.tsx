@@ -27,7 +27,7 @@ import { getDataDetailCar, getListCarsRelated, postUpdateFavoriteHeartCar } from
 import { CustomDataDetailCar, CustomDataListCars, CustomDataPolicy } from '@/custom/CustomData'
 import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy'
 import { getListPromotions } from '@/services/cars/promotion.services'
-import { useDialogCalendar, useDialogLogin, useDialogPromotion, useDialogReportCar } from '@/hooks/useOpenDialog'
+import { useDialogAddress, useDialogCalendar, useDialogLogin, useDialogPromotion, useDialogReportCar } from '@/hooks/useOpenDialog'
 import { useCookie } from '@/hooks/useCookie'
 import { DialogReportCar } from '@/components/modals/DialogReportCar'
 import { getListReportCar } from '@/services/cars/report.services'
@@ -84,6 +84,17 @@ const DetailCar = ({ params }: Props) => {
         setDataCalendar,
         setNumberDay
     } = useDialogCalendar()
+
+    const {
+        coordinates,
+        valueAddressDestination,
+        indexAddressDestination,
+        setValueAddressPickup,
+        setValueAddressDestination,
+        setIndexAddressDestination,
+        setCoordinates,
+        setOpenDialogAddress,
+    } = useDialogAddress()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
     // Sử dụng useState để theo dõi trạng thái của header thứ hai
@@ -174,7 +185,9 @@ const DetailCar = ({ params }: Props) => {
 
             let dataParams = {
                 type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
-                date_search: `${dateTemp ? `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}` : `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`} `
+                date_search: `${dateTemp ? `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}` : `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`}`,
+                lat: coordinates ? coordinates.lat : undefined,
+                lon: coordinates ? coordinates.lng : undefined,
             }
             const { data } = await getDataDetailCar(params.slug, dataParams)
 
@@ -239,8 +252,9 @@ const DetailCar = ({ params }: Props) => {
                 date_search: `${dateTemp ?
                     `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}`
                     :
-                    `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`} 
-                    `
+                    `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`}`,
+                lat: coordinates ? coordinates.lat : undefined,
+                lon: coordinates ? coordinates.lng : undefined,
             }
             const { data } = await getDataDetailCar(params.slug, dataParams)
 
@@ -273,7 +287,7 @@ const DetailCar = ({ params }: Props) => {
         }
     }, [isStateDetailCar?.onSuccess?.onSuccessPage])
 
-    console.log('isStateDetailCar', isStateDetailCar);
+    console.log('coordinates', coordinates);
 
     // fetch data 
     useEffect(() => {
