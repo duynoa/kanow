@@ -707,8 +707,8 @@ const StepInfoMation = ({ form, checkValueArray, converArray, isStateChild: { ty
                                                     : isState.dataFeature.map((item: any) => {
                                                         return (
                                                             <Label htmlFor={`${item.id}`} key={item.id}
-                                                                className={`flex ${field.value?.includes(item.id) ? 'border-[#2FB9BD] text-[#2FB9BD]' : ''}
-                                                             items-center justify-center gap-2 border-2  py-8 col-span-1 rounded-lg cursor-pointer md:text-sm text-xs`}
+                                                                className={`flex ${field.value?.includes(item.id) ? 'border-[#2FB9BD]' : ''}
+                                                             items-center hover:scale-105 transition-all duration-150 ease-linear justify-center gap-2 border-2  py-8 col-span-1 rounded-lg cursor-pointer md:text-sm text-xs`}
                                                             >
                                                                 <div className="size-6">
                                                                     <Image src={item.image} alt="" width={1280} height={1024} className="object-cover size-full" />

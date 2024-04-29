@@ -1,5 +1,7 @@
-interface OBJSlect {
-    value: number;
+import { OBJSlect } from "../ICommon";
+
+interface Obj {
+    value: string;
     label: string;
 }
 export interface StateSeltSetTime {
@@ -7,12 +9,6 @@ export interface StateSeltSetTime {
         wordLimit: OBJSlect[];
         until: OBJSlect[];
     };
-    deliver: {
-        value: string;
-        label: string;
-    }[];
-    receive: {
-        value: string;
-        label: string;
-    }[];
+    deliver: Obj[] | [];
+    receive: Obj[] | [];
 }

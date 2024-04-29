@@ -234,7 +234,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                         <FormItem className="space-y-0 flex flex-col gap-2">
                                             <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
                                                 Đơn giá thuê mặc định<span className="text-red-500">*</span>
-                                                <h1 className="text-xs text-gray-400">Giá đề xuất 390k</h1>
+                                                <h1 className="text-xs text-gray-400">Giá đề xuất 390K</h1>
                                             </FormLabel>
                                             <FormControl>
                                                 <Input
@@ -698,10 +698,10 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 </FormControl>
                                                                 <div className="flex justify-between">
                                                                     <FormDescription>
-                                                                        Quãng đường đề xuất: đề xuất {20}km
+                                                                        Quãng đường đề xuất: đề xuất {20}Km
                                                                     </FormDescription>
                                                                     <FormDescription className='font-bold'>
-                                                                        {field.value}km
+                                                                        {field.value}Km
                                                                     </FormDescription>
                                                                 </div>
                                                                 {fieldState?.invalid && fieldState?.error && (
@@ -718,7 +718,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                         return (
                                                             <FormItem>
                                                                 <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                                    Vượt phí giới hạn (tính mỗi km)
+                                                                    Vượt phí giới hạn (tính mỗi Km)
                                                                 </FormLabel>
                                                                 <FormControl>
                                                                     <>
@@ -730,10 +730,10 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 </FormControl>
                                                                 <div className="flex justify-between">
                                                                     <FormDescription>
-                                                                        Phí đề xuất: đề xuất {10}k
+                                                                        Phí đề xuất: đề xuất {10}K
                                                                     </FormDescription>
                                                                     <FormDescription className='font-bold'>
-                                                                        {field.value}k
+                                                                        {field.value}K
                                                                     </FormDescription>
                                                                 </div>
                                                                 {fieldState?.invalid && fieldState?.error && (
@@ -762,10 +762,10 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 </FormControl>
                                                                 <div className="flex justify-between">
                                                                     <FormDescription>
-                                                                        Quãng đường đề xuất {0}km
+                                                                        Quãng đường đề xuất {0}Km
                                                                     </FormDescription>
                                                                     <FormDescription className='font-bold'>
-                                                                        {field.value}km
+                                                                        {field.value}Km
                                                                     </FormDescription>
                                                                 </div>
                                                                 {fieldState?.invalid && fieldState?.error && (
@@ -792,7 +792,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                 return (
                                     <FormItem className="">
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                            Giới hạn số km
+                                            Giới hạn số Km
                                             <h1 className="text-xs text-gray-400">Bật tính năng</h1>
                                         </FormLabel>
                                         <FormControl>
@@ -813,7 +813,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                         return (
                                                             <FormItem>
                                                                 <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                                    Số km tối đa trong 1 ngày
+                                                                    Số Km tối đa trong 1 ngày
                                                                 </FormLabel>
                                                                 <FormControl>
                                                                     <>
@@ -825,10 +825,10 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 </FormControl>
                                                                 <div className="flex justify-between">
                                                                     <FormDescription>
-                                                                        Số km đề xuất: đề xuất {400}km
+                                                                        Số Km đề xuất: đề xuất {400}Km
                                                                     </FormDescription>
                                                                     <FormDescription className='font-bold'>
-                                                                        {field.value}km
+                                                                        {field.value}Km
                                                                     </FormDescription>
                                                                 </div>
                                                                 {fieldState?.invalid && fieldState?.error && (
@@ -845,7 +845,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                         return (
                                                             <FormItem>
                                                                 <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                                    Vượt phí giới hạn (tính mỗi km)
+                                                                    Vượt phí giới hạn (tính mỗi Km)
                                                                 </FormLabel>
                                                                 <FormControl>
                                                                     <>
@@ -857,10 +857,10 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 </FormControl>
                                                                 <div className="flex justify-between">
                                                                     <FormDescription>
-                                                                        Phí đề xuất: đề xuất {3}k
+                                                                        Phí đề xuất: đề xuất {3}K
                                                                     </FormDescription>
                                                                     <FormDescription className='font-bold'>
-                                                                        {field.value}k
+                                                                        {field.value}K
                                                                     </FormDescription>
                                                                 </div>
                                                                 {fieldState?.invalid && fieldState?.error && (

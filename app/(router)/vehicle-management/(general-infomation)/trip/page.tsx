@@ -4,6 +4,7 @@ import { FormatNumberToThousands } from "@/components/format/FormatNumber";
 import Nodata from "@/components/image/Nodata";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useResize } from "@/hooks/useResize";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { uuidv4 } from "@/lib/uuid";
@@ -13,7 +14,7 @@ import { IStateGeneralTrip } from "@/types/VehicleManagement/GeneralInfomation/I
 import moment from "moment";
 import "moment/locale/vi";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 type Props = {}
 
@@ -121,7 +122,7 @@ export default function VehicleTripManagement(props: Props) {
 
     const [isState, sIsState] = useState<any>(initialState)
 
-    const queryState = (key: any) => sIsState((prev: IStateGeneralTrip) => ({ ...prev, ...key }))
+    const queryState = (key: IStateGeneralTrip) => sIsState((prev: IStateGeneralTrip) => ({ ...prev, ...key }))
 
 
     return (
@@ -138,13 +139,29 @@ export default function VehicleTripManagement(props: Props) {
                 >
                     <div className='flex flex-col gap-4'>
                         {isState.isLoadingCar ?
-                            <>
-                                {[...Array(4)].map((_, index) => {
-                                    return <React.Fragment key={index}>
-                                        <></>
-                                    </React.Fragment>
-                                })}
-                            </>
+                            [...Array(4)].map((_, index) => {
+                                return (
+                                    <div key={index} className="flex flex-col rounded-lg border divide-y">
+                                        <div className="flex md:flex-row flex-col md:gap-4 gap-6 items-center justify-between md:p-8 p-4">
+                                            <div className="flex flex-col gap-6 md:w-[75%] w-full md:order-none order-2">
+                                                <Skeleton className="h-8 w-full" />
+                                                <Skeleton className="h-8 w-full" />
+                                                <Skeleton className="h-8 w-full" />
+                                            </div>
+                                            <div className="flex md:flex-col flex-row items-center gap-2 md:w-[25%] w-full">
+                                                <Skeleton className="md:size-20 size-10 rounded-full" />
+                                                <Skeleton className="h-8 lg:w-1/2 w-full" />
+                                            </div>
+                                        </div>
+                                        <div className="flex md:flex-row items-center justify-between md:px-8 px-4 md:pt-4 pt-2 md:pb-8 pb-4 gap-2">
+                                            <div className="md:w-[75%] w-full">
+                                                <Skeleton className="h-8 w-1/2" />
+                                            </div>
+                                            <Skeleton className="h-8 w-1/2" />
+                                        </div>
+                                    </div>
+                                )
+                            })
                             :
                             isState.dataMyTrips?.length > 0 ? isState.dataMyTrips.map((e: any, index: number) => {
                                 return (

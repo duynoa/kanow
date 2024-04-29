@@ -1,13 +1,209 @@
 "use client"
-import Image from "next/image";
+import ButtonSaveForm from "@/components/button/ButtonSaveForm";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
+import { useVehicleManage } from "@/hooks/useVehicleManage";
+import { toastCore } from "@/lib/toast";
+import { uuidv4 } from "@/lib/uuid";
+import apiVehicleSurcharge from "@/services/vehicle-management/surcharge.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
-import UnderDevelopment from "@/components/underDevelopment/UnderDevelopment";
+import { ICarRentalDocuments, IMortgage } from "@/types/VehicleManagement/SelfDriveRental/IProcedure";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 type Props = {}
 
 
 export default function SeltProcedure(props: Props) {
 
+    const arrayMortgage: IMortgage[] = [
+        {
+            id: uuidv4(),
+            value: "khongyeucaukhachthue",
+            label: "Không yêu cầu khách thuê tiền mặt hoặc xe máy"
+        },
+        {
+            id: uuidv4(),
+            value: "15cu",
+            label: "15 triệu (tiền mặt/chuyển khoản cho chủ xe khi nhận xe) hoặc Xe máy (kèm cà vẹt gốc) giá trị 15 triệu"
+        }
+    ]
+
+    const arrayCarRentalDocuments: ICarRentalDocuments[] = [
+        {
+            id: uuidv4(),
+            value: 'GPLX&CCCD',
+            label: 'GPLX & CCCD gắp chíp (đối chiếu)',
+            icon: ""
+        },
+        {
+            id: uuidv4(),
+            value: 'GPLX',
+            label: 'GPLX (đối chiếu) & Passport (giữ lại)',
+            icon: ""
+        }
+    ]
+
+
+    const form = useForm({
+        defaultValues: {
+            mortgage: "15cu",
+            // giấy tờ thuê xe,
+            carRentalDocuments: [],
+            // điều khoản
+            rules: ""
+        }
+    })
+
+    const initialState: any = {
+
+    }
+
+    const { apiListSurchargeCar } = apiVehicleSurcharge()
+
+    const [isState, setIsState] = useState(initialState)
+
+
+    const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
+
+
+    const { dataDetail: { data }, idCar } = useVehicleManage()
+
+
+    const findValue = form.getValues()
+
+
+    const onSubmit = async (value: any) => {
+        let objRentalDocuments: any = {};
+
+        const newDb = Object.entries(value).map(([key, value]) => {
+            if (Array.isArray(value)) {
+                for (let i = 0; i < value.length; i++) {
+                    objRentalDocuments[`key-${i}`] = value[i];
+                }
+            }
+            return { key, value: Array.isArray(value) ? objRentalDocuments : value }
+        })
+        console.log("newDb", newDb);
+
+        toastCore.error('Chức năng đang phát triển')
+    }
+
+
     return (
-        <BackgroundUiVehicle><UnderDevelopment /></BackgroundUiVehicle>
+        <BackgroundUiVehicle className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+                <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Thủ tục cho thuê</h1>
+            </div>
+            <Form {...form}>
+                <div className="grid grid-cols-1 gap-6">
+                    <FormField
+                        control={form.control}
+                        name="mortgage"
+                        render={({ field }) => (
+                            <FormItem className="space-y-3">
+                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">Tài sản thế chấp</FormLabel>
+                                <FormControl>
+                                    <RadioGroup
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        className="flex flex-col space-y-1"
+                                    >
+                                        {arrayMortgage.map((x) => {
+                                            return (
+                                                <FormItem key={x.value} className="flex items-center space-x-3 space-y-0">
+                                                    <FormControl>
+                                                        <RadioGroupItem value={x.value} className='text-[#2FB9BD] border-[#2FB9BD] 2xl:text-sm lg:text-xs' id={x.value} />
+                                                    </FormControl>
+                                                    <Label htmlFor={x.value} className="font-normal cursor-pointer md:text-sm text-[13px]">
+                                                        {x.label}
+                                                    </Label>
+                                                </FormItem>
+                                            )
+                                        })}
+                                    </RadioGroup>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="carRentalDocuments"
+                        render={({ field }: any) => {
+                            return (
+                                <FormItem className="space-y-3">
+                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">Giấy tờ thuê xe</FormLabel>
+                                    <FormDescription>
+                                        <h1 className="text-xs text-gray-400">Thiết lập các giấy tờ khách bắt buộc phải có (bản gốc) khi thuê xe {data?.name}</h1>
+                                    </FormDescription>
+                                    <FormControl>
+                                        <>
+                                            {arrayCarRentalDocuments.map((x) => {
+                                                return (
+                                                    <RadioGroup
+                                                        key={x.value}
+                                                        onValueChange={(e) => {
+                                                            return e ? field.onChange([...field.value, e]) : field.onChange(field.value.filter((y: any) => y !== x.value))
+                                                        }}
+                                                        defaultValue={field.value.includes(x.value)}
+                                                        className="flex flex-col space-y-1"
+                                                    >
+                                                        <FormItem key={x.value} className="flex items-center space-x-3 space-y-0">
+                                                            <FormControl>
+                                                                <RadioGroupItem {...field} value={x.value} className='text-[#2FB9BD] border-[#2FB9BD] 2xl:text-sm lg:text-xs' id={x.value} />
+                                                            </FormControl>
+                                                            <Label htmlFor={x.value} className="font-normal cursor-pointer md:text-sm text-[13px]">
+                                                                {x.label}
+                                                            </Label>
+                                                        </FormItem>
+                                                    </RadioGroup>
+                                                )
+                                            })}
+                                        </>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )
+                        }}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="rules"
+                        rules={{
+                            required: {
+                                value: true,
+                                message: "Vui lòng nhập các điều khoản"
+                            }
+                        }}
+                        render={({ field, fieldState }) => {
+                            return (
+                                <FormItem className="space-y-3">
+                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">Điều khoản thuê xe <span className="text-red-500 px-1">*</span> </FormLabel>
+                                    <FormDescription>
+                                        <h1 className="text-xs text-gray-400">Thiết lập các yêu cầu khi thuê xe {data?.name}</h1>
+                                    </FormDescription>
+                                    <FormControl>
+                                        <Textarea
+                                            className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
+                                 focus:border-[#2FB9BD] border-2 min-h-[150px]  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                            placeholder="Nhập các điều khoản"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    {fieldState?.invalid && fieldState?.error && (
+                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                    )}
+                                </FormItem>
+                            )
+                        }}
+                    />
+                </div>
+                <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
+                    <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} />
+                </div>
+            </Form>
+        </BackgroundUiVehicle>
     )
 }

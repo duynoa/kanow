@@ -1,16 +1,13 @@
 "use client"
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
-import SelectCombobox from "@/components/combobox/SelectCombobox";
-import { Button } from "@/components/ui/button";
+import { FormatNumberToThousands } from "@/components/format/FormatNumber";
 import { CustomSlider } from "@/components/ui/customSlider";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { StateSelftVehicleHanding } from "@/types/VehicleManagement/SelfDriveRental/IVehicleHanding";
-import { ChevronsUpDown } from "lucide-react";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -25,10 +22,6 @@ export default function SelftVehicleHanding(props: Props) {
         intersectionSquare: 0,
         deliveryFee: 0,
         freeDelivery: 0,
-    }
-
-    const checkValueArray = (array: any[], field: any) => {
-        return array.find((x: any) => x.value === field.value)?.label
     }
 
     const [isState, setIsState] = useState(initialState)
@@ -85,7 +78,6 @@ export default function SelftVehicleHanding(props: Props) {
                     render={({ field, fieldState }) => {
                         return (
                             <FormItem className="">
-
                                 <FormControl>
                                     <div className="flex items-center gap-2">
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
@@ -119,10 +111,10 @@ export default function SelftVehicleHanding(props: Props) {
                                                         </FormControl>
                                                         <div className="flex justify-between">
                                                             <FormDescription>
-                                                                Quãng đường đề xuất: {isState.intersectionSquare}km
+                                                                Quãng đường đề xuất: {isState.intersectionSquare}Km
                                                             </FormDescription>
                                                             <FormDescription className='font-bold'>
-                                                                {field.value}km
+                                                                {field.value}Km
                                                             </FormDescription>
                                                         </div>
                                                         {fieldState?.invalid && fieldState?.error && (
@@ -139,7 +131,7 @@ export default function SelftVehicleHanding(props: Props) {
                                                 return (
                                                     <FormItem>
                                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                            Phí giao nhận xe 2 chiều (Tính theo km)
+                                                            Phí giao nhận xe 2 chiều (Tính theo Km)
                                                         </FormLabel>
                                                         <FormControl>
                                                             <>
@@ -151,10 +143,10 @@ export default function SelftVehicleHanding(props: Props) {
                                                         </FormControl>
                                                         <div className="flex justify-between">
                                                             <FormDescription>
-                                                                Phí đề xuất: {isState.deliveryFee}k
+                                                                Phí đề xuất: {isState.deliveryFee}K
                                                             </FormDescription>
                                                             <FormDescription className='font-bold'>
-                                                                {field.value}k
+                                                                {+field.value > 100 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
                                                             </FormDescription>
                                                         </div>
                                                         {fieldState?.invalid && fieldState?.error && (
@@ -183,10 +175,10 @@ export default function SelftVehicleHanding(props: Props) {
                                                         </FormControl>
                                                         <div className="flex justify-between">
                                                             <FormDescription>
-                                                                Quãng đường đề xuất {isState.freeDelivery}km
+                                                                Quãng đường đề xuất {isState.freeDelivery}Km
                                                             </FormDescription>
                                                             <FormDescription className='font-bold'>
-                                                                {field.value}km
+                                                                {field.value}Km
                                                             </FormDescription>
                                                         </div>
                                                         {fieldState?.invalid && fieldState?.error && (

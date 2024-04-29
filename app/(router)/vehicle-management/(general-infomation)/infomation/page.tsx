@@ -1,25 +1,22 @@
 "use client"
-import Image from "next/image";
-import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
-import UnderDevelopment from "@/components/underDevelopment/UnderDevelopment";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import SearchAddress from "@/components/searchAddress/SearchAddress";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import Map from "@/components/map/Maps";
-import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
-import { useVehicleManage } from "@/hooks/useVehicleManage";
-import apiMyCar from "@/services/profile/listMyCar/listMyCar.services";
-import { Skeleton } from "@/components/ui/skeleton";
-import { toastCore } from "@/lib/toast";
-import { IStateVehicleInfomation } from "@/types/VehicleManagement/GeneralInfomation/IInfomation";
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
+import SearchAddress from "@/components/searchAddress/SearchAddress";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
+import { useVehicleManage } from "@/hooks/useVehicleManage";
+import { toastCore } from "@/lib/toast";
+import apiMyCar from "@/services/profile/listMyCar/listMyCar.services";
+import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
+import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
+import { IStateVehicleInfomation } from "@/types/VehicleManagement/GeneralInfomation/IInfomation";
+import Image from "next/image";
+import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 type Props = {}
 
 export default function VehicleInfomation(props: Props) {
@@ -64,7 +61,7 @@ export default function VehicleInfomation(props: Props) {
 
     const [isState, setIsState] = useState(initialState)
 
-    const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
+    const queryState = (key: IStateVehicleInfomation) => setIsState((prev: IStateVehicleInfomation) => ({ ...prev, ...key }))
 
     const fetListFeature = async () => {
         queryState({ loadFeature: true })
@@ -364,13 +361,13 @@ export default function VehicleInfomation(props: Props) {
                                                         })
                                                     }
                                                 </>
-                                                : isState.dataFeature.map((item) => {
+                                                : isState.dataFeature && isState.dataFeature.map((item) => {
                                                     return (
                                                         <Label
                                                             htmlFor={item.id as string}
                                                             key={item.id}
-                                                            className={`flex ${field.value.includes(item.id) ? 'border-[#2FB9BD] text-[#2FB9BD]' : ''}
-                                                             items-center justify-center gap-2 border-2  py-8 col-span-1 rounded-lg cursor-pointer md:text-sm text-xs`}
+                                                            className={`flex ${field.value.includes(item.id) ? 'border-[#2FB9BD]' : ''}
+                                                             items-center hover:scale-105 transition-all duration-150 ease-linear justify-center gap-2 border-2  py-8 col-span-1 rounded-lg cursor-pointer md:text-sm text-xs`}
                                                         >
                                                             <div className="size-6">
                                                                 <Image src={item.image} alt="" width={1280} height={1024} className="object-cover size-full" />
