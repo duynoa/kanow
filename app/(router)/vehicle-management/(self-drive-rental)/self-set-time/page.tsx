@@ -81,7 +81,7 @@ export default function SelftSetTime(props: Props) {
 
     const [isState, setIsState] = useState(initialState)
 
-    const queryState = (key: any) => setIsState((prev: StateSeltSetTime) => ({ ...prev, ...key }))
+    const queryState = (key: StateSeltSetTime) => setIsState((prev: StateSeltSetTime) => ({ ...prev, ...key }))
 
     const form = useForm({
         defaultValues: {
@@ -124,6 +124,7 @@ export default function SelftSetTime(props: Props) {
         console.log(value)
         toastCore.error('Chức năng đang phát triển')
     }
+
     return (
         <BackgroundUiVehicle className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
@@ -158,7 +159,7 @@ export default function SelftSetTime(props: Props) {
                                     </div>
                                 </FormControl>
                                 {field.value &&
-                                    <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
+                                    <div className="grid grid-cols-2 gap-4">
                                         <FormField
                                             control={form.control}
                                             name="bookCarQuickly.wordLimit"
@@ -280,10 +281,8 @@ export default function SelftSetTime(props: Props) {
                                         Giao xe từ<span className="text-red-500  px-1">*</span>
                                     </FormLabel>
                                     <FormControl>
-
                                         <>
-                                            <Popover
-                                            >
+                                            <Popover>
                                                 <PopoverTrigger asChild>
                                                     <Button
                                                         variant="outline"
@@ -306,7 +305,6 @@ export default function SelftSetTime(props: Props) {
                                             </Popover>
                                         </>
                                     </FormControl>
-
                                     {fieldState?.invalid && fieldState?.error && (
                                         <FormMessage>{fieldState?.error?.message}</FormMessage>
                                     )}
@@ -337,8 +335,7 @@ export default function SelftSetTime(props: Props) {
                                     </FormLabel>
                                     <FormControl>
                                         <>
-                                            <Popover
-                                            >
+                                            <Popover>
                                                 <PopoverTrigger asChild>
                                                     <Button
                                                         variant="outline"
@@ -397,8 +394,7 @@ export default function SelftSetTime(props: Props) {
                                     </FormLabel>
                                     <FormControl>
                                         <>
-                                            <Popover
-                                            >
+                                            <Popover>
                                                 <PopoverTrigger asChild>
                                                     <Button
                                                         variant="outline"
@@ -452,8 +448,7 @@ export default function SelftSetTime(props: Props) {
                                     </FormLabel>
                                     <FormControl>
                                         <>
-                                            <Popover
-                                            >
+                                            <Popover>
                                                 <PopoverTrigger asChild>
                                                     <Button
                                                         variant="outline"
@@ -476,7 +471,6 @@ export default function SelftSetTime(props: Props) {
                                             </Popover>
                                         </>
                                     </FormControl>
-
                                     {fieldState?.invalid && fieldState?.error && (
                                         <FormMessage>{fieldState?.error?.message}</FormMessage>
                                     )}

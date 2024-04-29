@@ -13,7 +13,8 @@ export async function middleware(request: NextRequest) {
         pathname.startsWith("/list-address") ||
         pathname.startsWith("/my-trips") ||
         pathname.startsWith("/delete-account") ||
-        pathname.startsWith("/list-my-car")
+        pathname.startsWith("/list-my-car") ||
+        pathname.startsWith("/vehicle-management")
     ) {
         if (!token || token?.value == "kanow") {
             return NextResponse.redirect(process.env.NEXT_PUBLIC_URL_WEBSITE as string);
@@ -33,6 +34,7 @@ export const config = {
         "/my-trips",
         "/delete-account",
         "/list-my-car",
+        "/vehicle-management/:path*",
     ],
     // matcher: ["/bar/:path*", "/checkout/:path*", "/order/:path*"],
 };

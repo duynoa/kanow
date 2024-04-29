@@ -169,8 +169,8 @@ const LayoutVehicleManagement = ({
 
     const form = useForm({
         defaultValues: {
-            openSelf: false,
-            openTalented: false,
+            openSelf: true,
+            openTalented: true,
         }
     })
 

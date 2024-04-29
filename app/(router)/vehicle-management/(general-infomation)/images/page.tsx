@@ -3,18 +3,17 @@ import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
+import { uuidv4 } from "@/lib/uuid";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { IoMdAdd } from "react-icons/io";
 import { MdClear } from "react-icons/md";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"
-import { uuidv4 } from "@/lib/uuid";
-import { id } from "date-fns/locale";
-import { Switch } from "@/components/ui/switch";
 type Props = {}
 
 export default function VehicleImages(props: Props) {

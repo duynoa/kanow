@@ -1,27 +1,15 @@
 "use client"
-import Image from "next/image";
-import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
-import UnderDevelopment from "@/components/underDevelopment/UnderDevelopment";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import SearchAddress from "@/components/searchAddress/SearchAddress";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import Map from "@/components/map/Maps";
-import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
-import { useVehicleManage } from "@/hooks/useVehicleManage";
-import apiMyCar from "@/services/profile/listMyCar/listMyCar.services";
-import { Skeleton } from "@/components/ui/skeleton";
-import { toastCore } from "@/lib/toast";
-import { IStateVehicleInfomation } from "@/types/VehicleManagement/GeneralInfomation/IInfomation";
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import { CustomSlider } from "@/components/ui/customSlider";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { useVehicleManage } from "@/hooks/useVehicleManage";
+import { toastCore } from "@/lib/toast";
+import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
+import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 type Props = {}
 
 
@@ -52,10 +40,14 @@ export default function SeflRentalPrice(props: Props) {
     useEffect(() => {
         if (data) {
             console.log(data, idCar);
-            form.setValue('discount.dataDiscount', 100)
-            form.setValue('discount.defaultValue', 5)
-            form.setValue('discount.value', '5')
-            form.setValue('discount.open', true)
+            [
+                ["discount.dataDiscount", 100],
+                ["discount.defaultValue", 5],
+                ["discount.value", "5"],
+                ["discount.open", true],
+            ].forEach(([name, value]: any) => {
+                form.setValue(name, value)
+            })
             return
         }
         form.reset()
@@ -88,7 +80,7 @@ export default function SeflRentalPrice(props: Props) {
                                 <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
                                     Đơn giá thuê mặc định<span className="text-red-500">*</span>
                                     <h1 className="text-xs text-gray-400">Đơn giá thuê mặc định được áp dụng nếu ngày đó không có tùy chỉnh khác về giá</h1>
-                                    <h1 className="text-xs text-gray-400">Giá đề xuất 390k</h1>
+                                    <h1 className="text-xs text-gray-400">Giá đề xuất 390K</h1>
                                 </FormLabel>
                                 <FormControl>
                                     <Input

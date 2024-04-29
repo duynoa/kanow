@@ -4,7 +4,7 @@ interface ObjFeature {
     image: string;
 }
 interface IState {
-    loadFeature: boolean;
-    dataFeature: ObjFeature[];
+    loadFeature?: boolean;
+    dataFeature?: ObjFeature[];
 }
 export interface IStateVehicleInfomation extends IState {}
