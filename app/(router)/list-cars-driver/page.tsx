@@ -37,13 +37,25 @@ import { useDataListCarsDriver } from '@/hooks/useDataQueryKey';
 import Nodata from '@/components/image/Nodata';
 import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
 
+import Cookies from 'js-cookie';
+
 type Props = {}
 
-const SearchCars = (props: Props) => {
+const ListCarsDriver = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [flagFirstFetchApi, setFlagFirstFetchApi] = useState<boolean>(false)
-    const { setOpenDialogAddress, valueAddressPickup, onSubmitFilter, setOnSubmitFilter } = useDialogAddress()
-    const { openDialogRouteAddress, valueTwoAddress, setOpenDialogRouteAddress, setValueTwoAddress } = useDialogRouteAddress()
+    const {
+        setOpenDialogAddress,
+        valueAddressPickup,
+        valueAddressDestination,
+        indexAddressDestination,
+    } = useDialogAddress()
+
+    const {
+        valueTwoAddress,
+        setOpenDialogRouteAddress,
+        setValueTwoAddress
+    } = useDialogRouteAddress()
 
     // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
@@ -128,12 +140,12 @@ const SearchCars = (props: Props) => {
         setIsMounted(true)
     }, [])
 
-    console.log('onSubmitFilter : ', onSubmitFilter);
-
     // SỬ DỤNG useEffect ĐỂ FETCH LIST CARS LẦN ĐẦU TIÊN VÀO
     const handleFetchListCars = async (page: any) => {
         try {
             const savedCoordinates = localStorage.getItem('coordinates');
+            // const savedCoordinates = Cookies.get('coordinates');
+
             if (savedCoordinates) {
                 const parseCoordinates = JSON.parse(savedCoordinates)
 
@@ -176,42 +188,30 @@ const SearchCars = (props: Props) => {
 
         } catch (err) {
             throw err
-        } finally {
-            setOnSubmitFilter(false)
         }
     }
 
     useEffect(() => {
         // handleFetchListCars(1)
+        setValueTwoAddress(`${valueAddressPickup.split(',')[0]} - ${valueAddressDestination[indexAddressDestination].valueAddress.split(',')[0]}`)
         handleFetchListCars(isStateListCarsDriver?.page)
     }, [])
 
     /// hàm lọc địa chỉ thì gọi lại api
     useEffect(() => {
-        if (onSubmitFilter) {
-            handleFetchListCars(1)
-            queryKeyIsStateListCarsDriver({ page: 1 })
-            console.log('chjeckkkdasda');
-
-        }
-
         if (isStateListCarsDriver.onSuccess.onSuccessPage && flagFirstFetchApi) {
-            console.log('chjeckkkdasda23123');
             handleFilterClick(undefined, "date")
         }
-    }, [onSubmitFilter, isStateListCarsDriver.onSuccess.onSuccessPage])
-
-    console.log('isStateListCarsDriver', isStateListCarsDriver);
-
+    }, [isStateListCarsDriver.onSuccess.onSuccessPage])
 
     // LĂN CHUỘT XUỐNG NẾU VƯỢT 60PX THÌ SẼ HIỆN FIXED BỘ LỌC
     useEffect(() => {
         const handleScroll = () => {
             const topOffset = window.scrollY || document.documentElement.scrollTop;
 
-            if (topOffset > 60) {
+            if (topOffset > 40) {
                 setIsFilterFixed(true);
-            } else if (topOffset <= 60) {
+            } else if (topOffset <= 40) {
                 setIsFilterFixed(false);
             }
         }
@@ -934,7 +934,7 @@ const SearchCars = (props: Props) => {
             </div >
 
             <div
-                className={`${isFilterFixed ? "lg:mt-40 mt-60" : "mt-6"} ${isStateListCarsDriver?.isLoadingScroll ? "pb-0" : "pb-20"}`}
+                className={`${isFilterFixed ? "lg:mt-40 mt-60" : "mt-0"} ${isStateListCarsDriver?.isLoadingScroll ? "pb-0" : "pb-20"}`}
                 ref={scrollContainerRef}
             >
                 <div className='custom-container grid xxl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-6 gap-4 justify-start h-full'>
@@ -1130,4 +1130,4 @@ const SearchCars = (props: Props) => {
     )
 }
 
-export default SearchCars
+export default ListCarsDriver

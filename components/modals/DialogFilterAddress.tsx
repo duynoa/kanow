@@ -3,10 +3,11 @@ import {
     DialogClose,
     DialogContent,
     DialogHeader,
+    DialogOverlay,
     DialogPortal,
     DialogTitle,
 } from "@/components/ui/dialog"
-
+import Cookies from 'js-cookie';
 
 import { X } from "lucide-react"
 import { Controller, useForm } from "react-hook-form";
@@ -19,7 +20,7 @@ import { TiLocation } from "react-icons/ti";
 import { Separator } from "../ui/separator";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useGeneralKey } from "@/hooks/useGeneralKey";
-import { useDialogAddress, useDialogCalendar } from "@/hooks/useOpenDialog";
+import { useDialogAddress, useDialogCalendar, useDialogRouteAddress } from "@/hooks/useOpenDialog";
 import SearchAddress from "../searchAddress/SearchAddress";
 import useGoogleApi from "@/services/filter/google/google.services";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
@@ -58,8 +59,6 @@ const DialogFilterAddress = memo(({ }: Props) => {
     const { dateReal } = useDialogCalendar()
 
     const {
-        onSubmitFilter,
-        setOnSubmitFilter,
         type,
         coordinates,
         indexAddressDestination,
@@ -71,6 +70,15 @@ const DialogFilterAddress = memo(({ }: Props) => {
         setValueAddressDestination,
         setCoordinates,
     } = useDialogAddress()
+
+    const {
+        itemValuePickup,
+        itemValueDestination,
+        setValueTwoAddress,
+        setItemValuePickup,
+        setItemValueDestination,
+        setFlagCloseModalRouteAddress,
+    } = useDialogRouteAddress()
 
     const [dataPlane, setDataPlane] = useState<IPlace[]>([])
     const [dataBoxSearch, setDataBoxSearch] = useState<any[]>([])
@@ -93,12 +101,7 @@ const DialogFilterAddress = memo(({ }: Props) => {
     const [flagValidateSubmit, setFlagValidateSubmit] = useState<boolean>(false)
     const [isLoadingData, setIsLoadingData] = useState<boolean>(false)
 
-    // const VietnamBounds = {
-    //     north: 23.393395, // Tọa độ cực Bắc của Việt Nam
-    //     south: 8.175944, // Tọa độ cực Nam của Việt Nam
-    //     east: 109.464211, // Tọa độ cực Đông của Việt Nam
-    //     west: 102.148125, // Tọa độ cực Tây của Việt Nam
-    // };
+
     const VietnamBounds = "8.175944,102.148125,23.393395,109.464211";
 
     // chạy 1 lần duy nhất để lấy vị trí toạ độ của máy tính
@@ -171,11 +174,6 @@ const DialogFilterAddress = memo(({ }: Props) => {
         }
     }, [openDialogAddress, type])
 
-    console.log('dataPlane : ', dataPlane);
-    console.log('type : ', type);
-    console.log('coordinatesComponent : ', coordinatesComponent);
-
-
     // change input
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -215,12 +213,16 @@ const DialogFilterAddress = memo(({ }: Props) => {
                     lat: item.location.lat,
                     lng: item.location.lng,
                 })
+                setItemValuePickup(item)
+
             } else if (type === "address_destination") {
                 setCoordinatesComponent({
                     ...coordinatesComponent,
                     latTo: item.location.lat,
                     lngTo: item.location.lng,
                 })
+                setItemValueDestination(item)
+
             }
             setOpenBoxSearch(false)
         } else if (typeClick === "airport") {
@@ -233,12 +235,16 @@ const DialogFilterAddress = memo(({ }: Props) => {
                     lat: item.latitude,
                     lng: item.longitude,
                 })
+
+                setItemValuePickup(item)
             } else if (type === "address_destination") {
                 setCoordinatesComponent({
                     ...coordinatesComponent,
                     latTo: item.latitude,
                     lngTo: item.longitude,
                 })
+
+                setItemValueDestination(item)
             }
             setOpenBoxSearch(false)
 
@@ -369,74 +375,20 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 })
 
                 localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent));
                 setCoordinates(coordinatesComponent)
                 setValueAddressPickup(dataAddress)
                 setOpenDialogAddress(false)
             }
 
         } else if (pathname.startsWith('/list-cars-driver')) {
-            const query = {
-                lat: dataAddress ? coordinatesComponent.lat : undefined,
-                lon: dataAddress ? coordinatesComponent.lng : undefined,
-                type: 2,
-                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-                company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
-                type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
-                transmission_search: isStateListCarsDriver?.dataParams?.transmission_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.transmission_search,
-                star_search: isStateListCarsDriver?.dataParams?.star_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.star_search,
-                tram_search: isStateListCarsDriver?.dataParams?.tram_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.tram_search,
-                discount_search: isStateListCarsDriver?.dataParams?.discount_search == 0 ? undefined : isStateListCarsDriver?.dataParams?.discount_search,
-                book_car_flash: isStateListCarsDriver?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarsDriver?.dataParams?.book_car_flash,
-                mortgage: isStateListCarsDriver?.dataParams?.mortgage == 0 ? undefined : isStateListCarsDriver?.dataParams?.mortgage,
-                delivery_car: isStateListCarsDriver?.dataParams?.delivery_car == 0 ? undefined : isStateListCarsDriver?.dataParams?.delivery_car,
-            }
-
-            let limit = isStateListCarsDriver.limit.limitAllCars;
-
-            if (
-                isStateListCarsDriver.dataParams?.company_car_search === "0" &&
-                isStateListCarsDriver.dataParams?.type_car_search?.length === 0 &&
-                isStateListCarsDriver?.dataParams?.transmission_search == "0" &&
-                isStateListCarsDriver.dataParams?.star_search === 0 &&
-                isStateListCarsDriver.dataParams?.tram_search === 0 &&
-                isStateListCarsDriver.dataParams?.discount_search === 0 &&
-                isStateListCarsDriver.dataParams?.book_car_flash === 0 &&
-                isStateListCarsDriver.dataParams?.mortgage === 0 &&
-                isStateListCarsDriver.dataParams?.delivery_car === 0
-            ) {
-                limit = isStateListCarsDriver.limit.limitAllCars;
-            } else {
-                limit = isStateListCarsDriver.limit.limitFilterCars;
-            }
-
-            const { data } = await getListCars(1, limit, query)
-
-            if (data && data.data && data.base) {
-                let { customDataListCars } = CustomDataListCars(data)
-
-                queryKeyIsStateListCarsDriver({
-                    listCardCars: customDataListCars,
-                    page: 2,
-                    next: data?.links?.next
-                })
-
-                setValueAddressPickup(dataAddress)
-                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
-                setCoordinates(coordinatesComponent)
-                setValueAddressPickup(dataAddress)
-                setOpenDialogAddress(false)
-            }
-
-        } else {
             if (type === "address_pickup" && dataAddress) {
                 setValueAddressPickup(dataAddress)
                 setCoordinates(coordinatesComponent)
-                setDataAddress("")
                 setOpenDialogAddress(false)
                 localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
-                console.log('check ?/');
-
-
+                // Đặt cookie với giá trị tương ứng
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent));
             } else if (type === "address_destination" && dataAddress) {
                 // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
                 const updatedAddressDestination = [...valueAddressDestination];
@@ -446,14 +398,10 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 };
 
                 setCoordinates(coordinatesComponent)
-                // Đặt lại giá trị của mảng điểm đến với điểm đến được cập nhật
                 setValueAddressDestination(updatedAddressDestination);
-                setDataAddress("")
 
-                // Đóng dialog địa chỉ
                 setOpenDialogAddress(false);
 
-                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
             } else if (type === "address_pickup") {
                 console.log('check');
 
@@ -465,9 +413,6 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 setValueAddressPickup("")
                 setOpenDialogAddress(false)
                 setFlagValidateSubmit(false)
-
-                localStorage.removeItem("latCoordinates")
-                localStorage.removeItem("lngCoordinates")
 
             } else if (type === "address_destination") {
                 setCoordinates({
@@ -481,30 +426,93 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 const updatedAddressDestination = [...valueAddressDestination];
                 updatedAddressDestination[indexAddressDestination] = {
                     id: valueAddressDestination[indexAddressDestination].id,
-                    valueAddress: "dataAddress"
+                    valueAddress: ""
+                };
+
+                setValueAddressDestination([updatedAddressDestination])
+            }
+
+            setFlagCloseModalRouteAddress(true)
+        } else {
+            if (type === "address_pickup" && dataAddress) {
+                setValueAddressPickup(dataAddress)
+                setCoordinates(coordinatesComponent)
+                setDataAddress("")
+                setOpenDialogAddress(false)
+
+                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
+
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent));
+                setValueTwoAddress(itemValuePickup.name)
+
+            } else if (type === "address_destination" && dataAddress) {
+                // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
+                const updatedAddressDestination = [...valueAddressDestination];
+                updatedAddressDestination[indexAddressDestination] = {
+                    id: valueAddressDestination[indexAddressDestination].id,
+                    valueAddress: dataAddress
+                };
+
+                setDataAddress("")
+                setCoordinates(coordinatesComponent)
+                setValueAddressDestination(updatedAddressDestination);
+
+                setValueTwoAddress(`${itemValuePickup.name} - ${itemValueDestination.name}`)
+                setOpenDialogAddress(false);
+
+                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
+
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent));
+
+            } else if (type === "address_pickup") {
+                console.log('check');
+
+                setCoordinates({
+                    ...coordinatesComponent,
+                    lat: 0,
+                    lng: 0,
+                })
+                setValueAddressPickup("")
+                setOpenDialogAddress(false)
+                setFlagValidateSubmit(false)
+
+                setValueTwoAddress("")
+
+                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
+
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent));
+
+            } else if (type === "address_destination") {
+                setCoordinates({
+                    ...coordinatesComponent,
+                    latTo: 0,
+                    lngTo: 0,
+                })
+                setOpenDialogAddress(false)
+                setFlagValidateSubmit(false)
+
+                const updatedAddressDestination = [...valueAddressDestination];
+                updatedAddressDestination[indexAddressDestination] = {
+                    id: valueAddressDestination[indexAddressDestination].id,
+                    valueAddress: ""
                 };
 
                 setValueAddressDestination([updatedAddressDestination])
 
+                // xoá itemActiveDestination
+                setValueTwoAddress(itemValuePickup.name)
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent));
                 localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
+            
             }
         }
     }
 
-    console.log('coordinates :', coordinates);
-    console.log('valueAddressDestination :', valueAddressDestination);
-
     return (
         <>
-            <Dialog modal={false} open={openDialogAddress} >
-                {
-                    openDialogAddress && (
-                        <div
-                            onClick={handleCloseModal}
-                            className="fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-                    )
-                }
+            <Dialog modal={true} open={openDialogAddress} >
                 <DialogPortal>
+                    <DialogOverlay />
                     <DialogContent className="flex flex-col px-0 pb-0 lg:max-w-[740px] lg:w-[740px] max-w-[95%] w-[95%] min-h-[60vh] max-h-[95vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
                         <DialogClose
                             onClick={handleCloseModal}

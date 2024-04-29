@@ -50,7 +50,6 @@ const ListCarAutonomous = (props: Props) => {
     const { getCookie } = useCookie()
     const {
         coordinates,
-        onSubmitFilter,
         valueAddressPickup,
         valueAddressDestination,
         indexAddressDestination,
@@ -59,7 +58,6 @@ const ListCarAutonomous = (props: Props) => {
         setValueAddressDestination,
         setIndexAddressDestination,
         setCoordinates,
-        setOnSubmitFilter,
         setOpenDialogAddress,
     } = useDialogAddress()
 
@@ -190,9 +188,7 @@ const ListCarAutonomous = (props: Props) => {
 
         } catch (err) {
             throw err
-        } finally {
-            setOnSubmitFilter(false)
-        }
+        } 
     }
 
     useEffect(() => {
@@ -201,15 +197,11 @@ const ListCarAutonomous = (props: Props) => {
 
     // event reload api...
     useEffect(() => {
-        if (onSubmitFilter) {
-            handleFetchListCars(1)
-            queryKeyIsStateListCarAutonomous({ page: 1 })
-        }
 
         if (isStateListCarAutonomous.onSuccess.onSuccessPage && flagFirstFetchApi) {
             handleFilterClick(undefined, "date")
         }
-    }, [onSubmitFilter, isStateListCarAutonomous.onSuccess.onSuccessPage])
+    }, [ isStateListCarAutonomous.onSuccess.onSuccessPage])
 
     // scroll down > 60px show header 2
     useEffect(() => {
@@ -864,12 +856,6 @@ const ListCarAutonomous = (props: Props) => {
                                     <span className="absolute inset-y-0 left-0 flex items-center pl-4">
                                         <TiLocation className="3xl:text-2xl text-xl text-[#1EAAB1]" />
                                     </span>
-                                    {/* <Input
-                                        id="place"
-                                        type='text'
-                                        placeholder='Nhập địa điểm'
-                                        className='3xl:py-[18px] p-3 pl-12 text-[#16171B] rounded-xl bg-[#F6F6F8]/70 border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#B4B8C5] placeholder:font-medium' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
-                                    /> */}
                                     <div
                                         id="place"
                                         onClick={() => handleOpenDialogAddress('address_pickup')}

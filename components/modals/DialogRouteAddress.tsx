@@ -3,43 +3,35 @@ import {
     DialogClose,
     DialogContent,
     DialogHeader,
+    DialogOverlay,
     DialogPortal,
     DialogTitle,
 } from "@/components/ui/dialog"
 
+import Cookies from 'js-cookie';
 
 import { X } from "lucide-react"
-import { Controller, useForm } from "react-hook-form";
-
-import { Badge } from "../ui/badge";
-import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { LuPlane } from "react-icons/lu";
 import { TiLocation } from "react-icons/ti";
-import { Separator } from "../ui/separator";
-import { memo, useCallback, useEffect, useState } from "react";
-import { useGeneralKey } from "@/hooks/useGeneralKey";
+import { memo, useEffect, useState } from "react";
+
 import { useDialogAddress, useDialogAnswerPolicy, useDialogCalendar, useDialogRouteAddress } from "@/hooks/useOpenDialog";
-import SearchAddress from "../searchAddress/SearchAddress";
 import useGoogleApi from "@/services/filter/google/google.services";
-import { Form, FormControl, FormField, FormItem } from "../ui/form";
-import useAirportCarDeliveryApi from "@/services/filter/listAirport/airportCarDelivery.services";
-import { useGeolocated } from "react-geolocated";
 import { usePathname } from "next/navigation";
 import { getListCars } from "@/services/cars/cars.services";
 import { useDataListCarAutonomous, useDataListCarsDriver, useDataPolicy } from "@/hooks/useDataQueryKey";
 import { CustomDataListCars } from "@/custom/CustomData";
 import moment from "moment";
-import { debounce } from "lodash";
-import { useDebounce } from "use-debounce";
-import { ScrollArea } from "../ui/scroll-area";
-import SkeletonDialogAddress from "../skeleton/SkeletonDialogAddress";
+
 import { FaRegQuestionCircle } from "react-icons/fa";
 import { ActionTooltip } from "../tooltip/ActionTooltip";
 import { useResize } from "@/hooks/useResize";
 import Map from "../map/Maps";
 
-import { MFBuilding, MFDirectionsRenderer, MFMap } from "react-map4d-map"
+import { MFDirectionsRenderer, MFMap } from "react-map4d-map"
+import { Label } from "../ui/label";
+import { toastCore } from "@/lib/toast";
+import { FormatDistance } from "../format/FormatNumber";
 
 type Props = {
 }
@@ -83,42 +75,26 @@ const DialogRouteAddress = memo(({ }: Props) => {
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
 
     const {
-        onSubmitFilter,
-        setOnSubmitFilter,
-        type,
         coordinates,
         indexAddressDestination,
-        openDialogAddress,
         valueAddressPickup,
         valueAddressDestination,
+        setType,
+        setIndexAddressDestination,
         setOpenDialogAddress,
-        setValueAddressPickup,
-        setValueAddressDestination,
-        setCoordinates,
     } = useDialogAddress()
 
-    const { openDialogRouteAddress, dataTotalAddress, setOpenDialogRouteAddress, setDataTotalAddress } = useDialogRouteAddress()
-
-    const [dataPlane, setDataPlane] = useState<IPlace[]>([])
-    const [dataBoxSearch, setDataBoxSearch] = useState<any[]>([])
-
-    const [openBoxSearch, setOpenBoxSearch] = useState<boolean>(false)
-    const [debouncedOpenBoxSearch] = useDebounce(openBoxSearch, 500)
-
-    const [dataAddress, setDataAddress] = useState<string>("")
-    const [debouncedDataAddress] = useDebounce(dataAddress, 500)
-
-    const [coordinatesComponent, setCoordinatesComponent] = useState<any>({
-        latCurrent: 0,
-        lngCurrent: 0,
-        lat: 0,
-        lng: 0,
-        latTo: 0,
-        lngTo: 0,
-    })
+    const {
+        flagCloseModalRouteAddress,
+        openDialogRouteAddress,
+        dataTotalAddress,
+        setOpenDialogRouteAddress,
+        setDataTotalAddress,
+        setValueTwoAddress,
+        setFlagCloseModalRouteAddress
+    } = useDialogRouteAddress()
 
     const [flagValidateSubmit, setFlagValidateSubmit] = useState<boolean>(false)
-    const [isLoadingData, setIsLoadingData] = useState<boolean>(false)
     const [options, setOptions] = useState<any>({});
 
     useEffect(() => {
@@ -147,15 +123,15 @@ const DialogRouteAddress = memo(({ }: Props) => {
                             data.routes.forEach((route: any) => {
                                 // Xử lý mỗi tuyến đường
                                 const processedRouteStart = route.legs[0].steps.map((step: any) => ({
+                                    lng: step.startLocation.lng,
                                     lat: step.startLocation.lat,
-                                    lng: step.startLocation.lng
                                 }));
 
                                 console.log('route : ', route);
 
                                 const processedRouteEnd = route.legs[0].steps.map((step: any) => ({
+                                    lng: step.endLocation.lng,
                                     lat: step.endLocation.lat,
-                                    lng: step.endLocation.lng
                                 }));
                                 console.log('processedRouteEnd : ', processedRouteEnd);
 
@@ -191,8 +167,8 @@ const DialogRouteAddress = memo(({ }: Props) => {
                             };
 
                             const options = {
-                                routes: [routes1[0], routes2[1]],
-                                // routes: routes,
+                                // routes: [routes1[0], routes2[1]],
+                                routes: routes2,
                                 originMarkerOptions: originMarkerOptions,
                                 destinationMarkerOptions: destinationMarkerOptions,
                                 activeOutlineWidth: 0,
@@ -205,11 +181,12 @@ const DialogRouteAddress = memo(({ }: Props) => {
 
                         // Sử dụng hàm để format data thành options
                         const options = formatDataToOptions(data.result);
-                        console.log('options', options);
-
 
                         // Đặt options vào state
                         setOptions(options);
+                        setDataTotalAddress({
+                            distance: data.result.routes[0].distance
+                        })
                     }
 
                 } catch (err) {
@@ -218,81 +195,28 @@ const DialogRouteAddress = memo(({ }: Props) => {
             }
             fetchDataRouteMatrixAddress()
         }
-    }, [openDialogRouteAddress])
+    }, [openDialogRouteAddress, valueAddressPickup, valueAddressDestination[indexAddressDestination].valueAddress])
 
     // handle close modal
     const handleCloseModal = () => {
-        setOpenDialogRouteAddress(false)
-        setFlagValidateSubmit(false)
-        setCoordinatesComponent({
-            latCurrent: 0,
-            lngCurrent: 0,
-            lat: 0,
-            lng: 0,
-            latTo: 0,
-            lngTo: 0,
-        })
-        setDataAddress("")
+        if (!flagValidateSubmit) {
+            toastCore.error("Vui lòng chọn địa điểm đón hoặc địa điểm đến!")
+        } else if (flagCloseModalRouteAddress) {
+            toastCore.warning("Vui lòng nhấn tìm xe!")
+        } else {
+            setOpenDialogRouteAddress(false)
+
+            setFlagValidateSubmit(false)
+            setFlagCloseModalRouteAddress(false)
+        }
     }
 
     // submit áp dụng
     const onSubmit = async () => {
-        if (pathname.startsWith('/list-cars-autonomous')) {
+        if (pathname.startsWith('/list-cars-driver')) {
             const query = {
-                lat: dataAddress ? coordinatesComponent.lat : undefined,
-                lon: dataAddress ? coordinatesComponent.lng : undefined,
-                type: 1,
-                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-                company_car_search: isStateListCarAutonomous?.dataParams?.company_car_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.company_car_search,
-                type_car_search: isStateListCarAutonomous?.dataParams?.type_car_search && isStateListCarAutonomous?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarAutonomous?.dataParams?.type_car_search,
-                transmission_search: isStateListCarAutonomous?.dataParams?.transmission_search == "0" ? undefined : isStateListCarAutonomous?.dataParams?.transmission_search,
-                star_search: isStateListCarAutonomous?.dataParams?.star_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.star_search,
-                tram_search: isStateListCarAutonomous?.dataParams?.tram_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.tram_search,
-                discount_search: isStateListCarAutonomous?.dataParams?.discount_search == 0 ? undefined : isStateListCarAutonomous?.dataParams?.discount_search,
-                book_car_flash: isStateListCarAutonomous?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarAutonomous?.dataParams?.book_car_flash,
-                mortgage: isStateListCarAutonomous?.dataParams?.mortgage == 0 ? undefined : isStateListCarAutonomous?.dataParams?.mortgage,
-                delivery_car: isStateListCarAutonomous?.dataParams?.delivery_car == 0 ? undefined : isStateListCarAutonomous?.dataParams?.delivery_car,
-            }
-
-            let limit = isStateListCarAutonomous.limit.limitAllCars;
-
-            if (
-                isStateListCarAutonomous.dataParams?.company_car_search === "0" &&
-                isStateListCarAutonomous.dataParams?.type_car_search?.length === 0 &&
-                isStateListCarAutonomous?.dataParams?.transmission_search == "0" &&
-                isStateListCarAutonomous.dataParams?.star_search === 0 &&
-                isStateListCarAutonomous.dataParams?.tram_search === 0 &&
-                isStateListCarAutonomous.dataParams?.discount_search === 0 &&
-                isStateListCarAutonomous.dataParams?.book_car_flash === 0 &&
-                isStateListCarAutonomous.dataParams?.mortgage === 0 &&
-                isStateListCarAutonomous.dataParams?.delivery_car === 0
-            ) {
-                limit = isStateListCarAutonomous.limit.limitAllCars;
-            } else {
-                limit = isStateListCarAutonomous.limit.limitFilterCars;
-            }
-
-            const { data } = await getListCars(1, limit, query)
-
-            if (data && data.data && data.base) {
-                let { customDataListCars } = CustomDataListCars(data)
-
-                queryKeyIsStateListCarAutonomous({
-                    listCardCars: customDataListCars,
-                    page: 2,
-                    next: data?.links?.next
-                })
-
-                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
-                setCoordinates(coordinatesComponent)
-                setValueAddressPickup(dataAddress)
-                setOpenDialogAddress(false)
-            }
-
-        } else if (pathname.startsWith('/list-cars-driver')) {
-            const query = {
-                lat: dataAddress ? coordinatesComponent.lat : undefined,
-                lon: dataAddress ? coordinatesComponent.lng : undefined,
+                lat: valueAddressPickup ? coordinates.lat : undefined,
+                lon: valueAddressPickup ? coordinates.lng : undefined,
                 type: 2,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
@@ -335,125 +259,42 @@ const DialogRouteAddress = memo(({ }: Props) => {
                     next: data?.links?.next
                 })
 
-                setValueAddressPickup(dataAddress)
-                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
-                setCoordinates(coordinatesComponent)
-                setValueAddressPickup(dataAddress)
-                setOpenDialogAddress(false)
+                setOpenDialogRouteAddress(false)
+
+                setValueTwoAddress(`${valueAddressPickup.split(',')[0]} - ${valueAddressDestination[indexAddressDestination].valueAddress.split(',')[0]}`)
+
+                localStorage.setItem("coordinates", JSON.stringify(coordinates))
+                // Cookies.set('coordinates', JSON.stringify(coordinates));
             }
 
-        } else {
-            if (type === "address_pickup" && dataAddress) {
-                setValueAddressPickup(dataAddress)
-                setCoordinates(coordinatesComponent)
-                setDataAddress("")
-                setOpenDialogAddress(false)
-                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
-                console.log('check ?/');
-
-
-            } else if (type === "address_destination" && dataAddress) {
-                // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-                const updatedAddressDestination = [...valueAddressDestination];
-                updatedAddressDestination[indexAddressDestination] = {
-                    id: valueAddressDestination[indexAddressDestination].id,
-                    valueAddress: dataAddress
-                };
-
-                setCoordinates(coordinatesComponent)
-                // Đặt lại giá trị của mảng điểm đến với điểm đến được cập nhật
-                setValueAddressDestination(updatedAddressDestination);
-                setDataAddress("")
-
-                // Đóng dialog địa chỉ
-                setOpenDialogAddress(false);
-
-                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
-            } else if (type === "address_pickup") {
-                console.log('check');
-
-                setCoordinates({
-                    ...coordinatesComponent,
-                    lat: 0,
-                    lng: 0,
-                })
-                setValueAddressPickup("")
-                setOpenDialogAddress(false)
-                setFlagValidateSubmit(false)
-
-                localStorage.removeItem("latCoordinates")
-                localStorage.removeItem("lngCoordinates")
-
-            } else if (type === "address_destination") {
-                setCoordinates({
-                    ...coordinatesComponent,
-                    latTo: 0,
-                    lngTo: 0,
-                })
-                setOpenDialogAddress(false)
-                setFlagValidateSubmit(false)
-
-                const updatedAddressDestination = [...valueAddressDestination];
-                updatedAddressDestination[indexAddressDestination] = {
-                    id: valueAddressDestination[indexAddressDestination].id,
-                    valueAddress: "dataAddress"
-                };
-
-                setValueAddressDestination([updatedAddressDestination])
-
-                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
-            }
         }
     }
 
-    // const option = {
-    //     routes: [
-    //         [
-    //             { lat: 16.078814, lng: 108.221592 },
-    //             { lat: 16.078972, lng: 108.223034 },
-    //             { lat: 16.075353, lng: 108.223513 },
-    //         ],
-    //         [
-    //             { lat: 16.078814, lng: 108.221592 },
-    //             { lat: 16.077491, lng: 108.221735 },
-    //             { lat: 16.077659, lng: 108.223212 },
-    //             { lat: 16.075353, lng: 108.223513 },
-    //         ],
-    //     ],
-    //     originMarkerOptions: {
-    //         position: { lat: 16.079774, lng: 108.220534 },
-    //         title: "Start",
-    //         draggable: true,
-    //         visible: true,
-    //     },
-    //     destinationMarkerOptions: {
-    //         position: { lat: 16.073661, lng: 108.222972 },
-    //         title: "End",
-    //         visible: true,
-    //         draggable: true,
-    //         userInteractionEnabled: false,
-    //     },
+    const handleOpenDialogAddress = (type: string, index?: number) => {
+        setOpenDialogAddress(true)
+        setType(type)
+        if (index) {
+            setIndexAddressDestination(index)
+        }
+    }
 
-    //     activeOutlineWidth: 0,
-    //     inactiveOutlineWidth: 2,
-    //     inactiveOutlineColor: "#FF00FF",
-    // };
+    console.log('data total address :', dataTotalAddress);
 
 
-    console.log('options', options);
+    useEffect(() => {
+        if (!valueAddressPickup || !valueAddressDestination[indexAddressDestination].valueAddress) {
+            setFlagValidateSubmit(false)
+        } else {
+            setFlagValidateSubmit(true)
+        }
+    }, [valueAddressPickup, valueAddressDestination[indexAddressDestination].valueAddress])
 
     return (
         <>
             <Dialog modal={true} open={openDialogRouteAddress} >
-                {
-                    openDialogRouteAddress && (
-                        <div
-                            onClick={handleCloseModal}
-                            className="fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-                    )
-                }
                 <DialogPortal>
-                    <DialogContent className="flex flex-col px-0 pb-0 lg:max-w-[740px] lg:w-[740px] max-w-[95%] w-[95%] min-h-[90vh] max-h-[95vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
+                    <DialogOverlay />
+                    <DialogContent className="flex flex-col px-0 pb-0 lg:max-w-[740px] lg:w-[740px] max-w-[95%] w-[95%] min-h-[90vh] max-h-[95vh] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
                         <DialogClose
                             onClick={handleCloseModal}
                             className="3xl:size-10 size-8 border border-[#000000] flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-40"
@@ -468,7 +309,7 @@ const DialogRouteAddress = memo(({ }: Props) => {
                             </DialogTitle>
                         </DialogHeader>
 
-                        <div className="flex flex-col gap-4 px-4 justify-between h-full min-h-[calc(90vh_-_60px)]">
+                        <div className="flex flex-col gap-4 px-4 justify-between h-full overflow-auto min-h-[calc(90vh_-_60px)]">
                             <div className='flex flex-col gap-4 h-full'>
                                 <div className='flex flex-row items-center gap-1'>
                                     <div className='3xl:text-sm text-xs text-[#767676]'>
@@ -497,7 +338,7 @@ const DialogRouteAddress = memo(({ }: Props) => {
                                     }
                                 </div>
 
-                                <div className='w-full h-[400px]'>
+                                <div className='w-full 3xl:h-[400px] h-[300px] '>
                                     <MFMap
                                         options={{
                                             center: { lat: coordinates.lat, lng: coordinates.lng },
@@ -507,8 +348,8 @@ const DialogRouteAddress = memo(({ }: Props) => {
                                         }}
 
                                         accessKey={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D}`}
+                                        // accessKey={``}
                                         version={"2.4"}
-
                                     >
                                         <MFDirectionsRenderer
                                             routes={options.routes}
@@ -519,6 +360,62 @@ const DialogRouteAddress = memo(({ }: Props) => {
                                             inactiveOutlineColor={options.inactiveOutlineColor}
                                         />
                                     </MFMap>
+
+                                </div>
+
+                                <div className='flex flex-col gap-4'>
+                                    <div className='flex flex-col gap-2 w-full'>
+                                        <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                            Địa điểm đón
+                                        </Label>
+                                        <div className="relative">
+                                            <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <TiLocation className="text-xl text-[#1EAAB1]" />
+                                            </span>
+                                            <div
+                                                id="place"
+                                                onClick={() => handleOpenDialogAddress('address_pickup')}
+                                                className='pl-10  cursor-pointer pr-2 py-3 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                        focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                            >
+                                                {valueAddressPickup ? valueAddressPickup : 'Chọn địa điểm đón'}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {
+                                        valueAddressDestination && valueAddressDestination?.map((destination, index) => (
+                                            <div className='flex flex-col gap-2 w-full' key={index}>
+                                                <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                                    Địa điểm đến {valueAddressDestination.length === 1 ? "" : index + 1}
+                                                </Label>
+                                                <div className="relative">
+                                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                        <TiLocation className="text-xl text-[#1EAAB1]" />
+                                                    </span>
+                                                    <div
+                                                        id="place"
+                                                        onClick={() => handleOpenDialogAddress('address_destination', index)}
+                                                        className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                        focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                                    >
+                                                        {valueAddressDestination[index].valueAddress ? valueAddressDestination[index].valueAddress : 'Chọn địa điểm đến'}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+
+                                <div className='border rounded-lg p-4 flex flex-col'>
+                                    <div className='flex justify-between'>
+                                        <div className='3xl:text-base text-sm font-medium'>
+                                            Tổng lộ trình:
+                                        </div>
+                                        <div className='3xl:text-base text-sm font-bold'>
+                                            {dataTotalAddress?.distance?.value ? FormatDistance(dataTotalAddress.distance.value) : 0}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -528,7 +425,7 @@ const DialogRouteAddress = memo(({ }: Props) => {
                                     onClick={() => onSubmit()}
                                     className='xl:px-6 w-fit xl:py-3 px-4 py-2 xl:text-base text-sm rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80'
                                 >
-                                    Áp dụng
+                                    Tìm xe
                                 </Button>
                             </div>
                         </div>
