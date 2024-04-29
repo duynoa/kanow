@@ -54,6 +54,8 @@ import Head from 'next/head';
 import useGoogleApi from '@/services/filter/google/google.services';
 import DialogRouteAddress from '../modals/DialogRouteAddress';
 
+import Cookies from 'js-cookie';
+
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
     weight: ['300', '400', '500', '600', '700', '800', '900'],
@@ -155,9 +157,6 @@ const LayoutContainer = ({
             }
         }
 
-
-
-
         fetchKeyApi()
         fetchDataPolicy()
     }, []);
@@ -165,10 +164,11 @@ const LayoutContainer = ({
     useEffect(() => {
         const fetchAddressLocalStorage = async () => {
             const savedCoordinates = localStorage.getItem('coordinates');
+            // const savedCoordinates = Cookies.get('coordinates');
+
             // Kiểm tra xem giá trị từ localStorage có tồn tại không
             if (savedCoordinates && !valueAddressPickup || savedCoordinates && !valueAddressDestination.some(item => item.valueAddress !== "")) {
                 const parseCoordinates = JSON.parse(savedCoordinates)
-                console.log('parseCoordinates', parseCoordinates);
 
                 const dataParamsPickup = {
                     key: process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D,
@@ -187,7 +187,6 @@ const LayoutContainer = ({
                 if (pathname.startsWith('/list-cars-autonomous')) {
                     if (parseCoordinates.lat && parseCoordinates.lng) {
                         const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
-                        console.log('dataPickup :', dataPickup);
 
                         if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
                             const address = dataPickup.result[0].address
@@ -205,8 +204,6 @@ const LayoutContainer = ({
                     if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
                         const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
                         const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
-                        console.log('dataDestination :', dataDestination);
-                        console.log('dataPickup :', dataPickup);
 
                         // điểm đón
                         if ((dataPickup && dataPickup.code == 'ok' && dataPickup.result) && dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
@@ -239,7 +236,6 @@ const LayoutContainer = ({
                         }
                     } else if (parseCoordinates.lat && parseCoordinates.lng) {
                         const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
-                        console.log('dataPickup :', dataPickup);
 
                         if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
                             const address = dataPickup.result[0].address
@@ -254,7 +250,6 @@ const LayoutContainer = ({
                         }
                     } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
                         const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
-                        console.log('dataDestination :', dataDestination);
 
                         if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
                             const address = dataDestination.result[0].address
@@ -266,9 +261,6 @@ const LayoutContainer = ({
                                 id: valueAddressDestination[indexAddressDestination].id,
                                 valueAddress: address ? address : ""
                             };
-
-                            console.log('updatedAddressDestination', updatedAddressDestination);
-
 
                             setValueAddressDestination(updatedAddressDestination)
                             setCoordinates({
@@ -287,12 +279,8 @@ const LayoutContainer = ({
                         if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
                             const address = dataPickup.result[0].address
                             const location = dataPickup.result[0].location
-                            console.log('checkkk ', location);
-                            console.log('parseCoordinates ', parseCoordinates);
-
 
                             setValueAddressPickup(address)
-
                             setCoordinates({
                                 ...parseCoordinates,
                                 lat: location.lat,
@@ -324,7 +312,6 @@ const LayoutContainer = ({
                         }
                     } else if (parseCoordinates.lat && parseCoordinates.lng) {
                         const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
-                        console.log('dataPickup :', dataPickup);
 
                         if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
                             const address = dataPickup.result[0].address
@@ -339,7 +326,6 @@ const LayoutContainer = ({
                         }
                     } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
                         const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
-                        console.log('dataDestination :', dataDestination);
 
                         if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
                             const address = dataDestination.result[0].address
@@ -351,9 +337,6 @@ const LayoutContainer = ({
                                 id: valueAddressDestination[indexAddressDestination].id,
                                 valueAddress: address ? address : ""
                             };
-
-                            console.log('updatedAddressDestination', updatedAddressDestination);
-
 
                             setValueAddressDestination(updatedAddressDestination)
                             setCoordinates({
@@ -369,11 +352,6 @@ const LayoutContainer = ({
 
         fetchAddressLocalStorage()
     }, [])
-
-
-    console.log('valueAddressDestination', valueAddressDestination);
-
-
 
     // ẩn/hiện khi chuyển qua màn hình nhỏ khi không dùng chung div để tránh xung đột 
     useEffect(() => {
@@ -421,6 +399,9 @@ const LayoutContainer = ({
     }, [openDialogAddress, openDialogRegisterOwnerDriver])
 
 
+    // useEffect(() => {
+    //     Cookies.set('coordinates', JSON.stringify(InitialCoordinates), { expires: 30 / (24 * 60) });
+    // }, []);
     useEffect(() => {
         // Đặt hẹn giờ cho việc xoá localStorage sau một khoảng thời gian nhất định (ví dụ: sau 1 giờ)
         const timer = setTimeout(() => {

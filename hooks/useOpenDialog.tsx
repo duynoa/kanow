@@ -212,20 +212,17 @@ interface IOpenDialogAddress {
         latTo: Number,
         lngTo: Number,
     },
-    onSubmitFilter: boolean,
     setType: (type: string) => void;
     setIndexAddressDestination: (indexAddressDestination: number) => void;
     setOpenDialogAddress: (key: any) => void;
     setValueAddressPickup: (value: any) => void
     setValueAddressDestination: (value: any[]) => void
     setCoordinates: (value: any) => void
-    setOnSubmitFilter: (value: any) => void
 }
 
 export const useDialogAddress = create<IOpenDialogAddress>((set) => ({
     type: "",
     indexAddressDestination: 0,
-    onSubmitFilter: false,
     openDialogAddress: false,
     valueAddressPickup: "",
     valueAddressDestination: [
@@ -252,27 +249,39 @@ export const useDialogAddress = create<IOpenDialogAddress>((set) => ({
             ...value
         }
     })),
-    setOnSubmitFilter: (value: boolean) => set((state) => ({ ...state, onSubmitFilter: value })),
     setOpenDialogAddress: (key: any) => set((state) => ({ ...state, openDialogAddress: key })),
     setValueAddressPickup: (value: any) => set((state) => ({ ...state, valueAddressPickup: value })),
     setValueAddressDestination: (value: any[]) => set((state) => ({ ...state, valueAddressDestination: value })),
+
 }));
 
 // Dialog lộ trình 2 chiều
 interface IOpenDialogRouteAddress {
     valueTwoAddress: string,
+    itemValuePickup: any,
+    itemValueDestination: any,
     dataTotalAddress: any,
     openDialogRouteAddress: boolean;
+    flagCloseModalRouteAddress: boolean,
     setOpenDialogRouteAddress: (key: any) => void;
+    setItemValuePickup: (itemValuePickup: any) => void;
+    setItemValueDestination: (itemValueDestination: any) => void;
     setValueTwoAddress: (valueTwoAddress: any) => void
     setDataTotalAddress: (valueTwoAddress: any) => void
+    setFlagCloseModalRouteAddress: (value: any) => void
 }
 
 export const useDialogRouteAddress = create<IOpenDialogRouteAddress>((set) => ({
     valueTwoAddress: "",
     openDialogRouteAddress: false,
+    itemValuePickup: {},
+    itemValueDestination: {},
     dataTotalAddress: {},
+    flagCloseModalRouteAddress: false,
+    setFlagCloseModalRouteAddress: (value: boolean) => set((state) => ({ ...state, flagCloseModalRouteAddress: value })),
     setOpenDialogRouteAddress: (key: any) => set((state) => ({ ...state, openDialogRouteAddress: key })),
+    setItemValuePickup: (itemValuePickup: any) => set((state) => ({ ...state, itemValuePickup: itemValuePickup })),
+    setItemValueDestination: (itemValueDestination: any) => set((state) => ({ ...state, itemValueDestination: itemValueDestination })),
     setValueTwoAddress: (valueTwoAddress: any) => set((state) => ({ ...state, valueTwoAddress: valueTwoAddress })),
     setDataTotalAddress: (dataTotalAddress: any) => set((state) => ({ ...state, dataTotalAddress: dataTotalAddress })),
 }));

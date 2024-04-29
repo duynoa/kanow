@@ -1,10 +1,14 @@
 import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import Cookies from "js-cookie";
+
 export async function middleware(request: NextRequest) {
     const { pathname, origin } = request.nextUrl;
     const token: any = request.cookies.get("token_kanow");
     const checkUrl = ["/account", "/list-car-favorite", "/change-password", "/list-address"];
+    const coordinatesLocalStorage = Cookies.get("coordinates");
+
     if (
         pathname.startsWith("/account") ||
         pathname.startsWith("/list-car-favorite") ||
@@ -18,10 +22,26 @@ export async function middleware(request: NextRequest) {
     ) {
         if (!token || token?.value == "kanow") {
             return NextResponse.redirect(process.env.NEXT_PUBLIC_URL_WEBSITE as string);
+        } else {
+            return NextResponse.next();
         }
+    }
+    // else if (pathname.startsWith("/list-cars-driver")) {
+
+    //     // ĐANG KHÔNG HOẠT ĐỘNG CẦN FIX
+    //     if (coordinatesLocalStorage) {
+    //         const parseCoordinates = JSON.parse(coordinatesLocalStorage)
+
+    //         if (parseCoordinates.lat == 0 && parseCoordinates.lng == 0 && parseCoordinates.latTo == 0 && parseCoordinates.lngTo == 0) {
+    //             return NextResponse.redirect(process.env.NEXT_PUBLIC_URL_WEBSITE as string);
+    //         } else {
+    //             return NextResponse.next();
+    //         }
+    //     }
+    // }
+    else {
         return NextResponse.next();
     }
-    return NextResponse.next();
 }
 
 export const config = {
@@ -35,6 +55,7 @@ export const config = {
         "/delete-account",
         "/list-my-car",
         "/vehicle-management/:path*",
+        "/list-cars-driver",
     ],
     // matcher: ["/bar/:path*", "/checkout/:path*", "/order/:path*"],
 };

@@ -10,7 +10,7 @@ import { FaCalendarAlt, FaPlusCircle } from 'react-icons/fa';
 
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { useDialogAddress, useDialogCalendar } from '@/hooks/useOpenDialog';
+import { useDialogAddress, useDialogCalendar, useDialogRouteAddress } from '@/hooks/useOpenDialog';
 import { vi } from 'date-fns/locale';
 import { useDataHome } from '@/hooks/useDataQueryKey';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -33,6 +33,7 @@ const IntroSection = () => {
         setOpenDialogAddress,
         setValueAddressDestination,
     } = useDialogAddress()
+
 
     const { isStateDataHome, queryKeyIsStateDataHome } = useDataHome()
 
@@ -138,9 +139,6 @@ const IntroSection = () => {
         }
     }
 
-    console.log('valueAddressDestination', valueAddressDestination);
-
-
     return (
         <div className='xl:h-[100vh] lg:h-[80vh] md:h-[80svh] h-[100svh] w-full relative '>
             {
@@ -207,7 +205,6 @@ const IntroSection = () => {
                                     <div
                                         key={tab.id}
                                         className={`${tab.id == isStateDataHome.tabSearch.tabId ? "bg-white" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} caret-transparent flex items-center gap-2 xl:px-6 xl:py-3 px-4 py-2 rounded-t-xl cursor-pointer`}
-                                        // className={`${tab.id == isStateDataHome.tabSearch.tabId ? "bg-white underline underline-offset-[6px] decoration-[3px] decoration-[#2FB9BD]" : "bg-[#BEE9EA] hover:bg-[#BEE9EA]/80"} flex items-center gap-2 xl:px-6 xl:py-3 px-4 py-2 rounded-t-xl cursor-pointer`}
                                         onClick={() => handleTabChange(tab)}
                                     >
                                         <div className='relative flex gap-1 items-center w-fit'>

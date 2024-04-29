@@ -74,3 +74,13 @@ export function FormatCurrency(amount: any) {
 
     return amountString;
 }
+
+export function FormatDistance(distance:any) {
+    if (distance >= 1000) {
+        // Nếu lớn hơn hoặc bằng 1000, chuyển đổi thành km
+        return (distance / 1000).toFixed(1) + 'km';
+    } else {
+        // Nếu bé hơn 1000, giữ nguyên là m
+        return Math.round(distance) + 'm';
+    }
+}
