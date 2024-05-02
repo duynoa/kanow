@@ -263,14 +263,9 @@ const DialogFilterAddress = memo(({ }: Props) => {
 
             const { data } = await apiGetCurrentPosition(dataParams)
 
-            console.log('data :', data);
-
             if (data && data.code == 'ok' && data.result) {
                 const address = data.result[0].address
                 const location = data.result[0].location
-
-                console.log('location', location);
-
 
                 setDataAddress(address)
                 setCoordinatesComponent({
@@ -311,21 +306,6 @@ const DialogFilterAddress = memo(({ }: Props) => {
         }
     };
 
-    // handle close modal
-    const handleCloseModal = () => {
-        setOpenDialogAddress(false)
-        setFlagValidateSubmit(false)
-        setCoordinatesComponent({
-            latCurrent: 0,
-            lngCurrent: 0,
-            lat: 0,
-            lng: 0,
-            latTo: 0,
-            lngTo: 0,
-        })
-        setDataAddress("")
-    }
-
     // submit áp dụng
     const onSubmit = async () => {
         if (pathname.startsWith('/list-cars-autonomous')) {
@@ -348,7 +328,7 @@ const DialogFilterAddress = memo(({ }: Props) => {
             let limit = isStateListCarAutonomous.limit.limitAllCars;
 
             if (
-                isStateListCarAutonomous.dataParams?.company_car_search === "0" &&
+                isStateListCarAutonomous.dataParams?.company_car_search == "0" &&
                 isStateListCarAutonomous.dataParams?.type_car_search?.length === 0 &&
                 isStateListCarAutonomous?.dataParams?.transmission_search == "0" &&
                 isStateListCarAutonomous.dataParams?.star_search === 0 &&
@@ -503,9 +483,24 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 setValueTwoAddress(itemValuePickup.name)
                 // Cookies.set('coordinates', JSON.stringify(coordinatesComponent));
                 localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
-            
+
             }
         }
+    }
+
+    // handle close modal
+    const handleCloseModal = () => {
+        setOpenDialogAddress(false)
+        setFlagValidateSubmit(false)
+        setCoordinatesComponent({
+            latCurrent: 0,
+            lngCurrent: 0,
+            lat: 0,
+            lng: 0,
+            latTo: 0,
+            lngTo: 0,
+        })
+        setDataAddress("")
     }
 
     return (

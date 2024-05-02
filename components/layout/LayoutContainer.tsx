@@ -407,7 +407,7 @@ const LayoutContainer = ({
         const timer = setTimeout(() => {
             // Xoá localStorage ở đây
             localStorage.setItem('coordinates', JSON.stringify(InitialCoordinates));
-        }, 3600000); // 1 giờ = 3600000 mili giây
+        }, 1800000); // 1 giờ = 3600000 mili giây
 
         return () => clearTimeout(timer); // Xóa hẹn giờ khi component bị unmount
     }, []);

@@ -29,6 +29,16 @@ const getListAutomaker = (param: any) => {
 
     return axios.get(`/car/getListCompanyCar`, config);
 };
+// lấy danh sách mẫu xe
+const getListModelCars = (param: any) => {
+    let config: AxiosRequestConfig = {
+        params: {
+            ...param, // Nối các tham số trong param object
+        },
+    };
+
+    return axios.get(`/car/getListModelCar`, config);
+};
 
 // lấy danh sách loại xe
 const getListTypeCars = (param: any) => {
@@ -87,6 +97,7 @@ const getListCarsForYou = (param?: any) => {
 export {
     getListCars,
     getListAutomaker,
+    getListModelCars,
     getListTypeCars,
     getDataDetailCar,
     postUpdateFavoriteHeartCar,

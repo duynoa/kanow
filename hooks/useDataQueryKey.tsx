@@ -54,10 +54,12 @@ const isStateListCarAutonomous: IInitialStateListCarAutonomous = {
     next: null,
     filter: {
         listTypesCar: [],
-        listAutomaker: []
+        listAutomaker: [],
+        listModelCars: [],
     },
     dataParams: {
         company_car_search: "0",
+        model_car_search: [],
         transmission_search: "0",
         type_car_search: [],
         tram_search: 0,
@@ -71,7 +73,8 @@ const isStateListCarAutonomous: IInitialStateListCarAutonomous = {
         onSuccessPage: false
     },
     loading: {
-        isLoadingDialogFilterListCars: false
+        isLoadingDialogFilterListCars: false,
+        isLoadingResetFilter: false,
     },
     limit: {
         limitFilterCars: 50,
@@ -205,6 +208,7 @@ const isStateListCarsDriver: IInitialStateListCarsDriver = {
     },
     dataParams: {
         company_car_search: "0",
+        model_car_search: [],
         transmission_search: "0",
         type_car_search: [],
         tram_search: 0,
@@ -218,7 +222,8 @@ const isStateListCarsDriver: IInitialStateListCarsDriver = {
         onSuccessPage: false
     },
     loading: {
-        isLoadingDialogFilterListCars: false
+        isLoadingDialogFilterListCars: false,
+        isLoadingResetFilter: false,
     },
     limit: {
         limitFilterCars: 50,

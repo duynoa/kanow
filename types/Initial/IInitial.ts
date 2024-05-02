@@ -24,9 +24,11 @@ interface IInitialStateListCarAutonomous {
     filter: {
         listTypesCar: ITypesCar[];
         listAutomaker: IAutomaker[];
+        listModelCars: any[];
     };
     dataParams: {
         company_car_search: string;
+        model_car_search: any[];
         type_car_search: number[];
         tram_search: number;
         discount_search: number;
@@ -41,6 +43,7 @@ interface IInitialStateListCarAutonomous {
     };
     loading: {
         isLoadingDialogFilterListCars: boolean;
+        isLoadingResetFilter: boolean;
     };
     limit: {
         limitFilterCars: number;
@@ -60,6 +63,7 @@ interface IInitialStateListCarsDriver {
     };
     dataParams: {
         company_car_search: string;
+        model_car_search: any[];
         type_car_search: number[];
         tram_search: number;
         discount_search: number;
@@ -74,6 +78,7 @@ interface IInitialStateListCarsDriver {
     };
     loading: {
         isLoadingDialogFilterListCars: boolean;
+        isLoadingResetFilter: boolean;
     };
     limit: {
         limitFilterCars: number;
