@@ -84,7 +84,8 @@ export default function VehicleRegistration(props: Props) {
                 return arr.map((i: any) => {
                     return {
                         ...i,
-                        name: `${base.base}/${i.name}`
+                        name: `${base.base}/${i.name}`,
+                        nameDefault: i.name
                     }
                 })
             }
@@ -138,10 +139,10 @@ export default function VehicleRegistration(props: Props) {
             formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i.nameDefault || i.name)
         })
         // hinh mặt trước
-        formData.append('image_car_position_before', value?.carPhoto?.before[0]?.name)
-        formData.append('image_car_position_affter', value?.carPhoto?.after[0]?.name)
-        formData.append('image_car_position_left', value?.carPhoto?.left[0]?.name)
-        formData.append('image_car_position_right', value?.carPhoto?.right[0]?.name)
+        formData.append('image_car_position_before', value?.carPhoto?.before[0]?.nameDefault || value?.carPhoto?.before[0]?.name)
+        formData.append('image_car_position_affter', value?.carPhoto?.after[0]?.nameDefault || value?.carPhoto?.after[0]?.name)
+        formData.append('image_car_position_left', value?.carPhoto?.left[0]?.nameDefault || value?.carPhoto?.left[0]?.name)
+        formData.append('image_car_position_right', value?.carPhoto?.right[0]?.nameDefault || value?.carPhoto?.right[0]?.name)
 
         const { data: db } = await apiUpdateCar(formData)
         if (db.result) {
