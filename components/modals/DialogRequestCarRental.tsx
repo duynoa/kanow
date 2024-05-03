@@ -37,13 +37,17 @@ import { useDataPolicy } from "@/hooks/useDataQueryKey";
 import moment from "moment";
 import { postRequestRentalCar } from "@/services/cars/cars.services";
 import { toastCore } from "@/lib/toast";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type Props = {};
 
 export const DialogRequestCarRental = memo(({ }: Props) => {
     const router = useRouter()
     const pathname = usePathname()
+
+    const searchParams = useSearchParams()
+    const typeCarDetail = searchParams.get('type')
+
     const { isVisibleTablet } = useResize()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isStatePolicy } = useDataPolicy()
@@ -75,6 +79,9 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
         if (newWindow) newWindow.opener = null
     }
 
+    console.log('dataListRequestCarRental', dataListRequestCarRental);
+
+
     const onSubmit = async (values: any) => {
         try {
 
@@ -84,22 +91,29 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                     date_start: dateTemp ? moment(dateTemp?.from).format("YYYY-MM-DD HH:mm") : moment(dateReal?.from).format("YYYY-MM-DD HH:mm"),
                     date_end: dateTemp ? moment(dateTemp?.to).format("YYYY-MM-DD HH:mm") : moment(dateReal?.from).format("YYYY-MM-DD HH:mm"),
                     rent_cost: dataListRequestCarRental?.dataDetailCar?.price?.rent_cost,
-                    quantity: numberDay,
+                    quantity: numberDay ? numberDay : 1,
                     promotion_car_id: !dataListRequestCarRental?.infoPromotion?.activePromotion && dataListRequestCarRental?.dataDetailCar?.promotion && dataListRequestCarRental?.dataDetailCar?.promotion?.length > 0 ? dataListRequestCarRental?.dataDetailCar?.promotion[0]?.id : 0,
+                    type: typeCarDetail == "1" ? 1 : 2,
+                    total_km: 0,
                 }
             }
             if (dataListRequestCarRental?.infoPromotion?.activePromotion) {
-                // Nếu có activePromotion, gán promotion_id
                 dataRequest.data.promotion_id = dataListRequestCarRental?.infoPromotion?.activePromotion?.id;
+            }
+            if (typeCarDetail == "2") {
+                // dataRequest.data.total_km = dataListRequestCarRental?.map?.dataSubmit[0]?.;
+                dataRequest.data.total_route = dataListRequestCarRental?.map?.dataSubmit[0]?.total_route;
+                dataRequest.data.duration_text = dataListRequestCarRental?.map?.dataSubmit[0]?.duration_text;
+                dataRequest.data.duration_value = dataListRequestCarRental?.map?.dataSubmit[0]?.duration_value;
+                dataRequest.data.routes = dataListRequestCarRental?.map?.dataSubmit[0]?.routes;
             }
 
             const { data } = await postRequestRentalCar(dataRequest)
 
-            console.log("data", data);
             if (data && data.result) {
                 toastCore.success('Gửi yêu cầu thuê xe thành công!')
                 router.push(`/info-rental-car/${data.id}`)
-                // openInNewTab(`/info-rental-car/${data.id}`)
+
                 setOpenDialogRequestCarRental(false)
                 setCheckPolicy(true)
             } else {

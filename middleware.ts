@@ -54,8 +54,8 @@ export const config = {
         "/my-trips",
         "/delete-account",
         "/list-my-car",
-        "/vehicle-management/:path*",
         "/list-cars-driver",
+        "/vehicle-management/:path*",
     ],
     // matcher: ["/bar/:path*", "/checkout/:path*", "/order/:path*"],
 };

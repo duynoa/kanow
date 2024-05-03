@@ -38,12 +38,91 @@ import Nodata from '@/components/image/Nodata';
 import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
 
 import Cookies from 'js-cookie';
+import {  useRouter } from 'next/navigation';
+import useGoogleApi from '@/services/filter/google/google.services';
 
 type Props = {}
 
 const ListCarsDriver = (props: Props) => {
+    // DATA BỘ LỌC FILTER
+    const InitialListFilter = [
+        {
+            id: uuidv4(),
+            type: "type_car_search",
+            name: "Loại xe",
+            value: 0,
+            visible: true,
+        },
+        {
+            id: uuidv4(),
+            type: "company_car_search",
+            name: "Hãng xe",
+            value: 0,
+            visible: true,
+        },
+        {
+            id: uuidv4(),
+            type: "model_car_search",
+            name: "Mẫu xe",
+            value: 0,
+            visible: false,
+        },
+        {
+            id: uuidv4(),
+            type: "star_search",
+            name: "Chủ xe 5 sao",
+            value: 1,
+            visible: true,
+        },
+        {
+            id: uuidv4(),
+            type: "tram_search",
+            name: "Xe điện",
+            value: 3,
+            visible: true,
+        },
+        {
+            id: uuidv4(),
+            type: "discount_search",
+            name: "Xe giảm giá",
+            value: 1,
+            visible: true,
+        },
+        {
+            id: uuidv4(),
+            type: "book_car_flash",
+            name: "Đặt xe nhanh",
+            value: 1,
+            visible: true,
+        },
+        {
+            id: uuidv4(),
+            type: "mortgage",
+            name: "Miễn thế chấp",
+            value: 2,
+            visible: true,
+        },
+        {
+            id: uuidv4(),
+            type: "delivery_car",
+            name: "Giao xe tận nơi",
+            value: 1,
+            visible: true,
+        },
+        {
+            id: uuidv4(),
+            type: "transmission_search",
+            name: "Truyền động",
+            value: 0,
+            visible: true,
+        },
+    ]
+
+    const router = useRouter()
+
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [flagFirstFetchApi, setFlagFirstFetchApi] = useState<boolean>(false)
+
     const {
         setOpenDialogAddress,
         valueAddressPickup,
@@ -58,18 +137,19 @@ const ListCarsDriver = (props: Props) => {
     } = useDialogRouteAddress()
 
     // KHAI BÁO ZUSTAND
+    const { getCookie } = useCookie()
     const { isVisibleMobile } = useResize()
+    const { coordinates } = useDialogAddress()
     const { setOpenDialogLogin } = useDialogLogin()
     const { dateReal, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogFilterListCars } = useDialogFilterListCars()
-    const { getCookie } = useCookie()
-    const { coordinates } = useDialogAddress()
+
+    // api
+    const { apiRouteMatrixAddress } = useGoogleApi()
 
     // THÊM MỘT HẰNG SỐ ĐỂ ĐỊNH NGHĨA KHOẢNG ĐỘ CHO PHÉP
     const ALLOWED_OFFSET = 600;
-    // const ALLOWED_OFFSET = 200;
 
-    // KHAI BÁO REF 
     // SỬ DỤNG TRONG SCROLL ĐỂ NGĂN CHẶN VIỆC GỌI API LIÊN TỤC
     const isAtBottomRef = useRef<boolean>(false);
     // CHECK VỊ TRÍ CUỐI CÙNG
@@ -77,64 +157,9 @@ const ListCarsDriver = (props: Props) => {
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
     const [isFilterFixed, setIsFilterFixed] = useState<boolean>(false);
+    const [listFilter, setListFilter] = useState<any[]>(InitialListFilter)
+
     const { isStateListCarsDriver, queryKeyIsStateListCarsDriver } = useDataListCarsDriver()
-    // DATA BỘ LỌC FILTER
-    const listFilter = [
-        {
-            id: uuidv4(),
-            type: "type_car_search",
-            name: "Loại xe",
-            value: 0,
-        },
-        {
-            id: uuidv4(),
-            type: "company_car_search",
-            name: "Hãng xe",
-            value: 0,
-        },
-        {
-            id: uuidv4(),
-            type: "star_search",
-            name: "Chủ xe 5 sao",
-            value: 1,
-        },
-        {
-            id: uuidv4(),
-            type: "tram_search",
-            name: "Xe điện",
-            value: 3,
-        },
-        {
-            id: uuidv4(),
-            type: "discount_search",
-            name: "Xe giảm giá",
-            value: 1,
-        },
-        {
-            id: uuidv4(),
-            type: "book_car_flash",
-            name: "Đặt xe nhanh",
-            value: 1,
-        },
-        {
-            id: uuidv4(),
-            type: "mortgage",
-            name: "Miễn thế chấp",
-            value: 2,
-        },
-        {
-            id: uuidv4(),
-            type: "delivery_car",
-            name: "Giao xe tận nơi",
-            value: 1,
-        },
-        {
-            id: uuidv4(),
-            type: "transmission_search",
-            name: "Truyền động",
-            value: 0
-        },
-    ]
 
     useEffect(() => {
         setIsMounted(true)
@@ -143,11 +168,15 @@ const ListCarsDriver = (props: Props) => {
     // SỬ DỤNG useEffect ĐỂ FETCH LIST CARS LẦN ĐẦU TIÊN VÀO
     const handleFetchListCars = async (page: any) => {
         try {
-            const savedCoordinates = localStorage.getItem('coordinates');
-            // const savedCoordinates = Cookies.get('coordinates');
+            // const savedCoordinates = localStorage.getItem('coordinates');
+            const savedCoordinates = Cookies.get('coordinates');
 
             if (savedCoordinates) {
                 const parseCoordinates = JSON.parse(savedCoordinates)
+
+                if (parseCoordinates.lat == 0 && parseCoordinates.lng == 0 || parseCoordinates.latTo == 0 && parseCoordinates.lngTo == 0) {
+                    return router.push("/")
+                }
 
                 queryKeyIsStateListCarsDriver({
                     onSuccess: {
@@ -168,6 +197,7 @@ const ListCarsDriver = (props: Props) => {
                     book_car_flash: isStateListCarsDriver?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarsDriver?.dataParams?.book_car_flash,
                     mortgage: isStateListCarsDriver?.dataParams?.mortgage == 0 ? undefined : isStateListCarsDriver?.dataParams?.mortgage,
                     delivery_car: isStateListCarsDriver?.dataParams?.delivery_car == 0 ? undefined : isStateListCarsDriver?.dataParams?.delivery_car,
+                    model_car_search: isStateListCarsDriver?.dataParams?.model_car_search && isStateListCarsDriver?.dataParams?.model_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.model_car_search.map(item => item?.id),
                 }
                 const { data } = await getListCars(page, isStateListCarsDriver.limit.limitAllCars, dataParams)
 
@@ -184,6 +214,8 @@ const ListCarsDriver = (props: Props) => {
                     })
                     setFlagFirstFetchApi(true)
                 }
+            } else {
+                return router.push("/")
             }
 
         } catch (err) {
@@ -191,8 +223,8 @@ const ListCarsDriver = (props: Props) => {
         }
     }
 
+
     useEffect(() => {
-        // handleFetchListCars(1)
         setValueTwoAddress(`${valueAddressPickup.split(',')[0]} - ${valueAddressDestination[indexAddressDestination].valueAddress.split(',')[0]}`)
         handleFetchListCars(isStateListCarsDriver?.page)
     }, [])
@@ -204,7 +236,7 @@ const ListCarsDriver = (props: Props) => {
         }
     }, [isStateListCarsDriver.onSuccess.onSuccessPage])
 
-    // LĂN CHUỘT XUỐNG NẾU VƯỢT 60PX THÌ SẼ HIỆN FIXED BỘ LỌC
+    // scroll down > 60px show header 2
     useEffect(() => {
         const handleScroll = () => {
             const topOffset = window.scrollY || document.documentElement.scrollTop;
@@ -240,10 +272,9 @@ const ListCarsDriver = (props: Props) => {
                         const fetchDataListCar = async () => {
                             const query = {
                                 type: 2,
-                                "lat": valueAddressPickup ? coordinates.lat : undefined,
-                                "lon": valueAddressPickup ? coordinates.lng : undefined,
+                                lat: valueAddressPickup ? coordinates.lat : undefined,
+                                lon: valueAddressPickup ? coordinates.lng : undefined,
                                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-                                // date_search: "10/04/2024 11:00:00 - 11/04/2024 12:00:00",
                                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
                                 transmission_search: isStateListCarsDriver?.dataParams?.transmission_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.transmission_search,
@@ -253,12 +284,10 @@ const ListCarsDriver = (props: Props) => {
                                 book_car_flash: isStateListCarsDriver?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarsDriver?.dataParams?.book_car_flash,
                                 mortgage: isStateListCarsDriver?.dataParams?.mortgage == 0 ? undefined : isStateListCarsDriver?.dataParams?.mortgage,
                                 delivery_car: isStateListCarsDriver?.dataParams?.delivery_car == 0 ? undefined : isStateListCarsDriver?.dataParams?.delivery_car,
+                                model_car_search: isStateListCarsDriver?.dataParams?.model_car_search && isStateListCarsDriver?.dataParams?.model_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.model_car_search.map(item => item?.id),
                             }
 
                             const { data } = await getListCars(isStateListCarsDriver.page, isStateListCarsDriver.limit.limitAllCars, query);
-
-                            console.log('check data : ', data);
-
 
                             if (data && data?.links && data?.data && data?.base) {
                                 let { customDataListCars } = CustomDataListCars(data)
@@ -377,27 +406,37 @@ const ListCarsDriver = (props: Props) => {
     const handleOpenDialog = (type: string) => {
         if (type === 'calendar') {
             setOpenDialogCalendar(true)
-        } else if (type === 'type_car_search' || type === 'company_car_search' || type === "transmission_search") {
+        } else if (type === 'type_car_search' || type === 'company_car_search' || type === 'model_car_search' || type === "transmission_search") {
             setOpenDialogFilterListCars(true, type)
         }
-    };
+    }
 
     const handleResetFilter = async () => {
         const query = {
             type: 2,
-            "lat": valueAddressPickup ? coordinates.lat : undefined,
-            "lon": valueAddressPickup ? coordinates.lng : undefined,
+            lat: valueAddressPickup ? coordinates.lat : undefined,
+            lon: valueAddressPickup ? coordinates.lng : undefined,
             date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-            company_car_search: undefined,
+            company_car_search: "0",
             type_car_search: [],
-            transmission_search: undefined,
-            star_search: undefined,
-            tram_search: undefined,
-            discount_search: undefined,
-            book_car_flash: undefined,
-            mortgage: undefined,
-            delivery_car: undefined,
+            transmission_search: "0",
+            star_search: 0,
+            tram_search: 0,
+            discount_search: 0,
+            book_car_flash: 0,
+            mortgage: 0,
+            delivery_car: 0,
+            model_car_search: [],
         }
+
+        queryKeyIsStateListCarsDriver({
+            ...isStateListCarsDriver,
+            loading: {
+                ...isStateListCarsDriver.loading,
+                isLoadingResetFilter: true
+            }
+        })
+
 
         const { data } = await getListCars(1, isStateListCarsDriver.limit.limitAllCars, query)
 
@@ -410,6 +449,7 @@ const ListCarsDriver = (props: Props) => {
                 next: data?.links?.next,
                 dataParams: {
                     company_car_search: "0",
+                    model_car_search: [],
                     transmission_search: "0",
                     type_car_search: [],
                     tram_search: 0,
@@ -418,6 +458,10 @@ const ListCarsDriver = (props: Props) => {
                     delivery_car: 0,
                     mortgage: 0,
                     star_search: 0,
+                },
+                loading: {
+                    ...isStateListCarsDriver.loading,
+                    isLoadingResetFilter: false
                 }
             })
         }
@@ -429,8 +473,8 @@ const ListCarsDriver = (props: Props) => {
 
             const query = {
                 type: 2,
-                "lat": valueAddressPickup ? coordinates.lat : undefined,
-                "lon": valueAddressPickup ? coordinates.lng : undefined,
+                lat: valueAddressPickup ? coordinates.lat : undefined,
+                lon: valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -441,6 +485,7 @@ const ListCarsDriver = (props: Props) => {
                 book_car_flash: isStateListCarsDriver?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarsDriver?.dataParams?.book_car_flash,
                 mortgage: isStateListCarsDriver?.dataParams?.mortgage == 0 ? undefined : isStateListCarsDriver?.dataParams?.mortgage,
                 delivery_car: isStateListCarsDriver?.dataParams?.delivery_car == 0 ? undefined : isStateListCarsDriver?.dataParams?.delivery_car,
+                model_car_search: isStateListCarsDriver?.dataParams?.model_car_search && isStateListCarsDriver?.dataParams?.model_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.model_car_search.map(item => item?.id),
             }
 
             let limit = isStateListCarsDriver.limit.limitAllCars;
@@ -481,8 +526,8 @@ const ListCarsDriver = (props: Props) => {
 
             const query = {
                 type: 2,
-                "lat": valueAddressPickup ? coordinates.lat : undefined,
-                "lon": valueAddressPickup ? coordinates.lng : undefined,
+                lat: valueAddressPickup ? coordinates.lat : undefined,
+                lon: valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -493,6 +538,7 @@ const ListCarsDriver = (props: Props) => {
                 book_car_flash: isStateListCarsDriver?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarsDriver?.dataParams?.book_car_flash,
                 mortgage: isStateListCarsDriver?.dataParams?.mortgage == 0 ? undefined : isStateListCarsDriver?.dataParams?.mortgage,
                 delivery_car: isStateListCarsDriver?.dataParams?.delivery_car == 0 ? undefined : isStateListCarsDriver?.dataParams?.delivery_car,
+                model_car_search: isStateListCarsDriver?.dataParams?.model_car_search && isStateListCarsDriver?.dataParams?.model_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.model_car_search.map(item => item?.id),
             }
 
             let limit = isStateListCarsDriver.limit.limitAllCars;
@@ -533,8 +579,8 @@ const ListCarsDriver = (props: Props) => {
 
             const query = {
                 type: 2,
-                "lat": valueAddressPickup ? coordinates.lat : undefined,
-                "lon": valueAddressPickup ? coordinates.lng : undefined,
+                lat: valueAddressPickup ? coordinates.lat : undefined,
+                lon: valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -545,6 +591,7 @@ const ListCarsDriver = (props: Props) => {
                 book_car_flash: isStateListCarsDriver?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarsDriver?.dataParams?.book_car_flash,
                 mortgage: isStateListCarsDriver?.dataParams?.mortgage == 0 ? undefined : isStateListCarsDriver?.dataParams?.mortgage,
                 delivery_car: isStateListCarsDriver?.dataParams?.delivery_car == 0 ? undefined : isStateListCarsDriver?.dataParams?.delivery_car,
+                model_car_search: isStateListCarsDriver?.dataParams?.model_car_search && isStateListCarsDriver?.dataParams?.model_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.model_car_search.map(item => item?.id),
             }
 
             let limit = isStateListCarsDriver.limit.limitAllCars;
@@ -585,8 +632,8 @@ const ListCarsDriver = (props: Props) => {
 
             const query = {
                 type: 2,
-                "lat": valueAddressPickup ? coordinates.lat : undefined,
-                "lon": valueAddressPickup ? coordinates.lng : undefined,
+                lat: valueAddressPickup ? coordinates.lat : undefined,
+                lon: valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -597,6 +644,7 @@ const ListCarsDriver = (props: Props) => {
                 book_car_flash: newBookCarFlashSearch == 0 ? undefined : newBookCarFlashSearch,
                 mortgage: isStateListCarsDriver?.dataParams?.mortgage == 0 ? undefined : isStateListCarsDriver?.dataParams?.mortgage,
                 delivery_car: isStateListCarsDriver?.dataParams?.delivery_car == 0 ? undefined : isStateListCarsDriver?.dataParams?.delivery_car,
+                model_car_search: isStateListCarsDriver?.dataParams?.model_car_search && isStateListCarsDriver?.dataParams?.model_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.model_car_search.map(item => item?.id),
             }
 
             let limit = isStateListCarsDriver.limit.limitAllCars;
@@ -637,8 +685,8 @@ const ListCarsDriver = (props: Props) => {
 
             const query = {
                 type: 2,
-                "lat": valueAddressPickup ? coordinates.lat : undefined,
-                "lon": valueAddressPickup ? coordinates.lng : undefined,
+                lat: valueAddressPickup ? coordinates.lat : undefined,
+                lon: valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -649,6 +697,7 @@ const ListCarsDriver = (props: Props) => {
                 book_car_flash: isStateListCarsDriver?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarsDriver?.dataParams?.book_car_flash,
                 mortgage: newMortgageSearch == 0 ? undefined : newMortgageSearch,
                 delivery_car: isStateListCarsDriver?.dataParams?.delivery_car == 0 ? undefined : isStateListCarsDriver?.dataParams?.delivery_car,
+                model_car_search: isStateListCarsDriver?.dataParams?.model_car_search && isStateListCarsDriver?.dataParams?.model_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.model_car_search.map(item => item?.id),
             }
 
             let limit = isStateListCarsDriver.limit.limitAllCars;
@@ -689,8 +738,8 @@ const ListCarsDriver = (props: Props) => {
 
             const query = {
                 type: 2,
-                "lat": valueAddressPickup ? coordinates.lat : undefined,
-                "lon": valueAddressPickup ? coordinates.lng : undefined,
+                lat: valueAddressPickup ? coordinates.lat : undefined,
+                lon: valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -701,6 +750,7 @@ const ListCarsDriver = (props: Props) => {
                 book_car_flash: isStateListCarsDriver?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarsDriver?.dataParams?.book_car_flash,
                 mortgage: isStateListCarsDriver?.dataParams?.mortgage == 0 ? undefined : isStateListCarsDriver?.dataParams?.mortgage,
                 delivery_car: newDeliveryCarSearch == 0 ? undefined : newDeliveryCarSearch,
+                model_car_search: isStateListCarsDriver?.dataParams?.model_car_search && isStateListCarsDriver?.dataParams?.model_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.model_car_search.map(item => item?.id),
             }
 
             let limit = isStateListCarsDriver.limit.limitAllCars;
@@ -739,8 +789,8 @@ const ListCarsDriver = (props: Props) => {
         } else if (!item && type === 'date') {
             const query = {
                 type: 2,
-                "lat": valueAddressPickup ? coordinates.lat : undefined,
-                "lon": valueAddressPickup ? coordinates.lng : undefined,
+                lat: valueAddressPickup ? coordinates.lat : undefined,
+                lon: valueAddressPickup ? coordinates.lng : undefined,
                 date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
                 company_car_search: isStateListCarsDriver?.dataParams?.company_car_search == "0" ? undefined : isStateListCarsDriver?.dataParams?.company_car_search,
                 type_car_search: isStateListCarsDriver?.dataParams?.type_car_search && isStateListCarsDriver?.dataParams?.type_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.type_car_search,
@@ -751,6 +801,7 @@ const ListCarsDriver = (props: Props) => {
                 book_car_flash: isStateListCarsDriver?.dataParams?.book_car_flash == 0 ? undefined : isStateListCarsDriver?.dataParams?.book_car_flash,
                 mortgage: isStateListCarsDriver?.dataParams?.mortgage == 0 ? undefined : isStateListCarsDriver?.dataParams?.mortgage,
                 delivery_car: isStateListCarsDriver?.dataParams?.delivery_car == 0 ? undefined : isStateListCarsDriver?.dataParams?.delivery_car,
+                model_car_search: isStateListCarsDriver?.dataParams?.model_car_search && isStateListCarsDriver?.dataParams?.model_car_search.length === 0 ? [] : isStateListCarsDriver?.dataParams?.model_car_search.map(item => item?.id),
             }
 
             let limit = isStateListCarsDriver.limit.limitAllCars;
@@ -789,6 +840,26 @@ const ListCarsDriver = (props: Props) => {
 
         }
     };
+
+    useEffect(() => {
+        if (isStateListCarsDriver.dataParams.company_car_search != "0") {
+            const updatedListFilter = listFilter.map(item => {
+                if (item.type === "model_car_search") {
+                    return { ...item, visible: true };
+                }
+                return item;
+            });
+            setListFilter(updatedListFilter)
+        } else {
+            const updatedListFilter = listFilter.map(item => {
+                if (item.type === "model_car_search") {
+                    return { ...item, visible: false };
+                }
+                return item;
+            });
+            setListFilter(updatedListFilter)
+        }
+    }, [isStateListCarsDriver.dataParams.company_car_search])
 
     if (!isMounted) {
         return null;
@@ -918,10 +989,10 @@ const ListCarsDriver = (props: Props) => {
                             >
                                 {
                                     listFilter && listFilter.map((item) => (
-                                        <SwiperSlide
+                                        item.visible && <SwiperSlide
                                             key={item.id}
                                             className={`${isValueNonZeroOrNonEmptyArray(item.type, "filter") ? "border border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD]" : "bg-[#F3F3F6] hover:bg-[#F3F3F6]/80"} 3xl:text-base text-sm mx-2 py-3 px-4 w-fit rounded-lg cursor-pointer text-[#06282D] font-medium caret-transparent hover:scale-105 duration-200 transition`}
-                                            onClick={(item?.type === "type_car_search" || item?.type === "company_car_search" || item?.type === "transmission_search") ? (() => handleOpenDialog(item.type)) : (() => handleFilterClick(item))}
+                                            onClick={(item?.type === "type_car_search" || item?.type === "company_car_search" || item?.type === "model_car_search" || item?.type === "transmission_search") ? (() => handleOpenDialog(item.type)) : (() => handleFilterClick(item))}
                                         >
                                             {item.name ? item.name : ''}
                                         </SwiperSlide>

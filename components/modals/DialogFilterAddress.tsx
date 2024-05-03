@@ -28,7 +28,7 @@ import useAirportCarDeliveryApi from "@/services/filter/listAirport/airportCarDe
 import { useGeolocated } from "react-geolocated";
 import { usePathname } from "next/navigation";
 import { getListCars } from "@/services/cars/cars.services";
-import { useDataListCarAutonomous, useDataListCarsDriver } from "@/hooks/useDataQueryKey";
+import { useDataDetailCar, useDataListCarAutonomous, useDataListCarsDriver } from "@/hooks/useDataQueryKey";
 import { CustomDataListCars } from "@/custom/CustomData";
 import moment from "moment";
 import { debounce } from "lodash";
@@ -80,6 +80,8 @@ const DialogFilterAddress = memo(({ }: Props) => {
         setFlagCloseModalRouteAddress,
     } = useDialogRouteAddress()
 
+    const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
+
     const [dataPlane, setDataPlane] = useState<IPlace[]>([])
     const [dataBoxSearch, setDataBoxSearch] = useState<any[]>([])
 
@@ -101,6 +103,11 @@ const DialogFilterAddress = memo(({ }: Props) => {
     const [flagValidateSubmit, setFlagValidateSubmit] = useState<boolean>(false)
     const [isLoadingData, setIsLoadingData] = useState<boolean>(false)
 
+    // Lấy thời điểm hiện tại
+    const currentTime = new Date();
+
+    // Tính thời điểm hết hạn của cookie là 60 giây sau thời điểm hiện tại
+    const expirationTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
 
     const VietnamBounds = "8.175944,102.148125,23.393395,109.464211";
 
@@ -155,13 +162,14 @@ const DialogFilterAddress = memo(({ }: Props) => {
             })
         } else if (openDialogAddress && type === "address_destination" && valueAddressDestination) {
             setDataAddress(valueAddressDestination[indexAddressDestination].valueAddress)
-
             setCoordinatesComponent({
                 ...coordinates,
                 latTo: coordinates.latTo,
                 lngTo: coordinates.lngTo,
             })
+
         }
+
         if (openDialogAddress) {
             const currentPosition = () => {
                 return getGeolocated.getPosition()
@@ -263,14 +271,9 @@ const DialogFilterAddress = memo(({ }: Props) => {
 
             const { data } = await apiGetCurrentPosition(dataParams)
 
-            console.log('data :', data);
-
             if (data && data.code == 'ok' && data.result) {
                 const address = data.result[0].address
                 const location = data.result[0].location
-
-                console.log('location', location);
-
 
                 setDataAddress(address)
                 setCoordinatesComponent({
@@ -311,21 +314,6 @@ const DialogFilterAddress = memo(({ }: Props) => {
         }
     };
 
-    // handle close modal
-    const handleCloseModal = () => {
-        setOpenDialogAddress(false)
-        setFlagValidateSubmit(false)
-        setCoordinatesComponent({
-            latCurrent: 0,
-            lngCurrent: 0,
-            lat: 0,
-            lng: 0,
-            latTo: 0,
-            lngTo: 0,
-        })
-        setDataAddress("")
-    }
-
     // submit áp dụng
     const onSubmit = async () => {
         if (pathname.startsWith('/list-cars-autonomous')) {
@@ -348,7 +336,7 @@ const DialogFilterAddress = memo(({ }: Props) => {
             let limit = isStateListCarAutonomous.limit.limitAllCars;
 
             if (
-                isStateListCarAutonomous.dataParams?.company_car_search === "0" &&
+                isStateListCarAutonomous.dataParams?.company_car_search == "0" &&
                 isStateListCarAutonomous.dataParams?.type_car_search?.length === 0 &&
                 isStateListCarAutonomous?.dataParams?.transmission_search == "0" &&
                 isStateListCarAutonomous.dataParams?.star_search === 0 &&
@@ -374,11 +362,12 @@ const DialogFilterAddress = memo(({ }: Props) => {
                     next: data?.links?.next
                 })
 
-                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent));
+                // localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
                 setCoordinates(coordinatesComponent)
                 setValueAddressPickup(dataAddress)
                 setOpenDialogAddress(false)
+
+                Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
             }
 
         } else if (pathname.startsWith('/list-cars-driver')) {
@@ -386,9 +375,10 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 setValueAddressPickup(dataAddress)
                 setCoordinates(coordinatesComponent)
                 setOpenDialogAddress(false)
-                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
+
                 // Đặt cookie với giá trị tương ứng
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent));
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
+
             } else if (type === "address_destination" && dataAddress) {
                 // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
                 const updatedAddressDestination = [...valueAddressDestination];
@@ -399,20 +389,20 @@ const DialogFilterAddress = memo(({ }: Props) => {
 
                 setCoordinates(coordinatesComponent)
                 setValueAddressDestination(updatedAddressDestination);
-
                 setOpenDialogAddress(false);
 
-            } else if (type === "address_pickup") {
-                console.log('check');
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
 
+            } else if (type === "address_pickup") {
                 setCoordinates({
                     ...coordinatesComponent,
                     lat: 0,
                     lng: 0,
                 })
-                setValueAddressPickup("")
                 setOpenDialogAddress(false)
                 setFlagValidateSubmit(false)
+
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
 
             } else if (type === "address_destination") {
                 setCoordinates({
@@ -430,20 +420,93 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 };
 
                 setValueAddressDestination([updatedAddressDestination])
+
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
             }
 
             setFlagCloseModalRouteAddress(true)
-        } else {
+        }
+        //  else if (pathname.startsWith('/detail-car/')) {
+        //     if (type === "address_pickup_detail" && dataAddress) {
+        //         queryKeyIsStateDetailCar({
+        //             ...isStateDetailCar,
+        //             map: {
+        //                 ...isStateDetailCar.map,
+        //                 coordinates: coordinatesComponent,
+        //                 valueAddressPickup: dataAddress
+        //             }
+        //         })
+        //         setDataAddress("")
+        //         setOpenDialogAddress(false)
+        //     } else if (type === "address_destination_detail" && dataAddress) {
+        //         // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
+        //         const updatedAddressDestination = [...valueAddressDestination];
+        //         updatedAddressDestination[indexAddressDestination] = {
+        //             id: valueAddressDestination[indexAddressDestination].id,
+        //             valueAddress: dataAddress
+        //         };
+
+        //         queryKeyIsStateDetailCar({
+        //             ...isStateDetailCar,
+        //             map: {
+        //                 ...isStateDetailCar.map,
+        //                 coordinates: coordinatesComponent,
+        //                 valueAddressDestination: updatedAddressDestination
+        //             }
+        //         })
+
+        //         setDataAddress("")
+        //         setOpenDialogAddress(false);
+        //     } else if (type === "address_pickup_detail") {
+        //         queryKeyIsStateDetailCar({
+        //             ...isStateDetailCar,
+        //             map: {
+        //                 ...isStateDetailCar.map,
+        //                 valueAddressPickup: "",
+        //                 coordinates: {
+        //                     ...coordinatesComponent,
+        //                     lat: 0,
+        //                     lng: 0,
+        //                 },
+        //             }
+        //         })
+
+        //         setOpenDialogAddress(false)
+        //         setFlagValidateSubmit(false)
+        //     } else if (type === "address_destination_detail") {
+        //         const updatedAddressDestination = [...valueAddressDestination];
+        //         updatedAddressDestination[indexAddressDestination] = {
+        //             id: valueAddressDestination[indexAddressDestination].id,
+        //             valueAddress: ""
+        //         };
+
+        //         queryKeyIsStateDetailCar({
+        //             ...isStateDetailCar,
+        //             map: {
+        //                 ...isStateDetailCar.map,
+        //                 valueAddressDestination: updatedAddressDestination,
+        //                 coordinates: {
+        //                     ...coordinatesComponent,
+        //                     lat: 0,
+        //                     lng: 0,
+        //                 },
+        //             }
+        //         })
+
+        //         setOpenDialogAddress(false)
+        //         setFlagValidateSubmit(false)
+        //     }
+        // } 
+        else {
             if (type === "address_pickup" && dataAddress) {
                 setValueAddressPickup(dataAddress)
                 setCoordinates(coordinatesComponent)
                 setDataAddress("")
                 setOpenDialogAddress(false)
 
-                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
-
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent));
                 setValueTwoAddress(itemValuePickup.name)
+
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
 
             } else if (type === "address_destination" && dataAddress) {
                 // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
@@ -460,13 +523,9 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 setValueTwoAddress(`${itemValuePickup.name} - ${itemValueDestination.name}`)
                 setOpenDialogAddress(false);
 
-                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
-
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent));
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
 
             } else if (type === "address_pickup") {
-                console.log('check');
-
                 setCoordinates({
                     ...coordinatesComponent,
                     lat: 0,
@@ -476,11 +535,7 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 setOpenDialogAddress(false)
                 setFlagValidateSubmit(false)
 
-                setValueTwoAddress("")
-
-                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
-
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent));
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
 
             } else if (type === "address_destination") {
                 setCoordinates({
@@ -499,18 +554,31 @@ const DialogFilterAddress = memo(({ }: Props) => {
 
                 setValueAddressDestination([updatedAddressDestination])
 
-                // xoá itemActiveDestination
-                setValueTwoAddress(itemValuePickup.name)
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent));
-                localStorage.setItem("coordinates", JSON.stringify(coordinatesComponent))
-            
+                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
             }
         }
     }
 
+
+
+    // handle close modal
+    const handleCloseModal = () => {
+        setOpenDialogAddress(false)
+        setFlagValidateSubmit(false)
+        setCoordinatesComponent({
+            latCurrent: 0,
+            lngCurrent: 0,
+            lat: 0,
+            lng: 0,
+            latTo: 0,
+            lngTo: 0,
+        })
+        setDataAddress("")
+    }
+
     return (
         <>
-            <Dialog modal={true} open={openDialogAddress} >
+            <Dialog modal={true} open={openDialogAddress} onOpenChange={handleCloseModal} >
                 <DialogPortal>
                     <DialogOverlay />
                     <DialogContent className="flex flex-col px-0 pb-0 lg:max-w-[740px] lg:w-[740px] max-w-[95%] w-[95%] min-h-[60vh] max-h-[95vh] overflow-auto focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
@@ -597,7 +665,7 @@ const DialogFilterAddress = memo(({ }: Props) => {
                                                                 onClick={() => handleChangeAddress(item, "airport")}
                                                                 variant="outline"
                                                                 className={`${(type == "address_pickup" && (+coordinatesComponent.lat.toFixed(4) == +item.latitude.toFixed(4)) && (+coordinatesComponent.lng.toFixed(4) == +item.longitude.toFixed(4))) ||
-                                                                    (type == "address_destination" && (+coordinatesComponent.latTo.toFixed(4) == +item.latitude.toFixed(4)) && (+coordinatesComponent.lngTo.toFixed(4) == +item.longitude.toFixed(4)))
+                                                                    (type == "address_destination" && (+coordinatesComponent.latTo.toFixed(3) == +item.latitude.toFixed(3)) && (+coordinatesComponent.lngTo.toFixed(3) == +item.longitude.toFixed(3)))
                                                                     ? "border-[#2FB9BD]" : "border-[#E6E8EC]"}
                                                                      font-medium py-2 px-4 cursor-pointer hover:bg-gray-100 hover:border-[#2FB9BD] border-2 flex items-center gap-1 lg:text-base text-sm`}
                                                             >
