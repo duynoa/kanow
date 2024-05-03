@@ -63,7 +63,6 @@ export interface IMyTrips {
     favourite: string;
     next: any;
     totalDrivingCar: number;
-    status_search: number | string;
     isLoadingScroll: boolean;
     daTafilter: IDataFilterMyTrips[];
 }

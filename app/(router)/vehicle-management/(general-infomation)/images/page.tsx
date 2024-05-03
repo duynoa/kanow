@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import { uuidv4 } from "@/lib/uuid";
+import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
@@ -25,18 +26,19 @@ export default function VehicleImages(props: Props) {
         }
     })
 
-    const refInput = useRef<HTMLInputElement>(null)
+    const { apiUpdateCar } = apiVehicleCommon()
 
     const { dataDetail: { data, base }, idCar } = useVehicleManage()
 
     const findValue = form.getValues()
 
     useEffect(() => {
-        if (data) {
+        if (!Array.isArray(data) && data) {
             form.setValue("images", data?.image_car.map((i: any) => {
                 return {
                     id: uuidv4(),
-                    name: `${base.base}/${i.name}`
+                    name: `${base.base}/${i.name}`,
+                    nameDefault: i.name
                 }
             }))
             return
@@ -45,8 +47,24 @@ export default function VehicleImages(props: Props) {
     }, [data])
 
     const onSubmit = async (value: any) => {
-        console.log(value)
-        toastCore.error('Chức năng đang phát triển')
+        let formData = new FormData()
+
+        formData.append('car_id', idCar)
+
+        value.images.filter((i: any) => i?.nameDefault).forEach((i: any, index: number) => {
+            formData.append(`image_old[${index}]`, i?.nameDefault)
+        })
+
+        value.images.filter((i: any) => !i?.nameDefault).forEach((i: any, index: number) => {
+            formData.append(`image[${index}]`, i?.name)
+        })
+
+        const { data: db } = await apiUpdateCar(formData)
+        if (db.result) {
+            toastCore.success('Lưu thông tin thành công')
+            return
+        }
+        toastCore.error(db.message)
     }
 
 
@@ -128,7 +146,6 @@ export default function VehicleImages(props: Props) {
                                                                     accept="image/*, application/pdf"
                                                                     id={"vehicle-management-picture"}
                                                                     type="file"
-                                                                    ref={refInput}
                                                                     multiple
                                                                     className="hidden" />
                                                                 <Label
@@ -163,9 +180,10 @@ export default function VehicleImages(props: Props) {
                                                                                     <div className={`bg-white rounded-full rounded-fit absolute top-0 right-3 translate-x-1/2 -translate-y-1/2 flex items-center justify-center`}>
                                                                                         <MdClear
                                                                                             onClick={() => {
-                                                                                                const inputValue = refInput.current?.value;
+                                                                                                const inputValue = document.getElementById('vehicle-management-picture') as HTMLInputElement | null;
+
                                                                                                 if (inputValue) {
-                                                                                                    refInput.current.value = '';
+                                                                                                    inputValue.value = '';
                                                                                                 }
                                                                                                 onChange(value?.filter((value: any) => value !== i))
                                                                                             }}

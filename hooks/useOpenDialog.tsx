@@ -212,6 +212,8 @@ interface IOpenDialogAddress {
         latTo: Number,
         lngTo: Number,
     },
+    openBoxSearch: boolean;
+    setOpenBoxSearch: (key: any) => void;
     setType: (type: string) => void;
     setIndexAddressDestination: (indexAddressDestination: number) => void;
     setOpenDialogAddress: (key: any) => void;
@@ -231,6 +233,7 @@ export const useDialogAddress = create<IOpenDialogAddress>((set) => ({
             valueAddress: ""
         }
     ],
+    openBoxSearch: false,
     coordinates: {
         latCurrent: 0,
         lngCurrent: 0,
@@ -242,6 +245,7 @@ export const useDialogAddress = create<IOpenDialogAddress>((set) => ({
 
     setType: (type: string) => set((state) => ({ ...state, type: type })),
     setIndexAddressDestination: (index: number) => set((state) => ({ ...state, indexAddressDestination: index })),
+    setOpenBoxSearch: (key: boolean) => set((state) => ({ openBoxSearch: key })),
     setCoordinates: (value: any) => set((state) => ({
         ...state,
         coordinates: {

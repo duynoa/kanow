@@ -12,10 +12,10 @@ interface ArraySurcharge {
     check_fee: number;
 }
 export interface ISTateSurcharge {
-    limitedKilometers?: {
-        maximumKilometers: number;
-        overLimitFee: number;
-    };
+    // limitedKilometers?: {
+    //     maximumKilometers: number;
+    //     overLimitFee: number;
+    // };
     isLoading?: boolean;
     arraySurcharge?: ArraySurcharge[];
 }

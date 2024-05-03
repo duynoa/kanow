@@ -1,19 +1,20 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import Nodata from '@/components/image/Nodata'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import BackgroundUiProfile from '@/themes/profile/BackgroundUiProfile'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import BackgroundUiProfile from '@/themes/profile/BackgroundUiProfile'
 
+import { CustomDataMyTripCar } from '@/custom/CustomData'
 import { useResize } from '@/hooks/useResize'
 import { IMyTrips } from '@/types/Profile/IMyTrips'
-import { CustomDataMyTripCar } from '@/custom/CustomData'
 
 import apiMyTrips from '@/services/profile/myTrips/myTrips.services'
 import MyTripSelfDrivingCar from './components/MyTripSelfDrivingCar'
 
-import DialogFilterMytrip from './components/DialogFilterMytrip'
+import { Button } from '@/components/ui/button'
+import { useDialogFilterMyCar } from '@/hooks/useOpenDialog'
 
 type Props = {}
 
@@ -30,7 +31,6 @@ const MyTrips = (props: Props) => {
         favourite: "1",
         next: "",
         totalDrivingCar: 0,
-        status_search: -1,
         isLoadingScroll: false,
         daTafilter: [],
     }
@@ -47,10 +47,13 @@ const MyTrips = (props: Props) => {
 
     const queryState = (key: any) => sIsState((prev: IMyTrips) => ({ ...prev, ...key }))
 
+    const { setDataFilter, setValueFilter, valueFilter, setOpenDialogFilterCar } = useDialogFilterMyCar()
+
+
     const handleFetchListCars = async (page: any) => {
         queryState({ isLoadingCar: true })
         try {
-            const { data } = await apiListMyTrips(page, isState.limit, { status_search: isState.status_search })
+            const { data } = await apiListMyTrips(page, isState.limit, { status_search: valueFilter })
             if (data && data.data && data.base) {
                 const { customDataMyTripCar } = CustomDataMyTripCar(data)
                 queryState({
@@ -73,6 +76,7 @@ const MyTrips = (props: Props) => {
 
     useEffect(() => {
         handleFetchListCars(isState.page)
+        setValueFilter(-1)
     }, [isState.favourite])
 
 
@@ -80,16 +84,11 @@ const MyTrips = (props: Props) => {
         try {
             const { data: { data } } = await apiListFilterMyTrips()
             if (data) {
-                queryState({
-                    daTafilter: [
-                        {
-                            id: -1,
-                            name: "Tất cả",
-                            index: 0,
-                            color: "black",
-                        },
-                        ...data]
-                })
+                setDataFilter([{
+                    id: -1,
+                    name: "Tất cả",
+                    color: "black",
+                }, ...data])
             }
         }
         catch (err) {
@@ -121,7 +120,7 @@ const MyTrips = (props: Props) => {
                         try {
                             await new Promise(resolve => setTimeout(resolve, 1500));
 
-                            const { data } = await apiListMyTrips(isState.page, isState.limit, { status_search: isState.status_search })
+                            const { data } = await apiListMyTrips(isState.page, isState.limit, { status_search: valueFilter })
 
                             if (data && data?.links && data?.data && data?.base) {
                                 let { customDataMyTripCar } = CustomDataMyTripCar(data)
@@ -164,25 +163,21 @@ const MyTrips = (props: Props) => {
         };
     }, [scrollContainerRef, isState.next, isState.page, isState.isLoadingScroll]);
 
-    const handleSubmitFilter = async () => {
-        try {
-            queryState({ openFilter: false });
-            await handleFetchListCars(1)
-        } catch (error) {
-            throw error;
-        }
-    };
 
-
-    const shareProps = { isState, queryState, handleSubmitFilter }
+    useEffect(() => {
+        handleFetchListCars(1)
+    }, [valueFilter])
 
     return (
         <BackgroundUiProfile className='space-y-4 '>
             <div className="flex md:flex-row flex-col justify-between">
                 <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Chuyến của tôi</h1>
                 <div className='items-center gap-5 md:my-0 my-5 md:flex hidden'>
-                    <DialogFilterMytrip {...shareProps} />
-
+                    <Button onClick={() => setOpenDialogFilterCar(true)} className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
+                             md:block hidden    px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}
+                    >
+                        Bộ lọc
+                    </Button>
                 </div>
             </div>
             <Tabs defaultValue="1" onValueChange={(value) => queryState({ favourite: value, page: 1 })} className="w-full">
@@ -203,7 +198,11 @@ const MyTrips = (props: Props) => {
                 <TabsContent value="1" className='lg:mt-4 mt-5'>
                     {isVisibleMobile &&
                         <div className='items-center gap-5  my-5'>
-                            <DialogFilterMytrip {...shareProps} />
+                            <Button onClick={() => setOpenDialogFilterCar(true)} className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
+                             md:block hidden    px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}
+                            >
+                                Bộ lọc
+                            </Button>
                         </div>
                     }
                     <ScrollArea

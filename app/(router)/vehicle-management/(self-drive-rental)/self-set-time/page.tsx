@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Switch } from "@/components/ui/switch";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
+import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { StateSeltSetTime } from "@/types/VehicleManagement/SelfDriveRental/ISetTime";
 import { ChevronsUpDown } from "lucide-react";
@@ -25,7 +26,7 @@ export default function SelftSetTime(props: Props) {
     const generateTimeSlots = () => {
         let timeSlots = [];
         for (let hour = 0; hour < 24; hour++) {
-            for (let minute = 0; minute < 60; minute += 15) { // Tăng thêm 15 phút
+            for (let minute = 0; minute < 60; minute += 30) { // Tăng thêm 15 phút
                 let formattedHour = hour.toString().padStart(2, '0'); // Định dạng giờ
                 let formattedMinute = minute.toString().padStart(2, '0'); // Định dạng phút
                 timeSlots.push({
@@ -75,6 +76,9 @@ export default function SelftSetTime(props: Props) {
     }
 
 
+    const { apiUpdateCar } = apiVehicleCommon()
+
+
     const checkValueArray = (array: any[], field: any) => {
         return array.find((x: any) => x.value === field.value)?.label
     }
@@ -103,18 +107,21 @@ export default function SelftSetTime(props: Props) {
         }
     })
 
-    const { dataDetail: { data }, idCar } = useVehicleManage()
+    const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
 
 
     const findValue = form.getValues()
 
-
     useEffect(() => {
-        if (data) {
+        if (!Array.isArray(data) && data) {
             console.log(data, idCar);
-            form.setValue("bookCarQuickly.open", true)
-            form.setValue("bookCarQuickly.wordLimit", 6)
-            form.setValue("bookCarQuickly.until", 7 * 24)
+            form.setValue("bookCarQuickly.open", data?.book_car_flash == 1)
+            form.setValue("bookCarQuickly.wordLimit", data?.from_book_car_flash)
+            form.setValue("bookCarQuickly.until", data?.to_book_car_flash)
+            form.setValue("deliver.from", data?.hour_receive_car[0]?.hour_start)
+            form.setValue("deliver.to", data?.hour_receive_car[0]?.hour_end)
+            form.setValue("receive.from", data?.hour_back_car[0]?.hour_start)
+            form.setValue("receive.to", data?.hour_back_car[0]?.hour_end)
             return
         }
         form.reset()
@@ -122,7 +129,50 @@ export default function SelftSetTime(props: Props) {
 
     const onSubmit = async (value: any) => {
         console.log(value)
-        toastCore.error('Chức năng đang phát triển')
+        let formData = new FormData()
+        formData.append('car_id', idCar)
+        formData.append('book_car_flash', `${value.bookCarQuickly.open ? 1 : 0}`)
+        formData.append('from_book_car_flash', value.bookCarQuickly.wordLimit)
+        formData.append('to_book_car_flash', value.bookCarQuickly.until)
+        // giao xe
+        formData.append('hour_start', value.deliver.from)
+        formData.append('hour_end', value.deliver.to)
+        // nhan xe
+        formData.append('hour_start_new', value.receive.from)
+        formData.append('hour_end_new', value.receive.to)
+
+        const { data: db } = await apiUpdateCar(formData)
+        if (db.result) {
+            toastCore.success('Lưu thông tin thành công')
+            return
+        }
+        toastCore.error(db.message)
+
+    }
+
+    const revertTime = (e: string, type: string) => {
+        const [hour, minute] = e.split(':').map(Number);
+        if (hour === undefined || minute === undefined) {
+            throw new Error('Invalid time format');
+        }
+        let time: string = '';
+        const timeDiff = type === 'add' ? 4 : -4;
+
+        if (minute === 30) {
+            if (hour + timeDiff >= 0) {
+                time = '0' + String((hour + timeDiff) % 24) + ':00';
+                return time;
+            } else {
+                time = String(24 + (hour + timeDiff)) + ':00';
+            }
+        } else {
+            if (hour + timeDiff >= 0) {
+                time = '0' + String((hour + timeDiff) % 24) + ':' + String(minute + 30);
+            } else {
+                time = String(24 + (hour + timeDiff)) + ':' + String(minute + 30);
+            }
+        }
+        return time;
     }
 
     return (
@@ -299,8 +349,13 @@ export default function SelftSetTime(props: Props) {
                                                         field={field}
                                                         onChange={(e: any) => {
                                                             field.onChange(e)
+                                                            const toTime: any = revertTime(e, 'add')
+                                                            console.log(toTime);
+
+                                                            form.setValue('deliver.to', toTime);
                                                         }}
                                                     />
+
                                                 </PopoverContent>
                                             </Popover>
                                         </>
@@ -352,6 +407,8 @@ export default function SelftSetTime(props: Props) {
                                                         field={field}
                                                         onChange={(e: any) => {
                                                             field.onChange(e)
+                                                            const toTime: any = revertTime(e, 'minus')
+                                                            form.setValue('deliver.from', toTime);
                                                         }}
                                                     />
                                                 </PopoverContent>
@@ -411,6 +468,8 @@ export default function SelftSetTime(props: Props) {
                                                         field={field}
                                                         onChange={(e: any) => {
                                                             field.onChange(e)
+                                                            const toTime: any = revertTime(e, 'add')
+                                                            form.setValue('receive.to', toTime);
                                                         }}
                                                     />
                                                 </PopoverContent>
@@ -465,6 +524,8 @@ export default function SelftSetTime(props: Props) {
                                                         field={field}
                                                         onChange={(e: any) => {
                                                             field.onChange(e)
+                                                            const toTime: any = revertTime(e, 'minus')
+                                                            form.setValue('receive.from', toTime);
                                                         }}
                                                     />
                                                 </PopoverContent>

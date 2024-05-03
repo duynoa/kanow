@@ -5,7 +5,9 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
+import { NumericFormatCore } from "@/lib/numericFormat";
 import { toastCore } from "@/lib/toast";
+import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
@@ -31,20 +33,22 @@ export default function SeflRentalPrice(props: Props) {
         }
     })
 
-    const { dataDetail: { data }, idCar } = useVehicleManage()
+    const { apiUpdateCar } = apiVehicleCommon()
+
+    const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
 
 
     const findValue = form.getValues()
 
 
     useEffect(() => {
-        if (data) {
-            console.log(data, idCar);
+        if (!Array.isArray(data) && data) {
             [
-                ["discount.dataDiscount", 100],
-                ["discount.defaultValue", 5],
-                ["discount.value", "5"],
-                ["discount.open", true],
+                ["unitPrice", data?.price?.rent_cost],
+                ["discount.dataDiscount", dataOther?.other?.percent_discount],
+                ["discount.defaultValue", data?.percent_discount],
+                ["discount.value", data?.percent_discount],
+                ["discount.open", data?.discount == 1],
             ].forEach(([name, value]: any) => {
                 form.setValue(name, value)
             })
@@ -54,8 +58,18 @@ export default function SeflRentalPrice(props: Props) {
     }, [data])
 
     const onSubmit = async (value: any) => {
-        console.log(value)
-        toastCore.error('Chức năng đang phát triển')
+        let formData = new FormData()
+        formData.append('car_id', idCar)
+        formData.append('rent_cost', value.unitPrice)
+        formData.append('discount', `${value.discount.open ? 1 : 0}`)
+        formData.append('percent_discount', value.discount.value)
+
+        const { data: db } = await apiUpdateCar(formData)
+        if (db.result) {
+            toastCore.success('Lưu thông tin thành công')
+            return
+        }
+        toastCore.error(db.message)
     }
 
 
@@ -83,13 +97,11 @@ export default function SeflRentalPrice(props: Props) {
                                     <h1 className="text-xs text-gray-400">Giá đề xuất 390K</h1>
                                 </FormLabel>
                                 <FormControl>
-                                    <Input
-                                        inputMode="numeric"
+                                    <NumericFormatCore
                                         className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
-                                                 focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                                 focus:border-[#2FB9BD] outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                         placeholder="Nhập đơn giá thuê"
-                                        type={'number'}
-                                        min={0}
+                                        thousandSeparator={','}
                                         {...field}
                                     />
                                 </FormControl>

@@ -54,7 +54,7 @@ const TAB = [
 const ListMyCar = (props: Props) => {
     const { queryKeyIsStateProfileMyCar, isStateProfileMyCar } = useDataProfileMyCar()
 
-    const { setDataFilter, setValueFilter, valueFilter, setOpenDialogFilterCar, openDialogFilterCar } = useDialogFilterMyCar()
+    const { setDataFilter, setValueFilter, valueFilter, setOpenDialogFilterCar } = useDialogFilterMyCar()
 
 
     const { isVisibleMobile, isVisibleTablet } = useResize()

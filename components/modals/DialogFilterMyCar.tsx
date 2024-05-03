@@ -35,7 +35,7 @@ const DialogFilterMyCar = ({ children }: Props) => {
             open={openDialogFilterCar}
         >
             <DialogPortal>
-                <DialogOverlay className="bg-black/60" />
+                <DialogOverlay onClick={() => setOpenDialogFilterCar(!openDialogFilterCar)} className="bg-black/60" />
                 <DialogContent className="lg:w-[425px] w-[90%] p-0">
                     <DialogClose onClick={() => setOpenDialogFilterCar(!openDialogFilterCar)} className="3xl:size-10 size-8 border border-[#000000] flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-40"
                     >

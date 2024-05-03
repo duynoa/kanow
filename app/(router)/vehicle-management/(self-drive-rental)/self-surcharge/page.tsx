@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import apiVehicleSurcharge from "@/services/vehicle-management/surcharge.services";
+import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { ISTateSurcharge } from "@/types/VehicleManagement/SelfDriveRental/ISurcharge";
 import { useEffect, useState } from "react";
@@ -18,12 +19,6 @@ type Props = {}
 export default function SelftSurcharge(props: Props) {
     const form = useForm({
         defaultValues: {
-            // giới hạn số km
-            limitedKilometers: {
-                open: false,
-                maximumKilometers: "",
-                overLimitFee: ""
-            },
             arraySurcharge: [
                 {
                     open: true,
@@ -35,11 +30,6 @@ export default function SelftSurcharge(props: Props) {
 
     const initialState: ISTateSurcharge = {
         isLoading: false,
-        // gioi han so km
-        limitedKilometers: {
-            maximumKilometers: 0,
-            overLimitFee: 0
-        },
         arraySurcharge: []
     }
 
@@ -51,7 +41,10 @@ export default function SelftSurcharge(props: Props) {
     const queryState = (key: ISTateSurcharge) => setIsState((prev: ISTateSurcharge) => ({ ...prev, ...key }))
 
 
-    const { dataDetail: { data }, idCar } = useVehicleManage()
+    const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
+
+
+    const { apiUpdateCar } = apiVehicleCommon()
 
 
     const findValue = form.getValues()
@@ -61,13 +54,31 @@ export default function SelftSurcharge(props: Props) {
     const fetchListSurcharge = async () => {
         queryState({ isLoading: true })
         try {
+            await new Promise(resolve => setTimeout(resolve, 1500));
 
-            const { data } = await apiListSurchargeCar({ type: 1 })
+            const { data: db } = await apiListSurchargeCar({ type: 1 })
 
-            queryState({ arraySurcharge: data.data })
+            queryState({ arraySurcharge: db.data })
 
-            form.setValue('arraySurcharge', data.data.map((x: any) => ({ ...x, open: true, value: 20 })))
-
+            if (!Array.isArray(data) && data?.surcharge_car?.length > 0) {
+                const arr = db.data.map((e: any) => {
+                    const Obj = data?.surcharge_car.find((x: any) => x.id === e.id)
+                    if (Obj) {
+                        return {
+                            ...e,
+                            value: Obj.value,
+                            open: true,
+                        }
+                    }
+                    return {
+                        ...e,
+                        open: false
+                    }
+                })
+                form.setValue('arraySurcharge', arr)
+                return
+            }
+            form.reset()
         } catch (error) {
             throw error
         } finally {
@@ -76,35 +87,29 @@ export default function SelftSurcharge(props: Props) {
     }
 
     useEffect(() => {
-        fetchListSurcharge()
-    }, [])
-
-
-    useEffect(() => {
-        if (data) {
-            form.setValue('limitedKilometers.open', true)
-            form.setValue('limitedKilometers.maximumKilometers', data?.total_km_day)
-
-            queryState({
-                limitedKilometers: {
-                    ...isState.limitedKilometers,
-                    maximumKilometers: data?.total_km_day,
-                    overLimitFee: 100
-                },
-            })
-            return
+        if (data?.surcharge_car) {
+            fetchListSurcharge()
         }
-        form.reset()
-    }, [data])
+    }, [data?.surcharge_car])
+
+
+
 
     const onSubmit = async (value: any) => {
-        console.log(value.arraySurcharge.map((x: any) => {
-            return {
-                ...x,
-                value: x.value[0]
-            }
-        }))
-        toastCore.error('Chức năng đang phát triển')
+        let formData = new FormData()
+        formData.append('car_id', idCar)
+        formData.append('type', '1')
+        value.arraySurcharge.forEach((x: any, index: number) => {
+            formData.append(`surcharge_car[${index}][id]`, `${x.id}`)
+            formData.append(`surcharge_car[${index}][check]`, `${x.open ? 1 : 0}`)
+            formData.append(`surcharge_car[${index}][value]`, `${Array.isArray(x.value) ? x.value[0] : x.value}`)
+        })
+        const { data: db } = await apiUpdateCar(formData)
+        if (db.result) {
+            toastCore.success('Lưu thông tin thành công')
+            return
+        }
+        toastCore.error(db.message)
     }
 
 
@@ -115,7 +120,7 @@ export default function SelftSurcharge(props: Props) {
             </div>
             <Form {...form}>
                 <div className="grid grid-cols-1 gap-6">
-                    <FormField
+                    {/* <FormField
                         control={form.control}
                         name="limitedKilometers.open"
                         render={({ field, fieldState }) => {
@@ -174,7 +179,7 @@ export default function SelftSurcharge(props: Props) {
                                                     return (
                                                         <FormItem>
                                                             <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                                Vượt phí giới hạn (tính mỗi Km)
+                                                                Phí vượt giới hạn (tính mỗi Km)
                                                             </FormLabel>
                                                             <FormControl>
                                                                 <>
@@ -207,8 +212,8 @@ export default function SelftSurcharge(props: Props) {
                                 </FormItem>
                             );
                         }}
-                    />
-                    {isState.isLoading ? [...Array(3)].map((x, index) => {
+                    /> */}
+                    {isState.isLoading ? [...Array(5)].map((x, index) => {
                         return (
                             <div key={index} className="flex flex-col gap-2">
                                 <Skeleton className="h-8 w-full" />
@@ -256,7 +261,7 @@ export default function SelftSurcharge(props: Props) {
                                                                         <FormControl>
                                                                             <>
                                                                                 <CustomSlider
-                                                                                    defaultValue={[100]} max={item.max} min={item.min} step={1}
+                                                                                    defaultValue={[field.value]} max={item.max} min={item.min} step={1}
                                                                                     onValueChange={field.onChange}
                                                                                 />
                                                                             </>
@@ -266,7 +271,7 @@ export default function SelftSurcharge(props: Props) {
                                                                                 Phí đề xuất: {100}K
                                                                             </FormDescription>
                                                                             <FormDescription className='font-bold'>
-                                                                                {field.value > 100 ? FormatNumberToThousands(field.value) : `${field.value}K`}
+                                                                                {field.value > 100 ? FormatNumberToThousands(field.value) : `${field.value ?? 0}K`}
                                                                                 {/* {field.value ? FormatNumberToThousands(field.value) : '0K'} */}
                                                                             </FormDescription>
                                                                         </div>

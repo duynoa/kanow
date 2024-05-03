@@ -1,14 +1,13 @@
 import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 export async function middleware(request: NextRequest) {
     const { pathname, origin } = request.nextUrl;
     const token: any = request.cookies.get("token_kanow");
     const checkUrl = ["/account", "/list-car-favorite", "/change-password", "/list-address"];
-    const coordinatesLocalStorage = Cookies.get('coordinates');
-
+    const coordinatesLocalStorage = Cookies.get("coordinates");
 
     if (
         pathname.startsWith("/account") ||
@@ -39,7 +38,7 @@ export async function middleware(request: NextRequest) {
     //             return NextResponse.next();
     //         }
     //     }
-    // } 
+    // }
     else {
         return NextResponse.next();
     }

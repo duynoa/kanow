@@ -10,7 +10,10 @@ import SearchAddress from "@/components/searchAddress/SearchAddress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { useDialogAddress } from "@/hooks/useOpenDialog"
 const FormCreatAddress = ({ form, isState, queryKeyIsState, handleSearchApi, onSubmit }: any) => {
+    const { setOpenBoxSearch } = useDialogAddress()
+
     return (
         <Form {...form}>
             <div className="space-y-4" >
@@ -289,13 +292,15 @@ const FormCreatAddress = ({ form, isState, queryKeyIsState, handleSearchApi, onS
                                         Địa chỉ <span className="text-red-500">*</span>
                                     </FormLabel>
                                     <FormControl>
-                                        <SearchAddress onChange={(e: any) => field.onChange(e)} >
+                                        <SearchAddress field={field} onChange={(e: any) => field.onChange(e)} >
                                             <Input
                                                 type="text"
                                                 className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs  disabled:border-gray-300 disabled:border-2  focus:border-[#2FB9BD]
                                                             w-full border-[#E6E8EC] border-2 2xl:py-3 lg:py-2 md:py-2 py-2 rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                 placeholder="Nhập địa chỉ của bạn"
                                                 {...field}
+                                                onClick={() => setOpenBoxSearch(true)}
+                                                onBlur={() => setOpenBoxSearch(false)}
                                             />
                                         </SearchAddress>
                                     </FormControl>
