@@ -6,6 +6,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Switch } from "@/components/ui/switch";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
+import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { StateSelftVehicleHanding } from "@/types/VehicleManagement/SelfDriveRental/IVehicleHanding";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
@@ -24,6 +25,9 @@ export default function SelftVehicleHanding(props: Props) {
         freeDelivery: 0,
     }
 
+    const { apiUpdateCar } = apiVehicleCommon()
+
+
     const [isState, setIsState] = useState(initialState)
 
     const queryState = (key: any) => setIsState((prev: StateSelftVehicleHanding) => ({ ...prev, ...key }))
@@ -39,7 +43,7 @@ export default function SelftVehicleHanding(props: Props) {
         }
     })
 
-    const { dataDetail: { data }, idCar } = useVehicleManage()
+    const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
 
 
     const findValue = form.getValues()
@@ -53,9 +57,9 @@ export default function SelftVehicleHanding(props: Props) {
             form.setValue('vehicleHanding.freeDelivery', data?.free_km_delivery_car)
             form.setValue('vehicleHanding.intersectionSquare', data?.km_delivery_car)
             queryState({
-                deliveryFee: +data?.fee_km_delivery_car,
-                freeDelivery: +data?.free_km_delivery_car,
-                intersectionSquare: +data?.km_delivery_car,
+                deliveryFee: +dataOther.other?.fee_km_delivery_car,
+                freeDelivery: +dataOther.other?.free_km_delivery_car,
+                intersectionSquare: +dataOther.other?.km_delivery_car,
             })
             return
         }
@@ -63,8 +67,22 @@ export default function SelftVehicleHanding(props: Props) {
     }, [data])
 
     const onSubmit = async (value: any) => {
-        console.log(value)
-        toastCore.error('Chức năng đang phát triển')
+        let formData = new FormData()
+        formData.append('car_id', idCar)
+        // nut tắt mở
+        formData.append('delivery_car', `${value.vehicleHanding.open ? 1 : 0}`)
+        // quang duong giao xe tối đa
+        formData.append('km_delivery_car', value.vehicleHanding.intersectionSquare)
+        // phi giao nhan xe
+        formData.append("fee_km_delivery_car", value.vehicleHanding.deliveryFee)
+        // mien phi
+        formData.append("free_km_delivery_car", value.vehicleHanding.freeDelivery)
+        const { data: db } = await apiUpdateCar(formData)
+        if (db.result) {
+            toastCore.success('Lưu thông tin thành công')
+            return
+        }
+        toastCore.error(db.message)
     }
     return (
         <BackgroundUiVehicle className="flex flex-col gap-4">
@@ -111,7 +129,7 @@ export default function SelftVehicleHanding(props: Props) {
                                                         </FormControl>
                                                         <div className="flex justify-between">
                                                             <FormDescription>
-                                                                Quãng đường đề xuất: {isState.intersectionSquare}Km
+                                                                Quãng đường đề xuất: {10}Km
                                                             </FormDescription>
                                                             <FormDescription className='font-bold'>
                                                                 {field.value}Km
@@ -143,7 +161,7 @@ export default function SelftVehicleHanding(props: Props) {
                                                         </FormControl>
                                                         <div className="flex justify-between">
                                                             <FormDescription>
-                                                                Phí đề xuất: {isState.deliveryFee}K
+                                                                Phí đề xuất: {10}K
                                                             </FormDescription>
                                                             <FormDescription className='font-bold'>
                                                                 {+field.value > 100 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
@@ -175,7 +193,7 @@ export default function SelftVehicleHanding(props: Props) {
                                                         </FormControl>
                                                         <div className="flex justify-between">
                                                             <FormDescription>
-                                                                Quãng đường đề xuất {isState.freeDelivery}Km
+                                                                Quãng đường đề xuất {10}Km
                                                             </FormDescription>
                                                             <FormDescription className='font-bold'>
                                                                 {field.value}Km

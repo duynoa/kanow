@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import LayoutContainer from '@/components/layout/LayoutContainer';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
     title: 'Kanow - Trang chủ',

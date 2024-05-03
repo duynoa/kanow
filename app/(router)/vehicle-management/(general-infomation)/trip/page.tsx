@@ -1,29 +1,25 @@
 "use client"
-"use client"
 import { FormatNumberToThousands } from "@/components/format/FormatNumber";
 import Nodata from "@/components/image/Nodata";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/hooks/useAuth";
+import { useDialogFilterMyCar } from "@/hooks/useOpenDialog";
 import { useResize } from "@/hooks/useResize";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
-import { uuidv4 } from "@/lib/uuid";
-import apiMyTrips from "@/services/profile/myTrips/myTrips.services";
+import apiTrips from "@/services/vehicle-management/trip.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { IStateGeneralTrip } from "@/types/VehicleManagement/GeneralInfomation/ITrip";
 import moment from "moment";
 import "moment/locale/vi";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 type Props = {}
 
 
 export default function VehicleTripManagement(props: Props) {
 
-    const param: ReadonlyURLSearchParams = useSearchParams()
-
-    const id: string | null = param.get("id") || ''
 
     const form = useForm({
         defaultValues: {}
@@ -31,90 +27,23 @@ export default function VehicleTripManagement(props: Props) {
 
     const findValue = form.getValues()
 
+    const { informationUser } = useAuth()
+
     const { dataDetail: { data, base }, idCar } = useVehicleManage()
 
-    const initialDataMyTrips = [
-        {
-            id: uuidv4(),
-            starTime: new Date(),
-            endTime: new Date(),
-            total: 900000,
-            status: {
-                id: 1,
-                name: "Khách thuê đã hủy",
-                color: "#ef4444",
-            },
-            user: {
-                name: "Minh Quang",
-                avatar: "/avatar/avatar_default.png"
-            },
-            time: new Date(),
-        },
-        {
-            id: uuidv4(),
-            starTime: new Date(),
-            endTime: new Date(),
-            total: 900000,
-            status: {
-                id: 1,
-                name: "Hoàn thành",
-                color: "#22c55e",
-            },
-            user: {
-                name: "Huy Tran",
-                avatar: "/avatar/avatar_default.png"
-            },
-            time: new Date(),
-        },
-        {
-            id: uuidv4(),
-            starTime: new Date(),
-            endTime: new Date(),
-            total: 900000,
-            status: {
-                id: 1,
-                name: "Hoàn thành",
-                color: "#22c55e",
-            },
-            user: {
-                name: "Trần Văn Nam",
-                avatar: "/avatar/avatar_default.png"
-            },
-            time: new Date(),
-        },
-        {
-            id: uuidv4(),
-            starTime: new Date(),
-            endTime: new Date(),
-            total: 900000,
-            status: {
-                id: 1,
-                name: "Đã kết thúc",
-                color: "#f97316",
-            },
-            user: {
-                name: "Trần Văn Khánh",
-                avatar: "/avatar/avatar_default.png"
-            },
-            time: new Date(),
-        },
-    ]
 
     const initialState: IStateGeneralTrip = {
         isLoadingCar: false,
-        dataMyTrips: initialDataMyTrips,
+        dataTrips: [],
         page: 1,
         limit: 4,
-        favourite: "1",
         next: "",
-        totalDrivingCar: 0,
-        status_search: -1,
         isLoadingScroll: false,
     }
 
     const { isVisibleMobile, isVisibleTablet } = useResize()
 
-    const { apiListMyTrips, apiListFilterMyTrips } = apiMyTrips()
+    const { apiListTrips } = apiTrips()
 
     const lastContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -122,7 +51,121 @@ export default function VehicleTripManagement(props: Props) {
 
     const [isState, sIsState] = useState<any>(initialState)
 
+    const { setDataFilter, setValueFilter, valueFilter, setOpenDialogFilterCar } = useDialogFilterMyCar()
+
     const queryState = (key: IStateGeneralTrip) => sIsState((prev: IStateGeneralTrip) => ({ ...prev, ...key }))
+
+
+    const convertArray = (data: any) => {
+        const array = data.map((item: any) => {
+            return {
+                id: item?.id,
+                starTime: item?.date_start,
+                endTime: item?.date_end,
+                total: item?.grand_total,
+                status: item?.status,
+                user: {
+                    name: item?.customer_renter?.fullname,
+                    avatar: item?.customer_renter?.avatar ?? "/avatar/avatar_default.png"
+                },
+                time: item?.date_status
+            }
+        })
+        return array
+    }
+
+    const handleFetchListCars = async (page: any) => {
+        queryState({ isLoadingCar: true })
+        try {
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            const { data: db } = await apiListTrips(page, isState.limit, { status_search: valueFilter, customer_search: informationUser?.id })
+            if (db && db.data && db.base) {
+                queryState({
+                    dataTrips: convertArray(db.data),
+                    page: isState.page + 1,
+                    next: db?.links?.next,
+                })
+            }
+        }
+        catch (err) {
+            throw err
+        }
+        finally {
+            queryState({ isLoadingCar: false })
+        }
+    }
+
+    useEffect(() => {
+        setValueFilter(-1)
+        if (informationUser?.id) {
+            handleFetchListCars(isState.page)
+        }
+    }, [informationUser?.id])
+
+
+    useEffect(() => {
+        const handleWheel = (event: any) => {
+            const scrollContainer = scrollContainerRef.current;
+            const lastContainer = lastContainerRef.current;
+
+            if (!scrollContainer || !lastContainer || isState.isLoadingScroll) return;
+
+            const scrollContainerBottom = Math.floor(scrollContainer.getBoundingClientRect().bottom);
+            const lastContainerBottom = Math.floor(lastContainer.getBoundingClientRect().bottom);
+
+            const containerHeight = scrollContainer.clientHeight;
+            const threshold = containerHeight * 0.1; // 10% của kích thước containe
+
+            if (scrollContainerBottom <= lastContainerBottom + threshold) {
+                if (isState.dataMyTrips && isState.next !== null) {
+                    queryState({ isLoadingScroll: true });
+                    const fetchDataListCar = async () => {
+                        try {
+                            await new Promise(resolve => setTimeout(resolve, 1500));
+
+                            const { data: { db } } = await apiListTrips(isState.page, isState.limit, { status_search: valueFilter, customer_search: data?.customer?.id })
+
+                            if (db && db?.links && db?.data && db?.base) {
+                                const arr = convertArray(db.data)
+                                if (!isState.isLoadingScroll) {
+                                    queryState({
+                                        dataTrips: [...(isState.dataTrips || []), ...arr],
+                                        next: db?.links?.next,
+                                        page: isState.page + 1,
+                                    })
+                                }
+                                return
+                            }
+                            queryState({
+                                dataTrips: isState.dataTrips,
+                                next: db?.links?.next,
+                                page: db?.links?.next !== null ? isState.page + 1 : isState.page,
+                                isLoadingScroll: false,
+                            });
+                        } catch (error) {
+                            throw error
+                        } finally {
+                            queryState({ isLoadingScroll: false });
+                        }
+                    };
+                    fetchDataListCar()
+                    return
+                }
+                console.log("check next false");
+            }
+        }
+
+        const scrollCurrent = scrollContainerRef.current;
+
+        scrollCurrent?.addEventListener(isVisibleMobile ? "touchmove" : "wheel", handleWheel);
+
+        return () => {
+            scrollCurrent?.removeEventListener(isVisibleMobile ? "touchmove" : "wheel", handleWheel);
+        };
+    }, [scrollContainerRef, isState.next, isState.page, isState.isLoadingScroll]);
+
+
 
 
     return (
@@ -133,9 +176,9 @@ export default function VehicleTripManagement(props: Props) {
                 </div>
                 <ScrollArea
                     ref={scrollContainerRef}
-                    className={`${isState.dataMyTrips?.length > 0 &&
-                        isVisibleMobile ? isState.dataMyTrips?.length > 4 ? 'h-[680px]' : 'h-auto' :
-                        isVisibleTablet ? isState.dataMyTrips?.length > 4 ? 'h-[980px]' : 'h-auto' : isState.dataMyTrips?.length >= 3 ? 'h-[780px]' : 'h-[550px]'} lg:pr-6 pr-3`}
+                    className={`${isState.dataTrips?.length > 0 &&
+                        isVisibleMobile ? isState.dataTrips?.length > 4 ? 'h-[680px]' : 'h-auto' :
+                        isVisibleTablet ? isState.dataTrips?.length > 4 ? 'h-[980px]' : 'h-auto' : isState.dataTrips?.length >= 3 ? 'h-[780px]' : 'h-[670px]'} lg:pr-6 pr-3`}
                 >
                     <div className='flex flex-col gap-4'>
                         {isState.isLoadingCar ?
@@ -163,7 +206,7 @@ export default function VehicleTripManagement(props: Props) {
                                 )
                             })
                             :
-                            isState.dataMyTrips?.length > 0 ? isState.dataMyTrips.map((e: any, index: number) => {
+                            isState.dataTrips?.length > 0 ? isState.dataTrips.map((e: any, index: number) => {
                                 return (
                                     <div key={e.id} className="flex flex-col  rounded-lg border divide-y">
                                         <div className="flex md:flex-row flex-col md:gap-0 gap-6 items-center justify-between md:p-8 p-4">

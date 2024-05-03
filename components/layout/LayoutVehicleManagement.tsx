@@ -2,41 +2,30 @@
 
 import { useAuth } from '@/hooks/useAuth'
 import Link from 'next/link'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { ReadonlyURLSearchParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 
 import { useResize } from '@/hooks/useResize'
+import { useVehicleManage } from '@/hooks/useVehicleManage'
+import apiVehicleCommon from '@/services/vehicle-management/vehicle-common.services'
+import Image from 'next/image'
 import { useForm } from 'react-hook-form'
-import { BsCardHeading } from 'react-icons/bs'
-import { FaCalendarAlt, FaCarSide, FaRegImage, FaSuitcase } from 'react-icons/fa'
-import { GrMap } from "react-icons/gr"
-import { IoIosSettings } from 'react-icons/io'
-import { IoNewspaperOutline } from 'react-icons/io5'
-import { MdOutlinePriceChange } from 'react-icons/md'
-import { TbReportMoney } from 'react-icons/tb'
 import { Form, FormControl, FormField, FormItem } from '../ui/form'
 import { Select, SelectContent, SelectGroup, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'
 import { SelectItemNocheck } from '../ui/selectNocheck'
 import { Separator } from '../ui/separator'
 import { Switch } from '../ui/switch'
-import { useVehicleManage } from '@/hooks/useVehicleManage'
-import apiVehicleCommon from '@/services/vehicle-management/vehicle-common.services'
-import apiMyCar from '@/services/profile/listMyCar/listMyCar.services'
-import Image from 'next/image'
+import { toastCore } from '@/lib/toast'
 
-const LayoutVehicleManagement = ({
-    children
-}: {
-    children: React.ReactNode
-}) => {
+const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) => {
     const href = usePathname()
 
-    const param = useSearchParams()
+    const param: ReadonlyURLSearchParams = useSearchParams()
 
-    const id = param.get('id') || ''
+    const id: string | null = param.get("id") || ''
 
-    const pathname = `${href}?id=${id}`
+    const pathname: string = `${href}?id=${id}`
 
     const router = useRouter()
 
@@ -169,25 +158,28 @@ const LayoutVehicleManagement = ({
 
     const form = useForm({
         defaultValues: {
-            openSelf: true,
-            openTalented: true,
+            openSelf: false,
+            openTalented: false,
         }
     })
 
-    // console.log(['openSelf', 'openTalented'].map((e: any) => {
-    //     return form.getValues(e)
-    // }));
+    const { apiDetailCar, apiListOtherAmenitiesCar, apiOpenSwitchLayout } = apiVehicleCommon()
 
-    const { apiDetailCar } = apiVehicleCommon()
-
-    const { dataDetail, setIdCar, setDataDetail } = useVehicleManage()
+    const { dataDetail, setIdCar, setDataDetail, setDataOther } = useVehicleManage()
 
 
     const fetchData = async () => {
-        const { data } = await apiDetailCar(id, { type: 1, car_owner: 1 })
-        if (data) {
-            setDataDetail(data)
+        const { data: db } = await apiDetailCar(id, { type: 1, car_owner: 1 })
+        const { data: { other, dtFee } } = await apiListOtherAmenitiesCar()
+        if (other || dtFee) {
+            setDataOther({ other, dtFee })
         }
+        if (db) {
+            form.setValue("openSelf", db?.data.type == 1)
+            form.setValue("openTalented", db?.data.type_talent == 1)
+            setDataDetail(db)
+        }
+
     }
 
     useEffect(() => {
@@ -207,6 +199,25 @@ const LayoutVehicleManagement = ({
 
     const handleChangeSidebar = (value: any) => {
         router.push(value)
+    }
+
+    const onSubmit = async (value: any, type: any) => {
+        let formData = new FormData()
+        formData.append('car_id', id)
+        formData.append('type', type)
+        if (type == 1) {
+            formData.append('status', `${value?.openSelf ? 0 : 1}`)
+        } else {
+            formData.append('status', `${value?.openTalented ? 0 : 1}`)
+        }
+
+        const { data: db } = await apiOpenSwitchLayout(formData)
+        if (db.result) {
+            toastCore.success('Lưu trạng thái thành công')
+            return
+        }
+        toastCore.error(db.message)
+
     }
 
     if (!isMounted) {
@@ -253,7 +264,10 @@ const LayoutVehicleManagement = ({
                                                                                     <Switch
                                                                                         className="data-[state=checked]:bg-[#2FB9BD] "
                                                                                         checked={field.value}
-                                                                                        onCheckedChange={field.onChange}
+                                                                                        onCheckedChange={(value) => {
+                                                                                            field.onChange(value)
+                                                                                            form.handleSubmit(value => onSubmit(value, e?.id == 2 ? 1 : 2))()
+                                                                                        }}
                                                                                     />
                                                                                 </div>
                                                                             </FormControl>
@@ -314,7 +328,10 @@ const LayoutVehicleManagement = ({
                                                                                 <Switch
                                                                                     className="data-[state=checked]:bg-[#2FB9BD] "
                                                                                     checked={field.value}
-                                                                                    onCheckedChange={field.onChange}
+                                                                                    onCheckedChange={(value) => {
+                                                                                        field.onChange(value)
+                                                                                        form.handleSubmit(value => onSubmit(value, e?.id == 2 ? 1 : 2))()
+                                                                                    }}
                                                                                 />
                                                                             </div>
                                                                         </FormControl>

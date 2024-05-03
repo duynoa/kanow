@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import { useDialogAddress } from "@/hooks/useOpenDialog"
+import { NumericFormatCore } from "@/lib/numericFormat"
 import apiAddress from "@/services/profile/listAddress/listAddress.services"
 import apiMyCar from "@/services/profile/listMyCar/listMyCar.services"
 import { IStateLease, TComboboxApi } from "@/types/Profile/mycar/IMyCar"
@@ -23,7 +25,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
     const [isMount, setIsMount] = useState(false)
     const { apiListMoveEndFeuelType } = apiMyCar()
     const { apiListCity, apiListDistrict, apiListWard } = apiAddress()
-
+    const { setOpenBoxSearch } = useDialogAddress()
     const initialState: IStateLease = {
         openCombobox: false,
         typeOpenCombobox: "",
@@ -237,13 +239,20 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                 <h1 className="text-xs text-gray-400">Giá đề xuất 390K</h1>
                                             </FormLabel>
                                             <FormControl>
-                                                <Input
+                                                {/* <Input
                                                     inputMode="numeric"
                                                     className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
                                                  focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                     placeholder="Nhập đơn giá thuê"
                                                     type={'number'}
                                                     min={0}
+                                                    {...field}
+                                                /> */}
+                                                <NumericFormatCore
+                                                    className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
+                                                 focus:border-[#2FB9BD] outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                                    placeholder="Nhập đơn giá thuê"
+                                                    thousandSeparator={','}
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -451,13 +460,16 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                     Tên đường <span className="text-red-500">*</span>
                                                                 </FormLabel>
                                                                 <FormControl>
-                                                                    <SearchAddress onChange={(e: any) => field.onChange(e)} >
+                                                                    <SearchAddress field={field} onChange={(e: any) => field.onChange(e)} >
                                                                         <Input
                                                                             type="text"
                                                                             className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs  disabled:border-gray-300 disabled:border-2  focus:border-[#2FB9BD]
                                                                             w-full border-[#E6E8EC] border-2 2xl:py-3 lg:py-2 md:py-2 py-2 rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                                             placeholder="Nhập địa chỉ của bạn"
                                                                             {...field}
+                                                                            onClick={() => setOpenBoxSearch(true)}
+                                                                            onBlur={() => setOpenBoxSearch(false)}
+
                                                                         />
                                                                     </SearchAddress>
                                                                 </FormControl>

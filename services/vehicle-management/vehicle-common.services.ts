@@ -12,7 +12,19 @@ const apiVehicleCommon = () => {
         return axios.get(`/car/getDetail/${id}`, config);
     };
 
-    return { apiDetailCar };
+    const apiUpdateCar = (data: any) => {
+        return axios.post(`/car/updateCar`, data);
+    };
+
+    const apiListOtherAmenitiesCar = () => {
+        return axios.get(`/category/getListUtilitiesCar`);
+    };
+
+    const apiOpenSwitchLayout = (data: any) => {
+        return axios.post("/car/changeStatusType", data);
+    };
+
+    return { apiDetailCar, apiUpdateCar, apiListOtherAmenitiesCar, apiOpenSwitchLayout };
 };
 
 export default apiVehicleCommon;
