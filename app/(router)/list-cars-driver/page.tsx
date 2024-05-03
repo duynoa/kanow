@@ -38,6 +38,8 @@ import Nodata from '@/components/image/Nodata';
 import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
 
 import Cookies from 'js-cookie';
+import {  useRouter } from 'next/navigation';
+import useGoogleApi from '@/services/filter/google/google.services';
 
 type Props = {}
 
@@ -116,8 +118,11 @@ const ListCarsDriver = (props: Props) => {
         },
     ]
 
+    const router = useRouter()
+
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [flagFirstFetchApi, setFlagFirstFetchApi] = useState<boolean>(false)
+
     const {
         setOpenDialogAddress,
         valueAddressPickup,
@@ -132,18 +137,19 @@ const ListCarsDriver = (props: Props) => {
     } = useDialogRouteAddress()
 
     // KHAI BÁO ZUSTAND
+    const { getCookie } = useCookie()
     const { isVisibleMobile } = useResize()
+    const { coordinates } = useDialogAddress()
     const { setOpenDialogLogin } = useDialogLogin()
     const { dateReal, setOpenDialogCalendar } = useDialogCalendar()
     const { setOpenDialogFilterListCars } = useDialogFilterListCars()
-    const { getCookie } = useCookie()
-    const { coordinates } = useDialogAddress()
+
+    // api
+    const { apiRouteMatrixAddress } = useGoogleApi()
 
     // THÊM MỘT HẰNG SỐ ĐỂ ĐỊNH NGHĨA KHOẢNG ĐỘ CHO PHÉP
     const ALLOWED_OFFSET = 600;
-    // const ALLOWED_OFFSET = 200;
 
-    // KHAI BÁO REF 
     // SỬ DỤNG TRONG SCROLL ĐỂ NGĂN CHẶN VIỆC GỌI API LIÊN TỤC
     const isAtBottomRef = useRef<boolean>(false);
     // CHECK VỊ TRÍ CUỐI CÙNG
@@ -162,11 +168,15 @@ const ListCarsDriver = (props: Props) => {
     // SỬ DỤNG useEffect ĐỂ FETCH LIST CARS LẦN ĐẦU TIÊN VÀO
     const handleFetchListCars = async (page: any) => {
         try {
-            const savedCoordinates = localStorage.getItem('coordinates');
-            // const savedCoordinates = Cookies.get('coordinates');
+            // const savedCoordinates = localStorage.getItem('coordinates');
+            const savedCoordinates = Cookies.get('coordinates');
 
             if (savedCoordinates) {
                 const parseCoordinates = JSON.parse(savedCoordinates)
+
+                if (parseCoordinates.lat == 0 && parseCoordinates.lng == 0 || parseCoordinates.latTo == 0 && parseCoordinates.lngTo == 0) {
+                    return router.push("/")
+                }
 
                 queryKeyIsStateListCarsDriver({
                     onSuccess: {
@@ -204,12 +214,15 @@ const ListCarsDriver = (props: Props) => {
                     })
                     setFlagFirstFetchApi(true)
                 }
+            } else {
+                return router.push("/")
             }
 
         } catch (err) {
             throw err
         }
     }
+
 
     useEffect(() => {
         setValueTwoAddress(`${valueAddressPickup.split(',')[0]} - ${valueAddressDestination[indexAddressDestination].valueAddress.split(',')[0]}`)

@@ -16,6 +16,7 @@ import { useDataHome } from '@/hooks/useDataQueryKey';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { uuidv4 } from '@/lib/uuid';
 import { toastCore } from '@/lib/toast';
+import Cookies from 'js-cookie';
 
 const IntroSection = () => {
     const MAX_DESTINATIONS = 4;
@@ -64,6 +65,12 @@ const IntroSection = () => {
         },
     ]
 
+    // Lấy thời điểm hiện tại
+    const currentTime = new Date();
+
+    // Tính thời điểm hết hạn của cookie là 60 giây sau thời điểm hiện tại
+    const expirationTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
+
     useEffect(() => {
         queryKeyIsStateDataHome({
             ...isStateDataHome,
@@ -105,9 +112,13 @@ const IntroSection = () => {
     const handleSearchCar = () => {
         if (isStateDataHome.tabSearch.type === 'list-cars-autonomous') {
             router.push('/list-cars-autonomous')
+            Cookies.set('coordinates', JSON.stringify(coordinates), { expires: expirationTime })
+
         } else if (isStateDataHome.tabSearch.type === 'list-cars-driver') {
             if (valueAddressPickup && valueAddressDestination[indexAddressDestination].valueAddress) {
                 router.push('/list-cars-driver')
+                Cookies.set('coordinates', JSON.stringify(coordinates), { expires: expirationTime })
+
             } else {
                 toastCore.error("Vui lòng chọn địa điểm đón và địa điểm đến!")
             }

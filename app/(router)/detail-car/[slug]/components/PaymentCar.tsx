@@ -24,7 +24,7 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { FormatNumberDot, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
+import { FormatDistance, FormatNumberDot, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
 import { ActionTooltip } from '@/components/tooltip/ActionTooltip'
 import { useResize } from '@/hooks/useResize'
 
@@ -51,6 +51,7 @@ const PaymentCar = ({ }: Props) => {
         dataCalendar,
         setOpenDialogCalendar
     } = useDialogCalendar()
+
     const { setOpenDialogPromotion } = useDialogPromotion()
     const { setOpenDialogReportCar } = useDialogReportCar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
@@ -58,8 +59,15 @@ const PaymentCar = ({ }: Props) => {
     const { isStatePolicy } = useDataPolicy()
     const { setDataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
     const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
-    
-    const { setOpenDialogAddress, valueAddressPickup } = useDialogAddress()
+
+    const {
+        valueAddressPickup,
+        valueAddressDestination,
+        indexAddressDestination,
+        setType,
+        setOpenDialogAddress,
+        setIndexAddressDestination,
+    } = useDialogAddress()
 
     const { getCookie } = useCookie()
     const { isVisibleTablet } = useResize()
@@ -146,8 +154,13 @@ const PaymentCar = ({ }: Props) => {
         }
     }
 
-    console.log('isStatePolicy:', isStatePolicy);
-
+    const handleOpenDialogAddress = (type: string, index?: number) => {
+        setOpenDialogAddress(true)
+        setType(type)
+        if (index) {
+            setIndexAddressDestination(index)
+        }
+    }
 
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
@@ -349,42 +362,87 @@ const PaymentCar = ({ }: Props) => {
                                 <Map latitude={latitude} longitude={longitude} data={dataMaps} />
                             </div>
 
-                            <div className='flex flex-col gap-2'>
-                                <Label className='text-sm text-[#6F7689]' htmlFor="place">
-                                    Điểm đón
-                                </Label>
-                                <div className="relative">
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <TiLocation className="text-xl text-[#1EAAB1]" />
-                                    </span>
-                                    <div
-                                        id="place"
-                                        onClick={() => setOpenDialogAddress(true)}
-                                        className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
-                                        focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
-                                    >
-                                        {valueAddressPickup ? valueAddressPickup : 'Chọn điểm đón'}
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div className='flex flex-col gap-2'>
-                                <Label className='text-sm text-[#6F7689]' htmlFor="place">
-                                    Điểm đến
-                                </Label>
-                                <div className="relative">
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <TiLocation className="text-xl text-[#1EAAB1]" />
-                                    </span>
-                                    <div
-                                        id="place"
-                                        onClick={() => setOpenDialogAddress(true)}
-                                        className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                            <div className='flex flex-col gap-4'>
+                                <div className='flex flex-col gap-2 w-full'>
+                                    <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                        Địa điểm đón
+                                    </Label>
+                                    <div className="relative">
+                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                            <TiLocation className="text-xl text-[#1EAAB1]" />
+                                        </span>
+                                        <div
+                                            id="place"
+                                            onClick={() => handleOpenDialogAddress('address_pickup')}
+                                            className='pl-10  cursor-pointer pr-2 py-3 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
                                         focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
-                                    >
-                                        {valueAddressPickup ? valueAddressPickup : 'Chọn điểm đến'}
+                                        >
+                                            {
+                                                isStateDetailCar.map.valueAddressPickup ?
+                                                    (isStateDetailCar.map.valueAddressPickup ? isStateDetailCar.map.valueAddressPickup : 'Chọn địa điểm đón')
+                                                    :
+                                                    (valueAddressPickup ? valueAddressPickup : 'Chọn địa điểm đón')
+                                            }
+                                        </div>
                                     </div>
                                 </div>
+
+                                {
+                                    isStateDetailCar.map.coordinates.latTo != 0 && isStateDetailCar.map.coordinates.lngTo != 0 ?
+                                        isStateDetailCar.map.valueAddressDestination && isStateDetailCar.map.valueAddressDestination?.map((destination, index) => (
+                                            <div className='flex flex-col gap-2 w-full' key={index}>
+                                                <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                                    Địa điểm đến {isStateDetailCar.map.valueAddressDestination.length === 1 ? "" : index + 1}
+                                                </Label>
+                                                <div className="relative">
+                                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                        <TiLocation className="text-xl text-[#1EAAB1]" />
+                                                    </span>
+                                                    <div
+                                                        id="place"
+                                                        onClick={() => handleOpenDialogAddress('address_destination', index)}
+                                                        className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                        focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                                    >
+                                                        {
+                                                            isStateDetailCar.map.valueAddressDestination[index].valueAddress
+                                                                ?
+                                                                isStateDetailCar.map.valueAddressDestination[index].valueAddress
+                                                                :
+                                                                'Chọn địa điểm đến'
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                        :
+                                        valueAddressDestination && valueAddressDestination?.map((destination, index) => (
+                                            <div className='flex flex-col gap-2 w-full' key={index}>
+                                                <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                                    Địa điểm đến {valueAddressDestination.length === 1 ? "" : index + 1}
+                                                </Label>
+                                                <div className="relative">
+                                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                        <TiLocation className="text-xl text-[#1EAAB1]" />
+                                                    </span>
+                                                    <div
+                                                        id="place"
+                                                        onClick={() => handleOpenDialogAddress('address_destination', index)}
+                                                        className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                        focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                                    >
+                                                        {
+                                                            valueAddressDestination[indexAddressDestination].valueAddress ?
+                                                                valueAddressDestination[indexAddressDestination].valueAddress
+                                                                :
+                                                                'Chọn địa điểm đến'
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                }
                             </div>
 
                             <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
@@ -396,11 +454,17 @@ const PaymentCar = ({ }: Props) => {
                                     <div className='3xl:text-base text-sm text-[#16171B] font-thin'>
                                         Tổng lộ trình
                                     </div>
-                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
+                                    {/* <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
                                         737.7km
+
+                                    </div> */}
+                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
+                                        {isStateDetailCar?.map?.totalDistance ? FormatDistance(isStateDetailCar?.map?.totalDistance) : 0}
                                     </div>
                                 </div>
-                                <div className='flex flex-row items-center justify-between'>
+
+                                {/* Tổng số km được đi */}
+                                {/* <div className='flex flex-row items-center justify-between'>
                                     <div className='flex flex-row items-center gap-1'>
                                         <div className='3xl:text-base text-sm text-[#16171B] font-thin'>
                                             Số km được đi
@@ -429,7 +493,7 @@ const PaymentCar = ({ }: Props) => {
                                     <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
                                         812km
                                     </div>
-                                </div>
+                                </div> */}
                                 {
                                     isStateDetailCar?.dataDetailCar?.surcharge_car && isStateDetailCar?.dataDetailCar?.surcharge_car.length > 0 ?
                                         <>

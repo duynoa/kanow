@@ -176,6 +176,27 @@ const isStateDetailCar: IInitialStateDetailCar = {
     onSuccess: {
         onSuccessPage: false
     },
+    map: {
+        coordinates: {
+            latCurrent: 0,
+            lngCurrent: 0,
+            lat: 0,
+            lng: 0,
+            latTo: 0,
+            lngTo: 0,
+        },
+        valueAddressPickup: "",
+        valueAddressDestination: [
+            {
+                id: "1",
+                valueAddress: ""
+            }
+        ],
+        indexAddressDestination: 0,
+        totalDistance: 0,
+        options: {},
+        dataSubmit: {}
+    }
 };
 
 export const useDataDetailCar = create<IStateDetailCar>((set) => ({
@@ -204,7 +225,8 @@ const isStateListCarsDriver: IInitialStateListCarsDriver = {
     next: null,
     filter: {
         listTypesCar: [],
-        listAutomaker: []
+        listAutomaker: [],
+        listModelCars: [],
     },
     dataParams: {
         company_car_search: "0",

@@ -35,6 +35,8 @@ import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
 import Nodata from '@/components/image/Nodata';
 import useGoogleApi from '@/services/filter/google/google.services';
 
+import Cookies from 'js-cookie';
+
 type Props = {}
 
 const ListCarAutonomous = (props: Props) => {
@@ -160,7 +162,9 @@ const ListCarAutonomous = (props: Props) => {
     // SỬ DỤNG useEffect ĐỂ FETCH LIST CARS LẦN ĐẦU TIÊN VÀO
     const handleFetchListCars = async (page: any) => {
         try {
-            const savedCoordinates = localStorage.getItem('coordinates');
+            // const savedCoordinates = localStorage.getItem('coordinates');
+            const savedCoordinates = Cookies.get('coordinates');
+
             if (savedCoordinates) {
                 const parseCoordinates = JSON.parse(savedCoordinates)
 
@@ -955,7 +959,7 @@ const ListCarAutonomous = (props: Props) => {
                             </div>
                     }
                 </div>
-                
+
                 <div className={` py-4 border-t border-b  w-full`}>
                     <div className='custom-container'>
                         <div className='flex items-center justify-center w-full relative'>
@@ -985,7 +989,7 @@ const ListCarAutonomous = (props: Props) => {
                                     listFilter && listFilter.map((item) => (
                                         item.visible && <SwiperSlide
                                             key={item.id}
-                                            className={`${isValueNonZeroOrNonEmptyArray(item.type, "filter") ? "border border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD]" : "bg-[#F3F3F6] hover:bg-[#F3F3F6]/80"} 3xl:text-base text-sm mx-2 py-3 px-4 w-fit rounded-lg cursor-pointer text-[#06282D] font-medium caret-transparent hover:scale-105 duration-200 transition`}
+                                            className={`${isValueNonZeroOrNonEmptyArray(item.type, "filter") || isValueNonZeroOrNonEmptyArray(item.type, "filter") && isStateListCarAutonomous.dataParams.model_car_search.length > 0 ? "border border-[#2FB9BD]/80 bg-[#2FB9BD]/10 text-[#2FB9BD]" : "bg-[#F3F3F6] hover:bg-[#F3F3F6]/80"} 3xl:text-base text-sm mx-2 py-3 px-4 w-fit rounded-lg cursor-pointer text-[#06282D] font-medium caret-transparent hover:scale-105 duration-200 transition`}
                                             onClick={(item?.type === "type_car_search" || item?.type === "company_car_search" || item?.type === "model_car_search" || item?.type === "transmission_search") ? (() => handleOpenDialog(item.type)) : (() => handleFilterClick(item))}
                                         >
                                             {item.name ? item.name : ''}

@@ -163,11 +163,12 @@ const LayoutContainer = ({
 
     useEffect(() => {
         const fetchAddressLocalStorage = async () => {
-            const savedCoordinates = localStorage.getItem('coordinates');
-            // const savedCoordinates = Cookies.get('coordinates');
+            // const savedCoordinates = localStorage.getItem('coordinates');
+            const savedCoordinates = Cookies.get('coordinates');
 
             // Kiểm tra xem giá trị từ localStorage có tồn tại không
-            if (savedCoordinates && !valueAddressPickup || savedCoordinates && !valueAddressDestination.some(item => item.valueAddress !== "")) {
+            if (savedCoordinates) {
+                // if (savedCoordinates && !valueAddressPickup || savedCoordinates && !valueAddressDestination.some(item => item.valueAddress !== "")) {
                 const parseCoordinates = JSON.parse(savedCoordinates)
 
                 const dataParamsPickup = {
@@ -201,6 +202,76 @@ const LayoutContainer = ({
                         }
                     }
                 } else if (pathname.startsWith('/list-cars-driver')) {
+                    if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
+                        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
+                        const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
+
+                        // điểm đón
+                        if ((dataPickup && dataPickup.code == 'ok' && dataPickup.result) && dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
+                            const addressPickup = dataPickup.result[0].address
+                            const locationPickup = dataPickup.result[0].location
+                            const addressDestination = dataDestination.result[0].address
+                            const locationDestination = dataDestination.result[0].location
+
+                            // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
+                            const updatedAddressDestination = [...valueAddressDestination];
+                            updatedAddressDestination[indexAddressDestination] = {
+                                id: valueAddressDestination[indexAddressDestination].id,
+                                valueAddress: addressDestination ? addressDestination : ""
+                            };
+
+
+                            setValueAddressPickup(addressPickup)
+
+                            setValueAddressDestination(updatedAddressDestination)
+
+                            setCoordinates({
+                                ...parseCoordinates,
+                                lat: locationPickup.lat,
+                                lng: locationPickup.lng,
+                                latTo: locationDestination.lat,
+                                lngTo: locationDestination.lng,
+                            })
+
+                            setValueTwoAddress(`${dataPickup.result[0].name} - ${dataDestination.result[0].name}`)
+                        }
+                    } else if (parseCoordinates.lat && parseCoordinates.lng) {
+                        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
+
+                        if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
+                            const address = dataPickup.result[0].address
+                            const location = dataPickup.result[0].location
+
+                            setValueAddressPickup(address)
+                            setCoordinates({
+                                ...parseCoordinates,
+                                lat: location.lat,
+                                lng: location.lng,
+                            })
+                        }
+                    } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
+                        const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
+
+                        if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
+                            const address = dataDestination.result[0].address
+                            const location = dataDestination.result[0].location
+
+                            // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
+                            const updatedAddressDestination = [...valueAddressDestination];
+                            updatedAddressDestination[indexAddressDestination] = {
+                                id: valueAddressDestination[indexAddressDestination].id,
+                                valueAddress: address ? address : ""
+                            };
+
+                            setValueAddressDestination(updatedAddressDestination)
+                            setCoordinates({
+                                ...parseCoordinates,
+                                latTo: location.lat,
+                                lngTo: location.lng,
+                            })
+                        }
+                    }
+                } else if (pathname.startsWith('/detail-car')) {
                     if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
                         const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
                         const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
@@ -351,7 +422,7 @@ const LayoutContainer = ({
         }
 
         fetchAddressLocalStorage()
-    }, [])
+    }, [pathname])
 
     // ẩn/hiện khi chuyển qua màn hình nhỏ khi không dùng chung div để tránh xung đột 
     useEffect(() => {
@@ -398,19 +469,6 @@ const LayoutContainer = ({
         document.body.style.overflow = "unset";
     }, [openDialogAddress, openDialogRegisterOwnerDriver])
 
-
-    // useEffect(() => {
-    //     Cookies.set('coordinates', JSON.stringify(InitialCoordinates), { expires: 30 / (24 * 60) });
-    // }, []);
-    useEffect(() => {
-        // Đặt hẹn giờ cho việc xoá localStorage sau một khoảng thời gian nhất định (ví dụ: sau 1 giờ)
-        const timer = setTimeout(() => {
-            // Xoá localStorage ở đây
-            localStorage.setItem('coordinates', JSON.stringify(InitialCoordinates));
-        }, 1800000); // 1 giờ = 3600000 mili giây
-
-        return () => clearTimeout(timer); // Xóa hẹn giờ khi component bị unmount
-    }, []);
 
     useEffect(() => {
         if (generalKey && generalKey?.pusher && generalKey?.cluster) {

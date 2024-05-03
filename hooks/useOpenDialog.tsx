@@ -267,7 +267,7 @@ interface IOpenDialogRouteAddress {
     setItemValuePickup: (itemValuePickup: any) => void;
     setItemValueDestination: (itemValueDestination: any) => void;
     setValueTwoAddress: (valueTwoAddress: any) => void
-    setDataTotalAddress: (valueTwoAddress: any) => void
+    setDataTotalAddress: (dataTotalAddress: any) => void
     setFlagCloseModalRouteAddress: (value: any) => void
 }
 

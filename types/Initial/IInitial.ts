@@ -60,6 +60,7 @@ interface IInitialStateListCarsDriver {
     filter: {
         listTypesCar: ITypesCar[];
         listAutomaker: IAutomaker[];
+        listModelCars: any[]
     };
     dataParams: {
         company_car_search: string;
@@ -102,6 +103,25 @@ interface IInitialStateDetailCar {
     onSuccess: {
         onSuccessPage: boolean;
     };
+    map: {
+        coordinates: {
+            latCurrent: Number,
+            lngCurrent: Number,
+            lat: Number,
+            lng: Number,
+            latTo: Number,
+            lngTo: Number,
+        },
+        valueAddressPickup: any,
+        valueAddressDestination: {
+            id: string,
+            valueAddress: string
+        }[],
+        indexAddressDestination: number,
+        totalDistance: number,
+        options: any,
+        dataSubmit: any
+    }
 }
 
 // initial rental car

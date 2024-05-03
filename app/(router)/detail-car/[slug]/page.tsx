@@ -1,5 +1,7 @@
 'use client'
 
+import Cookies from 'js-cookie';
+
 import React, { useEffect, useState } from 'react'
 
 import Link from 'next/link'
@@ -39,6 +41,7 @@ import { getListCalendarPriceMonth } from '@/services/cars/calendar.services'
 import { addDays, differenceInMinutes, setHours, setMinutes } from 'date-fns'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import SkeletonDetailCar from './components/SkeletonDetailCar'
+import useGoogleApi from '@/services/filter/google/google.services'
 
 type Props = {
     params: {
@@ -57,6 +60,9 @@ const DetailCar = ({ params }: Props) => {
     const { setOpenDialogLogin } = useDialogLogin()
     const { dataListReportCar, openDialogReportCar } = useDialogReportCar()
     const { isVisibleMobile, isVisibleTablet } = useResize()
+
+    const { apiRouteMatrixAddress } = useGoogleApi()
+
     const {
         dataPromotions,
         openDialogPromotion,
@@ -64,6 +70,7 @@ const DetailCar = ({ params }: Props) => {
         setDataPromotions,
         setIsLoadingDataPromotion,
     } = useDialogPromotion()
+
     const { setOpenDialogReview, setDataImage, setIndexImage } = useDialogImage();
 
     const {
@@ -73,7 +80,6 @@ const DetailCar = ({ params }: Props) => {
         setIsLoadingSkeletonDetailCar,
     } = useDataDetailCar()
 
-    const { queryKeyIsStatePolicy } = useDataPolicy()
     const {
         dateReal,
         dateTemp,
@@ -186,8 +192,8 @@ const DetailCar = ({ params }: Props) => {
             let dataParams = {
                 type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
                 date_search: `${dateTemp ? `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}` : `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`}`,
-                lat: coordinates ? coordinates.lat : undefined,
-                lon: coordinates ? coordinates.lng : undefined,
+                lat: coordinates.lat != 0 ? coordinates.lat : undefined,
+                lon: coordinates.lng != 0 ? coordinates.lng : undefined,
             }
             const { data } = await getDataDetailCar(params.slug, dataParams)
 
@@ -275,6 +281,8 @@ const DetailCar = ({ params }: Props) => {
 
     }
 
+
+
     useEffect(() => {
         if (isStateDetailCar?.onSuccess?.onSuccessPage) {
             fetchDataDetailCarSecond()
@@ -291,6 +299,11 @@ const DetailCar = ({ params }: Props) => {
 
     // fetch data 
     useEffect(() => {
+        const savedCoordinates = Cookies.get('coordinates');
+
+        if (typeCarDetail == "2" && !savedCoordinates) {
+            return router.push("/")
+        }
 
         fetchDataDetailCarFirst()
         fetchDataListCalendarPriceMonth()
@@ -384,6 +397,131 @@ const DetailCar = ({ params }: Props) => {
             }
         })
     }, [numberDay, queryKeyIsStateDetailCar])
+
+    useEffect(() => {
+
+        if (coordinates.lat != 0 && coordinates.lng != 0 && coordinates.latTo != 0 && coordinates.lngTo != 0) {
+            const fetchDataRouteMatrixAddress = async () => {
+                try {
+                    const dataParams = {
+                        key: process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D,
+                        // origin: `${coordinates.lat},${coordinates.lng}`,
+                        // destination: `${coordinates.latTo},${coordinates.lngTo}`,
+                        // point: `${coordinates.lat},${coordinates.lngTo}`,
+                        origin: `${coordinates.lat},${coordinates.lng}`,
+                        destination: `${coordinates.lat},${coordinates.lng}`,
+                        points: `${coordinates.latTo},${coordinates.lngTo}`,
+                        mode: "car",
+                    }
+
+                    const { data } = await apiRouteMatrixAddress(dataParams)
+
+                    console.log('data matrix ', data);
+                    if (data && data.code == "ok" && data.result) {
+                        const formatDataToOptions = (data: any) => {
+                            // Khởi tạo mảng routes rỗng
+                            const routes1: any[] = [];
+                            const routes2: any[] = [];
+                            // Duyệt qua mỗi tuyến đường trong data.routes
+                            data.routes.forEach((route: any) => {
+                                // Xử lý mỗi tuyến đường
+                                const processedRouteStart = route.legs[0].steps.map((step: any) => ({
+                                    lng: step.startLocation.lng,
+                                    lat: step.startLocation.lat,
+                                }));
+
+                                const processedRouteEnd = route.legs[0].steps.map((step: any) => ({
+                                    lng: step.endLocation.lng,
+                                    lat: step.endLocation.lat,
+                                }));
+
+                                // Thêm tuyến đường đã xử lý vào mảng routes
+                                routes1.push(processedRouteStart);
+                                routes2.push(processedRouteEnd);
+                            });
+
+                            const originPosition = {
+                                lat: parseFloat(data.routes[0].legs[0].startLocation.lat),
+                                lng: parseFloat(data.routes[0].legs[0].startLocation.lng)
+                            };
+
+                            const destinationPosition = {
+                                lat: parseFloat(data.routes[0].legs[0].endLocation.lat),
+                                lng: parseFloat(data.routes[0].legs[0].endLocation.lng)
+                            };
+
+                            const originMarkerOptions = {
+                                position: originPosition,
+                                title: "Start",
+                                draggable: true,
+                                visible: true
+                            };
+
+                            const destinationMarkerOptions = {
+                                position: destinationPosition,
+                                title: "End",
+                                draggable: true,
+                                visible: true,
+                                userInteractionEnabled: false
+                            };
+
+                            const options = {
+                                // routes: [routes1[0], routes2[1]],
+                                routes: routes2,
+                                originMarkerOptions: originMarkerOptions,
+                                destinationMarkerOptions: destinationMarkerOptions,
+                                activeOutlineWidth: 0,
+                                inactiveOutlineWidth: 1,
+                                inactiveOutlineColor: "#FF00FF"
+                            };
+
+                            return options;
+                        };
+
+                        // Sử dụng hàm để format data thành options
+                        const options = formatDataToOptions(data.result);
+                        const dataSubmit = data.result.routes.map((item: any) => {
+                            return {
+                                total_km: item.distance.text,
+                                total_route: item.distance.value,
+                                duration_text: item.duration.text,
+                                duration_value: item.duration.value,
+                                routes: item.legs.map((e: any) => {
+                                    return {
+                                        total_route: e.distance.value,
+                                        duration_text: e.duration.text,
+                                        duration_value: e.duration.value,
+                                        lat_start: e.startLocation.lat,
+                                        lng_start: e.startLocation.lng,
+                                        lat_end: e.endLocation.lat,
+                                        lng_end: e.endLocation.lng
+                                    }
+                                }),
+                            }
+                        })
+
+                        console.log('dataSubmit : ', dataSubmit);
+
+                        // Đặt options vào state
+                        queryKeyIsStateDetailCar({
+                            ...isStateDetailCar,
+                            map: {
+                                ...isStateDetailCar.map,
+                                options: options,
+                                totalDistance: data.result.routes[0].distance.value,
+                                dataSubmit: dataSubmit,
+                            }
+                        })
+                    }
+
+                } catch (err) {
+                    throw err
+                }
+            }
+            fetchDataRouteMatrixAddress()
+        }
+    }, [coordinates])
+
 
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {
         e.stopPropagation()

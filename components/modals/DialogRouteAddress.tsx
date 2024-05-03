@@ -97,6 +97,12 @@ const DialogRouteAddress = memo(({ }: Props) => {
     const [flagValidateSubmit, setFlagValidateSubmit] = useState<boolean>(false)
     const [options, setOptions] = useState<any>({});
 
+    // Lấy thời điểm hiện tại
+    const currentTime = new Date();
+
+    // Tính thời điểm hết hạn của cookie là 60 giây sau thời điểm hiện tại
+    const expirationTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
+
     useEffect(() => {
         if (openDialogRouteAddress) {
             const fetchDataRouteMatrixAddress = async () => {
@@ -263,8 +269,7 @@ const DialogRouteAddress = memo(({ }: Props) => {
 
                 setValueTwoAddress(`${valueAddressPickup.split(',')[0]} - ${valueAddressDestination[indexAddressDestination].valueAddress.split(',')[0]}`)
 
-                localStorage.setItem("coordinates", JSON.stringify(coordinates))
-                // Cookies.set('coordinates', JSON.stringify(coordinates));
+                Cookies.set('coordinates', JSON.stringify(coordinates), { expires: expirationTime });
             }
 
         }
@@ -277,9 +282,6 @@ const DialogRouteAddress = memo(({ }: Props) => {
             setIndexAddressDestination(index)
         }
     }
-
-    console.log('data total address :', dataTotalAddress);
-
 
     useEffect(() => {
         if (!valueAddressPickup || !valueAddressDestination[indexAddressDestination].valueAddress) {
