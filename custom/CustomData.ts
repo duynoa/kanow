@@ -1,4 +1,3 @@
-import { useDialogCalendar } from "@/hooks/useOpenDialog";
 import { IDataDetailCar, IDetailRentalCar } from "@/types/Cars/ICars";
 import { IInitialStateInfoRentalCar } from "@/types/Initial/IInitial";
 import { IArrayMyTripCar } from "@/types/Profile/IMyTrips";
@@ -62,9 +61,9 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
         point_star: res?.data?.star,
         total_trip: res?.data?.total_trip,
         favorite_car: res?.data?.favourite_car,
-
         price: {
-            percent_deposit: res?.data?.price?.percent_deposit,
+            // Tổng số km đi được trong ngày theo xe
+            total_km_day: +res?.data?.total_km_day,
             // tiền trước khuyến mãi đầu
             price_before_promotion: res?.data?.price?.rent_cost_day,
             // tiền sau khuyến mãi đầu (nếu có lấy tiền gốc - tiền khuyến mãi trong mảng lấy cái đầu tiên)
@@ -97,7 +96,8 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
                     res?.data?.price?.price_insurance_day
                     : (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
                     (numberDay ? numberDay : 1),
-
+            // % tiền đặt cọc
+            percent_deposit: res?.data?.price?.percent_deposit,
             // tiền đặt cọc
             price_depoist:
                 res?.data?.promotion?.length > 0
@@ -201,6 +201,8 @@ const CustomDataInfoRentalCar = (res: any) => {
             note: res?.data?.status?.note,
         },
         price: {
+            // Tổng số km đi được trong ngày theo xe
+            total_km_day: +res?.data?.total_km_day,
             // tiền gốc
             rent_cost_day: +res?.data?.price?.rent_cost_day,
             // tiền bảo hiểm

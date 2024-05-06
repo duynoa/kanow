@@ -49,7 +49,9 @@ const PaymentCar = ({ }: Props) => {
         numberDay,
         validateDateSubmit,
         dataCalendar,
-        setOpenDialogCalendar
+        openDialogCalendar,
+        setOpenDialogCalendar,
+        setTypeCarCalendar,
     } = useDialogCalendar()
 
     const { setOpenDialogPromotion } = useDialogPromotion()
@@ -82,8 +84,12 @@ const PaymentCar = ({ }: Props) => {
         if (type === 'custom_promotion') {
             setOpenDialogPromotion(true)
         } else if (type === 'calendar') {
-            if (typeTime) {
+            if (typeTime && typeCarDetail == "1") {
                 setOpenDialogCalendar(true)
+                setTypeCarCalendar('calendar_car_autonomous')
+            } else if (typeTime && typeCarDetail == "2") {
+                setOpenDialogCalendar(true)
+                setTypeCarCalendar('calendar_car_driver')
             }
         }
     }
@@ -146,6 +152,8 @@ const PaymentCar = ({ }: Props) => {
     const handleSubmitCar = () => {
         if (dataCalendar.length === 0 && getCookie !== "kanow" && getCookie !== undefined) {
             toastCore.error("Vui lòng chọn lại bộ lịch!")
+        } else if (validateDateSubmit && getCookie !== "kanow" && getCookie !== undefined) {
+            toastCore.error("Xe bận trong khoảng thời gian trên. Vui lòng đặt xe khác hoặc thay đổi lịch trình thích hợp!")
         } else if (getCookie !== "kanow" && getCookie !== undefined) {
             setDataListRequestCarRental(isStateDetailCar)
             setOpenDialogRequestCarRental(true)
@@ -212,7 +220,7 @@ const PaymentCar = ({ }: Props) => {
 
                     <div>
                         {
-                            dateTemp && pathname.startsWith('/detail-car/') ?
+                            dateTemp ?
                                 <Button
                                     id="date"
                                     variant={"outline"}
@@ -265,7 +273,6 @@ const PaymentCar = ({ }: Props) => {
 
                     {
                         validateDateSubmit ?
-                            // validateDateSubmit || statusDate == 2 || statusDate == 3 ?
                             <div className='px-2 mt-4'>
                                 <div className='3xl:text-base text-sm font-normal text-[#FF0000]'>
                                     * Xe bận trong khoảng thời gian trên. Vui lòng đặt xe khác hoặc thay đổi lịch trình thích hợp.
@@ -454,17 +461,13 @@ const PaymentCar = ({ }: Props) => {
                                     <div className='3xl:text-base text-sm text-[#16171B] font-thin'>
                                         Tổng lộ trình
                                     </div>
-                                    {/* <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
-                                        737.7km
-
-                                    </div> */}
                                     <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
                                         {isStateDetailCar?.map?.totalDistance ? FormatDistance(isStateDetailCar?.map?.totalDistance) : 0}
                                     </div>
                                 </div>
 
                                 {/* Tổng số km được đi */}
-                                {/* <div className='flex flex-row items-center justify-between'>
+                                <div className='flex flex-row items-center justify-between'>
                                     <div className='flex flex-row items-center gap-1'>
                                         <div className='3xl:text-base text-sm text-[#16171B] font-thin'>
                                             Số km được đi
@@ -491,9 +494,9 @@ const PaymentCar = ({ }: Props) => {
                                         }
                                     </div>
                                     <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
-                                        812km
+                                        {isStateDetailCar?.dataDetailCar?.price?.total_km_day ? `${isStateDetailCar?.dataDetailCar?.price?.total_km_day} km/ngày` : "0 km"}
                                     </div>
-                                </div> */}
+                                </div>
                                 {
                                     isStateDetailCar?.dataDetailCar?.surcharge_car && isStateDetailCar?.dataDetailCar?.surcharge_car.length > 0 ?
                                         <>

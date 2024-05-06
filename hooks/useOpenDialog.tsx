@@ -46,7 +46,7 @@ interface IOpenDialogCalendar {
     dateEnd: Date | undefined;
     numberDay: number
     openDialogCalendar: boolean;
-    type: string;
+    typeCarCalendar: string;
     statusDate: number;
     validateDateSubmit: boolean;
     dataCalendar: any[];
@@ -55,7 +55,8 @@ interface IOpenDialogCalendar {
     setDateTemp: (dateTemp: DateRange | undefined) => void;
     setDateStart: (dateStart: Date | undefined) => void;
     setDateEnd: (dateEnd: Date | undefined) => void;
-    setOpenDialogCalendar: (key: any, type?: string) => void
+    setOpenDialogCalendar: (key: any) => void
+    setTypeCarCalendar: (key: any, typeCarCalendar?: string) => void
     setNumberDay: (numberDay: number) => void;
     setFlagSubmit: (flagSubmit: boolean) => void;
     setStatusDate: (statusDate: number) => void;
@@ -65,22 +66,23 @@ interface IOpenDialogCalendar {
 
 const defaultDateRange: DateRange = {
     from: setMinutes(setHours(new Date(), 21), 0),
-    to: setMinutes(setHours(addDays(new Date(), 1), 20), 0),
+    to: setMinutes(setHours(addDays(new Date(), 1), 21), 0),
 };
 
 export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     openDialogCalendar: false,
     dateReal: defaultDateRange,
-    dateTemp: undefined,
-    dateStart: undefined,
-    dateEnd: undefined,
-    numberDay: 1,
-    flagSubmit: false,
+    dateTemp: undefined, // trong chi tiết xe có tài
+    dateStart: undefined, // show dateStart ở trang chủ và trang danh sách xe
+    dateEnd: undefined, // show dateEnd ở trang chủ và trang danh sách xe
+    numberDay: 1, // số ngày tính ra được
+    flagSubmit: false, // cờ để submit
     statusDate: 0,
-    type: "",
+    typeCarCalendar: "",
     validateDateSubmit: false,
     dataCalendar: [],
-    setOpenDialogCalendar: (key: any, type?: string) => set((state) => ({ ...state, openDialogCalendar: key, type: type })),
+    setOpenDialogCalendar: (key: any) => set((state) => ({ ...state, openDialogCalendar: key })),
+    setTypeCarCalendar: (typeCarCalendar?: string) => set((state) => ({ ...state, typeCarCalendar: typeCarCalendar })),
     setDateReal: (dateReal: DateRange | undefined) => set((state) => ({ ...state, dateReal })),
     setDateTemp: (dateTemp: DateRange | undefined) => set((state) => ({ ...state, dateTemp })),
     setDateStart: (dateStart: Date | undefined) => set((state) => ({ ...state, dateStart: dateStart })),

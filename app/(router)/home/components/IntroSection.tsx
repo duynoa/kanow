@@ -8,7 +8,7 @@ import { useResize } from '@/hooks/useResize';
 import { useRouter } from 'next/navigation';
 import { FaCalendarAlt, FaPlusCircle } from 'react-icons/fa';
 
-import { format } from 'date-fns';
+import { addDays, format, setHours, setMinutes } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useDialogAddress, useDialogCalendar, useDialogRouteAddress } from '@/hooks/useOpenDialog';
 import { vi } from 'date-fns/locale';
@@ -17,13 +17,14 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { uuidv4 } from '@/lib/uuid';
 import { toastCore } from '@/lib/toast';
 import Cookies from 'js-cookie';
+import { DateRange } from 'react-day-picker';
 
 const IntroSection = () => {
     const MAX_DESTINATIONS = 4;
 
     const { isVisibleMobile } = useResize()
     const router = useRouter()
-    const { dateReal, numberDay, setOpenDialogCalendar } = useDialogCalendar()
+    const { dateReal, setOpenDialogCalendar, setTypeCarCalendar, setDateReal } = useDialogCalendar()
     const {
         coordinates,
         valueAddressPickup,
@@ -34,7 +35,6 @@ const IntroSection = () => {
         setOpenDialogAddress,
         setValueAddressDestination,
     } = useDialogAddress()
-
 
     const { isStateDataHome, queryKeyIsStateDataHome } = useDataHome()
 
@@ -93,6 +93,13 @@ const IntroSection = () => {
     }, [])
 
     const handleTabChange = (item: any) => {
+        const defaultDateRange: DateRange = {
+            from: setMinutes(setHours(new Date(), 21), 0),
+            to: setMinutes(setHours(addDays(new Date(), 1), 21), 0),
+        };
+        
+        setDateReal(defaultDateRange)
+
         queryKeyIsStateDataHome({
             ...isStateDataHome,
             tabSearch: {
@@ -104,8 +111,12 @@ const IntroSection = () => {
     }
 
     const handleOpenDialog = (type: string) => {
-        if (type === 'calendar') {
+        if (type === 'calendarCarAutonomous') {
             setOpenDialogCalendar(true)
+            setTypeCarCalendar("calendar_car_autonomous")
+        } else if (type === 'calendarCarDriver') {
+            setOpenDialogCalendar(true)
+            setTypeCarCalendar("calendar_car_driver")
         }
     };
 
@@ -277,7 +288,7 @@ const IntroSection = () => {
                                                 `3xl:py-4 3xl:px-3 px-3 py-3.5 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs`,
                                                 !dateReal && "text-muted-foreground"
                                             )}
-                                            onClick={() => handleOpenDialog('calendar')}
+                                            onClick={() => handleOpenDialog('calendarCarAutonomous')}
                                         >
                                             <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
                                             {dateReal?.from ? (
@@ -373,7 +384,7 @@ const IntroSection = () => {
                                                 `3xl:py-4 3xl:px-3 px-3 py-3.5 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs`,
                                                 !dateReal && "text-muted-foreground"
                                             )}
-                                            onClick={() => handleOpenDialog('calendar')}
+                                            onClick={() => handleOpenDialog('calendarCarDriver')}
                                         >
                                             <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
                                             {dateReal?.from ? (
