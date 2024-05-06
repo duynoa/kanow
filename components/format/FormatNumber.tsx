@@ -26,7 +26,7 @@ export const FormatNumberToDecimal = (number: number, decimalPlaces: number): st
 export const FormatPointStar = (number: number, decimalPlaces: number): string => {
     const stringNumber = number.toString();
     const decimalIndex = stringNumber.indexOf('.');
-    
+
     if (decimalIndex !== -1 && stringNumber.length - decimalIndex - 1 > decimalPlaces) {
         return stringNumber.slice(0, decimalIndex + decimalPlaces + 1);
     } else {
@@ -75,7 +75,7 @@ export function FormatCurrency(amount: any) {
     return amountString;
 }
 
-export function FormatDistance(distance:any) {
+export function FormatDistance(distance: number) {
     if (distance >= 1000) {
         // Nếu lớn hơn hoặc bằng 1000, chuyển đổi thành km
         return (distance / 1000).toFixed(1) + 'km';

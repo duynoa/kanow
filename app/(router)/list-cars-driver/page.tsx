@@ -38,7 +38,7 @@ import Nodata from '@/components/image/Nodata';
 import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
 
 import Cookies from 'js-cookie';
-import {  useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import useGoogleApi from '@/services/filter/google/google.services';
 
 type Props = {}
@@ -141,7 +141,11 @@ const ListCarsDriver = (props: Props) => {
     const { isVisibleMobile } = useResize()
     const { coordinates } = useDialogAddress()
     const { setOpenDialogLogin } = useDialogLogin()
-    const { dateReal, setOpenDialogCalendar } = useDialogCalendar()
+    const {
+        dateReal,
+        setOpenDialogCalendar,
+        setTypeCarCalendar
+    } = useDialogCalendar()
     const { setOpenDialogFilterListCars } = useDialogFilterListCars()
 
     // api
@@ -406,6 +410,7 @@ const ListCarsDriver = (props: Props) => {
     const handleOpenDialog = (type: string) => {
         if (type === 'calendar') {
             setOpenDialogCalendar(true)
+            setTypeCarCalendar('calendar_car_driver')
         } else if (type === 'type_car_search' || type === 'company_car_search' || type === 'model_car_search' || type === "transmission_search") {
             setOpenDialogFilterListCars(true, type)
         }

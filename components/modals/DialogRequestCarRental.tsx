@@ -79,9 +79,6 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
         if (newWindow) newWindow.opener = null
     }
 
-    console.log('dataListRequestCarRental', dataListRequestCarRental);
-
-
     const onSubmit = async (values: any) => {
         try {
 

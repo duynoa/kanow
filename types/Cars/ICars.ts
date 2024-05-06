@@ -93,7 +93,8 @@ interface IDataDetailCar {
     point_star: number;
     total_trip: number;
     price: {
-        percent_deposit: number;
+        // Tổng số km đi được theo xe
+        total_km_day: number,
         // tiền trước khuyến mãi show ra giao diện
         price_before_promotion: number;
         // tiền sau khuyến mãi show ra giao diện
@@ -114,6 +115,8 @@ interface IDataDetailCar {
         max_money_discount: number;
         // tiền đặt cọc
         price_depoist?: number,
+        // % tiền đặt cọc
+        percent_deposit: number;
         // số ngày
         number_day?: number,
         // thanh toán khi nhận xe
@@ -242,6 +245,8 @@ interface IDetailRentalCar {
         note: string
     },
     price: {
+        // Tổng số km đi được theo xe
+        total_km_day: number,
         // tiền gốc 
         rent_cost_day: number,
         // tiền bảo hiểm

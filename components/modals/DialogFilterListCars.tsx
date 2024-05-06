@@ -812,8 +812,6 @@ const DialogFilterListCars = ({ }: Props) => {
         }
     }, [isStateListCarAutonomous.loading.isLoadingResetFilter, isStateListCarsDriver.loading.isLoadingResetFilter])
 
-    console.log('paramModelCarSearch : ', paramModelCarSearch);
-
     return (
         <Dialog
             modal

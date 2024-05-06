@@ -121,7 +121,7 @@ const ListCarAutonomous = (props: Props) => {
     // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
     const { setOpenDialogLogin } = useDialogLogin()
-    const { dateReal, setOpenDialogCalendar } = useDialogCalendar()
+    const { dateReal, setOpenDialogCalendar, setTypeCarCalendar } = useDialogCalendar()
     const { setOpenDialogFilterListCars } = useDialogFilterListCars()
     const { getCookie } = useCookie()
     const {
@@ -130,10 +130,6 @@ const ListCarAutonomous = (props: Props) => {
         valueAddressDestination,
         indexAddressDestination,
         setType,
-        setValueAddressPickup,
-        setValueAddressDestination,
-        setIndexAddressDestination,
-        setCoordinates,
         setOpenDialogAddress,
     } = useDialogAddress()
 
@@ -400,6 +396,7 @@ const ListCarAutonomous = (props: Props) => {
     const handleOpenDialog = (type: string) => {
         if (type === 'calendar') {
             setOpenDialogCalendar(true)
+            setTypeCarCalendar('calendar_car_autonomous')
         } else if (type === 'type_car_search' || type === 'company_car_search' || type === 'model_car_search' || type === "transmission_search") {
             setOpenDialogFilterListCars(true, type)
         }
