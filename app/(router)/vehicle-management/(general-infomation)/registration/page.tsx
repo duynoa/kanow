@@ -238,7 +238,7 @@ export default function VehicleRegistration(props: Props) {
                                                                                 <MdClear
                                                                                     onClick={() => {
                                                                                         const imagesRegistration = document.getElementById("imagesRegistration") as HTMLInputElement | null;
-                                                                                        if (imagesRegistration) {
+                                                                                        if (imagesRegistration && typeof imagesRegistration !== 'undefined') {
                                                                                             imagesRegistration.value = '';
                                                                                         }
                                                                                         onChange(value?.filter((value: any) => value.name !== e.name))
@@ -329,7 +329,7 @@ export default function VehicleRegistration(props: Props) {
                                                                                 <MdClear
                                                                                     onClick={() => {
                                                                                         const imagesRegistry: any = document.getElementById("imagesRegistry") as HTMLInputElement | null;
-                                                                                        if (imagesRegistry) {
+                                                                                        if (imagesRegistry && typeof imagesRegistry !== 'undefined') {
                                                                                             imagesRegistry.value = '';
                                                                                         }
                                                                                         onChange(value?.filter((value: any) => value !== e))
@@ -420,7 +420,7 @@ export default function VehicleRegistration(props: Props) {
                                                                                 <MdClear
                                                                                     onClick={() => {
                                                                                         const imagesInsurance: any = document.getElementById("imagesInsurance") as HTMLInputElement | null;
-                                                                                        if (imagesInsurance) {
+                                                                                        if (imagesInsurance && typeof imagesInsurance !== 'undefined') {
                                                                                             imagesInsurance.value = '';
                                                                                         }
                                                                                         onChange(value?.filter((value: any) => value !== e))
@@ -519,7 +519,7 @@ export default function VehicleRegistration(props: Props) {
                                                                                     <MdClear
                                                                                         onClick={() => {
                                                                                             const carPhotoBefore: any = document.getElementById("carPhotoBefore") as HTMLInputElement | null;
-                                                                                            if (carPhotoBefore) {
+                                                                                            if (carPhotoBefore && typeof carPhotoBefore !== 'undefined') {
                                                                                                 carPhotoBefore.value = '';
                                                                                             }
                                                                                             onChange(value?.filter((value: any) => value !== e))
@@ -613,7 +613,7 @@ export default function VehicleRegistration(props: Props) {
                                                                                     <MdClear
                                                                                         onClick={() => {
                                                                                             const carPhotoAfter: any = document.getElementById("carPhotoAfter") as HTMLInputElement | null;
-                                                                                            if (carPhotoAfter) {
+                                                                                            if (carPhotoAfter && typeof carPhotoAfter !== 'undefined') {
                                                                                                 carPhotoAfter.value = '';
                                                                                             }
                                                                                             onChange(value?.filter((value: any) => value !== e))
@@ -707,7 +707,7 @@ export default function VehicleRegistration(props: Props) {
                                                                                     <MdClear
                                                                                         onClick={() => {
                                                                                             const carPhotoLeft: any = document.getElementById("carPhotoLeft") as HTMLInputElement | null;
-                                                                                            if (carPhotoLeft) {
+                                                                                            if (carPhotoLeft && typeof carPhotoLeft !== 'undefined') {
                                                                                                 carPhotoLeft.value = '';
                                                                                             }
                                                                                             onChange(value?.filter((value: any) => value !== e))
@@ -797,7 +797,7 @@ export default function VehicleRegistration(props: Props) {
                                                                                     <MdClear
                                                                                         onClick={() => {
                                                                                             const carPhotoRight: any = document.getElementById("carPhotoRight") as HTMLInputElement | null;
-                                                                                            if (carPhotoRight) {
+                                                                                            if (carPhotoRight && typeof carPhotoRight !== 'undefined') {
                                                                                                 carPhotoRight.value = '';
                                                                                             }
                                                                                             onChange(value?.filter((value: any) => value !== e))

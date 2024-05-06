@@ -240,7 +240,7 @@ const VehicleRegistration = ({ }: Props) => {
     useEffect(() => {
         if (isStateProfileMyCar.tab != 4) return
         var element = document.getElementById('infomation');
-        if (element) {
+        if (element && typeof element !== 'undefined') {
             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }, [isStateProfileMyCar.tab])

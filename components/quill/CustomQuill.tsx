@@ -5,6 +5,8 @@ import React, { useMemo } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 // const ReactQuill = () => dynamic(() => import("react-quill"), { ssr: false });
+// const ReactQuill = dynamic(() => import("react-quill").then(mod => mod.default), { ssr: false });
+
 const CustomQuill = (props?: any) => {
     // add in the undo/redo icons
 
@@ -19,6 +21,7 @@ const CustomQuill = (props?: any) => {
     </svg>`;
 
     let quillEditor: any;
+
 
     let fontSizeArr = ['10px', '11px', '12px', '14px', '18px', '24px'];
     let Size = Quill.import('attributors/style/size');

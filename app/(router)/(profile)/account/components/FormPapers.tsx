@@ -228,7 +228,7 @@ const FormPapers = ({ form, isState }: Props) => {
                                                                             return
                                                                         }
                                                                         const inputElement = document.getElementById('picture') as HTMLInputElement | null;
-                                                                        if (inputElement) {
+                                                                        if (inputElement && typeof inputElement !== 'undefined') {
                                                                             inputElement.value = '';
                                                                         }
                                                                         form.reset({ ...form.getValues(), filePapers: null })
