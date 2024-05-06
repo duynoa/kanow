@@ -182,7 +182,7 @@ export default function VehicleImages(props: Props) {
                                                                                             onClick={() => {
                                                                                                 const inputValue = document.getElementById('vehicle-management-picture') as HTMLInputElement | null;
 
-                                                                                                if (inputValue) {
+                                                                                                if (inputValue && typeof inputValue !== 'undefined') {
                                                                                                     inputValue.value = '';
                                                                                                 }
                                                                                                 onChange(value?.filter((value: any) => value !== i))

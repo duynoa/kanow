@@ -1,14 +1,17 @@
 "use client"
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
-import CustomQuill from "@/components/quill/CustomQuill";
+// import CustomQuill from "@/components/quill/CustomQuill";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import apiVehicleSurcharge from "@/services/vehicle-management/surcharge.services";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+const CustomQuill = dynamic(() => import("@/components/quill/CustomQuill"), { ssr: false });
+
 type Props = {}
 
 

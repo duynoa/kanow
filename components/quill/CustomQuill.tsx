@@ -1,9 +1,13 @@
+'use client';
 
+import dynamic from "next/dynamic";
 import React, { useMemo } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
+// const ReactQuill = () => dynamic(() => import("react-quill"), { ssr: false });
+// const ReactQuill = dynamic(() => import("react-quill").then(mod => mod.default), { ssr: false });
 
-export default function CustomQuill(props: any) {
+const CustomQuill = (props?: any) => {
     // add in the undo/redo icons
 
     let icons = Quill.import("ui/icons");
@@ -17,6 +21,7 @@ export default function CustomQuill(props: any) {
     </svg>`;
 
     let quillEditor: any;
+
 
     let fontSizeArr = ['10px', '11px', '12px', '14px', '18px', '24px'];
     let Size = Quill.import('attributors/style/size');
@@ -76,37 +81,40 @@ export default function CustomQuill(props: any) {
     };
 
     return (
-        <ReactQuill
-            ref={(el) => {
-                if (el) quillEditor = el.getEditor();
-            }}
-            formats={[
-                "header",
-                "font",
-                "size",
-                "bold",
-                "italic",
-                "underline",
-                "align",
-                "strike",
-                "script",
-                "blockquote",
-                "background",
-                "list",
-                "bullet",
-                "indent",
-                "link",
-                "image",
-                "color",
-                "code-block"
-            ]}
-            theme="snow"
-            // theme="bubble"
-            placeholder={props.placeholder}
-            // {...props.field}
-            value={props.field.value}
-            onChange={onChange}
-            modules={modules}
-        />
+        <>
+            <ReactQuill
+                ref={(el) => {
+                    if (el) quillEditor = el.getEditor();
+                }}
+                formats={[
+                    "header",
+                    "font",
+                    "size",
+                    "bold",
+                    "italic",
+                    "underline",
+                    "align",
+                    "strike",
+                    "script",
+                    "blockquote",
+                    "background",
+                    "list",
+                    "bullet",
+                    "indent",
+                    "link",
+                    "image",
+                    "color",
+                    "code-block"
+                ]}
+                theme="snow"
+                // theme="bubble"
+                placeholder={props.placeholder}
+                // {...props.field}
+                value={props.field.value}
+                onChange={onChange}
+                modules={modules}
+            />
+        </>
     );
 }
+export default CustomQuill
