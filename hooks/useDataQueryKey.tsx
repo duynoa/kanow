@@ -122,6 +122,7 @@ const isStateDetailCar: IInitialStateDetailCar = {
         point_star: 0,
         total_trip: 0,
         price: {
+            total_km_day: 0,
             percent_deposit: 0,
             price_before_promotion: 0,
             price_after_promotion: 0,
