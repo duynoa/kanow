@@ -23,7 +23,7 @@ export default function SeflRentalPrice(props: Props) {
     const form = useForm({
         defaultValues: {
             //don gia thue mac dinh
-            unitPrice: "390",
+            unitPrice: "",
             discount: {
                 open: false,
                 value: "",
@@ -43,8 +43,10 @@ export default function SeflRentalPrice(props: Props) {
 
     useEffect(() => {
         if (!Array.isArray(data) && data) {
+            console.log(data);
+
             [
-                ["unitPrice", data?.price?.rent_cost],
+                ["unitPrice", data?.car?.rent_cost],
                 ["discount.dataDiscount", dataOther?.other?.percent_discount],
                 ["discount.defaultValue", data?.percent_discount],
                 ["discount.value", data?.percent_discount],
@@ -98,8 +100,8 @@ export default function SeflRentalPrice(props: Props) {
                                 </FormLabel>
                                 <FormControl>
                                     <NumericFormatCore
-                                        className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
-                                                 focus:border-[#2FB9BD] outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                        className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full 
+                                                 focus:border-[#2FB9BD] ${fieldState?.invalid && fieldState?.error ? 'border-[#2FB9BD]' : 'border-[#E6E8EC]'} outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                         placeholder="Nhập đơn giá thuê"
                                         thousandSeparator={','}
                                         {...field}

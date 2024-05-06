@@ -16,7 +16,7 @@ import { Controller, useForm } from "react-hook-form";
 
 type Props = {}
 
-export default function SelftSurcharge(props: Props) {
+export default function TalentedSurcharge(props: Props) {
     const form = useForm({
         defaultValues: {
             arraySurcharge: [
@@ -56,13 +56,13 @@ export default function SelftSurcharge(props: Props) {
         try {
             await new Promise(resolve => setTimeout(resolve, 1500));
 
-            const { data: db } = await apiListSurchargeCar({ type: 1 })
+            const { data: db } = await apiListSurchargeCar({ type: 2 })
 
             queryState({ arraySurcharge: db.data })
 
             if (!Array.isArray(data) && data?.surcharge_car?.length > 0) {
                 const arr = db.data.map((e: any) => {
-                    const Obj = data?.surcharge_car.find((x: any) => x.id === e.id)
+                    const Obj = data?.surcharge_car_talent.find((x: any) => x.id === e.id)
                     return {
                         ...e,
                         value: Obj ? Obj.value : e.value,
@@ -87,12 +87,10 @@ export default function SelftSurcharge(props: Props) {
     }, [data?.surcharge_car])
 
 
-
-
     const onSubmit = async (value: any) => {
         let formData = new FormData()
         formData.append('car_id', idCar)
-        formData.append('type', '1')
+        formData.append('type', '2')
         value.arraySurcharge.forEach((x: any, index: number) => {
             formData.append(`surcharge_car[${index}][id]`, `${x.id}`)
             formData.append(`surcharge_car[${index}][check]`, `${x.open ? 1 : 0}`)
@@ -114,99 +112,6 @@ export default function SelftSurcharge(props: Props) {
             </div>
             <Form {...form}>
                 <div className="grid grid-cols-1 gap-6">
-                    {/* <FormField
-                        control={form.control}
-                        name="limitedKilometers.open"
-                        render={({ field, fieldState }) => {
-                            return (
-                                <FormItem className="">
-                                    <FormControl>
-                                        <div className="flex items-center gap-2">
-                                            <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                Giới hạn số Km
-                                            </FormLabel>
-                                            <Switch
-                                                className="data-[state=checked]:bg-[#2FB9BD] "
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    {field.value &&
-                                        <div className="flex flex-col gap-4">
-                                            <FormField
-                                                control={form.control}
-                                                name="limitedKilometers.maximumKilometers"
-                                                render={({ field }) => {
-                                                    return (
-                                                        <FormItem>
-                                                            <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                                Số Km tối đa trong 1 ngày
-                                                            </FormLabel>
-                                                            <FormControl>
-                                                                <>
-                                                                    <CustomSlider
-                                                                        defaultValue={[400]} max={isState.limitedKilometers && isState.limitedKilometers.maximumKilometers} step={1}
-                                                                        onValueChange={field.onChange}
-                                                                    />
-                                                                </>
-                                                            </FormControl>
-                                                            <div className="flex justify-between">
-                                                                <FormDescription>
-                                                                    Số Km đề xuất: {400}Km
-                                                                </FormDescription>
-                                                                <FormDescription className='font-bold'>
-                                                                    {field.value}Km
-                                                                </FormDescription>
-                                                            </div>
-                                                            {fieldState?.invalid && fieldState?.error && (
-                                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                                            )}
-                                                        </FormItem>
-                                                    );
-                                                }}
-                                            />
-                                            <FormField
-                                                control={form.control}
-                                                name="limitedKilometers.overLimitFee"
-                                                render={({ field }) => {
-                                                    return (
-                                                        <FormItem>
-                                                            <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                                Phí vượt giới hạn (tính mỗi Km)
-                                                            </FormLabel>
-                                                            <FormControl>
-                                                                <>
-                                                                    <CustomSlider
-                                                                        defaultValue={[3]} max={isState.limitedKilometers && isState.limitedKilometers.overLimitFee} step={1}
-                                                                        onValueChange={field.onChange}
-                                                                    />
-                                                                </>
-                                                            </FormControl>
-                                                            <div className="flex justify-between">
-                                                                <FormDescription>
-                                                                    Phí đề xuất: {3}k
-                                                                </FormDescription>
-                                                                <FormDescription className='font-bold'>
-                                                                    {field.value}k
-                                                                </FormDescription>
-                                                            </div>
-                                                            {fieldState?.invalid && fieldState?.error && (
-                                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                                            )}
-                                                        </FormItem>
-                                                    );
-                                                }}
-                                            />
-                                        </div>
-                                    }
-                                    {fieldState?.invalid && fieldState?.error && (
-                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                    )}
-                                </FormItem>
-                            );
-                        }}
-                    /> */}
                     {isState.isLoading ? [...Array(5)].map((x, index) => {
                         return (
                             <div key={index} className="flex flex-col gap-2">

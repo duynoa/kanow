@@ -148,6 +148,12 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
                 },
                 {
                     id: 15,
+                    name: 'Phụ phí',
+                    link: `/vehicle-management/talented-surcharge?id=${id}`,
+                    icon: 'surcharge.png',
+                },
+                {
+                    id: 16,
                     name: 'Thủ tục cho thuê',
                     link: `/vehicle-management/talented-procedure?id=${id}`,
                     icon: 'procedure.png',
@@ -169,7 +175,8 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
 
 
     const fetchData = async () => {
-        const { data: db } = await apiDetailCar(id, { type: 1, car_owner: 1 })
+        const { data: db } = await apiDetailCar(id, { type: -1, car_owner: 1 })
+        // const { data: db } = await apiDetailCar(id, { type: 1, car_owner: 1 })
         const { data: { other, dtFee } } = await apiListOtherAmenitiesCar()
         if (other || dtFee) {
             setDataOther({ other, dtFee })

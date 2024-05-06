@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import apiMyCar from "@/services/profile/listMyCar/listMyCar.services"
 import SkeletonFeature from "../../Skeleton/SkeletonFeature"
 import { useWatch } from "react-hook-form"
+import CustomQuill from "@/components/quill/CustomQuill"
 
 type Props = {
     form: any,
@@ -674,12 +675,18 @@ const StepInfoMation = ({ form, checkValueArray, converArray, isStateChild: { ty
                                             Mô tả
                                         </FormLabel>
                                         <FormControl>
-                                            <Textarea
+                                            {/* <Textarea
                                                 className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
                                  focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                 placeholder="Nhập mô tả"
                                                 {...field}
-                                            />
+                                            /> */}
+                                            <>
+                                                <CustomQuill
+                                                    field={field}
+                                                    placeholder="Nhập mô tả"
+                                                />
+                                            </>
                                         </FormControl>
                                     </FormItem>
                                 );

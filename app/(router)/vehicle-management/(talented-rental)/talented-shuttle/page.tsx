@@ -4,6 +4,7 @@ import { CustomSlider } from "@/components/ui/customSlider";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
+import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,17 +14,14 @@ type Props = {}
 
 
 export default function TalentedShuttle(props: Props) {
-    const param: ReadonlyURLSearchParams = useSearchParams()
-
-    const id: string | null = param.get("id") || ''
 
     const initialState: any = {
         // đưa đón tận nơi trong vòng
-        within: "100",
+        within: "0",
         // phí đưa đón
-        shuttleFee: "100",
+        shuttleFee: "0",
         // miễn phí đưa đón
-        freeShuttle: "100"
+        freeShuttle: "0"
     }
 
     const form = useForm({
@@ -48,20 +46,28 @@ export default function TalentedShuttle(props: Props) {
     const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
 
-    const { dataDetail: { data }, idCar } = useVehicleManage()
+    const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
 
 
     const findValue = form.getValues()
 
+    const { apiUpdateCar } = apiVehicleCommon()
+
 
     useEffect(() => {
-        if (data) {
+        if (!Array.isArray(data) && data) {
             console.log(data, idCar);
+            console.log("dataOther", dataOther);
             [
-                ["shuttle.within", 20],
-                ["shuttle.shuttleFee", 20],
-                ["shuttle.freeShuttle", 20],
+                ["shuttle.within", data?.car_talent?.km_delivery_car],
+                ["shuttle.shuttleFee", data?.car_talent?.fee_km_delivery_car],
+                ["shuttle.freeShuttle", data?.car_talent?.free_km_delivery_car],
             ].map(([name, value]: any) => form.setValue(name, value))
+            queryState({
+                shuttleFee: +dataOther.other?.fee_km_delivery_car,
+                freeShuttle: +dataOther.other?.free_km_delivery_car,
+                within: +dataOther.other?.km_delivery_car,
+            })
             return
         }
         form.reset()
@@ -69,15 +75,21 @@ export default function TalentedShuttle(props: Props) {
 
 
     const onSubmit = async (value: any) => {
-        // const convertArray = Object.entries(value.shuttle).map(([key, value]) => ({ key, value }))
+        // đưa đón tận nơi: km_delivery_car_talent
+        // Phí đưa đón: fee_km_delivery_car_talent
+        // miễn phi đưa đón: free_km_delivery_car_talent
+        let formData = new FormData()
+        formData.append('car_id', idCar)
+        formData.append('km_delivery_car_talent', value.shuttle.within)
+        formData.append('fee_km_delivery_car_talent', value.shuttle.shuttleFee)
+        formData.append('free_km_delivery_car_talent', value.shuttle.freeShuttle)
 
-        // let formData = new FormData();
-
-        // convertArray.map(({ key, value }, index) => {
-        //     formData.append(key, value as string)
-        // })
-
-        toastCore.error('Chức năng đang phát triển')
+        const { data: db } = await apiUpdateCar(formData)
+        if (db.result) {
+            toastCore.success('Lưu thông tin thành công')
+            return
+        }
+        toastCore.error(db.message)
     }
 
 
