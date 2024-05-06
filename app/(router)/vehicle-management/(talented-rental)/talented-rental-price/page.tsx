@@ -1,12 +1,16 @@
 "use client"
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
-import { FormatNumberToThousands } from "@/components/format/FormatNumber";
 import { CustomSlider } from "@/components/ui/customSlider";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
-import { Label } from "@/components/ui/label";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { useVehicleManage } from "@/hooks/useVehicleManage";
+import { NumericFormatCore } from "@/lib/numericFormat";
 import { toastCore } from "@/lib/toast";
+import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 type Props = {}
 
@@ -17,21 +21,44 @@ export default function TalentedRentalPrice(props: Props) {
 
     const form = useForm({
         defaultValues: {
-            // giá cơ bản
-            basicPrice: "1200",
-
-            // phí vượt km
-            overageFee: "7",
-            // phí vượt giờ
-            overtimeFee: '60'
+            //don gia thue mac dinh
+            unitPrice: "",
         }
     })
 
+    const { apiUpdateCar } = apiVehicleCommon()
+
+    const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
+
+
+    const findValue = form.getValues()
+
+
+    useEffect(() => {
+        if (!Array.isArray(data) && data) {
+            console.log(data);
+            [
+                ["unitPrice", data?.car_talent?.rent_cost],
+            ].forEach(([name, value]: any) => {
+                form.setValue(name, value)
+            })
+            return
+        }
+        form.reset()
+    }, [data])
 
     const onSubmit = async (value: any) => {
-        console.log(value)
-        toastCore.error('Chức năng đang phát triển')
+        let formData = new FormData()
+        formData.append('car_id', idCar)
+        formData.append('rent_cost_talent', value.unitPrice)
+        const { data: db } = await apiUpdateCar(formData)
+        if (db.result) {
+            toastCore.success('Lưu thông tin thành công')
+            return
+        }
+        toastCore.error(db.message)
     }
+
 
     return (
         <BackgroundUiVehicle className="flex flex-col gap-4">
@@ -39,97 +66,36 @@ export default function TalentedRentalPrice(props: Props) {
                 <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Giá cho thuê</h1>
             </div>
             <Form  {...form}>
-                <Label className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                    Đơn giá thuê mặc định
-                </Label>
-                <FormDescription>
-                    <h1 className="text-xs text-gray-400">Đơn giá áp dụng cho tất cả các ngày.
-                        Bạn có thể tùy chỉnh giá khác cho các ngày đặc biệt (cuối tuần, lễ, tết,...) trong mục quản lý xe sau khi đăng ký</h1>
-                </FormDescription>
                 <FormField
                     control={form.control}
-                    name="basicPrice"
-                    render={({ field }) => {
-                        return (
-                            <FormItem>
-                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                    Giá cơ bản (Lộ trình 8 tiếng/100km)
-                                </FormLabel>
-                                <FormControl>
-                                    <>
-                                        <CustomSlider
-                                            defaultValue={[1200]} max={10000000} step={1}
-                                            onValueChange={field.onChange}
-                                        />
-                                    </>
-                                </FormControl>
-                                <div className="flex justify-between">
-                                    <FormDescription>
-                                        Giá đề xuất: {1200}K
-                                    </FormDescription>
-                                    <FormDescription className='font-bold'>
-                                        {field.value}K
-                                    </FormDescription>
-                                </div>
-                            </FormItem>
-                        );
+                    name="unitPrice"
+                    rules={{
+                        required: {
+                            value: true,
+                            message: 'Vui lòng nhập đơn giá thuê',
+                        },
                     }}
-                />
-                <FormField
-                    control={form.control}
-                    name="overageFee"
-                    render={({ field }) => {
+                    render={({ field, fieldState }) => {
                         return (
-                            <FormItem>
+                            <FormItem className="space-y-0 flex flex-col gap-2">
                                 <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                    Phí phụ thu vượt Km
+                                    Đơn giá thuê mặc định<span className="text-red-500">*</span>
+                                    <h1 className="text-xs text-gray-400">Đơn giá thuê mặc định được áp dụng nếu ngày đó không có tùy chỉnh khác về giá</h1>
+                                    <h1 className="text-xs text-gray-400">Giá đề xuất 390K</h1>
                                 </FormLabel>
                                 <FormControl>
-                                    <>
-                                        <CustomSlider
-                                            defaultValue={[7]} max={100} step={1}
-                                            onValueChange={field.onChange}
-                                        />
-                                    </>
+                                    <NumericFormatCore
+                                        className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full 
+                                                 focus:border-[#2FB9BD] ${fieldState?.invalid && fieldState?.error ? 'border-[#2FB9BD]' : 'border-[#E6E8EC]'} outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
+                                        placeholder="Nhập đơn giá thuê"
+                                        thousandSeparator={','}
+                                        {...field}
+                                    />
                                 </FormControl>
-                                <div className="flex justify-between">
-                                    <FormDescription>
-                                        Giá đề xuất: {7}K
-                                    </FormDescription>
-                                    <FormDescription className='font-bold'>
-                                        {field.value}K
-                                    </FormDescription>
-                                </div>
-                            </FormItem>
-                        );
-                    }}
-                />
-                <FormField
-                    control={form.control}
-                    name="overtimeFee"
-                    render={({ field }) => {
-                        return (
-                            <FormItem>
-                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                    Phí phụ thu vượt giờ
-                                </FormLabel>
-                                <FormControl>
-                                    <>
-                                        <CustomSlider
-                                            defaultValue={[60]} max={120} step={1}
-                                            onValueChange={field.onChange}
-                                        />
-                                    </>
-                                </FormControl>
-                                <div className="flex justify-between">
-                                    <FormDescription>
-                                        Giá đề xuất: {60}K
 
-                                    </FormDescription>
-                                    <FormDescription className='font-bold'>
-                                        {+field.value > 100 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
-                                    </FormDescription>
-                                </div>
+                                {fieldState?.invalid && fieldState?.error && (
+                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                )}
                             </FormItem>
                         );
                     }}

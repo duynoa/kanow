@@ -1,6 +1,7 @@
 "use client"
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import SelectCombobox from "@/components/combobox/SelectCombobox";
+import CustomQuill from "@/components/quill/CustomQuill";
 import SearchAddress from "@/components/searchAddress/SearchAddress";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Textarea } from "@/components/ui/textarea";
 import { useDialogAddress } from "@/hooks/useOpenDialog";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
@@ -23,6 +23,7 @@ import { ChevronsUpDown } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+
 type Props = {}
 
 export default function VehicleInfomation(props: Props) {
@@ -651,12 +652,12 @@ export default function VehicleInfomation(props: Props) {
                                         Mô tả
                                     </FormLabel>
                                     <FormControl>
-                                        <Textarea
-                                            className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
-                                 focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2 min-h-[120px]  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
-                                            placeholder="Nhập mô tả"
-                                            {...field}
-                                        />
+                                        <>
+                                            <CustomQuill
+                                                field={field}
+                                                placeholder="Nhập mô tả"
+                                            />
+                                        </>
                                     </FormControl>
 
                                     {fieldState?.invalid && fieldState?.error && (

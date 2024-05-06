@@ -52,10 +52,10 @@ export default function SelftVehicleHanding(props: Props) {
     useEffect(() => {
         if (data) {
             console.log(data);
-            form.setValue('vehicleHanding.open', data?.delivery_car == 1)
-            form.setValue('vehicleHanding.deliveryFee', data?.fee_km_delivery_car)
-            form.setValue('vehicleHanding.freeDelivery', data?.free_km_delivery_car)
-            form.setValue('vehicleHanding.intersectionSquare', data?.km_delivery_car)
+            form.setValue('vehicleHanding.open', data?.car?.delivery_car == 1)
+            form.setValue('vehicleHanding.deliveryFee', data?.car?.fee_km_delivery_car)
+            form.setValue('vehicleHanding.freeDelivery', data?.car?.free_km_delivery_car)
+            form.setValue('vehicleHanding.intersectionSquare', data?.car?.km_delivery_car)
             queryState({
                 deliveryFee: +dataOther.other?.fee_km_delivery_car,
                 freeDelivery: +dataOther.other?.free_km_delivery_car,

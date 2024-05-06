@@ -1,9 +1,9 @@
 "use client"
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
+import CustomQuill from "@/components/quill/CustomQuill";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import { uuidv4 } from "@/lib/uuid";
@@ -97,7 +97,7 @@ export default function SeltProcedure(props: Props) {
 
     useEffect(() => {
         if (!Array.isArray(data) && data) {
-            form.setValue("rules", data?.rules)
+            form.setValue("rules", data?.car?.rules)
             form.setValue("mortgage", data?.note_mortgage)
             queryState({ openMortgage: data?.mortgage == 1 })
             return
@@ -197,17 +197,17 @@ export default function SeltProcedure(props: Props) {
                         render={({ field, fieldState }) => {
                             return (
                                 <FormItem className="space-y-3">
-                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">Điều khoản thuê xe <span className="text-red-500 px-1">*</span> </FormLabel>
+                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">Điều khoản thuê xe</FormLabel>
                                     <FormDescription>
                                         <h1 className="text-xs text-gray-400">Thiết lập các yêu cầu khi thuê xe {data?.name}</h1>
                                     </FormDescription>
                                     <FormControl>
-                                        <Textarea
-                                            className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
-                                 focus:border-[#2FB9BD] border-2 min-h-[150px]  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
-                                            placeholder="Nhập các điều khoản"
-                                            {...field}
-                                        />
+                                        <>
+                                            <CustomQuill
+                                                field={field}
+                                                placeholder="Nhập các điều khoản"
+                                            />
+                                        </>
                                     </FormControl>
                                     {fieldState?.invalid && fieldState?.error && (
                                         <FormMessage>{fieldState?.error?.message}</FormMessage>

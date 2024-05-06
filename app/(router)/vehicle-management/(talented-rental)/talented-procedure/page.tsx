@@ -1,12 +1,13 @@
 "use client"
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
+import CustomQuill from "@/components/quill/CustomQuill";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import apiVehicleSurcharge from "@/services/vehicle-management/surcharge.services";
+import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 type Props = {}
 
@@ -17,7 +18,8 @@ export default function TalentedProcedure(props: Props) {
     const form = useForm({
         defaultValues: {
             // điều khoản
-            rules: ""
+            rules: "",
+            desc: ''
         }
     })
 
@@ -35,14 +37,29 @@ export default function TalentedProcedure(props: Props) {
 
     const { dataDetail: { data }, idCar } = useVehicleManage()
 
-    console.log("data", data);
+    const { apiUpdateCar } = apiVehicleCommon()
 
     const findValue = form.getValues()
 
     const onSubmit = async (value: any) => {
-        console.log(value)
-        toastCore.error('Chức năng đang phát triển')
+        let formData = new FormData()
+        formData.append('car_id', idCar)
+        formData.append('rules_talent', value.rules)
+        const { data: db } = await apiUpdateCar(formData)
+        if (db.result) {
+            toastCore.success('Lưu thông tin thành công')
+            return
+        }
+        toastCore.error(db.message)
     }
+
+    useEffect(() => {
+        if (!Array.isArray(data) && data) {
+            form.setValue("rules", data?.car_talent?.rules)
+            return
+        }
+        form.reset()
+    }, [data])
 
     return (
         <BackgroundUiVehicle className="flex flex-col gap-4">
@@ -62,17 +79,23 @@ export default function TalentedProcedure(props: Props) {
                     render={({ field, fieldState }) => {
                         return (
                             <FormItem className="space-y-3">
-                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">Điều khoản thuê xe <span className="text-red-500 px-1">*</span> </FormLabel>
+                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">Điều khoản thuê xe </FormLabel>
                                 <FormDescription className="text-xs text-gray-400">
                                     Thiết lập các yêu cầu khi thuê xe {data?.name}
                                 </FormDescription>
                                 <FormControl>
-                                    <Textarea
+                                    {/* <Textarea
                                         className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
                                       focus:border-[#2FB9BD] border-2 min-h-[150px]  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                         placeholder="Nhập các điều khoản"
                                         {...field}
-                                    />
+                                    /> */}
+                                    <>
+                                        <CustomQuill
+                                            field={field}
+                                            placeholder="Nhập các điều khoản"
+                                        />
+                                    </>
                                 </FormControl>
                                 {fieldState?.invalid && fieldState?.error && (
                                     <FormMessage>{fieldState?.error?.message}</FormMessage>

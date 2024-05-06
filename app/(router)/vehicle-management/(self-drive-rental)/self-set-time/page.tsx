@@ -115,9 +115,9 @@ export default function SelftSetTime(props: Props) {
     useEffect(() => {
         if (!Array.isArray(data) && data) {
             console.log(data, idCar);
-            form.setValue("bookCarQuickly.open", data?.book_car_flash == 1)
-            form.setValue("bookCarQuickly.wordLimit", data?.from_book_car_flash)
-            form.setValue("bookCarQuickly.until", data?.to_book_car_flash)
+            form.setValue("bookCarQuickly.open", data?.car?.book_car_flash == 1)
+            form.setValue("bookCarQuickly.wordLimit", data?.car?.from_book_car_flash)
+            form.setValue("bookCarQuickly.until", data?.car?.to_book_car_flash)
             form.setValue("deliver.from", data?.hour_receive_car[0]?.hour_start)
             form.setValue("deliver.to", data?.hour_receive_car[0]?.hour_end)
             form.setValue("receive.from", data?.hour_back_car[0]?.hour_start)
