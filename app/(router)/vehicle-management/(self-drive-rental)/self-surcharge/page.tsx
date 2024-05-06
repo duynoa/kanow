@@ -60,9 +60,9 @@ export default function SelftSurcharge(props: Props) {
 
             queryState({ arraySurcharge: db.data })
 
-            if (!Array.isArray(data) && data?.surcharge_car?.length > 0) {
+            if (!Array.isArray(data) && data?.surcharge_car_new?.length > 0) {
                 const arr = db.data.map((e: any) => {
-                    const Obj = data?.surcharge_car.find((x: any) => x.id === e.id)
+                    const Obj = data?.surcharge_car_new.find((x: any) => x.id === e.id)
                     return {
                         ...e,
                         value: Obj ? Obj.value : e.value,
