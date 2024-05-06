@@ -1,3 +1,4 @@
+'use client'
 import Image from "next/image"
 import { debounce } from "lodash"
 import { useEffect, useState } from "react"
@@ -14,7 +15,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import apiMyCar from "@/services/profile/listMyCar/listMyCar.services"
 import SkeletonFeature from "../../Skeleton/SkeletonFeature"
 import { useWatch } from "react-hook-form"
+import dynamic from "next/dynamic"
 import CustomQuill from "@/components/quill/CustomQuill"
+// const CustomQuill = () => dynamic(() => import("@/components/quill/CustomQuill"), { ssr: false });
+
 
 type Props = {
     form: any,
@@ -668,7 +672,7 @@ const StepInfoMation = ({ form, checkValueArray, converArray, isStateChild: { ty
                         <FormField
                             control={form.control}
                             name="stepInformation.describe"
-                            render={({ field, fieldState }) => {
+                            render={({ field, fieldState }: any) => {
                                 return (
                                     <FormItem>
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
