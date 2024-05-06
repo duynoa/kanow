@@ -237,13 +237,13 @@ const VehicleRegistration = ({ }: Props) => {
         }
     };
 
-    useEffect(() => {
-        if (isStateProfileMyCar.tab != 4) return
-        var element = document.getElementById('infomation');
-        if (element && typeof element !== 'undefined') {
-            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }, [isStateProfileMyCar.tab])
+    // useEffect(() => {
+    //     if (isStateProfileMyCar.tab != 4) return
+    //     var element = document.getElementById('infomation');
+    //     if (element && typeof element !== 'undefined') {
+    //         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    //     }
+    // }, [isStateProfileMyCar.tab])
 
     const shareProps: any = { isStateChild, queryStateChild, form, checkValueArray, converArray }
 
