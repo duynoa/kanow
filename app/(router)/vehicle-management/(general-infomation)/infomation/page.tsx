@@ -1,7 +1,7 @@
 "use client"
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import SelectCombobox from "@/components/combobox/SelectCombobox";
-import CustomQuill from "@/components/quill/CustomQuill";
+// import CustomQuill from "@/components/quill/CustomQuill";
 import SearchAddress from "@/components/searchAddress/SearchAddress";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -20,9 +20,11 @@ import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle
 import { IStateVehicleInfomation } from "@/types/VehicleManagement/GeneralInfomation/IInfomation";
 import { debounce } from "lodash";
 import { ChevronsUpDown } from "lucide-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+const CustomQuill = dynamic(() => import("@/components/quill/CustomQuill"), { ssr: false });
 
 type Props = {}
 

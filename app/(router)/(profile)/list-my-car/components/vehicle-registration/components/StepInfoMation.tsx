@@ -16,8 +16,8 @@ import apiMyCar from "@/services/profile/listMyCar/listMyCar.services"
 import SkeletonFeature from "../../Skeleton/SkeletonFeature"
 import { useWatch } from "react-hook-form"
 import dynamic from "next/dynamic"
-import CustomQuill from "@/components/quill/CustomQuill"
-// const CustomQuill = () => dynamic(() => import("@/components/quill/CustomQuill"), { ssr: false });
+// import CustomQuill from "@/components/quill/CustomQuill"
+const CustomQuill = dynamic(() => import("@/components/quill/CustomQuill"), { ssr: false });
 
 
 type Props = {
