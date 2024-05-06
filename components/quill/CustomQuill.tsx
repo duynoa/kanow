@@ -1,11 +1,16 @@
+'use client';
 
+import dynamic from "next/dynamic";
 import React, { useMemo } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-export default function CustomQuill(props: any) {
+const CustomQuill = (props: any) => {
     // add in the undo/redo icons
-
+    // const ReactQuill = useMemo(
+    //     () => dynamic(() => import("react-quill"), { ssr: false }),
+    //     []
+    // );
     let icons = Quill.import("ui/icons");
     icons["undo"] = `<svg viewbox="0 0 18 18">
     <polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10"></polygon>
@@ -110,3 +115,4 @@ export default function CustomQuill(props: any) {
         />
     );
 }
+export default CustomQuill
