@@ -75,7 +75,7 @@ const MyTrips = (props: Props) => {
     }
 
     useEffect(() => {
-        handleFetchListCars(isState.page)
+        // handleFetchListCars(isState.page)
         setValueFilter(-1)
     }, [isState.favourite])
 
@@ -134,7 +134,7 @@ const MyTrips = (props: Props) => {
                                 return
                             }
                             queryState({
-                                listCardCars: isState.dataMyTrips,
+                                dataMyTrips: isState.dataMyTrips,
                                 next: data?.links?.next,
                                 page: data?.links?.next !== null ? isState.page + 1 : isState.page,
                                 isLoadingScroll: false,
@@ -165,8 +165,10 @@ const MyTrips = (props: Props) => {
 
 
     useEffect(() => {
-        handleFetchListCars(1)
-    }, [valueFilter])
+        if (valueFilter) {
+            handleFetchListCars(1)
+        }
+    }, [valueFilter, isState.favourite])
 
     return (
         <BackgroundUiProfile className='space-y-4 '>

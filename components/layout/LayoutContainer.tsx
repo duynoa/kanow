@@ -1,7 +1,7 @@
 'use client'
 
 import Aos from 'aos';
-import React, { useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
 
 import Header from './Header';
 import Footer from './Footer';
@@ -518,7 +518,9 @@ const LayoutContainer = ({
             <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
                 <Header />
                 <main className='overflow-hidden w-full h-full'>
-                    {children}
+                    <Suspense>
+                        {children}
+                    </Suspense>
                     <ButtonToTop />
                     <AlertDialogLogout />
                     <DialogLogin />

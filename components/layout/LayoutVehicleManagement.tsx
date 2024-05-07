@@ -3,7 +3,7 @@
 import { useAuth } from '@/hooks/useAuth'
 import Link from 'next/link'
 import { ReadonlyURLSearchParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 
 
 import { useResize } from '@/hooks/useResize'
@@ -177,9 +177,9 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
     const fetchData = async () => {
         const { data: db } = await apiDetailCar(id, { type: -1, car_owner: 1 })
         // const { data: db } = await apiDetailCar(id, { type: 1, car_owner: 1 })
-        const { data: { other, dtFee } } = await apiListOtherAmenitiesCar()
-        if (other || dtFee) {
-            setDataOther({ other, dtFee })
+        const { data: { other, dtFee, other_talent } } = await apiListOtherAmenitiesCar()
+        if (other || dtFee || other_talent) {
+            setDataOther({ other, dtFee, other_talent })
         }
         if (db) {
             form.setValue("openSelf", db?.data.type == 1)
@@ -380,7 +380,9 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
                         }
                     </div>
                     <div className='xl:col-span-10 lg:col-span-9 col-span-12 w-full h-auto'>
-                        {children}
+                        <Suspense>
+                            {children}
+                        </Suspense>
                     </div>
                 </div>
             </div>

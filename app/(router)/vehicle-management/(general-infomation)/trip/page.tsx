@@ -36,7 +36,7 @@ export default function VehicleTripManagement(props: Props) {
         isLoadingCar: false,
         dataTrips: [],
         page: 1,
-        limit: 4,
+        limit: 3,
         next: "",
         isLoadingScroll: false,
     }
@@ -103,7 +103,6 @@ export default function VehicleTripManagement(props: Props) {
         }
     }, [informationUser?.id])
 
-
     useEffect(() => {
         const handleWheel = (event: any) => {
             const scrollContainer = scrollContainerRef.current;
@@ -118,16 +117,17 @@ export default function VehicleTripManagement(props: Props) {
             const threshold = containerHeight * 0.1; // 10% của kích thước containe
 
             if (scrollContainerBottom <= lastContainerBottom + threshold) {
-                if (isState.dataMyTrips && isState.next !== null) {
+                if (isState.dataTrips && isState.next !== null) {
                     queryState({ isLoadingScroll: true });
                     const fetchDataListCar = async () => {
                         try {
                             await new Promise(resolve => setTimeout(resolve, 1500));
 
-                            const { data: { db } } = await apiListTrips(isState.page, isState.limit, { status_search: valueFilter, customer_search: data?.customer?.id })
+                            const { data: db } = await apiListTrips(isState.page, isState.limit, { status_search: valueFilter, customer_search: data?.customer?.id })
 
                             if (db && db?.links && db?.data && db?.base) {
                                 const arr = convertArray(db.data)
+
                                 if (!isState.isLoadingScroll) {
                                     queryState({
                                         dataTrips: [...(isState.dataTrips || []), ...arr],
@@ -243,7 +243,7 @@ export default function VehicleTripManagement(props: Props) {
                                                 <h1 className="text-center uppercase text-[#2FB9BD] font-[700] lg:text-base md:text-sm text-xs">{e.user?.name}</h1>
                                             </div>
                                         </div>
-                                        <div className="flex md:flex-row items-center justify-between md:px-8 px-4 md:pt-4 pt-2 md:pb-8 pb-4 ">
+                                        <div className="flex md:flex-row items-center justify-between md:px-8 px-4 py-4">
                                             <div className="md:w-[75%] w-full">
                                                 <div
                                                     style={{
@@ -253,8 +253,9 @@ export default function VehicleTripManagement(props: Props) {
                                                 >{e.status.name}
                                                 </div>
                                             </div>
-                                            <h1 className='text-[#3E424E] font-medium lg:text-base text-sm leading-5 normal-case md:w-[25%] w-full text-center'>
-                                                {moment(e.createdAt).fromNow()}
+                                            <h1 className='text-[#3E424E] font-medium lg:text-base text-sm leading-5  md:w-[25%] w-full text-center'>
+                                                <span className="capitalize px-1">{moment(e.time).fromNow().split(' ').slice(0, 1).join(' ')}</span>
+                                                {moment(e.time).fromNow().split(' ').slice(1).join(' ')}
                                             </h1>
                                         </div>
                                     </div>

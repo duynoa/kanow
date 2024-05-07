@@ -13,10 +13,10 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <Suspense>
-            <LayoutVehicleManagement>
+        <LayoutVehicleManagement>
+            <Suspense>
                 {children}
-            </LayoutVehicleManagement>
-        </Suspense>
+            </Suspense>
+        </LayoutVehicleManagement>
     )
 }

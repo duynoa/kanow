@@ -22,7 +22,7 @@ export default function SelftSurcharge(props: Props) {
             arraySurcharge: [
                 {
                     open: true,
-                    value: 0
+                    value: 0,
                 }
             ]
         }
@@ -114,99 +114,6 @@ export default function SelftSurcharge(props: Props) {
             </div>
             <Form {...form}>
                 <div className="grid grid-cols-1 gap-6">
-                    {/* <FormField
-                        control={form.control}
-                        name="limitedKilometers.open"
-                        render={({ field, fieldState }) => {
-                            return (
-                                <FormItem className="">
-                                    <FormControl>
-                                        <div className="flex items-center gap-2">
-                                            <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                Giới hạn số Km
-                                            </FormLabel>
-                                            <Switch
-                                                className="data-[state=checked]:bg-[#2FB9BD] "
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    {field.value &&
-                                        <div className="flex flex-col gap-4">
-                                            <FormField
-                                                control={form.control}
-                                                name="limitedKilometers.maximumKilometers"
-                                                render={({ field }) => {
-                                                    return (
-                                                        <FormItem>
-                                                            <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                                Số Km tối đa trong 1 ngày
-                                                            </FormLabel>
-                                                            <FormControl>
-                                                                <>
-                                                                    <CustomSlider
-                                                                        defaultValue={[400]} max={isState.limitedKilometers && isState.limitedKilometers.maximumKilometers} step={1}
-                                                                        onValueChange={field.onChange}
-                                                                    />
-                                                                </>
-                                                            </FormControl>
-                                                            <div className="flex justify-between">
-                                                                <FormDescription>
-                                                                    Số Km đề xuất: {400}Km
-                                                                </FormDescription>
-                                                                <FormDescription className='font-bold'>
-                                                                    {field.value}Km
-                                                                </FormDescription>
-                                                            </div>
-                                                            {fieldState?.invalid && fieldState?.error && (
-                                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                                            )}
-                                                        </FormItem>
-                                                    );
-                                                }}
-                                            />
-                                            <FormField
-                                                control={form.control}
-                                                name="limitedKilometers.overLimitFee"
-                                                render={({ field }) => {
-                                                    return (
-                                                        <FormItem>
-                                                            <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                                Phí vượt giới hạn (tính mỗi Km)
-                                                            </FormLabel>
-                                                            <FormControl>
-                                                                <>
-                                                                    <CustomSlider
-                                                                        defaultValue={[3]} max={isState.limitedKilometers && isState.limitedKilometers.overLimitFee} step={1}
-                                                                        onValueChange={field.onChange}
-                                                                    />
-                                                                </>
-                                                            </FormControl>
-                                                            <div className="flex justify-between">
-                                                                <FormDescription>
-                                                                    Phí đề xuất: {3}k
-                                                                </FormDescription>
-                                                                <FormDescription className='font-bold'>
-                                                                    {field.value}k
-                                                                </FormDescription>
-                                                            </div>
-                                                            {fieldState?.invalid && fieldState?.error && (
-                                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                                            )}
-                                                        </FormItem>
-                                                    );
-                                                }}
-                                            />
-                                        </div>
-                                    }
-                                    {fieldState?.invalid && fieldState?.error && (
-                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                    )}
-                                </FormItem>
-                            );
-                        }}
-                    /> */}
                     {isState.isLoading ? [...Array(5)].map((x, index) => {
                         return (
                             <div key={index} className="flex flex-col gap-2">
@@ -262,7 +169,7 @@ export default function SelftSurcharge(props: Props) {
                                                                         </FormControl>
                                                                         <div className="flex justify-between">
                                                                             <FormDescription>
-                                                                                Phí đề xuất: {100}K
+                                                                                Phí đề xuất: {item?.propose_fee > 100 ? FormatNumberToThousands(item?.propose_fee) : `${item?.propose_fee ?? 0}K`}
                                                                             </FormDescription>
                                                                             <FormDescription className='font-bold'>
                                                                                 {field.value > 100 ? FormatNumberToThousands(field.value) : `${field.value ?? 0}K`}

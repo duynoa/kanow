@@ -28,7 +28,8 @@ export default function SeflRentalPrice(props: Props) {
                 open: false,
                 value: "",
                 dataDiscount: 0,
-                defaultValue: 0
+                defaultValue: 0,
+                propose: ""
             }
         }
     })
@@ -43,14 +44,13 @@ export default function SeflRentalPrice(props: Props) {
 
     useEffect(() => {
         if (!Array.isArray(data) && data) {
-            console.log(data);
-
             [
                 ["unitPrice", data?.car?.rent_cost],
-                ["discount.dataDiscount", dataOther?.other?.percent_discount],
+                ["discount.dataDiscount", 100],
                 ["discount.defaultValue", data?.percent_discount],
                 ["discount.value", data?.percent_discount],
                 ["discount.open", data?.discount == 1],
+                ['discount.propose', dataOther?.other?.percent_discount]
             ].forEach(([name, value]: any) => {
                 form.setValue(name, value)
             })
@@ -153,7 +153,7 @@ export default function SeflRentalPrice(props: Props) {
                                                     </FormControl>
                                                     <div className="flex justify-between">
                                                         <FormDescription>
-                                                            Giảm đề xuất {findValue.discount.defaultValue}%
+                                                            Giảm đề xuất {findValue.discount.propose}%
                                                         </FormDescription>
                                                         <FormDescription className='font-bold'>
                                                             {field.value}%

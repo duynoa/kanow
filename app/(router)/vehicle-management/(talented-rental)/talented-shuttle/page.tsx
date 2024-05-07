@@ -1,5 +1,6 @@
 "use client"
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
+import { FormatNumberToThousands } from "@/components/format/FormatNumber";
 import { CustomSlider } from "@/components/ui/customSlider";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
@@ -17,11 +18,23 @@ export default function TalentedShuttle(props: Props) {
 
     const initialState: any = {
         // đưa đón tận nơi trong vòng
-        within: "0",
+        within: {
+            max: 500,
+            min: 0,
+            propose: 0
+        },
         // phí đưa đón
-        shuttleFee: "0",
+        shuttleFee: {
+            max: 5000000,
+            min: 0,
+            propose: 0
+        },
         // miễn phí đưa đón
-        freeShuttle: "0"
+        freeShuttle: {
+            max: 500,
+            min: 0,
+            propose: 0
+        }
     }
 
     const form = useForm({
@@ -64,9 +77,18 @@ export default function TalentedShuttle(props: Props) {
                 ["shuttle.freeShuttle", data?.car_talent?.free_km_delivery_car],
             ].map(([name, value]: any) => form.setValue(name, value))
             queryState({
-                shuttleFee: +dataOther.other?.fee_km_delivery_car,
-                freeShuttle: +dataOther.other?.free_km_delivery_car,
-                within: +dataOther.other?.km_delivery_car,
+                shuttleFee: {
+                    ...isState.shuttleFee,
+                    propose: +dataOther.other_talent?.fee_km_delivery_car
+                },
+                freeShuttle: {
+                    ...isState.freeShuttle,
+                    propose: +dataOther.other_talent?.free_km_delivery_car
+                },
+                within: {
+                    ...isState.within,
+                    propose: +dataOther.other_talent?.km_delivery_car
+                },
             })
             return
         }
@@ -111,14 +133,14 @@ export default function TalentedShuttle(props: Props) {
                                 <FormControl>
                                     <>
                                         <CustomSlider
-                                            defaultValue={[20]} max={isState.within && isState.within} step={1}
+                                            defaultValue={[+field.value]} min={isState.within.min} max={isState.within.max} step={1}
                                             onValueChange={field.onChange}
                                         />
                                     </>
                                 </FormControl>
                                 <div className="flex justify-between">
                                     <FormDescription>
-                                        Quãng đường đề xuất: {20}Km
+                                        Quãng đường đề xuất: {isState.within.propose}Km
                                     </FormDescription>
                                     <FormDescription className='font-bold'>
                                         {field.value}Km
@@ -143,17 +165,17 @@ export default function TalentedShuttle(props: Props) {
                                 <FormControl>
                                     <>
                                         <CustomSlider
-                                            defaultValue={[20]} max={isState.shuttleFee && isState.shuttleFee} step={1}
+                                            defaultValue={[+field.value]} max={isState.shuttleFee.max} min={isState.shuttleFee.min} step={1}
                                             onValueChange={field.onChange}
                                         />
                                     </>
                                 </FormControl>
                                 <div className="flex justify-between">
                                     <FormDescription>
-                                        Phí đề xuất: {20}K
+                                        Phí đề xuất: {isState.shuttleFee.propose > 100 ? FormatNumberToThousands(isState.shuttleFee.propose) : `${isState.shuttleFee.propose ?? 0}K`}
                                     </FormDescription>
                                     <FormDescription className='font-bold'>
-                                        {field.value}K
+                                        {+field.value > 1000 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
                                     </FormDescription>
                                 </div>
                                 {fieldState?.invalid && fieldState?.error && (
@@ -175,14 +197,14 @@ export default function TalentedShuttle(props: Props) {
                                 <FormControl>
                                     <>
                                         <CustomSlider
-                                            defaultValue={[20]} max={isState.freeShuttle && isState.freeShuttle} step={1}
+                                            defaultValue={[+field.value]} max={isState.freeShuttle.max} min={isState.freeShuttle.min} step={1}
                                             onValueChange={field.onChange}
                                         />
                                     </>
                                 </FormControl>
                                 <div className="flex justify-between">
                                     <FormDescription>
-                                        Quãng đường đề xuất: {20}Km
+                                        Quãng đường đề xuất: {isState.freeShuttle.propose}Km
                                     </FormDescription>
                                     <FormDescription className='font-bold'>
                                         {field.value}Km

@@ -20,9 +20,21 @@ export default function SelftVehicleHanding(props: Props) {
     const id: string | null = param.get("id") || ''
 
     const initialState: StateSelftVehicleHanding = {
-        intersectionSquare: 0,
-        deliveryFee: 0,
-        freeDelivery: 0,
+        intersectionSquare: {
+            max: 500,
+            min: 0,
+            propose: 0
+        },
+        deliveryFee: {
+            max: 5000000,
+            min: 0,
+            propose: 0
+        },
+        freeDelivery: {
+            max: 500,
+            min: 0,
+            propose: 0
+        },
     }
 
     const { apiUpdateCar } = apiVehicleCommon()
@@ -57,9 +69,18 @@ export default function SelftVehicleHanding(props: Props) {
             form.setValue('vehicleHanding.freeDelivery', data?.car?.free_km_delivery_car)
             form.setValue('vehicleHanding.intersectionSquare', data?.car?.km_delivery_car)
             queryState({
-                deliveryFee: +dataOther.other?.fee_km_delivery_car,
-                freeDelivery: +dataOther.other?.free_km_delivery_car,
-                intersectionSquare: +dataOther.other?.km_delivery_car,
+                deliveryFee: {
+                    ...isState.deliveryFee,
+                    propose: +dataOther.other?.fee_km_delivery_car
+                },
+                freeDelivery: {
+                    ...isState.freeDelivery,
+                    propose: +dataOther.other?.free_km_delivery_car
+                },
+                intersectionSquare: {
+                    ...isState.intersectionSquare,
+                    propose: +dataOther.other?.km_delivery_car
+                },
             })
             return
         }
@@ -122,14 +143,14 @@ export default function SelftVehicleHanding(props: Props) {
                                                         <FormControl>
                                                             <>
                                                                 <CustomSlider
-                                                                    defaultValue={[+field.value]} max={isState.intersectionSquare} step={1}
+                                                                    defaultValue={[+field.value]} min={isState.intersectionSquare.min} max={isState.intersectionSquare.max} step={1}
                                                                     onValueChange={field.onChange}
                                                                 />
                                                             </>
                                                         </FormControl>
                                                         <div className="flex justify-between">
                                                             <FormDescription>
-                                                                Quãng đường đề xuất: {10}Km
+                                                                Quãng đường đề xuất: {isState.intersectionSquare.propose}Km
                                                             </FormDescription>
                                                             <FormDescription className='font-bold'>
                                                                 {field.value}Km
@@ -154,17 +175,17 @@ export default function SelftVehicleHanding(props: Props) {
                                                         <FormControl>
                                                             <>
                                                                 <CustomSlider
-                                                                    defaultValue={[+field.value]} max={100} step={1}
+                                                                    defaultValue={[+field.value]} min={isState.deliveryFee.min} max={isState.deliveryFee.max} step={1}
                                                                     onValueChange={field.onChange}
                                                                 />
                                                             </>
                                                         </FormControl>
                                                         <div className="flex justify-between">
                                                             <FormDescription>
-                                                                Phí đề xuất: {10}K
+                                                                Phí đề xuất: {isState.deliveryFee.propose > 100 ? FormatNumberToThousands(isState.deliveryFee.propose) : `${isState.deliveryFee.propose ?? 0}K`}
                                                             </FormDescription>
                                                             <FormDescription className='font-bold'>
-                                                                {+field.value > 100 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
+                                                                {+field.value > 1000 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
                                                             </FormDescription>
                                                         </div>
                                                         {fieldState?.invalid && fieldState?.error && (
@@ -186,14 +207,14 @@ export default function SelftVehicleHanding(props: Props) {
                                                         <FormControl>
                                                             <>
                                                                 <CustomSlider
-                                                                    defaultValue={[+field.value]} max={100} step={1}
+                                                                    defaultValue={[+field.value]} max={isState.freeDelivery.max} min={isState.freeDelivery.min} step={1}
                                                                     onValueChange={field.onChange}
                                                                 />
                                                             </>
                                                         </FormControl>
                                                         <div className="flex justify-between">
                                                             <FormDescription>
-                                                                Quãng đường đề xuất {10}Km
+                                                                Quãng đường đề xuất {isState.freeDelivery.propose}Km
                                                             </FormDescription>
                                                             <FormDescription className='font-bold'>
                                                                 {field.value}Km
