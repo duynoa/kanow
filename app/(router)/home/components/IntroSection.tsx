@@ -94,8 +94,8 @@ const IntroSection = () => {
 
     const handleTabChange = (item: any) => {
         const defaultDateRange: DateRange = {
-            from: setMinutes(setHours(new Date(), 21), 0),
-            to: setMinutes(setHours(addDays(new Date(), 1), 21), 0),
+            from: setMinutes(setHours(new Date(), 8), 0),
+            to: setMinutes(setHours(addDays(new Date(), 1), 8), 0),
         };
         
         setDateReal(defaultDateRange)

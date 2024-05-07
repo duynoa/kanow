@@ -2,8 +2,13 @@ import { AxiosRequestConfig } from "axios";
 
 import axios from "../../utils/axios-customize";
 
-const getInfoDetailCarTransaction = (id: any) => {
-    return axios.get(`/transaction/getDetail/${id}`);
+const getInfoDetailCarTransaction = (id: any, param: any) => {
+    let config: AxiosRequestConfig = {
+        params: {
+            ...param, // Nối các tham số trong param object
+        },
+    };
+    return axios.get(`/transaction/getDetail/${id}`, config);
 };
 
 const getListStatusTransaction = () => {

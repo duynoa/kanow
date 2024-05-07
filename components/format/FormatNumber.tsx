@@ -84,3 +84,13 @@ export function FormatDistance(distance: number) {
         return Math.round(distance) + 'm';
     }
 }
+
+export function FormatDistanceFullKm(distance: number) {
+    if (distance >= 1000) {
+        // Nếu lớn hơn hoặc bằng 1000, chuyển đổi thành km và giữ 1 chữ số thập phân
+        return (distance / 1000).toFixed(1) + 'km';
+    } else {
+        // Nếu bé hơn 1000, chuyển đổi thành km và giữ 3 chữ số thập phân
+        return (distance / 1000).toFixed(3) + 'km';
+    }
+}

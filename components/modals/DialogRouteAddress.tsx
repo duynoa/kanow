@@ -109,12 +109,16 @@ const DialogRouteAddress = memo(({ }: Props) => {
                 try {
                     const dataParams = {
                         key: process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D,
+                        // origin: `${coordinates.lat},${coordinates.lng}`,
+                        // destination: `${coordinates.latTo},${coordinates.lngTo}`,
+                        // mode: "car",
+                        // language: "vi",
+                        // weighting: 1,
+                        // optimize: false,
                         origin: `${coordinates.lat},${coordinates.lng}`,
-                        destination: `${coordinates.latTo},${coordinates.lngTo}`,
+                        destination: `${coordinates.lat},${coordinates.lng}`,
+                        points: `${coordinates.latTo},${coordinates.lngTo}`,
                         mode: "car",
-                        language: "vi",
-                        weighting: 1,
-                        optimize: false,
                     }
 
                     const { data } = await apiRouteMatrixAddress(dataParams)

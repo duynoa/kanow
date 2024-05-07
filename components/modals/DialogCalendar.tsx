@@ -56,252 +56,270 @@ export function DialogCalendar({ }: Props) {
 
     const typeCarDetail = searchParams.get('type')
 
-    const dataTimeCustom = [
-        {
-            id: uuidv4(),
-            time: '00:00',
-            value: '00:00'
-        },
-        {
-            id: uuidv4(),
-            time: '00:30',
-            value: '00:30'
-        },
-        {
-            id: uuidv4(),
-            time: '01:00',
-            value: '01:00'
-        },
-        {
-            id: uuidv4(),
-            time: '01:30',
-            value: '01:30'
-        },
-        {
-            id: uuidv4(),
-            time: '02:00',
-            value: '02:00'
-        },
-        {
-            id: uuidv4(),
-            time: '02:30',
-            value: '02:30'
-        },
-        {
-            id: uuidv4(),
-            time: '03:00',
-            value: '03:00'
-        },
-        {
-            id: uuidv4(),
-            time: '03:30',
-            value: '03:30'
-        },
-        {
-            id: uuidv4(),
-            time: '04:00',
-            value: '04:00'
-        },
-        {
-            id: uuidv4(),
-            time: '04:30',
-            value: '04:30'
-        },
-        {
-            id: uuidv4(),
-            time: '05:00',
-            value: '05:00'
-        },
-        {
-            id: uuidv4(),
-            time: '05:30',
-            value: '05:30'
-        },
-        {
-            id: uuidv4(),
-            time: '06:00',
-            value: '06:00'
-        },
-        {
-            id: uuidv4(),
-            time: '06:30',
-            value: '06:30'
-        },
-        {
-            id: uuidv4(),
-            time: '07:00',
-            value: '07:00'
-        },
-        {
-            id: uuidv4(),
-            time: '07:30',
-            value: '07:30'
-        },
-        {
-            id: uuidv4(),
-            time: '08:00',
-            value: '08:00'
-        },
-        {
-            id: uuidv4(),
-            time: '08:30',
-            value: '08:30'
-        },
-        {
-            id: uuidv4(),
-            time: '09:00',
-            value: '09:00'
-        },
-        {
-            id: uuidv4(),
-            time: '09:30',
-            value: '09:30'
-        },
-        {
-            id: uuidv4(),
-            time: '10:00',
-            value: '10:00'
-        },
-        {
-            id: uuidv4(),
-            time: '10:30',
-            value: '10:30'
-        },
-        {
-            id: uuidv4(),
-            time: '11:00',
-            value: '11:00'
-        },
-        {
-            id: uuidv4(),
-            time: '11:30',
-            value: '11:30'
-        },
-        {
-            id: uuidv4(),
-            time: '12:00',
-            value: '12:00'
-        },
-        {
-            id: uuidv4(),
-            time: '12:30',
-            value: '12:30'
-        },
-        {
-            id: uuidv4(),
-            time: '13:00',
-            value: '13:00'
-        },
-        {
-            id: uuidv4(),
-            time: '13:30',
-            value: '13:30'
-        },
-        {
-            id: uuidv4(),
-            time: '14:00',
-            value: '14:00'
-        },
-        {
-            id: uuidv4(),
-            time: '14:30',
-            value: '14:30'
-        },
-        {
-            id: uuidv4(),
-            time: '15:00',
-            value: '15:00'
-        },
-        {
-            id: uuidv4(),
-            time: '15:30',
-            value: '15:30'
-        },
-        {
-            id: uuidv4(),
-            time: '16:00',
-            value: '16:00'
-        },
-        {
-            id: uuidv4(),
-            time: '16:30',
-            value: '16:30'
-        },
-        {
-            id: uuidv4(),
-            time: '17:00',
-            value: '17:00'
-        },
-        {
-            id: uuidv4(),
-            time: '17:30',
-            value: '17:30'
-        },
-        {
-            id: uuidv4(),
-            time: '18:00',
-            value: '18:00'
-        },
-        {
-            id: uuidv4(),
-            time: '18:30',
-            value: '18:30'
-        },
-        {
-            id: uuidv4(),
-            time: '19:00',
-            value: '19:00'
-        },
-        {
-            id: uuidv4(),
-            time: '19:30',
-            value: '19:30'
-        },
-        {
-            id: uuidv4(),
-            time: '20:00',
-            value: '20:00'
-        },
-        {
-            id: uuidv4(),
-            time: '20:30',
-            value: '20:30'
-        },
-        {
-            id: uuidv4(),
-            time: '21:00',
-            value: '21:00'
-        },
-        {
-            id: uuidv4(),
-            time: '21:30',
-            value: '21:30'
-        },
-        {
-            id: uuidv4(),
-            time: '22:00',
-            value: '22:00'
-        },
-        {
-            id: uuidv4(),
-            time: '22:30',
-            value: '22:30'
-        },
-        {
-            id: uuidv4(),
-            time: '23:00',
-            value: '23:00'
-        },
-        {
-            id: uuidv4(),
-            time: '23:30',
-            value: '23:30'
-        },
-    ]
+    // const dataTimeCustom = [
+    //     {
+    //         id: uuidv4(),
+    //         time: '00:00',
+    //         value: '00:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '00:30',
+    //         value: '00:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '01:00',
+    //         value: '01:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '01:30',
+    //         value: '01:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '02:00',
+    //         value: '02:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '02:30',
+    //         value: '02:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '03:00',
+    //         value: '03:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '03:30',
+    //         value: '03:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '04:00',
+    //         value: '04:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '04:30',
+    //         value: '04:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '05:00',
+    //         value: '05:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '05:30',
+    //         value: '05:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '06:00',
+    //         value: '06:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '06:30',
+    //         value: '06:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '07:00',
+    //         value: '07:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '07:30',
+    //         value: '07:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '08:00',
+    //         value: '08:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '08:30',
+    //         value: '08:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '09:00',
+    //         value: '09:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '09:30',
+    //         value: '09:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '10:00',
+    //         value: '10:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '10:30',
+    //         value: '10:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '11:00',
+    //         value: '11:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '11:30',
+    //         value: '11:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '12:00',
+    //         value: '12:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '12:30',
+    //         value: '12:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '13:00',
+    //         value: '13:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '13:30',
+    //         value: '13:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '14:00',
+    //         value: '14:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '14:30',
+    //         value: '14:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '15:00',
+    //         value: '15:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '15:30',
+    //         value: '15:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '16:00',
+    //         value: '16:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '16:30',
+    //         value: '16:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '17:00',
+    //         value: '17:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '17:30',
+    //         value: '17:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '18:00',
+    //         value: '18:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '18:30',
+    //         value: '18:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '19:00',
+    //         value: '19:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '19:30',
+    //         value: '19:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '20:00',
+    //         value: '20:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '20:30',
+    //         value: '20:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '21:00',
+    //         value: '21:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '21:30',
+    //         value: '21:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '22:00',
+    //         value: '22:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '22:30',
+    //         value: '22:30'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '23:00',
+    //         value: '23:00'
+    //     },
+    //     {
+    //         id: uuidv4(),
+    //         time: '23:30',
+    //         value: '23:30'
+    //     },
+    // ]
+
+    const generateTimeSlots = () => {
+        let timeSlots = [];
+        for (let hour = 0; hour < 24; hour++) {
+            for (let minute = 0; minute < 60; minute += 30) { // Tăng thêm 15 phút
+                let formattedHour = hour.toString().padStart(2, '0'); // Định dạng giờ
+                let formattedMinute = minute.toString().padStart(2, '0'); // Định dạng phút
+                timeSlots.push({
+                    id: uuidv4(),
+                    time: `${formattedHour}:${formattedMinute}`,
+                    value: `${formattedHour}:${formattedMinute}`,
+                });
+            }
+        }
+        return timeSlots
+    };
 
     const initialDateTime = {
-        dataTimeLeft: dataTimeCustom,
-        dataTimeRight: dataTimeCustom
+        dataTimeLeft: generateTimeSlots(),
+        dataTimeRight: generateTimeSlots()
+        // dataTimeLeft: generateTimeSlots(),
+        // dataTimeRight: generateTimeSlots()
     }
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [dateTimeComponent, setDateTimeComponent] = useState<any>()
@@ -328,6 +346,7 @@ export function DialogCalendar({ }: Props) {
         validateDateSubmit,
         openDialogCalendar,
         flagSubmit,
+        numberDay,
         typeCarCalendar,
         setDateReal,
         setDateTemp,
@@ -351,20 +370,17 @@ export function DialogCalendar({ }: Props) {
     console.log('typeCarCalendar', typeCarCalendar);
 
     const handleCloseModal = (type: string) => {
-        if (validateDateSubmit && type === "close1" || flagSubmit && type === "close1") {
-            // không có hoạt động gì để tránh người dùng tạo bug khi click ra ngoài
-        } else if (validateDateSubmit && type === "close2" || flagSubmit && type === "close2") {
-            toastCore.warning("Vui lòng nhấn áp dụng vì bạn đã thay đổi ngày hoặc giờ!")
-        } else {
-            setOpenDialogCalendar(false)
-        }
+        // if (validateDateSubmit && type === "close1" || flagSubmit && type === "close1") {
+        //     // không có hoạt động gì để tránh người dùng tạo bug khi click ra ngoài
+        // } else if (validateDateSubmit && type === "close2" || flagSubmit && type === "close2") {
+        //     toastCore.warning("Vui lòng nhấn áp dụng vì bạn đã thay đổi ngày hoặc giờ!")
+        // } else {
+        setOpenDialogCalendar(false)
+        // }
     }
 
     // change date in calender default
     const handleDateChange = (newDate: any, type: string) => {
-        // Check if new date range is not null
-        // console.log('newDate', newDate);
-
         if (type === 'calendar_car_autonomous') {
             const isAfterInSameYearAndMonth = (date: any, compareDate: any) => {
                 return (
@@ -460,42 +476,45 @@ export function DialogCalendar({ }: Props) {
         }
     }
 
-
     // change time in calender default
     const handleTimeChange = (value: string, type: string) => {
         if (typeCarCalendar === "calendar_car_autonomous") {
             if (dateTimeComponent.from && dateTimeComponent.to) {
+                console.log('checkkk');
+
                 if (dateTimeComponent.from && type === 'from') {
-                    const updatedDateStart: any = new Date(dateTimeComponent.from.setHours(+value?.split(":")[0], +value.split(":")[1]))
+                    const updatedDateStart = new Date(dateTimeComponent.from);
+                    updatedDateStart.setHours(+value?.split(":")[0], +value.split(":")[1]);
+
                     setFlagSubmit(true)
 
-                    // setDateTimeComponent(updatedDate);
-
-                    // setDateStart(updatedDateStart);
                     setDateTimeComponent((prevState: any) => ({
                         ...prevState,
                         from: updatedDateStart,
                     }))
+
                 } else if (dateTimeComponent.to && type === 'to') {
-                    const updatedDateEnd = new Date(dateTimeComponent.to.setHours(+value?.split(":")[0], +value.split(":")[1]))
+                    const updatedDateEnd = new Date(dateTimeComponent.to);
+                    updatedDateEnd.setHours(+value?.split(":")[0], +value.split(":")[1]);
+
                     setFlagSubmit(true)
                     setDateTimeComponent((prevState: any) => ({
                         ...prevState,
                         to: updatedDateEnd,
                     }))
-                    // setDateEnd(updatedDateEnd);
                 }
             }
         } else if (typeCarCalendar === "calendar_car_driver") {
             if (dateTimeComponent.from && type === 'from') {
-                const updatedDateStart: any = new Date(dateTimeComponent.from.setHours(+value?.split(":")[0], +value.split(":")[1]))
-                console.log('updatedDateStart', updatedDateStart);
+                // const updatedDateStart: any = new Date(dateTimeComponent.from.setHours(+value?.split(":")[0], +value.split(":")[1]))
+                const updatedDateStart: any = new Date(dateTimeComponent.from)
+                updatedDateStart.setHours(+value?.split(":")[0], +value.split(":")[1]);
+
 
                 const updatedDateEnd = new Date(updatedDateStart)
                 updatedDateEnd?.setDate(updatedDateStart?.getDate() + 1);
 
                 setDateTimeComponent((prevState: any) => ({
-                    // ...prevState,
                     from: updatedDateStart,
                     to: updatedDateEnd,
                 }))
@@ -507,16 +526,33 @@ export function DialogCalendar({ }: Props) {
 
     // change time in calender custotm
     const handleTimeChangeCustom = (value: string, type: string) => {
-        if (dateStart && dateEnd) {
+        if (typeCarCalendar === "calendar_car_autonomous") {
+            if (dateStart && dateEnd) {
+                if (dateStart && type === 'from') {
+                    const updatedDateStart: any = new Date(dateStart)
+                    updatedDateStart.setHours(+value?.split(":")[0], +value.split(":")[1])
+
+                    setDateStart(updatedDateStart);
+                    setFlagSubmit(true)
+                } else if (dateEnd && type === 'to') {
+                    const updatedDateEnd = new Date(dateEnd)
+                    updatedDateEnd.setHours(+value?.split(":")[0], +value.split(":")[1])
+
+                    setDateEnd(updatedDateEnd);
+                    setFlagSubmit(true)
+                }
+            }
+        } else if (typeCarCalendar === "calendar_car_driver") {
             if (dateStart && type === 'from') {
-                const updatedDateStart: any = new Date(dateStart.setHours(+value?.split(":")[0], +value.split(":")[1]))
-                // setDateTemp(updatedDate);
+                const updatedDateStart: any = new Date(dateStart)
+                updatedDateStart.setHours(+value?.split(":")[0], +value.split(":")[1])
+
+                const updatedDateEnd = new Date(updatedDateStart)
+                updatedDateEnd?.setDate(dateStart?.getDate() + numberDayComponent);
+
                 setFlagSubmit(true)
                 setDateStart(updatedDateStart);
-            } else if (dateEnd && type === 'to') {
-                const updatedDateEnd = new Date(dateEnd.setHours(+value?.split(":")[0], +value.split(":")[1]))
-                setFlagSubmit(true)
-                setDateEnd(updatedDateEnd);
+                setDateEnd(updatedDateEnd)
             }
         }
     };
@@ -663,14 +699,6 @@ export function DialogCalendar({ }: Props) {
     };
 
     useEffect(() => {
-        setDateTemp(dateReal)
-        setDateStart(dateReal?.from)
-        setDateEnd(dateReal?.to)
-        setNumberDay(numberDayComponent)
-        setDateTimeComponent(dateReal)
-    }, [slug])
-
-    useEffect(() => {
         if (pathname.startsWith('/detail-car/')) {
             const filterDatesByRange = (dataCalendar: any[], startDate: Date, endDate: Date) => {
                 const dataBetweens = dataCalendar?.map((item: any) => {
@@ -782,14 +810,23 @@ export function DialogCalendar({ }: Props) {
             }
         }
     }, [
+        slug,
         dateStart,
         dateEnd,
-        slug,
         dataCalendar,
         dateTimeComponent?.from,
         dateTimeComponent?.to,
         numberDayComponent
     ])
+
+    useEffect(() => {
+        
+        setDateTemp(dateReal)
+        setDateStart(dateReal?.from)
+        setDateEnd(dateReal?.to)
+        setNumberDay(numberDayComponent)
+        setDateTimeComponent(dateReal)
+    }, [slug])
 
     useEffect(() => {
         if (typeCarDetail == "1") {
@@ -807,6 +844,8 @@ export function DialogCalendar({ }: Props) {
                 setDateTimeComponent(dateTemp)
                 setDateStart(dateTemp?.from)
                 setDateEnd(dateTemp?.to)
+
+
             } else {
                 setDateTimeComponent(dateReal)
             }
@@ -817,13 +856,16 @@ export function DialogCalendar({ }: Props) {
         typeCarCalendar,
     ])
 
+    // console.log('dateStart', dateStart);
+    // console.log('dateEnd', dateEnd);
+
     return (
         <Dialog modal open={openDialogCalendar} onOpenChange={() => handleCloseModal('close1')}>
             <DialogPortal >
                 <DialogOverlay className='z-40' />
                 <DialogContent className={`
                 ${pathname.startsWith('/detail-car/') ? "h-[95vh]" : ""} 
-                ${typeCarCalendar === "calendar_car_autonomous" ? "lg:max-w-[800px] md:max-w-[480px] " : "max-w-[400px]"}
+                ${typeCarCalendar === "calendar_car_autonomous" ? "lg:max-w-[800px] md:max-w-[480px] max-w-[400px]" : "max-w-[400px]"}
                 p-0 w-fit max-h-[95vh] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`
                 }>
                     <DialogClose
@@ -1110,72 +1152,12 @@ export function DialogCalendar({ }: Props) {
                                     }
                                     {
                                         pathname.startsWith('/detail-car/') ?
-                                            // <div className='flex flex-row items-center gap-2 px-2 w-full'>
-                                            //     <div className='flex flex-col gap-1 w-[50%]'>
-                                            //         <Label>Giờ nhận xe</Label>
-                                            //         <Select
-                                            //             value={(dateStart ? format(dateStart, 'HH:mm') : '')}
-                                            //             onValueChange={(value) => handleTimeChangeCustom(value, 'from')}
-                                            //             defaultValue={`${(dateStart ? format(dateStart, 'HH:mm') : '00:00')}`}
-                                            //         >
-                                            //             <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
-                                            //                 <SelectValue placeholder="Chọn giờ nhận xe" />
-                                            //             </SelectTrigger>
-                                            //             <SelectContent>
-                                            //                 <SelectGroup>
-                                            //                     {
-                                            //                         dataTime.dataTimeLeft && dataTime.dataTimeLeft.map((item: any) => (
-                                            //                             <SelectItem
-                                            //                                 key={item.id}
-                                            //                                 value={item.value}
-                                            //                                 className='flex flex-row items-center'
-                                            //                             >
-                                            //                                 <div>
-                                            //                                     {item.time ? item.time : ''}
-                                            //                                 </div>
-                                            //                             </SelectItem>
-                                            //                         ))
-                                            //                     }
-                                            //                 </SelectGroup>
-                                            //             </SelectContent>
-                                            //         </Select>
-                                            //     </div>
-                                            //     <div className='flex items-end pb-2 h-full'>
-                                            //         <BsFillArrowRightCircleFill className='size-6 text-[#1EAAB1]' />
-                                            //     </div>
-                                            //     <div className='flex flex-col gap-1 w-[50%]'>
-                                            //         <Label>Giờ trả xe</Label>
-                                            //         <Select
-                                            //             value={(dateEnd ? format(dateEnd, 'HH:mm') : '')}
-                                            //             onValueChange={(value) => handleTimeChangeCustom(value, 'to')}
-                                            //             defaultValue={`${(dateEnd ? format(dateEnd, 'HH:mm') : '00:00')}`}
-                                            //         >
-                                            //             <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
-                                            //                 <SelectValue placeholder="Chọn giờ trả xe" />
-                                            //             </SelectTrigger>
-                                            //             <SelectContent>
-                                            //                 <SelectGroup>
-                                            //                     {
-                                            //                         dataTime.dataTimeRight && dataTime.dataTimeRight.map((item: any) => (
-                                            //                             <SelectItem
-                                            //                                 key={item.id}
-                                            //                                 value={item.value}
-                                            //                             >
-                                            //                                 {item.time ? item.time : ''}
-                                            //                             </SelectItem>
-                                            //                         ))
-                                            //                     }
-                                            //                 </SelectGroup>
-                                            //             </SelectContent>
-                                            //         </Select>
-                                            //     </div>
-                                            // </div>
                                             <div className='flex flex-col gap-1 px-2 w-full'>
                                                 <Label>Giờ nhận xe</Label>
                                                 <Select
-                                                    value={(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '')}
-                                                    onValueChange={(value) => handleTimeChange(value, 'from')}
-                                                    defaultValue={`${(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '00:00')}`}
+                                                    value={(dateStart ? format(dateStart, 'HH:mm') : '')}
+                                                    onValueChange={(value) => handleTimeChangeCustom(value, 'from')}
+                                                    defaultValue={`${(dateStart ? format(dateStart, 'HH:mm') : '00:00')}`}
                                                 >
                                                     <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
                                                         <SelectValue placeholder="Chọn giờ nhận xe" />
@@ -1308,219 +1290,6 @@ export function DialogCalendar({ }: Props) {
                                         </Button>
                                     </div>
                                 </div>
-
-                                {/* cũ */}
-                                {/* <div className='flex flex-col gap-2 overflow-auto'>
-                                    {
-                                        pathname.startsWith('/detail-car/') ?
-                                            <div className='px-2 border m-2 rounded-lg drop-shadow-md max-w-[760px]'>
-                                                <CalendarCustom />
-                                            </div>
-                                            :
-                                            <div className='px-2 border m-2 rounded-lg drop-shadow-md'>
-                                                <Calendar
-                                                    initialFocus
-                                                    mode="single"
-                                                    defaultMonth={dateTimeComponent?.from}
-                                                    selected={dateTimeComponent?.from}
-                                                    onSelect={(newDate: any) => handleDateChange(newDate, 'calendar_car_driver')}
-                                                    fromMonth={toDate}
-                                                    toMonth={endMonth}
-                                                    disabled={disabledDays}
-                                                />
-                                            </div>
-                                    }
-                                    {
-                                        pathname.startsWith('/detail-car/') ?
-                                            <div className='flex flex-row items-center gap-2 px-2 w-full'>
-                                                <div className='flex flex-col gap-1 w-[50%]'>
-                                                    <Label>Giờ nhận xe</Label>
-                                                    <Select
-                                                        value={(dateStart ? format(dateStart, 'HH:mm') : '')}
-                                                        onValueChange={(value) => handleTimeChangeCustom(value, 'from')}
-                                                        defaultValue={`${(dateStart ? format(dateStart, 'HH:mm') : '00:00')}`}
-                                                    >
-                                                        <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
-                                                            <SelectValue placeholder="Chọn giờ nhận xe" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectGroup>
-                                                                {
-                                                                    dataTime.dataTimeLeft && dataTime.dataTimeLeft.map((item: any) => (
-                                                                        <SelectItem
-                                                                            key={item.id}
-                                                                            value={item.value}
-                                                                            className='flex flex-row items-center'
-                                                                        >
-                                                                            <div>
-                                                                                {item.time ? item.time : ''}
-                                                                            </div>
-                                                                        </SelectItem>
-                                                                    ))
-                                                                }
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                                <div className='flex items-end pb-2 h-full'>
-                                                    <BsFillArrowRightCircleFill className='size-6 text-[#1EAAB1]' />
-                                                </div>
-                                                <div className='flex flex-col gap-1 w-[50%]'>
-                                                    <Label>Giờ trả xe</Label>
-                                                    <Select
-                                                        value={(dateEnd ? format(dateEnd, 'HH:mm') : '')}
-                                                        onValueChange={(value) => handleTimeChangeCustom(value, 'to')}
-                                                        defaultValue={`${(dateEnd ? format(dateEnd, 'HH:mm') : '00:00')}`}
-                                                    >
-                                                        <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
-                                                            <SelectValue placeholder="Chọn giờ trả xe" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectGroup>
-                                                                {
-                                                                    dataTime.dataTimeRight && dataTime.dataTimeRight.map((item: any) => (
-                                                                        <SelectItem
-                                                                            key={item.id}
-                                                                            value={item.value}
-                                                                        >
-                                                                            {item.time ? item.time : ''}
-                                                                        </SelectItem>
-                                                                    ))
-                                                                }
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                            </div>
-                                            :
-                                            <div className='flex flex-col gap-1 px-2 w-full'>
-                                                <Label>Giờ nhận xe</Label>
-                                                <Select
-                                                    value={(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '')}
-                                                    onValueChange={(value) => handleTimeChange(value, 'from')}
-                                                    defaultValue={`${(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '00:00')}`}
-                                                >
-                                                    <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
-                                                        <SelectValue placeholder="Chọn giờ nhận xe" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectGroup>
-                                                            {
-                                                                dataTime.dataTimeLeft && dataTime.dataTimeLeft.map((item: any) => (
-                                                                    <SelectItem
-                                                                        key={item.id}
-                                                                        value={item.value}
-                                                                        className='flex flex-row items-center'
-                                                                    >
-                                                                        <div>
-                                                                            {item.time ? item.time : ''}
-                                                                        </div>
-                                                                    </SelectItem>
-                                                                ))
-                                                            }
-                                                        </SelectGroup>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                    }
-
-                                    {
-                                        pathname.startsWith('/detail-car/') && isStateDetailCar?.dataDetailCar?.hour_receive_car && isStateDetailCar?.dataDetailCar?.hour_receive_car.length > 0 &&
-                                            isStateDetailCar?.dataDetailCar?.hour_back_car && isStateDetailCar?.dataDetailCar?.hour_back_car.length > 0 ?
-                                            <div className='px-2 mt-4'>
-                                                <div className='bg-[#EDEDED]/40 flex flex-col p-3 rounded-lg'>
-                                                    <div className='flex items-center justify-between w-full'>
-                                                        <div className='3xl:text-base text-sm text-[#000000] font-light'>
-                                                            Thời gian nhận xe
-                                                        </div>
-                                                        <div className='3xl:text-base text-sm text-[#000000] font-medium'>
-                                                            {isStateDetailCar?.dataDetailCar?.hour_receive_car[0]?.hour_start} - {isStateDetailCar?.dataDetailCar?.hour_receive_car[0]?.hour_end}
-                                                        </div>
-                                                    </div>
-                                                    <div className='flex items-center justify-between w-full'>
-                                                        <div className='3xl:text-base text-sm text-[#000000] font-light'>
-                                                            Thời gian trả xe
-                                                        </div>
-                                                        <div className='3xl:text-base text-sm text-[#000000] font-medium'>
-                                                            {isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_start} - {isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_end}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            :
-                                            null
-                                    }
-
-                                    {
-                                        pathname.startsWith('/detail-car/') && validateDateSubmit ?
-                                            // validateDateSubmit || statusDate == 2 || statusDate == 3 ?
-                                            <div className='px-2 mt-4'>
-                                                <div className='3xl:text-base text-sm font-normal text-[#FF0000]'>
-                                                    * Xe bận trong khoảng thời gian trên. Vui lòng đặt xe khác hoặc thay đổi lịch trình thích hợp.
-                                                </div>
-                                            </div>
-                                            :
-                                            null
-                                    }
-                                    {
-                                        pathname.startsWith('/detail-car/') && !dateEnd || !pathname.startsWith('/detail-car/') && !dateTimeComponent?.to ?
-                                            <div className='px-2 mt-4'>
-                                                <div className='3xl:text-base text-sm font-normal text-[#2FB9BD]'>
-                                                    * Vui lòng chọn ngày kết thúc
-                                                </div>
-                                            </div>
-                                            :
-                                            null
-                                    }
-                                    {
-                                        pathname.startsWith('/detail-car/') && hoursBetWeenDays && (hoursBetWeenDays < +generalKey.hour_min_car) ?
-                                            <div className='px-2 mt-4'>
-                                                <div className='3xl:text-base text-sm font-normal text-[#2FB9BD]'>
-                                                    * Vui lòng chọn thời gian trả xe lớn hơn thời gian nhận xe {+generalKey.hour_min_car} giờ
-                                                </div>
-                                            </div>
-                                            :
-                                            null
-                                    }
-                                </div>
-
-                                <div className='flex items-center justify-between border-t drop-shadow-md py-6 px-4 bg-white rounded-b-lg'>
-                                    <div className='flex flex-col'>
-                                        {
-                                            pathname.startsWith('/detail-car/') ?
-                                                <div className='text-base font-semibold'>
-                                                    {dateStart ? format(dateStart, 'HH:mm, dd/MM') : ""}{dateEnd ? ` - ${format(dateEnd, 'HH:mm, dd/MM')}` : ''}
-                                                </div>
-                                                :
-                                                <div className='text-base font-semibold'>
-                                                    {dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm, dd/MM') : ""}{dateTimeComponent?.to ? ` - ${format(dateTimeComponent?.to, 'HH:mm, dd/MM')}` : ''}
-                                                </div>
-                                        }
-
-                                        <div>
-                                            Số ngày thuê: {numberDayComponent} ngày
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <Button
-                                            disabled={
-                                                pathname.startsWith('/detail-car/') && dataCalendar.length === 0 ||
-                                                    pathname.startsWith('/detail-car/') && validateDateSubmit ||
-                                                    pathname.startsWith('/detail-car/') && !dateEnd ||
-                                                    !pathname.startsWith('/detail-car/') && !dateTimeComponent?.to
-                                                    ?
-                                                    true
-                                                    :
-                                                    false
-                                            }
-                                            onClick={() => handleSubmitDateTime()}
-                                            className='xl:px-6 xl:py-3 px-4 py-2 xl:text-base text-sm rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 caret-transparent'
-                                        >
-                                            Áp dụng
-                                        </Button>
-                                    </div>
-                                </div> */}
                             </>
                     }
                 </DialogContent >

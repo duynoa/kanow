@@ -176,7 +176,7 @@ function CalendarCustom({
             }
 
             return (
-                <SwiperSlide key={index} className="flex flex-col gap-2 p-0 w-full max-w-[400px]">
+                <SwiperSlide key={index} className="flex flex-col gap-2 p-0 max-w-[400px]">
                     <div className="w-full text-center text-base font-bold mt-4 mb-2 text-[#166A71]">
                         {formatCaption(formattedMonth)} Tháng {formattedMonth}, {currentYear}
                     </div>
@@ -211,7 +211,7 @@ function CalendarCustom({
                             slidesPerView: typeCarCalendar == "calendar_car_autonomous" ? 2 : 1,
                         },
                         768: {
-                            slidesPerView: typeCarCalendar == "calendar_car_autonomous" ? 2 : 1,
+                            slidesPerView:typeCarCalendar == "calendar_car_autonomous" ? 2 : 1,
                         },
                     }}
                     onSwiper={(swiper) => {
@@ -340,7 +340,6 @@ function CalendarCustom({
                 }
 
             } else if (typeCarCalendar === "calendar_car_driver") {
-                console.log('checkkkk');
                 if (dateStart && dateEnd) {
                     // Tạo một đối tượng Date mới từ newDate
                     const newFromDate = new Date(date);

@@ -20,6 +20,7 @@ import { useDataInfoRentalCar, useDataPolicy } from '@/hooks/useDataQueryKey'
 import Image from 'next/image'
 import { FaDeleteLeft } from 'react-icons/fa6'
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
+import { useSearchParams } from 'next/navigation'
 
 type Props = {
     params: {
@@ -30,6 +31,9 @@ type Props = {
 const PriceList = ({
     params
 }: Props) => {
+    const searchParams = useSearchParams()
+    const typeCarDetail = searchParams.get('type')
+
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { setOpenAlertCancel } = useAlertCancel()
     const { setOpenDialogCancelCar, setDataInfo } = useDialogCancelCar()
@@ -309,7 +313,7 @@ const PriceList = ({
                             {
                                 isStateInfoRentalCar?.detailRentalCar?.status?.status === 1 &&
                                 <Link
-                                    href={`/payment-methods/${params.slug}`}
+                                    href={`/payment-methods/${params.slug}?type=${typeCarDetail}`}
                                     className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
                                     prefetch={false}
                                 >
@@ -319,7 +323,7 @@ const PriceList = ({
                             {
                                 isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status >= 4 &&
                                 <Link
-                                    href={`/detail-car/${isStateInfoRentalCar?.detailRentalCar?.car?.id}?${ConvertToSlug(isStateInfoRentalCar?.detailRentalCar?.car?.name)}`}
+                                    href={`/detail-car/${isStateInfoRentalCar?.detailRentalCar?.car?.id}?type=${typeCarDetail}&${ConvertToSlug(isStateInfoRentalCar?.detailRentalCar?.car?.name)}`}
                                     className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
                                 >
                                     Đặt lại

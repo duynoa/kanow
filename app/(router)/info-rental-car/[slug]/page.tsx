@@ -23,6 +23,7 @@ import { useDataInfoRentalCar, useDataPolicy } from '@/hooks/useDataQueryKey'
 import { CustomDataInfoRentalCar, CustomDataPolicy } from '@/custom/CustomData'
 import { getDataPolicy } from '@/services/cars/policy.services'
 import SkeletonIntroRentalCar from './components/SkeletonIntroRentalCar'
+import { useSearchParams } from 'next/navigation'
 
 type Props = {
     params: {
@@ -32,6 +33,10 @@ type Props = {
 
 const InfoRentalCar = ({ params }: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
+
+    const searchParams = useSearchParams()
+    const typeCarDetail = searchParams.get('type')
+
     const {
         isStateInfoRentalCar,
         isLoadingSkeletonIntroRentalCar,
@@ -89,7 +94,11 @@ const InfoRentalCar = ({ params }: Props) => {
             try {
                 setIsLoadingSkeletonIntroRentalCar(true)
 
-                const { data } = await getInfoDetailCarTransaction(params?.slug);
+                const dataParams = {
+                    type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null
+                }
+
+                const { data } = await getInfoDetailCarTransaction(params?.slug, dataParams);
 
                 if (data && data.data && data.base) {
                     let { customDataInfoRentalCar } = CustomDataInfoRentalCar(data)
