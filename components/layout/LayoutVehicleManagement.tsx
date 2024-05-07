@@ -23,9 +23,11 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
 
     const param: ReadonlyURLSearchParams = useSearchParams()
 
-    const id: string | null = param.get("id") || ''
+    const id: string | null = param.get("key") || ''
 
-    const pathname: string = `${href}?id=${id}`
+    const type: string | null = param.get("t") || ''
+
+    const pathname: string = `${href}?key=${id}&t=${type}`
 
     const router = useRouter()
 
@@ -52,25 +54,25 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
                 {
                     id: 1,
                     name: 'Thông tin',
-                    link: `/vehicle-management/infomation?id=${id}`,
+                    link: `/vehicle-management/infomation?key=${id}&t=0`,
                     icon: 'infomation.png',
                 },
                 {
                     id: 2,
                     name: 'Hình ảnh',
-                    link: `/vehicle-management/images?id=${id}`,
+                    link: `/vehicle-management/images?key=${id}&t=0`,
                     icon: 'images.png',
                 },
                 {
                     id: 3,
                     name: 'Giấy tờ xe',
-                    link: `/vehicle-management/registration?id=${id}`,
+                    link: `/vehicle-management/registration?key=${id}&t=0`,
                     icon: 'registration.png',
                 },
                 {
                     id: 4,
                     name: 'Quản lý chuyến',
-                    link: `/vehicle-management/trip?id=${id}`,
+                    link: `/vehicle-management/trip?key=${id}&t=0`,
                     icon: 'trip.png',
                 },
             ]
@@ -83,37 +85,37 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
                 {
                     id: 1,
                     name: 'Giá cho thuê',
-                    link: `/vehicle-management/self-rental-price?id=${id}`,
+                    link: `/vehicle-management/self-rental-price?key=${id}&t=1`,
                     icon: 'rental-price.png',
                 },
                 {
                     id: 2,
                     name: 'Thiết lập thời gian cho thuê',
-                    link: `/vehicle-management/self-set-time?id=${id}`,
+                    link: `/vehicle-management/self-set-time?key=${id}&t=1`,
                     icon: 'set-time.png',
                 },
                 {
                     id: 3,
                     name: 'Lịch xe',
-                    link: `/vehicle-management/self-calendar?id=${id}`,
+                    link: `/vehicle-management/self-calendar?key=${id}&t=1`,
                     icon: 'calendar.png',
                 },
                 {
                     id: 4,
                     name: 'Giao xe tận nơi',
-                    link: `/vehicle-management/selt-vehicle-handing?id=${id}`,
+                    link: `/vehicle-management/selt-vehicle-handing?key=${id}&t=1`,
                     icon: 'vehicle-handing.png',
                 },
                 {
                     id: 5,
                     name: 'Phụ phí',
-                    link: `/vehicle-management/self-surcharge?id=${id}`,
+                    link: `/vehicle-management/self-surcharge?key=${id}&t=1`,
                     icon: 'surcharge.png',
                 },
                 {
                     id: 6,
                     name: 'Thủ tục cho thuê',
-                    link: `/vehicle-management/selt-procedure?id=${id}`,
+                    link: `/vehicle-management/selt-procedure?key=${id}&t=1`,
                     icon: 'procedure.png',
                 },
             ]
@@ -125,37 +127,37 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
                 {
                     id: 11,
                     name: 'Giá cho thuê',
-                    link: `/vehicle-management/talented-rental-price?id=${id}`,
+                    link: `/vehicle-management/talented-rental-price?key=${id}&t=2`,
                     icon: 'rental-price.png',
                 },
                 {
                     id: 12,
                     name: 'Thiết lập thời gian cho thuê',
-                    link: `/vehicle-management/talented-set-time?id=${id}`,
+                    link: `/vehicle-management/talented-set-time?key=${id}&t=2`,
                     icon: 'set-time.png',
                 },
                 {
                     id: 13,
                     name: 'Lịch xe',
-                    link: `/vehicle-management/talented-calendar?id=${id}`,
+                    link: `/vehicle-management/talented-calendar?key=${id}&t=2`,
                     icon: 'calendar.png',
                 },
                 {
                     id: 14,
                     name: 'Đưa đón tận nơi',
-                    link: `/vehicle-management/talented-shuttle?id=${id}`,
+                    link: `/vehicle-management/talented-shuttle?key=${id}&t=2`,
                     icon: 'vehicle-handing.png',
                 },
                 {
                     id: 15,
                     name: 'Phụ phí',
-                    link: `/vehicle-management/talented-surcharge?id=${id}`,
+                    link: `/vehicle-management/talented-surcharge?key=${id}&t=2`,
                     icon: 'surcharge.png',
                 },
                 {
                     id: 16,
                     name: 'Thủ tục cho thuê',
-                    link: `/vehicle-management/talented-procedure?id=${id}`,
+                    link: `/vehicle-management/talented-procedure?key=${id}&t=2`,
                     icon: 'procedure.png',
                 },
             ]
@@ -169,9 +171,9 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
         }
     })
 
-    const { apiDetailCar, apiListOtherAmenitiesCar, apiOpenSwitchLayout } = apiVehicleCommon()
+    const { apiDetailCar, apiListOtherAmenitiesCar, apiOpenSwitchLayout, apiRentCostPropose } = apiVehicleCommon()
 
-    const { dataDetail, setIdCar, setDataDetail, setDataOther } = useVehicleManage()
+    const { dataDetail, setIdCar, setDataDetail, setDataOther, dataOther } = useVehicleManage()
 
 
     const fetchData = async () => {
@@ -185,9 +187,30 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
             form.setValue("openSelf", db?.data.type == 1)
             form.setValue("openTalented", db?.data.type_talent == 1)
             setDataDetail(db)
+            if (['1', '2'].includes(type)) {
+                await fetchRentCost(db)
+            }
         }
-
     }
+
+    const fetchRentCost = async (db: any) => {
+        let formData = new FormData()
+        // "type" : 1, 1 xe tự lái, 2 xe có tài
+        // "year":2018, năm sản xuất
+        // "company_car":1, hãng xe
+        // "model_car":1 ,mẫu xe
+        formData.append('type', type)
+        formData.append('year', db?.data?.year_manu)
+        formData.append('company_car', db?.data?.model_car?.company_car_id)
+        formData.append('model_car', db?.data?.model_car?.id)
+
+        const { data } = await apiRentCostPropose(formData)
+        setDataOther(({
+            ...dataOther,
+            rent_cost_propose: data?.rent_cost_propose
+        }))
+    }
+
 
     useEffect(() => {
         if (id) {

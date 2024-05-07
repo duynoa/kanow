@@ -60,7 +60,7 @@ export interface IMyTrips {
     dataMyTrips: IArrayMyTripCar[];
     page: number;
     limit: number;
-    favourite: string;
+    tab: string;
     next: any;
     totalDrivingCar: number;
     isLoadingScroll: boolean;

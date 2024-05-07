@@ -11,7 +11,6 @@ import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.servi
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { StateSeltSetTime } from "@/types/VehicleManagement/SelfDriveRental/ISetTime";
 import { ChevronsUpDown } from "lucide-react";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -19,9 +18,6 @@ type Props = {}
 
 
 export default function SelftSetTime(props: Props) {
-    const param: ReadonlyURLSearchParams = useSearchParams()
-
-    const id: string | null = param.get("id") || ''
 
     const generateTimeSlots = () => {
         let timeSlots = [];

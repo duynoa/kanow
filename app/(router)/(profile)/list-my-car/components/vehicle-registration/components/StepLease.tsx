@@ -1,4 +1,5 @@
 import SelectCombobox from "@/components/combobox/SelectCombobox"
+import { FormatNumberToThousands } from "@/components/format/FormatNumber"
 import SearchAddress from "@/components/searchAddress/SearchAddress"
 import { Button } from "@/components/ui/button"
 import { CustomSlider } from "@/components/ui/customSlider"
@@ -11,6 +12,7 @@ import { useDialogAddress } from "@/hooks/useOpenDialog"
 import { NumericFormatCore } from "@/lib/numericFormat"
 import apiAddress from "@/services/profile/listAddress/listAddress.services"
 import apiMyCar from "@/services/profile/listMyCar/listMyCar.services"
+import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services"
 import { IStateLease, TComboboxApi } from "@/types/Profile/mycar/IMyCar"
 import { debounce } from "lodash"
 import { ChevronsUpDown } from "lucide-react"
@@ -25,8 +27,10 @@ const StepLease = ({ form, checkValueArray }: Props) => {
     const [isMount, setIsMount] = useState(false)
     const { apiListMoveEndFeuelType } = apiMyCar()
     const { apiListCity, apiListDistrict, apiListWard } = apiAddress()
+    const { apiRentCostPropose } = apiVehicleCommon()
     const { setOpenBoxSearch } = useDialogAddress()
     const initialState: IStateLease = {
+        rentCostPropose: 0,
         openCombobox: false,
         typeOpenCombobox: "",
         dataCity: [],
@@ -36,20 +40,43 @@ const StepLease = ({ form, checkValueArray }: Props) => {
         dataUntil: [],
         //giao xe tận tơi
         vehicleHanding: {
-            // quảng đường giao 
-            intersectionSquare: 0,
-            /// phí giao nhận xe cho mỗi km
-            deliveryFee: 0,
-            // miễn phí giao
-            freeDelivery: 0
+            // // quảng đường giao 
+            // intersectionSquare: 0,
+            // /// phí giao nhận xe cho mỗi km
+            // deliveryFee: 0,
+            // // miễn phí giao
+            // freeDelivery: 0
+            intersectionSquare: {
+                max: 500,
+                min: 0,
+                propose: 0
+            },
+            deliveryFee: {
+                max: 5000000,
+                min: 0,
+                propose: 0
+            },
+            freeDelivery: {
+                max: 500,
+                min: 0,
+                propose: 0
+            },
         },
         discount: 0,
         // Giới hạn số km
         limitedKilometers: {
             //số km tối đa trong 1 ngày
-            maximumKilometers: 0,
+            maximumKilometers: {
+                max: 0,
+                min: 0,
+                propose: 0
+            },
             // phí vượt giới hạn
-            overLimitFee: 0
+            overLimitFee: {
+                max: 0,
+                min: 0,
+                propose: 0
+            }
         },
 
         // Đặt xe nhanh
@@ -96,33 +123,51 @@ const StepLease = ({ form, checkValueArray }: Props) => {
         setIsMount(true)
     }, [])
 
-    const fetListOther = async () => {
+    const fetchListOther = async () => {
         try {
-            const { data: { other, dtFee } } = await apiListMoveEndFeuelType()
-            if (other || dtFee) {
+            const { data: { other, dtFee, other_talent } } = await apiListMoveEndFeuelType()
+            if (other || dtFee || other_talent) {
                 queryState({
                     vehicleHanding: {
                         ...isState.vehicleHanding,
-                        deliveryFee: +other?.fee_km_delivery_car,
-                        freeDelivery: +other?.free_km_delivery_car,
-                        intersectionSquare: +other?.km_delivery_car,
+                        intersectionSquare: {
+                            ...isState.vehicleHanding.intersectionSquare,
+                            propose: +other?.km_delivery_car
+                        },
+                        deliveryFee: {
+                            ...isState.vehicleHanding.deliveryFee,
+                            propose: +other?.fee_km_delivery_car
+                        },
+                        freeDelivery: {
+                            ...isState.vehicleHanding.freeDelivery,
+                            propose: +other?.free_km_delivery_car
+                        },
                     },
                     discount: +other?.percent_discount,
                     limitedKilometers: {
                         ...isState.limitedKilometers,
-                        maximumKilometers: +other?.limit_km_day,
-                        overLimitFee: +dtFee?.max
-                    }
+                        maximumKilometers: {
+                            ...isState.limitedKilometers.maximumKilometers,
+                            max: 5000,
+                            propose: +other?.limit_km_day
 
+                        },
+                        overLimitFee: {
+                            ...isState.limitedKilometers.overLimitFee,
+                            max: +dtFee?.max,
+                            min: +dtFee?.min,
+                            propose: +dtFee?.propose_fee
+                        }
+                    }
                 })
                 const db = [
-                    { name: 'stepLease.vehicleHanding.intersectionSquare', value: 20 },
-                    { name: 'stepLease.vehicleHanding.freeDelivery', value: 0 },
-                    { name: 'stepLease.vehicleHanding.deliveryFee', value: 10 },
-                    { name: 'stepLease.discount.value', value: 20 },
-                    { name: 'stepLease.limitedKilometers.maximumKilometers', value: 400 },
+                    { name: 'stepLease.vehicleHanding.intersectionSquare', value: +other?.km_delivery_car },
+                    { name: 'stepLease.vehicleHanding.freeDelivery', value: +other?.free_km_delivery_car },
+                    { name: 'stepLease.vehicleHanding.deliveryFee', value: +other?.fee_km_delivery_car },
+                    { name: 'stepLease.discount.value', value: +other?.percent_discount },
+                    { name: 'stepLease.limitedKilometers.maximumKilometers', value: +other?.limit_km_day },
                     { name: 'stepLease.limitedKilometers.overLimitFeeId', value: dtFee?.id },
-                    { name: 'stepLease.limitedKilometers.overLimitFee', value: 3 },
+                    { name: 'stepLease.limitedKilometers.overLimitFee', value: +dtFee?.propose_fee },
                 ]
                 db.forEach((item: any) => {
                     form.setValue(item.name, item.value);
@@ -131,6 +176,22 @@ const StepLease = ({ form, checkValueArray }: Props) => {
         } catch (error) {
             throw error
         }
+    }
+
+
+    const fetchRentCost = async () => {
+        let formData = new FormData()
+        // "type" : 1, 1 xe tự lái, 2 xe có tài
+        // "year":2018, năm sản xuất
+        // "company_car":1, hãng xe
+        // "model_car":1 ,mẫu xe
+        formData.append('type', "1")
+        formData.append('year', valuesForm.stepInformation.yearOfmManufacture)
+        formData.append('company_car', valuesForm.stepInformation.carCompany)
+        formData.append('model_car', valuesForm.stepInformation.sampleCar)
+        const { data } = await apiRentCostPropose(formData)
+        queryState({ rentCostPropose: data?.rent_cost_propose ?? 0 })
+
     }
 
     const fetchListCity = async (search: any) => {
@@ -173,7 +234,8 @@ const StepLease = ({ form, checkValueArray }: Props) => {
 
     useEffect(() => {
         fetchListCity("")
-        fetListOther()
+        fetchListOther()
+        fetchRentCost()
     }, [])
 
     useEffect(() => {
@@ -236,19 +298,11 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                         <FormItem className="space-y-0 flex flex-col gap-2">
                                             <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
                                                 Đơn giá thuê mặc định<span className="text-red-500">*</span>
-                                                <h1 className="text-xs text-gray-400">Giá đề xuất 390K</h1>
+                                                <h1 className="text-xs text-gray-400">Giá đề xuất
+                                                    <span className="px-1">{isState?.rentCostPropose > 100 ? FormatNumberToThousands(isState?.rentCostPropose) : `${isState?.rentCostPropose ?? 0}K`}</span>
+                                                </h1>
                                             </FormLabel>
                                             <FormControl>
-                                                {/* <Input
-                                                    inputMode="numeric"
-                                                    className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
-                                                 focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
-                                                    placeholder="Nhập đơn giá thuê"
-                                                    type={'number'}
-                                                    min={0}
-                                                    {...field}
-                                                /> */}
-
                                                 <NumericFormatCore
                                                     className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full 
                                                  focus:border-[#2FB9BD] ${fieldState?.invalid && fieldState?.error ? 'border-[#2FB9BD]' : 'border-[#E6E8EC]'} outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
@@ -257,7 +311,6 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                     {...field}
                                                 />
                                             </FormControl>
-
                                             {fieldState?.invalid && fieldState?.error && (
                                                 <FormMessage>{fieldState?.error?.message}</FormMessage>
                                             )}
@@ -520,14 +573,18 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                             <FormControl>
                                                                 <>
                                                                     <CustomSlider
-                                                                        defaultValue={[20]} max={isState.discount} step={1}
+                                                                        value={[+field.value]}
+                                                                        defaultValue={[+field.value]}
+                                                                        min={0}
+                                                                        max={100}
+                                                                        step={1}
                                                                         onValueChange={field.onChange}
                                                                     />
                                                                 </>
                                                             </FormControl>
                                                             <div className="flex justify-between">
                                                                 <FormDescription>
-                                                                    Giảm đề xuất {20}%
+                                                                    Giảm đề xuất {isState.discount}%
                                                                 </FormDescription>
                                                                 <FormDescription className='font-bold'>
                                                                     {field.value}%
@@ -704,14 +761,18 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <CustomSlider
-                                                                            defaultValue={[20]} max={isState.vehicleHanding.intersectionSquare} step={1}
+                                                                            defaultValue={[+field.value]}
+                                                                            value={[+field.value]}
+                                                                            min={isState.vehicleHanding.intersectionSquare.min}
+                                                                            max={isState.vehicleHanding.intersectionSquare.max}
+                                                                            step={1}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>
                                                                 </FormControl>
                                                                 <div className="flex justify-between">
                                                                     <FormDescription>
-                                                                        Quãng đường đề xuất: đề xuất {20}Km
+                                                                        Quãng đường đề xuất: {isState.vehicleHanding.intersectionSquare.propose}Km
                                                                     </FormDescription>
                                                                     <FormDescription className='font-bold'>
                                                                         {field.value}Km
@@ -736,17 +797,21 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <CustomSlider
-                                                                            defaultValue={[10]} max={isState.vehicleHanding.deliveryFee} step={1}
+                                                                            value={[+field.value]}
+                                                                            defaultValue={[+field.value]}
+                                                                            min={isState.vehicleHanding.deliveryFee.min}
+                                                                            max={isState.vehicleHanding.deliveryFee.max}
+                                                                            step={1}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>
                                                                 </FormControl>
                                                                 <div className="flex justify-between">
                                                                     <FormDescription>
-                                                                        Phí đề xuất: đề xuất {10}K
+                                                                        Phí đề xuất: {isState.vehicleHanding.deliveryFee.propose > 100 ? FormatNumberToThousands(isState.vehicleHanding.deliveryFee.propose) : `${isState.vehicleHanding.deliveryFee.propose ?? 0}K`}
                                                                     </FormDescription>
                                                                     <FormDescription className='font-bold'>
-                                                                        {field.value}K
+                                                                        {+field.value > 1000 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
                                                                     </FormDescription>
                                                                 </div>
                                                                 {fieldState?.invalid && fieldState?.error && (
@@ -768,14 +833,18 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <CustomSlider
-                                                                            defaultValue={[0]} max={isState.vehicleHanding.freeDelivery} step={1}
+                                                                            value={[+field.value]}
+                                                                            defaultValue={[+field.value]}
+                                                                            min={isState.vehicleHanding.freeDelivery.min}
+                                                                            max={isState.vehicleHanding.freeDelivery.max}
+                                                                            step={1}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>
                                                                 </FormControl>
                                                                 <div className="flex justify-between">
                                                                     <FormDescription>
-                                                                        Quãng đường đề xuất {0}Km
+                                                                        Quãng đường đề xuất: {isState.vehicleHanding.freeDelivery.propose}Km
                                                                     </FormDescription>
                                                                     <FormDescription className='font-bold'>
                                                                         {field.value}Km
@@ -831,14 +900,18 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <CustomSlider
-                                                                            defaultValue={[400]} max={isState.limitedKilometers.maximumKilometers} step={1}
+                                                                            defaultValue={[+field.value]}
+                                                                            value={[+field.value]}
+                                                                            min={0}
+                                                                            max={isState.limitedKilometers.maximumKilometers.max}
+                                                                            step={1}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>
                                                                 </FormControl>
                                                                 <div className="flex justify-between">
                                                                     <FormDescription>
-                                                                        Số Km đề xuất: đề xuất {400}Km
+                                                                        Số Km đề xuất: {isState.limitedKilometers.maximumKilometers.propose}Km
                                                                     </FormDescription>
                                                                     <FormDescription className='font-bold'>
                                                                         {field.value}Km
@@ -863,17 +936,21 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 <FormControl>
                                                                     <>
                                                                         <CustomSlider
-                                                                            defaultValue={[3]} max={isState.limitedKilometers.overLimitFee} step={1}
+                                                                            value={[+field.value]}
+                                                                            defaultValue={[+field.value]}
+                                                                            min={isState.limitedKilometers.overLimitFee.min}
+                                                                            max={isState.limitedKilometers.overLimitFee.max}
+                                                                            step={1}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>
                                                                 </FormControl>
                                                                 <div className="flex justify-between">
                                                                     <FormDescription>
-                                                                        Phí đề xuất: đề xuất {3}K
+                                                                        Phí đề xuất: {isState.limitedKilometers.overLimitFee.propose > 100 ? FormatNumberToThousands(isState.limitedKilometers.overLimitFee.propose) : `${isState.limitedKilometers.overLimitFee.propose ?? 0}K`}
                                                                     </FormDescription>
                                                                     <FormDescription className='font-bold'>
-                                                                        {field.value}K
+                                                                        {+field.value > 1000 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
                                                                     </FormDescription>
                                                                 </div>
                                                                 {fieldState?.invalid && fieldState?.error && (

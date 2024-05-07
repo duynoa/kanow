@@ -30,6 +30,11 @@ export interface IStateInfomation extends ICommonType {
     dataFeature: TComboboxApi[];
     dataSampleCar: TComboboxApi[];
 }
+interface Obj {
+    max: number;
+    min: number;
+    propose: number;
+}
 
 export interface IStateLease extends ICommonType {
     dataCity: any[];
@@ -38,17 +43,18 @@ export interface IStateLease extends ICommonType {
     dataWordLimit: any[];
     dataUntil: any[];
     vehicleHanding: {
-        intersectionSquare: number;
-        deliveryFee: number;
-        freeDelivery: number;
+        intersectionSquare: Obj;
+        deliveryFee: Obj;
+        freeDelivery: Obj;
     };
     discount: number;
     limitedKilometers: {
-        maximumKilometers: number;
-        overLimitFee: number;
+        maximumKilometers: Obj;
+        overLimitFee: Obj;
     };
     bookCarQuickly: {
         wordLimit: TComboboxApi[];
         until: TComboboxApi[];
     };
+    rentCostPropose: number;
 }

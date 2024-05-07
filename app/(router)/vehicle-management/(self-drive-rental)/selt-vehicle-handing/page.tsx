@@ -15,10 +15,6 @@ import { useForm } from "react-hook-form";
 type Props = {}
 
 export default function SelftVehicleHanding(props: Props) {
-    const param: ReadonlyURLSearchParams = useSearchParams()
-
-    const id: string | null = param.get("id") || ''
-
     const initialState: StateSelftVehicleHanding = {
         intersectionSquare: {
             max: 500,
@@ -63,11 +59,10 @@ export default function SelftVehicleHanding(props: Props) {
 
     useEffect(() => {
         if (data) {
-            console.log(data);
             form.setValue('vehicleHanding.open', data?.car?.delivery_car == 1)
-            form.setValue('vehicleHanding.deliveryFee', data?.car?.fee_km_delivery_car)
-            form.setValue('vehicleHanding.freeDelivery', data?.car?.free_km_delivery_car)
-            form.setValue('vehicleHanding.intersectionSquare', data?.car?.km_delivery_car)
+            form.setValue('vehicleHanding.deliveryFee', data?.car?.fee_km_delivery_car ?? 0)
+            form.setValue('vehicleHanding.freeDelivery', data?.car?.free_km_delivery_car ?? 0)
+            form.setValue('vehicleHanding.intersectionSquare', data?.car?.km_delivery_car ?? 0)
             queryState({
                 deliveryFee: {
                     ...isState.deliveryFee,
@@ -86,6 +81,8 @@ export default function SelftVehicleHanding(props: Props) {
         }
         form.reset()
     }, [data])
+
+    console.log(findValue.vehicleHanding);
 
     const onSubmit = async (value: any) => {
         let formData = new FormData()

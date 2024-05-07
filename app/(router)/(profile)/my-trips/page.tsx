@@ -28,7 +28,7 @@ const MyTrips = (props: Props) => {
         dataMyTripsTalented: [],
         page: 1,
         limit: 4,
-        favourite: "1",
+        tab: "1",
         next: "",
         totalDrivingCar: 0,
         isLoadingScroll: false,
@@ -77,7 +77,7 @@ const MyTrips = (props: Props) => {
     useEffect(() => {
         // handleFetchListCars(isState.page)
         setValueFilter(-1)
-    }, [isState.favourite])
+    }, [isState.tab])
 
 
     const fetDataFilter = async () => {
@@ -168,7 +168,7 @@ const MyTrips = (props: Props) => {
         if (valueFilter) {
             handleFetchListCars(1)
         }
-    }, [valueFilter, isState.favourite])
+    }, [valueFilter, isState.tab])
 
     return (
         <BackgroundUiProfile className='space-y-4 '>
@@ -182,7 +182,7 @@ const MyTrips = (props: Props) => {
                     </Button>
                 </div>
             </div>
-            <Tabs defaultValue="1" onValueChange={(value) => queryState({ favourite: value, page: 1 })} className="w-full">
+            <Tabs defaultValue="1" onValueChange={(value) => queryState({ tab: value, page: 1 })} className="w-full">
                 <TabsList className='bg-transparent border-b border-b-[#F6F6F8] rounded-none w-full justify-start gap-8 p-0'>
                     <TabsTrigger
                         value="1"

@@ -7,6 +7,7 @@ import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
+import { IShuttle } from "@/types/VehicleManagement/TalentedRental/IShuttle";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
@@ -14,26 +15,28 @@ import { ControllerRenderProps, useForm } from "react-hook-form";
 type Props = {}
 
 
+
 export default function TalentedShuttle(props: Props) {
 
-    const initialState: any = {
+    const initialState: IShuttle = {
         // đưa đón tận nơi trong vòng
         within: {
             max: 500,
             min: 0,
-            propose: 0
+            propose: 0,
+
         },
         // phí đưa đón
         shuttleFee: {
             max: 5000000,
             min: 0,
-            propose: 0
+            propose: 0,
         },
         // miễn phí đưa đón
         freeShuttle: {
             max: 500,
             min: 0,
-            propose: 0
+            propose: 0,
         }
     }
 
@@ -52,6 +55,8 @@ export default function TalentedShuttle(props: Props) {
 
     const [isState, setIsState] = useState(initialState)
 
+    const [isMount, setIsMount] = useState(false)
+
     const checkValueArray = (array: any[], field: ControllerRenderProps<any, any>) => {
         return array.find((x: any) => x.value === field.value)?.label
     }
@@ -66,29 +71,33 @@ export default function TalentedShuttle(props: Props) {
 
     const { apiUpdateCar } = apiVehicleCommon()
 
+    useEffect(() => {
+        setIsMount(true)
+    }, [])
+
 
     useEffect(() => {
-        if (!Array.isArray(data) && data) {
-            console.log(data, idCar);
-            console.log("dataOther", dataOther);
-            [
-                ["shuttle.within", data?.car_talent?.km_delivery_car],
-                ["shuttle.shuttleFee", data?.car_talent?.fee_km_delivery_car],
-                ["shuttle.freeShuttle", data?.car_talent?.free_km_delivery_car],
-            ].map(([name, value]: any) => form.setValue(name, value))
+        if (data) {
+
+            form.setValue('shuttle.within', data?.car_talent?.km_delivery_car ?? 0)
+            form.setValue('shuttle.shuttleFee', data?.car_talent?.fee_km_delivery_car ?? 0)
+            form.setValue('shuttle.freeShuttle', data?.car_talent?.free_km_delivery_car ?? 0)
+
             queryState({
+                flag: true,
+                within: {
+                    ...isState.within,
+                    propose: +dataOther.other_talent?.km_delivery_car,
+                },
                 shuttleFee: {
                     ...isState.shuttleFee,
-                    propose: +dataOther.other_talent?.fee_km_delivery_car
+                    propose: +dataOther.other_talent?.fee_km_delivery_car,
                 },
                 freeShuttle: {
                     ...isState.freeShuttle,
-                    propose: +dataOther.other_talent?.free_km_delivery_car
+                    propose: +dataOther.other_talent?.free_km_delivery_car,
                 },
-                within: {
-                    ...isState.within,
-                    propose: +dataOther.other_talent?.km_delivery_car
-                },
+
             })
             return
         }
@@ -114,7 +123,7 @@ export default function TalentedShuttle(props: Props) {
         toastCore.error(db.message)
     }
 
-
+    if (!isMount) return null
     return (
         <BackgroundUiVehicle className="flex flex-col gap-4 ">
             <div className="flex flex-col gap-2">
@@ -133,7 +142,11 @@ export default function TalentedShuttle(props: Props) {
                                 <FormControl>
                                     <>
                                         <CustomSlider
-                                            defaultValue={[+field.value]} min={isState.within.min} max={isState.within.max} step={1}
+                                            value={[+field.value]}
+                                            defaultValue={[+field.value]}
+                                            min={isState.within.min}
+                                            max={isState.within.max}
+                                            step={1}
                                             onValueChange={field.onChange}
                                         />
                                     </>
@@ -146,9 +159,6 @@ export default function TalentedShuttle(props: Props) {
                                         {field.value}Km
                                     </FormDescription>
                                 </div>
-                                {fieldState?.invalid && fieldState?.error && (
-                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                )}
                             </FormItem>
                         );
                     }}
@@ -165,7 +175,11 @@ export default function TalentedShuttle(props: Props) {
                                 <FormControl>
                                     <>
                                         <CustomSlider
-                                            defaultValue={[+field.value]} max={isState.shuttleFee.max} min={isState.shuttleFee.min} step={1}
+                                            value={[+field.value]}
+                                            defaultValue={[+field.value]}
+                                            min={isState.shuttleFee.min}
+                                            max={isState.shuttleFee.max}
+                                            step={1}
                                             onValueChange={field.onChange}
                                         />
                                     </>
@@ -178,9 +192,6 @@ export default function TalentedShuttle(props: Props) {
                                         {+field.value > 1000 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
                                     </FormDescription>
                                 </div>
-                                {fieldState?.invalid && fieldState?.error && (
-                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                )}
                             </FormItem>
                         );
                     }}
@@ -197,7 +208,11 @@ export default function TalentedShuttle(props: Props) {
                                 <FormControl>
                                     <>
                                         <CustomSlider
-                                            defaultValue={[+field.value]} max={isState.freeShuttle.max} min={isState.freeShuttle.min} step={1}
+                                            value={[+field.value]}
+                                            defaultValue={[+field.value]}
+                                            min={isState.freeShuttle.min}
+                                            max={isState.freeShuttle.max}
+                                            step={1}
                                             onValueChange={field.onChange}
                                         />
                                     </>
@@ -210,9 +225,6 @@ export default function TalentedShuttle(props: Props) {
                                         {field.value}Km
                                     </FormDescription>
                                 </div>
-                                {fieldState?.invalid && fieldState?.error && (
-                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                )}
                             </FormItem>
                         );
                     }}
