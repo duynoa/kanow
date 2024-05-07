@@ -184,6 +184,31 @@ const ListMyCar = (props: Props) => {
         handleFetchListCars(1)
     }, [valueFilter])
 
+
+
+    // useEffect(() => {
+    //     queryKeyIsStateProfileMyCar({ page: 1 })
+    //     if (isStateProfileMyCar.tab == 1) {
+    //         // handleFetchListCars(1)
+    //         if (valueFilter) {
+    //             handleFetchListCars(1)
+
+    //         } else {
+    //             handleFetchListCars(isStateProfileMyCar.page)
+    //         }
+    //         setValueFilter(-1)
+    //     }
+    // }, [isStateProfileMyCar.tab, valueFilter])
+
+    // useEffect(() => {
+    //     handleFetchListStatusFilter()
+    // }, [])
+
+    // // useEffect(() => {
+    // //     // handleFetchListCars(1)
+    // //     handleFetchListCars(1)
+    // // }, [valueFilter])
+
     return (
         <BackgroundUiProfile className={'space-y-4  lg:pr-2 pr-3'}>
             <div className="flex justify-between items-center">
