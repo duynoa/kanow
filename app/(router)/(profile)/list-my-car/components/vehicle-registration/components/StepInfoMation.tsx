@@ -16,6 +16,7 @@ import apiMyCar from "@/services/profile/listMyCar/listMyCar.services"
 import SkeletonFeature from "../../Skeleton/SkeletonFeature"
 import { useWatch } from "react-hook-form"
 import dynamic from "next/dynamic"
+import { useVehicleManage } from "@/hooks/useVehicleManage"
 // import CustomQuill from "@/components/quill/CustomQuill"
 const CustomQuill = dynamic(() => import("@/components/quill/CustomQuill"), { ssr: false });
 
@@ -87,6 +88,7 @@ const StepInfoMation = ({ form, checkValueArray, converArray, isStateChild: { ty
     const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
     const findValue = form.getValues()
+
 
     //Danh sách hãng xe
     const fetListCarCompany = async (value: any) => {
@@ -160,7 +162,8 @@ const StepInfoMation = ({ form, checkValueArray, converArray, isStateChild: { ty
         fetListFeature()
         fetListMoveEndFeuelType()
         fetListCarCompany('')
-        // fetListCarModel('')
+        fetListCarModel('')
+        fetListSampleCar('')
     }, [])
 
     useEffect(() => {

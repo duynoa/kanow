@@ -31,7 +31,7 @@ const MyTripSelfDrivingCar = ({ isState }: any) => {
                 return <React.Fragment key={e.id}>
                     {isVisibleMobile ?
                         <Link
-                            href={`/info-rental-car/${e.id}`}
+                            href={`/info-rental-car/${e.id}?type=${isState.tab}`}
                             id={`card-${e.id}`}
                             className={`flex flex-wrap gap-2 group bg-white border-[#D7D9E0] ${index === isState.dataMyTrips?.length - 1 ? 'border-b-0' : 'border-b'} pb-4 w-full relative z-0`}
                         >
@@ -104,7 +104,7 @@ const MyTripSelfDrivingCar = ({ isState }: any) => {
                         </Link>
                         :
                         <Link
-                            href={`/info-rental-car/${e.id}`}
+                            href={`/info-rental-car/${e.id}?type=${isState.tab}`}
                             id={`card-${e.id}`}
                             className={`flex lg:items-center lg:flex-nowrap group items-start flex-wrap lg:gap-6 gap-3  bg-white border-[#D7D9E0]  ${index === isState.dataMyTrips?.length - 1 ? 'border-b-0' : 'border-b'} pb-5 w-full relative z-0`}
                         >

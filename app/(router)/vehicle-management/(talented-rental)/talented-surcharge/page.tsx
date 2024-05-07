@@ -167,7 +167,7 @@ export default function TalentedSurcharge(props: Props) {
                                                                         </FormControl>
                                                                         <div className="flex justify-between">
                                                                             <FormDescription>
-                                                                                Phí đề xuất: {100}K
+                                                                                Phí đề xuất: {item?.propose_fee > 100 ? FormatNumberToThousands(item?.propose_fee) : `${item?.propose_fee ?? 0}K`}
                                                                             </FormDescription>
                                                                             <FormDescription className='font-bold'>
                                                                                 {field.value > 100 ? FormatNumberToThousands(field.value) : `${field.value ?? 0}K`}

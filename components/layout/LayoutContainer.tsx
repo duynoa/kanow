@@ -1,7 +1,7 @@
 'use client'
 
 import Aos from 'aos';
-import React, { useEffect } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 
 import Header from './Header';
 import Footer from './Footer';
@@ -69,6 +69,8 @@ const LayoutContainer = ({
 }) => {
     const pathname = usePathname()
 
+    const [isMounted, setIsMounted] = useState<boolean>(false)
+
     const { getKeySettings } = useAuthenticationAPI()
     const { apiGetCurrentPosition } = useGoogleApi()
 
@@ -109,26 +111,9 @@ const LayoutContainer = ({
 
     const { isStateDataHome } = useDataHome()
 
-    // chuyển lại page là 1 khi pathname khác
     useEffect(() => {
-        const scrollTop = () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-        scrollTop()
+        setIsMounted(true)
 
-        if (!pathname.startsWith('/list-cars-autonomous') && !pathname.startsWith('/list-cars-driver')) {
-            queryKeyIsStateListCarAutonomous({
-                ...isStateListCarAutonomous,
-                page: 1
-            })
-            queryKeyIsStateListCarsDriver({
-                ...isStateListCarsDriver,
-                page: 1
-            })
-        }
-    }, [pathname])
-
-    useEffect(() => {
         Aos.init({
             duration: 1800,
             once: true
@@ -160,6 +145,25 @@ const LayoutContainer = ({
         fetchKeyApi()
         fetchDataPolicy()
     }, []);
+
+    // chuyển lại page là 1 khi pathname khác
+    useEffect(() => {
+        const scrollTop = () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        scrollTop()
+
+        if (!pathname.startsWith('/list-cars-autonomous') && !pathname.startsWith('/list-cars-driver')) {
+            queryKeyIsStateListCarAutonomous({
+                ...isStateListCarAutonomous,
+                page: 1
+            })
+            queryKeyIsStateListCarsDriver({
+                ...isStateListCarsDriver,
+                page: 1
+            })
+        }
+    }, [pathname])
 
     useEffect(() => {
         const fetchAddressLocalStorage = async () => {
@@ -513,46 +517,50 @@ const LayoutContainer = ({
         }
     }, [generalKey, isStateInfoRentalCar, queryKeyIsStateInfoRentalCar]);
 
+
     return (
         <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>
             <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
-                <Header />
-                <main className='overflow-hidden w-full h-full'>
-                    {children}
-                    <ButtonToTop />
-                    <AlertDialogLogout />
-                    <DialogLogin />
-                    <DialogCalendar />
-                    <DialogReviewImage />
-                    <DialogRequestCarRental />
-                    <DialogValidate />
-                    <AlertCancel />
-                    <DialogAnswerPolicy />
-                    <DialogCancelCar />
-                    <DialogPromotions />
-                    <DialogReportCar />
+                <Suspense>
+                    <Header />
+                    <main className='overflow-hidden w-full h-full'>
+                        {children}
+                        <ButtonToTop />
+                        <AlertDialogLogout />
+                        <DialogLogin />
+                        <DialogCalendar />
+                        <DialogReviewImage />
+                        <DialogRequestCarRental />
+                        <DialogValidate />
+                        <AlertCancel />
+                        <DialogAnswerPolicy />
+                        <DialogCancelCar />
+                        <DialogPromotions />
+                        <DialogReportCar />
 
-                    <DialogFilterAddress />
-                    <DialogRouteAddress />
+                        <DialogFilterAddress />
+                        <DialogRouteAddress />
 
-                    <AlertDialogCustom />
-                    <DialogRegisterOwnerDriver />
-                    <DialogFilterMyCar />
-                    <DialogFilterListCars />
-                </main>
-                {pathname !== "/list-cars-autonomous" && pathname !== "/list-cars-driver" && <Footer />}
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                />
+                        <AlertDialogCustom />
+                        <DialogRegisterOwnerDriver />
+                        <DialogFilterMyCar />
+                        <DialogFilterListCars />
+                    </main>
+                    {pathname !== "/list-cars-autonomous" && pathname !== "/list-cars-driver" && <Footer />}
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="light"
+                    />
+                </Suspense>
+
             </body>
         </GoogleOAuthProvider>
     )

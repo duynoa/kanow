@@ -1,5 +1,6 @@
 "use client"
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
+import { FormatNumberToThousands } from "@/components/format/FormatNumber";
 import { CustomSlider } from "@/components/ui/customSlider";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -16,10 +17,6 @@ type Props = {}
 
 
 export default function SeflRentalPrice(props: Props) {
-    const param: ReadonlyURLSearchParams = useSearchParams()
-
-    const id: string | null = param.get("id") || ''
-
     const form = useForm({
         defaultValues: {
             //don gia thue mac dinh
@@ -28,7 +25,8 @@ export default function SeflRentalPrice(props: Props) {
                 open: false,
                 value: "",
                 dataDiscount: 0,
-                defaultValue: 0
+                defaultValue: 0,
+                propose: ""
             }
         }
     })
@@ -37,20 +35,20 @@ export default function SeflRentalPrice(props: Props) {
 
     const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
 
+    console.log(dataOther);
 
     const findValue = form.getValues()
 
 
     useEffect(() => {
         if (!Array.isArray(data) && data) {
-            console.log(data);
-
             [
                 ["unitPrice", data?.car?.rent_cost],
-                ["discount.dataDiscount", dataOther?.other?.percent_discount],
+                ["discount.dataDiscount", 100],
                 ["discount.defaultValue", data?.percent_discount],
                 ["discount.value", data?.percent_discount],
                 ["discount.open", data?.discount == 1],
+                ['discount.propose', dataOther?.other?.percent_discount]
             ].forEach(([name, value]: any) => {
                 form.setValue(name, value)
             })
@@ -96,7 +94,9 @@ export default function SeflRentalPrice(props: Props) {
                                 <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
                                     Đơn giá thuê mặc định<span className="text-red-500">*</span>
                                     <h1 className="text-xs text-gray-400">Đơn giá thuê mặc định được áp dụng nếu ngày đó không có tùy chỉnh khác về giá</h1>
-                                    <h1 className="text-xs text-gray-400">Giá đề xuất 390K</h1>
+                                    <h1 className="text-xs text-gray-400">Giá đề xuất
+                                        <span className="px-1">{dataOther?.rent_cost_propose > 100 ? FormatNumberToThousands(dataOther?.rent_cost_propose) : `${dataOther?.rent_cost_propose ?? 0}K`}</span>
+                                    </h1>
                                 </FormLabel>
                                 <FormControl>
                                     <NumericFormatCore
@@ -153,7 +153,7 @@ export default function SeflRentalPrice(props: Props) {
                                                     </FormControl>
                                                     <div className="flex justify-between">
                                                         <FormDescription>
-                                                            Giảm đề xuất {findValue.discount.defaultValue}%
+                                                            Giảm đề xuất {findValue.discount.propose}%
                                                         </FormDescription>
                                                         <FormDescription className='font-bold'>
                                                             {field.value}%

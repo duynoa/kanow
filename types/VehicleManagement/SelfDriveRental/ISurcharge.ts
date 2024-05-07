@@ -10,6 +10,7 @@ interface ArraySurcharge {
     updated_at: string;
     created_at: string;
     check_fee: number;
+    propose_fee: number;
 }
 export interface ISTateSurcharge {
     // limitedKilometers?: {

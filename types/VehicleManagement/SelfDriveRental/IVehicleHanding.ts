@@ -1,5 +1,10 @@
+interface Obj {
+    max: number;
+    min: number;
+    propose: number;
+}
 export interface StateSelftVehicleHanding {
-    intersectionSquare: number;
-    deliveryFee: number;
-    freeDelivery: number;
+    intersectionSquare: Obj;
+    deliveryFee: Obj;
+    freeDelivery: Obj;
 }
