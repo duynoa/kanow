@@ -34,7 +34,8 @@ const MyCar = ({ }: Props) => {
                     <Link
                         key={e.id}
                         id={`e-${e.id}`}
-                        href={`/info-rental-car/${e.id}?type=1`}
+                        // href={`/info-rental-car/${e.id}?type=1`}
+                        href={`/detail-car/${e.id}?type=1&${ConvertToSlug(e?.name_car)}`}
                         className={`flex lg:flex-nowrap flex-wrap group lg:gap-6 gap-3 xl:items-start lg:items-start items-start bg-white border-[#D7D9E0] border w-full p-4 rounded-xl relative z-0`}
                     >
                         <div
