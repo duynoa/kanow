@@ -1,5 +1,6 @@
 import LayoutPolicy from '@/components/layout/LayoutPolicy'
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
     title: 'Kanow - Chính sách',
@@ -12,8 +13,10 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <LayoutPolicy>
-            {children}
-        </LayoutPolicy>
+        <Suspense>
+            <LayoutPolicy>
+                {children}
+            </LayoutPolicy>
+        </Suspense>
     )
 }

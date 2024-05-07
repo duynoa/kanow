@@ -1,5 +1,6 @@
 import LayoutProfile from '@/components/layout/LayoutProfile'
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
     title: 'Kanow - Thông tin',
@@ -12,8 +13,10 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <LayoutProfile>
-            {children}
-        </LayoutProfile>
+        <Suspense>
+            <LayoutProfile>
+                {children}
+            </LayoutProfile>
+        </Suspense>
     )
 }
