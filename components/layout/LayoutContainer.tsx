@@ -341,7 +341,7 @@ const LayoutContainer = ({
                             })
                         }
                     }
-                } else {
+                } else if (pathname === "/" || pathname === "/home") {
                     if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
                         const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
                         const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)

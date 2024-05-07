@@ -21,7 +21,7 @@ import { useDialogImage } from '@/hooks/useDialogImage'
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { FormatDistance, FormatNumberHundred, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
+import { FormatDistance, FormatDistanceFullKm, FormatNumberHundred, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
 
 import PaymentCar from './components/PaymentCar'
 import InformationCar from './components/InformationCar';
@@ -53,7 +53,6 @@ type Props = {
 const DetailCar = ({ params }: Props) => {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-
     const typeCarDetail = searchParams.get('type')
 
     const router = useRouter()
@@ -119,6 +118,254 @@ const DetailCar = ({ params }: Props) => {
         setIsMounted(true)
     }, [])
 
+    // Định nghĩa một hàm xử lý sự kiện cuộn trang
+    const handleScroll = () => {
+        // Lấy vị trí cuộn của trang
+        const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+
+        // Kiểm tra nếu vị trí cuộn vượt qua một ngưỡng nhất định, ví dụ 100px
+        if (scrollPosition > 100) {
+            // Nếu vượt qua ngưỡng, hiển thị header thứ hai
+            setShowSecondHeader(true);
+        } else {
+            // Nếu không, ẩn nó đi
+            setShowSecondHeader(false);
+        }
+    }
+
+    // Sử dụng useEffect để đăng ký sự kiện cuộn khi component được mount
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        // Cleanup: đảm bảo gỡ bỏ sự kiện cuộn khi component bị unmount
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    console.log('DateTemp', dateTemp);
+
+
+    // fetch lisst car related
+    const fetchDataListCarsRelated = async () => {
+        try {
+            const dataListCar = {
+                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
+                car_id: params.slug,
+                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
+            }
+
+            const { data } = await getListCarsRelated(dataListCar)
+
+            if (data && data.data && data.base.base) {
+                let { customDataListCars } = CustomDataListCars(data)
+
+                queryKeyIsStateDetailCar({
+                    listCarsRelated: customDataListCars,
+                })
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    // fetch data calendar detail
+    const fetchDataListCalendarPriceMonth = async () => {
+        try {
+            let dataCar = {
+                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
+                car_id: params.slug
+            }
+
+            const { data } = await getListCalendarPriceMonth(dataCar)
+
+            if (data && data.data) {
+                setDataCalendar(data.data)
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    // fetch data detail first
+    const fetchDataDetailCarFirst = async () => {
+        try {
+            // Kiểm tra nếu không cần gọi fetchDataDetailCarSecond thì return luôn
+            setIsLoadingSkeletonDetailCar(true)
+
+            let dataParams = {
+                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
+                date_search: `${dateTemp ? `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}` : `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`}`,
+                lat: coordinates.lat != 0 ? coordinates.lat : undefined,
+                lon: coordinates.lng != 0 ? coordinates.lng : undefined,
+            }
+            const { data } = await getDataDetailCar(params.slug, dataParams)
+
+            if (data && data.data && data.base.base) {
+                let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
+
+                if (data.data?.hour_receive_car &&
+                    data.data?.hour_back_car &&
+                    data.data?.hour_receive_car?.length > 0 &&
+                    data.data?.hour_back_car?.length > 0
+                ) {
+                    const [startHours, startMinutes] = parseTimeString(data.data?.hour_receive_car ? data.data?.hour_receive_car[0]?.hour_start : "21:00");
+                    const [endHours, endMinutes] = parseTimeString(data.data?.hour_back_car ? data.data?.hour_back_car[0]?.hour_start : "20:00");
+
+                    const startDate = setMinutes(setHours(new Date(), startHours), startMinutes);
+                    const endDate = setMinutes(setHours(addDays(new Date(), 1), endHours), endMinutes);
+
+                    const minutesDifference = differenceInMinutes(endDate, startDate);
+                    const timeDate = Math.ceil(minutesDifference / 1440)
+
+                    setDateStart(startDate)
+                    setDateEnd(endDate)
+                    // if (typeCarDetail == "1") {
+                    //     setDateTemp({
+                    //         from: startDate,
+                    //         to: endDate,
+                    //     })
+                    // }
+                    setNumberDay(timeDate)
+                } else {
+                    setDateStart(dateReal?.from)
+                    setDateEnd(dateReal?.to)
+                    // if (typeCarDetail == "1") {
+                    //     setDateTemp({
+                    //         from: dateReal?.from,
+                    //         to: dateReal?.to,
+                    //     })
+                    // }
+
+                }
+
+                queryKeyIsStateDetailCar({
+                    dataDetailCar: customDataDetailCar
+                })
+                setIsLoadingSkeletonDetailCar(false);
+            } else {
+
+                setIsLoadingSkeletonDetailCar(false);
+            }
+            // Đã gọi fetchDataDetailCarSecond, set isLoadingSkeletonDetailCar về false để tránh gọi lại trong useEffect
+        } catch (err) {
+            throw err
+        }
+
+    }
+
+    // fetch data detail second
+    const fetchDataDetailCarSecond = async () => {
+        try {
+            // Kiểm tra nếu không cần gọi fetchDataDetailCarSecond thì return luôn
+            setIsLoadingSkeletonDetailCar(true)
+
+            let dataParams = {
+                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
+                date_search: `${dateTemp ?
+                    `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}`
+                    :
+                    `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`}`,
+                lat: coordinates ? coordinates.lat : undefined,
+                lon: coordinates ? coordinates.lng : undefined,
+            }
+            const { data } = await getDataDetailCar(params.slug, dataParams)
+
+            if (data && data.data && data.base.base) {
+                let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
+
+                queryKeyIsStateDetailCar({
+                    dataDetailCar: customDataDetailCar,
+                })
+                setIsLoadingSkeletonDetailCar(false);
+            } else {
+                setIsLoadingSkeletonDetailCar(false);
+            }
+            // Đã gọi fetchDataDetailCarSecond, set isLoadingSkeletonDetailCar về false để tránh gọi lại trong useEffect
+        } catch (err) {
+            throw err
+        }
+
+    }
+
+    useEffect(() => {
+        if (isStateDetailCar?.onSuccess?.onSuccessPage) {
+            fetchDataDetailCarSecond()
+            queryKeyIsStateDetailCar({
+                ...isStateDetailCar,
+                onSuccess: {
+                    onSuccessPage: false
+                }
+            })
+        }
+    }, [isStateDetailCar?.onSuccess?.onSuccessPage])
+
+    useEffect(() => {
+        fetchDataDetailCarFirst()
+    }, [params.slug, numberDay])
+
+
+    // fetch data 
+    useEffect(() => {
+        const savedCoordinates = Cookies.get('coordinates');
+
+        if (typeCarDetail == "2" && !savedCoordinates) {
+            return router.push("/")
+        }
+
+
+        fetchDataListCalendarPriceMonth()
+        fetchDataListCarsRelated()
+    }, [params.slug])
+
+    useEffect(() => {
+        if (openDialogReportCar && isStateDetailCar.reportCar.listReportCar.length === 0) {
+            const fetchListReportCar = async () => {
+                if (dataListReportCar.length === 0) {
+                    try {
+                        const { data } = await getListReportCar();
+
+                        if (data && data.data) {
+                            queryKeyIsStateDetailCar({
+                                reportCar: {
+                                    ...isStateDetailCar?.reportCar,
+                                    listReportCar: data.data
+                                }
+                            })
+                        }
+
+                    } catch (err) {
+                        throw err
+                    }
+                }
+            }
+
+            fetchListReportCar()
+        }
+        if (openDialogPromotion && dataPromotions.length === 0) {
+            const fetchListPromotions = async () => {
+                try {
+                    setIsLoadingDataPromotion(true)
+                    const dataSearch = {
+                        code: null,
+                        type: typeCarDetail ? typeCarDetail : null,
+                        // number_day: numberDay
+                    }
+                    const { data } = await getListPromotions(dataSearch)
+                    if (data && data.data) {
+                        setDataPromotions(data?.data)
+                        setIsLoadingDataPromotion(false)
+                    } else {
+                        setIsLoadingDataPromotion(false)
+                    }
+                } catch (err) {
+                    throw err
+                }
+            }
+
+            fetchListPromotions()
+        }
+    }, [params.slug, openDialogReportCar, openDialogPromotion])
+
     // fetch data api google lấy toạ độ vị trí, total km, tính số ngày khi ở type xe có tài 
     useEffect(() => {
         if (typeCarDetail == "1") {
@@ -161,6 +408,9 @@ const DetailCar = ({ params }: Props) => {
                 }
             })
         } else if (typeCarDetail == "2" && isStateDetailCar.dataDetailCar.price.total_km_day && coordinates.lat != 0 && coordinates.lng != 0 && coordinates.latTo != 0 && coordinates.lngTo != 0) {
+            console.log('check ??');
+
+
             const fetchDataRouteMatrixAddress = async () => {
                 try {
                     setIsLoadingSkeletonDetailCar(true)
@@ -261,7 +511,8 @@ const DetailCar = ({ params }: Props) => {
                             }
                         })
 
-                        let numberDayWithAddress = parseInt(FormatDistance(data.result.routes[0].legs[0].distance.value)) / isStateDetailCar.dataDetailCar.price.total_km_day
+                        let numberDayWithAddress = parseInt(FormatDistanceFullKm(data.result.routes[0].distance.value)) / isStateDetailCar.dataDetailCar.price.total_km_day
+                        console.log('numberDayWithAddress', numberDayWithAddress);
 
                         // Đặt options vào state
                         queryKeyIsStateDetailCar({
@@ -269,53 +520,53 @@ const DetailCar = ({ params }: Props) => {
                             map: {
                                 ...isStateDetailCar.map,
                                 options: options,
-                                totalDistance: data.result.routes[0].legs[0].distance.value,
+                                totalDistance: data.result.routes[0].distance.value,
                                 dataSubmit: dataSubmit,
                             },
                             dataDetailCar: {
                                 ...isStateDetailCar.dataDetailCar,
                                 price: {
                                     ...isStateDetailCar.dataDetailCar.price,
-                                    number_day: Math.ceil(numberDayWithAddress),
-
-                                    temp_total_amount: (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+                                    temp_total_amount: (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1),
                                     // thành tiền
                                     total_amount:
                                         isStateDetailCar?.dataDetailCar?.promotion?.length > 0
                                             ?
-                                            ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1)) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day
+                                            ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1)) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day
                                             :
-                                            (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+                                            (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1),
                                     // tiền đặt cọc
                                     price_depoist:
                                         isStateDetailCar?.dataDetailCar?.promotion?.length > 0
                                             ?
-                                            ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
+                                            ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
                                             :
-                                            (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
+                                            (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
                                     ,
                                     // thanh toán khi nhận xe (Thành tiền - tiền cọc)
                                     cash_on_delivery:
                                         isStateDetailCar?.dataDetailCar?.promotion?.length > 0
                                             ?
-                                            (((+isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - +isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + (+isStateDetailCar?.dataDetailCar?.price?.price_insurance_day)) * (numberDay ? numberDay : 1)) - ((((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100))
+                                            (((+isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - +isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + (+isStateDetailCar?.dataDetailCar?.price?.price_insurance_day)) * (numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1)) - ((((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1)) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100))
                                             :
-                                            ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - (((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)),
+                                            ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1)) - (((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1)) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)),
                                 }
                             }
                         })
+
 
                         // Kiểm tra xem dateReal và dateReal.from có tồn tại hay không
                         if (dateReal?.from) {
                             // Lấy ngày từ dateReal.from và sau đó tăng nó lên 2 ngày
                             const fromDate = dateReal.from;
-                            const toDate = addDays(fromDate, Math.ceil(numberDayWithAddress));
+                            const toDate = addDays(fromDate, numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1);
 
                             // Thiết lập giá trị mặc định cho defaultDateRange
                             const defaultDateRange: DateRange = {
                                 from: setMinutes(setHours(fromDate, 21), 0),
                                 to: setMinutes(setHours(toDate, 21), 0),
                             };
+                            console.log('check defaultDateRange', defaultDateRange);
 
                             // Thiết lập giá trị cho dateTemp
                             setDateTemp(defaultDateRange);
@@ -323,8 +574,7 @@ const DetailCar = ({ params }: Props) => {
                             console.error("Không thể thiết lập giá trị mặc định vì dateReal.from không tồn tại.");
                         }
 
-                        setNumberDay(Math.ceil(numberDayWithAddress))
-
+                        setNumberDay(numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1)
                         setIsLoadingSkeletonDetailCar(false);
                     } else {
                         setIsLoadingSkeletonDetailCar(false);
@@ -342,241 +592,11 @@ const DetailCar = ({ params }: Props) => {
         typeCarDetail,
         coordinates,
         isStateDetailCar.dataDetailCar.price.total_km_day,
+        pathname
     ])
 
-    // Định nghĩa một hàm xử lý sự kiện cuộn trang
-    const handleScroll = () => {
-        // Lấy vị trí cuộn của trang
-        const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+    console.log('isStateDetailCar: ', isStateDetailCar);
 
-        // Kiểm tra nếu vị trí cuộn vượt qua một ngưỡng nhất định, ví dụ 100px
-        if (scrollPosition > 100) {
-            // Nếu vượt qua ngưỡng, hiển thị header thứ hai
-            setShowSecondHeader(true);
-        } else {
-            // Nếu không, ẩn nó đi
-            setShowSecondHeader(false);
-        }
-    }
-
-    // Sử dụng useEffect để đăng ký sự kiện cuộn khi component được mount
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        // Cleanup: đảm bảo gỡ bỏ sự kiện cuộn khi component bị unmount
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
-
-    // fetch lisst car related
-    const fetchDataListCarsRelated = async () => {
-        try {
-            const dataListCar = {
-                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
-                car_id: params.slug,
-                date_search: `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`,
-            }
-
-            const { data } = await getListCarsRelated(dataListCar)
-
-            if (data && data.data && data.base.base) {
-                let { customDataListCars } = CustomDataListCars(data)
-
-                queryKeyIsStateDetailCar({
-                    listCarsRelated: customDataListCars,
-                })
-            }
-        } catch (err) {
-            throw err
-        }
-    }
-
-    // fetch data calendar detail
-    const fetchDataListCalendarPriceMonth = async () => {
-        try {
-            let dataCar = {
-                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
-                car_id: params.slug
-            }
-
-            const { data } = await getListCalendarPriceMonth(dataCar)
-
-            if (data && data.data) {
-                setDataCalendar(data.data)
-            }
-        } catch (err) {
-            throw err
-        }
-    }
-
-    // fetch data detail first
-    const fetchDataDetailCarFirst = async () => {
-        try {
-            // Kiểm tra nếu không cần gọi fetchDataDetailCarSecond thì return luôn
-            setIsLoadingSkeletonDetailCar(true)
-
-            let dataParams = {
-                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
-                date_search: `${dateTemp ? `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}` : `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`}`,
-                lat: coordinates.lat != 0 ? coordinates.lat : undefined,
-                lon: coordinates.lng != 0 ? coordinates.lng : undefined,
-            }
-            const { data } = await getDataDetailCar(params.slug, dataParams)
-
-            if (data && data.data && data.base.base) {
-                let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
-
-                if (data.data?.hour_receive_car &&
-                    data.data?.hour_back_car &&
-                    data.data?.hour_receive_car?.length > 0 &&
-                    data.data?.hour_back_car?.length > 0
-                ) {
-                    const [startHours, startMinutes] = parseTimeString(data.data?.hour_receive_car ? data.data?.hour_receive_car[0]?.hour_start : "21:00");
-                    const [endHours, endMinutes] = parseTimeString(data.data?.hour_back_car ? data.data?.hour_back_car[0]?.hour_start : "20:00");
-
-                    const startDate = setMinutes(setHours(new Date(), startHours), startMinutes);
-                    const endDate = setMinutes(setHours(addDays(new Date(), 1), endHours), endMinutes);
-
-                    const minutesDifference = differenceInMinutes(endDate, startDate);
-                    const timeDate = Math.ceil(minutesDifference / 1440)
-
-                    setDateStart(startDate)
-                    setDateEnd(endDate)
-                    setDateTemp({
-                        from: startDate,
-                        to: endDate,
-                    })
-                    setNumberDay(timeDate)
-                } else {
-                    setDateStart(dateReal?.from)
-                    setDateEnd(dateReal?.to)
-                    setDateTemp({
-                        from: dateReal?.from,
-                        to: dateReal?.to,
-                    })
-
-                }
-
-                queryKeyIsStateDetailCar({
-                    dataDetailCar: customDataDetailCar
-                })
-                setIsLoadingSkeletonDetailCar(false);
-            } else {
-
-                setIsLoadingSkeletonDetailCar(false);
-            }
-            // Đã gọi fetchDataDetailCarSecond, set isLoadingSkeletonDetailCar về false để tránh gọi lại trong useEffect
-        } catch (err) {
-            throw err
-        }
-
-    }
-
-    // fetch data detail second
-    const fetchDataDetailCarSecond = async () => {
-        try {
-            // Kiểm tra nếu không cần gọi fetchDataDetailCarSecond thì return luôn
-            setIsLoadingSkeletonDetailCar(true)
-
-            let dataParams = {
-                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
-                date_search: `${dateTemp ?
-                    `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}`
-                    :
-                    `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`}`,
-                lat: coordinates ? coordinates.lat : undefined,
-                lon: coordinates ? coordinates.lng : undefined,
-            }
-            const { data } = await getDataDetailCar(params.slug, dataParams)
-
-            if (data && data.data && data.base.base) {
-                let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
-
-                queryKeyIsStateDetailCar({
-                    dataDetailCar: customDataDetailCar,
-                })
-                setIsLoadingSkeletonDetailCar(false);
-            } else {
-                setIsLoadingSkeletonDetailCar(false);
-            }
-            // Đã gọi fetchDataDetailCarSecond, set isLoadingSkeletonDetailCar về false để tránh gọi lại trong useEffect
-        } catch (err) {
-            throw err
-        }
-
-    }
-
-    useEffect(() => {
-        if (isStateDetailCar?.onSuccess?.onSuccessPage) {
-            fetchDataDetailCarSecond()
-            queryKeyIsStateDetailCar({
-                ...isStateDetailCar,
-                onSuccess: {
-                    onSuccessPage: false
-                }
-            })
-        }
-    }, [isStateDetailCar?.onSuccess?.onSuccessPage])
-
-    // fetch data 
-    useEffect(() => {
-        const savedCoordinates = Cookies.get('coordinates');
-
-        if (typeCarDetail == "2" && !savedCoordinates) {
-            return router.push("/")
-        }
-
-        fetchDataDetailCarFirst()
-        fetchDataListCalendarPriceMonth()
-        fetchDataListCarsRelated()
-    }, [params.slug])
-
-    useEffect(() => {
-        if (openDialogReportCar && isStateDetailCar.reportCar.listReportCar.length === 0) {
-            const fetchListReportCar = async () => {
-                if (dataListReportCar.length === 0) {
-                    try {
-                        const { data } = await getListReportCar();
-
-                        if (data && data.data) {
-                            queryKeyIsStateDetailCar({
-                                reportCar: {
-                                    ...isStateDetailCar?.reportCar,
-                                    listReportCar: data.data
-                                }
-                            })
-                        }
-
-                    } catch (err) {
-                        throw err
-                    }
-                }
-            }
-
-            fetchListReportCar()
-        }
-        if (openDialogPromotion && dataPromotions.length === 0) {
-            const fetchListPromotions = async () => {
-                try {
-                    setIsLoadingDataPromotion(true)
-                    const dataSearch = {
-                        code: null
-                    }
-                    const { data } = await getListPromotions(dataSearch)
-                    if (data && data.data) {
-                        setDataPromotions(data?.data)
-                        setIsLoadingDataPromotion(false)
-                    } else {
-                        setIsLoadingDataPromotion(false)
-                    }
-                } catch (err) {
-                    throw err
-                }
-            }
-
-            fetchListPromotions()
-        }
-    }, [params.slug, openDialogReportCar, openDialogPromotion])
 
     // on/off thả tim
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {

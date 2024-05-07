@@ -18,6 +18,7 @@ import { IInitialStatePayment } from '@/types/Initial/IInitial'
 import PaymentMethods from './components/PaymentMethods'
 import { CustomDataInfoRentalCar } from '@/custom/CustomData'
 import { useDataInfoRentalCar, useDataPaymentRental } from '@/hooks/useDataQueryKey'
+import { useSearchParams } from 'next/navigation'
 
 type Props = {
     params: {
@@ -26,6 +27,9 @@ type Props = {
 }
 
 const InfoRentalCar = ({ params }: Props) => {
+    const searchParams = useSearchParams()
+    const typeCarDetail = searchParams.get('type')
+
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const { isStatePaymentRental, queryKeyIsStatePaymentRental } = useDataPaymentRental()
 
@@ -53,7 +57,11 @@ const InfoRentalCar = ({ params }: Props) => {
         }
 
         const fetchPriceWithCar = async () => {
-            const { data } = await getInfoDetailCarTransaction(params?.slug);
+            const dataParams = {
+                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null
+            }
+
+            const { data } = await getInfoDetailCarTransaction(params?.slug, dataParams);
 
             if (data && data.data && data.base) {
                 let { customDataInfoRentalCar } = CustomDataInfoRentalCar(data)

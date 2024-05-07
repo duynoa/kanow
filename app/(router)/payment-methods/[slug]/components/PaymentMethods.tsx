@@ -6,7 +6,7 @@ import { toastCore } from '@/lib/toast'
 import { postPaymentRentalCar } from '@/services/cars/payment.services'
 import { IInitialStatePayment } from '@/types/Initial/IInitial'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
 import { BsArrow90DegLeft } from 'react-icons/bs'
 import { FaArrowLeftLong } from 'react-icons/fa6'
@@ -16,6 +16,9 @@ type Props = {}
 
 const PaymentMethods = ({ }: Props) => {
     const router = useRouter()
+    const searchParams = useSearchParams()
+    const typeCarDetail = searchParams.get('type')
+
     const { isStatePaymentRental, queryKeyIsStatePaymentRental } = useDataPaymentRental()
 
     const handleChangePayment = (item: any, index: number) => {
@@ -38,7 +41,7 @@ const PaymentMethods = ({ }: Props) => {
             console.log('data :', data);
             if (data && data.result) {
                 toastCore.success("Thanh toán cọc thành công!")
-                router.push(`/info-rental-car/${isStatePaymentRental?.detailRentalCar?.id}`)
+                router.push(`/info-rental-car/${isStatePaymentRental?.detailRentalCar?.id}?type=${typeCarDetail}`)
             } else {
                 toastCore.error(data.message)
             }

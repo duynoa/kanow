@@ -15,7 +15,7 @@ const useGoogleApi = () => {
         };
 
         return axios.get(
-            `https://api.map4d.vn/sdk/v2/geocode`, config
+            `${process.env.NEXT_PUBLIC_URL_API_MAP4D}/sdk/v2/geocode`, config
         );
     };
 
@@ -26,7 +26,7 @@ const useGoogleApi = () => {
             },
         };
         return axios.get(
-            `http://api.map4d.vn/sdk/place/viewbox-search`, config
+            `${process.env.NEXT_PUBLIC_URL_API_MAP4D}/sdk/place/viewbox-search`, config
         )
     }
 
@@ -37,7 +37,7 @@ const useGoogleApi = () => {
             },
         };
         return axios.get(
-            `http://api.map4d.vn/sdk/route`, config
+            `${process.env.NEXT_PUBLIC_URL_API_MAP4D}/sdk/route`, config
         )
     }
 

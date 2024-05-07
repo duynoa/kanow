@@ -109,10 +109,10 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
 
             if (data && data.result) {
                 toastCore.success('Gửi yêu cầu thuê xe thành công!')
-                router.push(`/info-rental-car/${data.id}`)
 
                 setOpenDialogRequestCarRental(false)
                 setCheckPolicy(true)
+                router.push(`/info-rental-car/${data.id}?type=${typeCarDetail}`)
             } else {
                 toastCore.error(data.message)
             }
