@@ -3,7 +3,7 @@
 import { useAuth } from '@/hooks/useAuth'
 import Link from 'next/link'
 import { ReadonlyURLSearchParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 
 import { useResize } from '@/hooks/useResize'
@@ -380,9 +380,7 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
                         }
                     </div>
                     <div className='xl:col-span-10 lg:col-span-9 col-span-12 w-full h-auto'>
-                        <Suspense>
-                            {children}
-                        </Suspense>
+                        {children}
                     </div>
                 </div>
             </div>

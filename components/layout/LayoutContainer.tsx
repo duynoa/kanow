@@ -518,9 +518,7 @@ const LayoutContainer = ({
             <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
                 <Header />
                 <main className='overflow-hidden w-full h-full'>
-                    <Suspense>
-                        {children}
-                    </Suspense>
+                    {children}
                     <ButtonToTop />
                     <AlertDialogLogout />
                     <DialogLogin />
