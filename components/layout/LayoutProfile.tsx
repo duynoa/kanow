@@ -1,40 +1,29 @@
 'use client'
 
 import { useAuth } from '@/hooks/useAuth'
-import React, { useEffect, useState } from 'react'
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 import { useCookie } from '@/hooks/useCookie'
-import { usePathname, useRouter } from 'next/navigation'
-import useAuthenticationAPI from '@/services/auth/auth.services'
 import { toastCore } from '@/lib/toast'
+import useAuthenticationAPI from '@/services/auth/auth.services'
+import { usePathname, useRouter } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 
-import { FormatNumberHundred, FormatNumberToDecimal } from '../format/FormatNumber'
 import Image from 'next/image'
-import { FaCircleCheck } from 'react-icons/fa6'
 import { FaStar } from 'react-icons/fa'
+import { FaCircleCheck } from 'react-icons/fa6'
+import { FormatNumberHundred, FormatNumberToDecimal } from '../format/FormatNumber'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
-import { Input } from '../ui/input'
-import { Label } from '../ui/label'
-import { Separator } from '../ui/separator'
-import Link from 'next/link'
-import { useResize } from '@/hooks/useResize'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
-import { SelectItemNocheck } from '../ui/selectNocheck'
 import { useAlertDialogLogout } from '@/hooks/useAlertDialog'
-import AlertDialogLogout from '../alert/AlertDialogLogout'
+import { useDataProfileMyCar } from '@/hooks/useDataQueryKey'
+import { useResize } from '@/hooks/useResize'
 import apiAccount from '@/services/profile/account/account.services'
 import moment from 'moment'
+import Link from 'next/link'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
+import { Select, SelectContent, SelectGroup, SelectTrigger, SelectValue } from '../ui/select'
+import { SelectItemNocheck } from '../ui/selectNocheck'
+import { Separator } from '../ui/separator'
 import { Skeleton } from '../ui/skeleton'
 
 const LayoutProfile = ({
@@ -50,7 +39,7 @@ const LayoutProfile = ({
     const { informationUser, setInformationUser } = useAuth()
     const { removeCookie, getCookie, setCookie } = useCookie()
     const { openAlertDialogLogout, setOpenAlertDialogLogout } = useAlertDialogLogout()
-
+    const { queryKeyIsStateProfileMyCar, isStateProfileMyCar } = useDataProfileMyCar()
     const [isMounted, setIsMounted] = useState<boolean>(false)
 
     const initialState = {
@@ -63,6 +52,7 @@ const LayoutProfile = ({
     const [isState, sIsState] = useState<any>(initialState)
 
     const queryState = (key: any) => sIsState((prev: any) => ({ ...prev, ...key }))
+
 
     // desktop
 
@@ -218,7 +208,11 @@ const LayoutProfile = ({
 
     const handleChangeSidebar = (value: any) => {
         if (value !== '/logout') {
+            if (value == '/list-my-car') {
+                queryKeyIsStateProfileMyCar({ page: 1 })
+            }
             router.push(value)
+
         } else {
             setOpenAlertDialogLogout(true)
         }
@@ -397,6 +391,7 @@ const LayoutProfile = ({
                                                                     <Link
                                                                         key={item.id}
                                                                         href={item.link}
+                                                                        onClick={() => queryKeyIsStateProfileMyCar({ page: 1 })}
                                                                         className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
                                                                     >
                                                                         <div className='3xl:size-6 size-5'>

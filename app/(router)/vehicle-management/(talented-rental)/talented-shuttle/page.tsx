@@ -151,10 +151,12 @@ export default function TalentedShuttle(props: Props) {
                                         />
                                     </>
                                 </FormControl>
-                                <div className="flex justify-between">
-                                    <FormDescription>
-                                        Quãng đường đề xuất: {isState.within.propose}Km
-                                    </FormDescription>
+                                <div className={`flex ${isState.within.propose > 0 ? "justify-between" : "justify-end"}`}>
+                                    {isState.within.propose > 0 &&
+                                        <FormDescription>
+                                            Quãng đường đề xuất: {isState.within.propose}Km
+                                        </FormDescription>
+                                    }
                                     <FormDescription className='font-bold'>
                                         {field.value}Km
                                     </FormDescription>
@@ -184,10 +186,12 @@ export default function TalentedShuttle(props: Props) {
                                         />
                                     </>
                                 </FormControl>
-                                <div className="flex justify-between">
-                                    <FormDescription>
-                                        Phí đề xuất: {isState.shuttleFee.propose > 100 ? FormatNumberToThousands(isState.shuttleFee.propose) : `${isState.shuttleFee.propose ?? 0}K`}
-                                    </FormDescription>
+                                <div className={`flex ${isState.shuttleFee.propose > 0 ? "justify-between" : "justify-end"}`}>
+                                    {isState.shuttleFee.propose > 0 &&
+                                        <FormDescription>
+                                            Phí đề xuất: {isState.shuttleFee.propose > 100 ? FormatNumberToThousands(isState.shuttleFee.propose) : `${isState.shuttleFee.propose ?? 0}K`}
+                                        </FormDescription>
+                                    }
                                     <FormDescription className='font-bold'>
                                         {+field.value > 1000 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
                                     </FormDescription>
@@ -217,10 +221,13 @@ export default function TalentedShuttle(props: Props) {
                                         />
                                     </>
                                 </FormControl>
-                                <div className="flex justify-between">
-                                    <FormDescription>
-                                        Quãng đường đề xuất: {isState.freeShuttle.propose}Km
-                                    </FormDescription>
+                                <div className={`flex ${isState.freeShuttle.propose > 0 ? "justify-between" : "justify-end"}`}>
+                                    {
+                                        isState.freeShuttle.propose > 0 &&
+                                        <FormDescription>
+                                            Quãng đường đề xuất: {isState.freeShuttle.propose}Km
+                                        </FormDescription>
+                                    }
                                     <FormDescription className='font-bold'>
                                         {field.value}Km
                                     </FormDescription>

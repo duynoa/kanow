@@ -7,6 +7,7 @@ import { useDialogFilterMyCar } from "@/hooks/useOpenDialog"
 import { SelectItemNocheck } from "@/components/ui/selectNocheck"
 import { Select, SelectContent, SelectGroup, SelectTrigger, SelectValue, } from "@/components/ui/select"
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle } from "@/components/ui/dialog"
+import { useDataProfileMyCar } from "@/hooks/useDataQueryKey"
 
 type Props = {
     children?: React.ReactNode,
@@ -16,8 +17,10 @@ const DialogFilterMyCar = ({ children }: Props) => {
     const { dataFilter, openDialogFilterCar, setOpenDialogFilterCar, setValueFilter, valueFilter } = useDialogFilterMyCar()
 
     const [valueModel, setValueModel] = useState<any>(valueFilter ?? -1)
+    const { queryKeyIsStateProfileMyCar, isStateProfileMyCar } = useDataProfileMyCar()
 
     const handleSubmitFilter = () => {
+        queryKeyIsStateProfileMyCar({ page: 1 })
         setValueFilter(valueModel)
         setOpenDialogFilterCar(!openDialogFilterCar)
     }

@@ -1,6 +1,7 @@
 "use client"
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import { FormatNumberToThousands } from "@/components/format/FormatNumber";
+import Nodata from "@/components/image/Nodata";
 import { CustomSlider } from "@/components/ui/customSlider";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -29,7 +30,7 @@ export default function TalentedSurcharge(props: Props) {
     })
 
     const initialState: ISTateSurcharge = {
-        isLoading: false,
+        isLoading: true,
         arraySurcharge: []
     }
 
@@ -52,7 +53,7 @@ export default function TalentedSurcharge(props: Props) {
 
     // dnah sách phụ phí
     const fetchListSurcharge = async () => {
-        queryState({ isLoading: true })
+        // queryState({ isLoading: true })
         try {
             await new Promise(resolve => setTimeout(resolve, 1500));
 
@@ -123,7 +124,7 @@ export default function TalentedSurcharge(props: Props) {
                                 </div>
                             </div>
                         )
-                    }) : isState.arraySurcharge && isState.arraySurcharge.map((item, index: any) => {
+                    }) : isState.arraySurcharge && isState.arraySurcharge?.length > 0 ? isState.arraySurcharge.map((item, index: any) => {
                         return (
                             <div key={index}>
                                 <Controller
@@ -165,13 +166,14 @@ export default function TalentedSurcharge(props: Props) {
                                                                                 />
                                                                             </>
                                                                         </FormControl>
-                                                                        <div className="flex justify-between">
-                                                                            <FormDescription>
-                                                                                Phí đề xuất: {item?.propose_fee > 100 ? FormatNumberToThousands(item?.propose_fee) : `${item?.propose_fee ?? 0}K`}
-                                                                            </FormDescription>
+                                                                        <div className={`flex ${item?.propose_fee > 0 ? "justify-between" : "justify-end"}`}>
+                                                                            {item?.propose_fee > 0 &&
+                                                                                <FormDescription>
+                                                                                    Phí đề xuất: {item?.propose_fee > 100 ? FormatNumberToThousands(item?.propose_fee) : `${item?.propose_fee ?? 0}K`}
+                                                                                </FormDescription>
+                                                                            }
                                                                             <FormDescription className='font-bold'>
                                                                                 {field.value > 100 ? FormatNumberToThousands(field.value) : `${field.value ?? 0}K`}
-                                                                                {/* {field.value ? FormatNumberToThousands(field.value) : '0K'} */}
                                                                             </FormDescription>
                                                                         </div>
                                                                         {fieldState?.invalid && fieldState?.error && (
@@ -192,11 +194,16 @@ export default function TalentedSurcharge(props: Props) {
                                 />
                             </div>
                         )
-                    })}
+                    })
+                        :
+                        <Nodata type="vehicle-surcharge" />
+                    }
                 </div>
-                <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
-                    <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} />
-                </div>
+                {isState.arraySurcharge && isState.arraySurcharge.length > 0 &&
+                    <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
+                        <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} />
+                    </div>
+                }
             </Form>
         </BackgroundUiVehicle>
     )

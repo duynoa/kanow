@@ -9,7 +9,6 @@ import { toastCore } from "@/lib/toast";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { StateSelftVehicleHanding } from "@/types/VehicleManagement/SelfDriveRental/IVehicleHanding";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 type Props = {}
@@ -82,8 +81,6 @@ export default function SelftVehicleHanding(props: Props) {
         form.reset()
     }, [data])
 
-    console.log(findValue.vehicleHanding);
-
     const onSubmit = async (value: any) => {
         let formData = new FormData()
         formData.append('car_id', idCar)
@@ -145,10 +142,13 @@ export default function SelftVehicleHanding(props: Props) {
                                                                 />
                                                             </>
                                                         </FormControl>
-                                                        <div className="flex justify-between">
-                                                            <FormDescription>
-                                                                Quãng đường đề xuất: {isState.intersectionSquare.propose}Km
-                                                            </FormDescription>
+                                                        <div className={`flex ${isState.intersectionSquare.propose > 0 ? "justify-between" : "justify-end"}`}>
+                                                            {
+                                                                isState.intersectionSquare.propose > 0 &&
+                                                                <FormDescription>
+                                                                    Quãng đường đề xuất: {isState.intersectionSquare.propose}Km
+                                                                </FormDescription>
+                                                            }
                                                             <FormDescription className='font-bold'>
                                                                 {field.value}Km
                                                             </FormDescription>
@@ -177,10 +177,13 @@ export default function SelftVehicleHanding(props: Props) {
                                                                 />
                                                             </>
                                                         </FormControl>
-                                                        <div className="flex justify-between">
-                                                            <FormDescription>
-                                                                Phí đề xuất: {isState.deliveryFee.propose > 100 ? FormatNumberToThousands(isState.deliveryFee.propose) : `${isState.deliveryFee.propose ?? 0}K`}
-                                                            </FormDescription>
+                                                        <div className={`flex ${isState.deliveryFee.propose > 0 ? "justify-between" : "justify-end"}`}>
+                                                            {
+                                                                isState.deliveryFee.propose > 0 &&
+                                                                <FormDescription>
+                                                                    Phí đề xuất: {isState.deliveryFee.propose > 100 ? FormatNumberToThousands(isState.deliveryFee.propose) : `${isState.deliveryFee.propose ?? 0}K`}
+                                                                </FormDescription>
+                                                            }
                                                             <FormDescription className='font-bold'>
                                                                 {+field.value > 1000 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
                                                             </FormDescription>
@@ -209,10 +212,12 @@ export default function SelftVehicleHanding(props: Props) {
                                                                 />
                                                             </>
                                                         </FormControl>
-                                                        <div className="flex justify-between">
-                                                            <FormDescription>
-                                                                Quãng đường đề xuất {isState.freeDelivery.propose}Km
-                                                            </FormDescription>
+                                                        <div className={`flex ${isState.freeDelivery.propose > 0 ? "justify-between" : "justify-end"}`}>
+                                                            {isState.freeDelivery.propose > 0 &&
+                                                                <FormDescription>
+                                                                    Quãng đường đề xuất: {isState.freeDelivery.propose}Km
+                                                                </FormDescription>
+                                                            }
                                                             <FormDescription className='font-bold'>
                                                                 {field.value}Km
                                                             </FormDescription>

@@ -171,18 +171,18 @@ const ListMyCar = (props: Props) => {
 
     useEffect(() => {
         if (isStateProfileMyCar.tab == 1) {
-            handleFetchListCars(isStateProfileMyCar.page)
-            setValueFilter(-1)
+            if (valueFilter == -1) {
+                handleFetchListCars(1)
+                setValueFilter(-1)
+                return
+            }
+            handleFetchListCars(1)
         }
-    }, [isStateProfileMyCar.tab])
+    }, [valueFilter, isStateProfileMyCar.tab])
 
     useEffect(() => {
         handleFetchListStatusFilter()
     }, [])
-
-    useEffect(() => {
-        handleFetchListCars(1)
-    }, [valueFilter])
 
     return (
         <BackgroundUiProfile className={'space-y-4  lg:pr-2 pr-3'}>
