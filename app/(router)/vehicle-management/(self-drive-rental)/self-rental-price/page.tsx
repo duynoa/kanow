@@ -87,6 +87,19 @@ export default function SeflRentalPrice(props: Props) {
                             value: true,
                             message: 'Vui lòng nhập đơn giá thuê',
                         },
+                        validate: {
+                            fn: (value: any) => {
+                                try {
+                                    let mss = ''
+                                    if (value == 0) {
+                                        mss = 'Đơn giá thuê phải lớn hơn 0'
+                                    }
+                                    return mss || true;
+                                } catch (error) {
+                                    throw error;
+                                }
+                            }
+                        }
                     }}
                     render={({ field, fieldState }) => {
                         return (
@@ -94,9 +107,12 @@ export default function SeflRentalPrice(props: Props) {
                                 <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
                                     Đơn giá thuê mặc định<span className="text-red-500">*</span>
                                     <h1 className="text-xs text-gray-400">Đơn giá thuê mặc định được áp dụng nếu ngày đó không có tùy chỉnh khác về giá</h1>
-                                    <h1 className="text-xs text-gray-400">Giá đề xuất
-                                        <span className="px-1">{dataOther?.rent_cost_propose > 100 ? FormatNumberToThousands(dataOther?.rent_cost_propose) : `${dataOther?.rent_cost_propose ?? 0}K`}</span>
-                                    </h1>
+                                    {
+                                        dataOther?.rent_cost_propose > 0 &&
+                                        <h1 className="text-xs text-gray-400">Giá đề xuất
+                                            <span className="px-1">{dataOther?.rent_cost_propose > 100 ? FormatNumberToThousands(dataOther?.rent_cost_propose) : `${dataOther?.rent_cost_propose ?? 0}K`}</span>
+                                        </h1>
+                                    }
                                 </FormLabel>
                                 <FormControl>
                                     <NumericFormatCore
@@ -146,15 +162,17 @@ export default function SeflRentalPrice(props: Props) {
                                                     <FormControl>
                                                         <>
                                                             <CustomSlider
-                                                                defaultValue={[findValue.discount.defaultValue]} max={findValue.discount.dataDiscount} step={1}
+                                                                defaultValue={[+findValue.discount.defaultValue]} max={findValue.discount.dataDiscount} step={1}
                                                                 onValueChange={field.onChange}
                                                             />
                                                         </>
                                                     </FormControl>
-                                                    <div className="flex justify-between">
-                                                        <FormDescription>
-                                                            Giảm đề xuất {findValue.discount.propose}%
-                                                        </FormDescription>
+                                                    <div className={`flex ${+findValue.discount.propose > 0 ? "justify-between" : "justify-end"}`}>
+                                                        {+findValue.discount.propose > 0 &&
+                                                            <FormDescription>
+                                                                Giảm đề xuất: {findValue.discount.propose}%
+                                                            </FormDescription>
+                                                        }
                                                         <FormDescription className='font-bold'>
                                                             {field.value}%
                                                         </FormDescription>

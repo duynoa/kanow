@@ -183,13 +183,18 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
         if (other || dtFee || other_talent) {
             setDataOther({ other, dtFee, other_talent })
         }
-        if (db) {
+        if (!Array.isArray(db?.data)) {
             form.setValue("openSelf", db?.data.type == 1)
             form.setValue("openTalented", db?.data.type_talent == 1)
             setDataDetail(db)
             if (['1', '2'].includes(type)) {
                 await fetchRentCost(db)
             }
+            return
+        }
+        if (db?.data?.length == 0) {
+            router.back()
+            toastCore.error('Không có dữ liệu xe')
         }
     }
 

@@ -41,6 +41,9 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
             case 'list-my-car':
                 quertyState({ title: 'Bạn chưa có xe nào', image: '/profile/account/nodata.png' })
                 break;
+            case "vehicle-surcharge":
+                quertyState({ title: 'Bạn chưa có phụ phí', image: '/profile/mytrip/nodata.png' })
+                break;
             default:
                 break;
         }
@@ -62,6 +65,7 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
                 object-contain
                  ${type == 'list-cars' && (isVisibleMobile ? "size-full" : 'w-full h-[400px] ')} 
                  ${type == 'list-car-favorite' && (isVisibleMobile ? "size-full" : 'size-[30%]')} 
+                 ${type == 'vehicle-surcharge' && (isVisibleMobile ? "size-full" : 'size-[80%] h-[600px]')} 
                  ${type == 'account' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
                  ${type == 'mytrip' && (isVisibleMobile ? "size-full" : 'size-[40%]')}
                  ${type == 'address' && (isVisibleMobile ? "size-full" : 'size-[50%]')}

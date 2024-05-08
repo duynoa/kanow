@@ -292,15 +292,30 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                         value: true,
                                         message: 'Vui lòng nhập đơn giá thuê',
                                     },
+                                    validate: {
+                                        fn: (value) => {
+                                            try {
+                                                let mss = ''
+                                                if (value == 0) {
+                                                    mss = 'Đơn giá thuê phải lớn hơn 0'
+                                                }
+                                                return mss || true;
+                                            } catch (error) {
+                                                throw error;
+                                            }
+                                        }
+                                    }
                                 }}
                                 render={({ field, fieldState }) => {
                                     return (
                                         <FormItem className="space-y-0 flex flex-col gap-2">
                                             <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
                                                 Đơn giá thuê mặc định<span className="text-red-500">*</span>
-                                                <h1 className="text-xs text-gray-400">Giá đề xuất
-                                                    <span className="px-1">{isState?.rentCostPropose > 100 ? FormatNumberToThousands(isState?.rentCostPropose) : `${isState?.rentCostPropose ?? 0}K`}</span>
-                                                </h1>
+                                                {isState?.rentCostPropose > 0 &&
+                                                    <h1 className="text-xs text-gray-400">Giá đề xuất
+                                                        <span className="px-1">{isState?.rentCostPropose > 100 ? FormatNumberToThousands(isState?.rentCostPropose) : `${isState?.rentCostPropose ?? 0}K`}</span>
+                                                    </h1>
+                                                }
                                             </FormLabel>
                                             <FormControl>
                                                 <NumericFormatCore
@@ -582,10 +597,11 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                     />
                                                                 </>
                                                             </FormControl>
-                                                            <div className="flex justify-between">
-                                                                <FormDescription>
-                                                                    Giảm đề xuất {isState.discount}%
-                                                                </FormDescription>
+                                                            <div className={`flex ${isState.discount > 0 ? "justify-between" : "justify-end"}`}>
+                                                                {isState.discount > 0 &&
+                                                                    <FormDescription>
+                                                                        Giảm đề xuất: {isState.discount}%
+                                                                    </FormDescription>}
                                                                 <FormDescription className='font-bold'>
                                                                     {field.value}%
                                                                 </FormDescription>
@@ -770,10 +786,11 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                         />
                                                                     </>
                                                                 </FormControl>
-                                                                <div className="flex justify-between">
-                                                                    <FormDescription>
-                                                                        Quãng đường đề xuất: {isState.vehicleHanding.intersectionSquare.propose}Km
-                                                                    </FormDescription>
+                                                                <div className={`flex ${isState.vehicleHanding.intersectionSquare.propose > 0 ? "justify-between" : "justify-end"}`}>
+                                                                    {isState.vehicleHanding.intersectionSquare.propose > 0 &&
+                                                                        <FormDescription>
+                                                                            Quãng đường đề xuất: {isState.vehicleHanding.intersectionSquare.propose}%
+                                                                        </FormDescription>}
                                                                     <FormDescription className='font-bold'>
                                                                         {field.value}Km
                                                                     </FormDescription>
@@ -806,10 +823,12 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                         />
                                                                     </>
                                                                 </FormControl>
-                                                                <div className="flex justify-between">
-                                                                    <FormDescription>
-                                                                        Phí đề xuất: {isState.vehicleHanding.deliveryFee.propose > 100 ? FormatNumberToThousands(isState.vehicleHanding.deliveryFee.propose) : `${isState.vehicleHanding.deliveryFee.propose ?? 0}K`}
-                                                                    </FormDescription>
+                                                                <div className={`flex ${isState.vehicleHanding.deliveryFee.propose > 0 ? "justify-between" : "justify-end"}`}>
+                                                                    {isState.vehicleHanding.deliveryFee.propose > 0 &&
+                                                                        <FormDescription>
+                                                                            Phí đề xuất: {isState.vehicleHanding.deliveryFee.propose > 100 ? FormatNumberToThousands(isState.vehicleHanding.deliveryFee.propose) : `${isState.vehicleHanding.deliveryFee.propose ?? 0}K`}
+                                                                        </FormDescription>
+                                                                    }
                                                                     <FormDescription className='font-bold'>
                                                                         {+field.value > 1000 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
                                                                     </FormDescription>
@@ -842,10 +861,13 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                         />
                                                                     </>
                                                                 </FormControl>
-                                                                <div className="flex justify-between">
-                                                                    <FormDescription>
-                                                                        Quãng đường đề xuất: {isState.vehicleHanding.freeDelivery.propose}Km
-                                                                    </FormDescription>
+                                                                <div className={`flex ${isState.vehicleHanding.freeDelivery.propose > 0 ? "justify-between" : "justify-end"}`}>
+                                                                    {
+                                                                        isState.vehicleHanding.freeDelivery.propose > 0 &&
+                                                                        <FormDescription>
+                                                                            Quãng đường đề xuất: {isState.vehicleHanding.freeDelivery.propose}Km
+                                                                        </FormDescription>
+                                                                    }
                                                                     <FormDescription className='font-bold'>
                                                                         {field.value}Km
                                                                     </FormDescription>
@@ -909,10 +931,13 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                         />
                                                                     </>
                                                                 </FormControl>
-                                                                <div className="flex justify-between">
-                                                                    <FormDescription>
-                                                                        Số Km đề xuất: {isState.limitedKilometers.maximumKilometers.propose}Km
-                                                                    </FormDescription>
+                                                                <div className={`flex ${isState.limitedKilometers.maximumKilometers.propose > 0 ? "justify-between" : "justify-end"}`}>
+                                                                    {
+                                                                        isState.limitedKilometers.maximumKilometers.propose > 0 &&
+                                                                        <FormDescription>
+                                                                            Số Km đề xuất: {isState.limitedKilometers.maximumKilometers.propose}Km
+                                                                        </FormDescription>
+                                                                    }
                                                                     <FormDescription className='font-bold'>
                                                                         {field.value}Km
                                                                     </FormDescription>
@@ -945,10 +970,12 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                         />
                                                                     </>
                                                                 </FormControl>
-                                                                <div className="flex justify-between">
-                                                                    <FormDescription>
-                                                                        Phí đề xuất: {isState.limitedKilometers.overLimitFee.propose > 100 ? FormatNumberToThousands(isState.limitedKilometers.overLimitFee.propose) : `${isState.limitedKilometers.overLimitFee.propose ?? 0}K`}
-                                                                    </FormDescription>
+                                                                <div className={`flex ${isState.limitedKilometers.overLimitFee.propose > 0 ? "justify-between" : "justify-end"}`}>
+                                                                    {isState.limitedKilometers.overLimitFee.propose > 0 &&
+                                                                        <FormDescription>
+                                                                            Phí đề xuất: {isState.limitedKilometers.overLimitFee.propose > 100 ? FormatNumberToThousands(isState.limitedKilometers.overLimitFee.propose) : `${isState.limitedKilometers.overLimitFee.propose ?? 0}K`}
+                                                                        </FormDescription>
+                                                                    }
                                                                     <FormDescription className='font-bold'>
                                                                         {+field.value > 1000 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
                                                                     </FormDescription>
