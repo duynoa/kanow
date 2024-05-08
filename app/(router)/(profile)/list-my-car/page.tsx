@@ -64,7 +64,6 @@ const ListMyCar = (props: Props) => {
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
     const { apiListCar, apiListStatusFilter } = apiMyCar()
-    console.log("isStateProfileMyCar", isStateProfileMyCar);
 
     const handleFetchListCars = async (page: any) => {
 

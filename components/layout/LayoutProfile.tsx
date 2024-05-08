@@ -1,42 +1,30 @@
 'use client'
 
 import { useAuth } from '@/hooks/useAuth'
-import React, { useEffect, useState } from 'react'
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 import { useCookie } from '@/hooks/useCookie'
-import { usePathname, useRouter } from 'next/navigation'
-import useAuthenticationAPI from '@/services/auth/auth.services'
 import { toastCore } from '@/lib/toast'
+import useAuthenticationAPI from '@/services/auth/auth.services'
+import { usePathname, useRouter } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 
-import { FormatNumberHundred, FormatNumberToDecimal } from '../format/FormatNumber'
 import Image from 'next/image'
-import { FaCircleCheck } from 'react-icons/fa6'
 import { FaStar } from 'react-icons/fa'
+import { FaCircleCheck } from 'react-icons/fa6'
+import { FormatNumberHundred, FormatNumberToDecimal } from '../format/FormatNumber'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
-import { Input } from '../ui/input'
-import { Label } from '../ui/label'
-import { Separator } from '../ui/separator'
-import Link from 'next/link'
-import { useResize } from '@/hooks/useResize'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
-import { SelectItemNocheck } from '../ui/selectNocheck'
 import { useAlertDialogLogout } from '@/hooks/useAlertDialog'
-import AlertDialogLogout from '../alert/AlertDialogLogout'
+import { useDataProfileMyCar } from '@/hooks/useDataQueryKey'
+import { useResize } from '@/hooks/useResize'
 import apiAccount from '@/services/profile/account/account.services'
 import moment from 'moment'
+import Link from 'next/link'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
+import { Select, SelectContent, SelectGroup, SelectTrigger, SelectValue } from '../ui/select'
+import { SelectItemNocheck } from '../ui/selectNocheck'
+import { Separator } from '../ui/separator'
 import { Skeleton } from '../ui/skeleton'
-import { useDataProfileMyCar } from '@/hooks/useDataQueryKey'
 
 const LayoutProfile = ({
     children
