@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 
 export async function middleware(request: NextRequest) {
     const { pathname, origin } = request.nextUrl;
-    console.log(NextResponse.toString());
 
     const token: any = request.cookies.get("token_kanow");
     const checkUrl = ["/account", "/list-car-favorite", "/change-password", "/list-address"];

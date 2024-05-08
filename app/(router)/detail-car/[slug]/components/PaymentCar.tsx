@@ -170,9 +170,6 @@ const PaymentCar = ({ }: Props) => {
         }
     }
 
-    console.log('check dateTemp : ', dateTemp);
-
-
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
             <div className='flex flex-col gap-2 xl:px-6 xl:py-4 p-4 bg-[#C2F9F9]/[63] rounded-2xl '>
