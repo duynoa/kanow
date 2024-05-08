@@ -36,6 +36,7 @@ import AlertDialogLogout from '../alert/AlertDialogLogout'
 import apiAccount from '@/services/profile/account/account.services'
 import moment from 'moment'
 import { Skeleton } from '../ui/skeleton'
+import { useDataProfileMyCar } from '@/hooks/useDataQueryKey'
 
 const LayoutProfile = ({
     children
@@ -50,7 +51,7 @@ const LayoutProfile = ({
     const { informationUser, setInformationUser } = useAuth()
     const { removeCookie, getCookie, setCookie } = useCookie()
     const { openAlertDialogLogout, setOpenAlertDialogLogout } = useAlertDialogLogout()
-
+    const { queryKeyIsStateProfileMyCar, isStateProfileMyCar } = useDataProfileMyCar()
     const [isMounted, setIsMounted] = useState<boolean>(false)
 
     const initialState = {
@@ -63,6 +64,7 @@ const LayoutProfile = ({
     const [isState, sIsState] = useState<any>(initialState)
 
     const queryState = (key: any) => sIsState((prev: any) => ({ ...prev, ...key }))
+
 
     // desktop
 
@@ -218,7 +220,11 @@ const LayoutProfile = ({
 
     const handleChangeSidebar = (value: any) => {
         if (value !== '/logout') {
+            if (value == '/list-my-car') {
+                queryKeyIsStateProfileMyCar({ page: 1 })
+            }
             router.push(value)
+
         } else {
             setOpenAlertDialogLogout(true)
         }
@@ -397,6 +403,7 @@ const LayoutProfile = ({
                                                                     <Link
                                                                         key={item.id}
                                                                         href={item.link}
+                                                                        onClick={() => queryKeyIsStateProfileMyCar({ page: 1 })}
                                                                         className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
                                                                     >
                                                                         <div className='3xl:size-6 size-5'>

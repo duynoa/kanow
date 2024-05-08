@@ -64,6 +64,7 @@ const ListMyCar = (props: Props) => {
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
     const { apiListCar, apiListStatusFilter } = apiMyCar()
+    console.log("isStateProfileMyCar", isStateProfileMyCar);
 
     const handleFetchListCars = async (page: any) => {
 
@@ -171,43 +172,18 @@ const ListMyCar = (props: Props) => {
 
     useEffect(() => {
         if (isStateProfileMyCar.tab == 1) {
-            handleFetchListCars(isStateProfileMyCar.page)
-            setValueFilter(-1)
+            if (valueFilter == -1) {
+                handleFetchListCars(1)
+                setValueFilter(-1)
+                return
+            }
+            handleFetchListCars(1)
         }
-    }, [isStateProfileMyCar.tab])
+    }, [valueFilter, isStateProfileMyCar.tab])
 
     useEffect(() => {
         handleFetchListStatusFilter()
     }, [])
-
-    useEffect(() => {
-        handleFetchListCars(1)
-    }, [valueFilter])
-
-
-
-    // useEffect(() => {
-    //     queryKeyIsStateProfileMyCar({ page: 1 })
-    //     if (isStateProfileMyCar.tab == 1) {
-    //         // handleFetchListCars(1)
-    //         if (valueFilter) {
-    //             handleFetchListCars(1)
-
-    //         } else {
-    //             handleFetchListCars(isStateProfileMyCar.page)
-    //         }
-    //         setValueFilter(-1)
-    //     }
-    // }, [isStateProfileMyCar.tab, valueFilter])
-
-    // useEffect(() => {
-    //     handleFetchListStatusFilter()
-    // }, [])
-
-    // // useEffect(() => {
-    // //     // handleFetchListCars(1)
-    // //     handleFetchListCars(1)
-    // // }, [valueFilter])
 
     return (
         <BackgroundUiProfile className={'space-y-4  lg:pr-2 pr-3'}>
