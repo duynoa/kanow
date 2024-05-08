@@ -1,7 +1,6 @@
-import { redirect } from "next/navigation";
+import Cookies from "js-cookie";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import Cookies from "js-cookie";
 
 export async function middleware(request: NextRequest) {
     const { pathname, origin } = request.nextUrl;

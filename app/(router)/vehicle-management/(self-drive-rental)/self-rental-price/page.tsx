@@ -35,15 +35,12 @@ export default function SeflRentalPrice(props: Props) {
 
     const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
 
-    console.log(dataOther);
-
     const findValue = form.getValues()
-
 
     useEffect(() => {
         if (!Array.isArray(data) && data) {
             [
-                ["unitPrice", data?.car?.rent_cost],
+                ["unitPrice", `${data?.car?.rent_cost > 0 ? data?.car?.rent_cost : ""}`],
                 ["discount.dataDiscount", 100],
                 ["discount.defaultValue", data?.percent_discount],
                 ["discount.value", data?.percent_discount],
@@ -110,7 +107,7 @@ export default function SeflRentalPrice(props: Props) {
                                     {
                                         dataOther?.rent_cost_propose > 0 &&
                                         <h1 className="text-xs text-gray-400">Giá đề xuất
-                                            <span className="px-1">{dataOther?.rent_cost_propose > 100 ? FormatNumberToThousands(dataOther?.rent_cost_propose) : `${dataOther?.rent_cost_propose ?? 0}K`}</span>
+                                            <span className="px-1">{FormatNumberToThousands(dataOther?.rent_cost_propose)}</span>
                                         </h1>
                                     }
                                 </FormLabel>
@@ -162,7 +159,9 @@ export default function SeflRentalPrice(props: Props) {
                                                     <FormControl>
                                                         <>
                                                             <CustomSlider
-                                                                defaultValue={[+findValue.discount.defaultValue]} max={findValue.discount.dataDiscount} step={1}
+                                                                defaultValue={[+findValue.discount.defaultValue]}
+                                                                max={findValue.discount.dataDiscount}
+                                                                step={1}
                                                                 onValueChange={field.onChange}
                                                             />
                                                         </>

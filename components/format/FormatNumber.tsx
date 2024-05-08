@@ -1,7 +1,9 @@
 export const FormatNumberToThousands = (number: number): string => {
     if (number >= 1000) {
         return (number / 1000)?.toFixed(0)?.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "k";
-    } else {
+    }
+
+    else {
         return number?.toString();
     }
 }
