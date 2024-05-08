@@ -189,11 +189,11 @@ export default function TalentedShuttle(props: Props) {
                                 <div className={`flex ${isState.shuttleFee.propose > 0 ? "justify-between" : "justify-end"}`}>
                                     {isState.shuttleFee.propose > 0 &&
                                         <FormDescription>
-                                            Phí đề xuất: {isState.shuttleFee.propose > 100 ? FormatNumberToThousands(isState.shuttleFee.propose) : `${isState.shuttleFee.propose ?? 0}K`}
+                                            Phí đề xuất: {FormatNumberToThousands(isState.shuttleFee.propose)}
                                         </FormDescription>
                                     }
                                     <FormDescription className='font-bold'>
-                                        {+field.value > 1000 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
+                                        {FormatNumberToThousands(+field.value)}
                                     </FormDescription>
                                 </div>
                             </FormItem>

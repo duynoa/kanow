@@ -1,16 +1,12 @@
 "use client"
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import { FormatNumberToThousands } from "@/components/format/FormatNumber";
-import { CustomSlider } from "@/components/ui/customSlider";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { NumericFormatCore } from "@/lib/numericFormat";
 import { toastCore } from "@/lib/toast";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 type Props = {}
@@ -33,12 +29,7 @@ export default function TalentedRentalPrice(props: Props) {
 
     useEffect(() => {
         if (!Array.isArray(data) && data) {
-            console.log(data);
-            [
-                ["unitPrice", data?.car_talent?.rent_cost],
-            ].forEach(([name, value]: any) => {
-                form.setValue(name, value)
-            })
+            form.setValue('unitPrice', `${data?.car_talent?.rent_cost > 0 ? data?.car_talent?.rent_cost : ""}`)
             return
         }
         form.reset()
@@ -95,7 +86,7 @@ export default function TalentedRentalPrice(props: Props) {
 
                                         dataOther?.rent_cost_propose > 0 &&
                                         <h1 className="text-xs text-gray-400">Giá đề xuất
-                                            <span className="px-1">{dataOther?.rent_cost_propose > 100 ? FormatNumberToThousands(dataOther?.rent_cost_propose) : `${dataOther?.rent_cost_propose ?? 0}K`}</span>
+                                            <span className="px-1">{FormatNumberToThousands(dataOther?.rent_cost_propose)}</span>
                                         </h1>
                                     }
                                 </FormLabel>

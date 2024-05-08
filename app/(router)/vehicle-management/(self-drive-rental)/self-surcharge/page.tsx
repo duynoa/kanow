@@ -163,7 +163,10 @@ export default function SelftSurcharge(props: Props) {
                                                                         <FormControl>
                                                                             <>
                                                                                 <CustomSlider
-                                                                                    defaultValue={[field.value]} max={item.max} min={item.min} step={1}
+                                                                                    defaultValue={[field.value]}
+                                                                                    max={item.max}
+                                                                                    min={item.min}
+                                                                                    step={1}
                                                                                     onValueChange={field.onChange}
                                                                                 />
                                                                             </>
@@ -171,11 +174,11 @@ export default function SelftSurcharge(props: Props) {
                                                                         <div className={`flex ${item?.propose_fee > 0 ? "justify-between" : "justify-end"}`}>
                                                                             {item?.propose_fee > 0 &&
                                                                                 <FormDescription>
-                                                                                    Phí đề xuất: {item?.propose_fee > 100 ? FormatNumberToThousands(item?.propose_fee) : `${item?.propose_fee ?? 0}K`}
+                                                                                    Phí đề xuất: {FormatNumberToThousands(item?.propose_fee)}
                                                                                 </FormDescription>
                                                                             }
                                                                             <FormDescription className='font-bold'>
-                                                                                {field.value > 100 ? FormatNumberToThousands(field.value) : `${field.value ?? 0}K`}
+                                                                                {FormatNumberToThousands(field.value)}
                                                                             </FormDescription>
                                                                         </div>
                                                                         {fieldState?.invalid && fieldState?.error && (

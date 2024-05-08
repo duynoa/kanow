@@ -313,7 +313,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                 Đơn giá thuê mặc định<span className="text-red-500">*</span>
                                                 {isState?.rentCostPropose > 0 &&
                                                     <h1 className="text-xs text-gray-400">Giá đề xuất
-                                                        <span className="px-1">{isState?.rentCostPropose > 100 ? FormatNumberToThousands(isState?.rentCostPropose) : `${isState?.rentCostPropose ?? 0}K`}</span>
+                                                        <span className="px-1">{FormatNumberToThousands(isState?.rentCostPropose)}</span>
                                                     </h1>
                                                 }
                                             </FormLabel>
@@ -826,11 +826,11 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 <div className={`flex ${isState.vehicleHanding.deliveryFee.propose > 0 ? "justify-between" : "justify-end"}`}>
                                                                     {isState.vehicleHanding.deliveryFee.propose > 0 &&
                                                                         <FormDescription>
-                                                                            Phí đề xuất: {isState.vehicleHanding.deliveryFee.propose > 100 ? FormatNumberToThousands(isState.vehicleHanding.deliveryFee.propose) : `${isState.vehicleHanding.deliveryFee.propose ?? 0}K`}
+                                                                            Phí đề xuất: {FormatNumberToThousands(isState.vehicleHanding.deliveryFee.propose)}
                                                                         </FormDescription>
                                                                     }
                                                                     <FormDescription className='font-bold'>
-                                                                        {+field.value > 1000 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
+                                                                        {FormatNumberToThousands(+field.value)}
                                                                     </FormDescription>
                                                                 </div>
                                                                 {fieldState?.invalid && fieldState?.error && (
@@ -973,11 +973,11 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 <div className={`flex ${isState.limitedKilometers.overLimitFee.propose > 0 ? "justify-between" : "justify-end"}`}>
                                                                     {isState.limitedKilometers.overLimitFee.propose > 0 &&
                                                                         <FormDescription>
-                                                                            Phí đề xuất: {isState.limitedKilometers.overLimitFee.propose > 100 ? FormatNumberToThousands(isState.limitedKilometers.overLimitFee.propose) : `${isState.limitedKilometers.overLimitFee.propose ?? 0}K`}
+                                                                            Phí đề xuất: {FormatNumberToThousands(isState.limitedKilometers.overLimitFee.propose)}
                                                                         </FormDescription>
                                                                     }
                                                                     <FormDescription className='font-bold'>
-                                                                        {+field.value > 1000 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
+                                                                        {FormatNumberToThousands(+field.value)}
                                                                     </FormDescription>
                                                                 </div>
                                                                 {fieldState?.invalid && fieldState?.error && (

@@ -181,11 +181,11 @@ export default function SelftVehicleHanding(props: Props) {
                                                             {
                                                                 isState.deliveryFee.propose > 0 &&
                                                                 <FormDescription>
-                                                                    Phí đề xuất: {isState.deliveryFee.propose > 100 ? FormatNumberToThousands(isState.deliveryFee.propose) : `${isState.deliveryFee.propose ?? 0}K`}
+                                                                    Phí đề xuất: {FormatNumberToThousands(isState.deliveryFee.propose)}
                                                                 </FormDescription>
                                                             }
                                                             <FormDescription className='font-bold'>
-                                                                {+field.value > 1000 ? FormatNumberToThousands(+field.value) : `${field.value}K`}
+                                                                {FormatNumberToThousands(+field.value)}
                                                             </FormDescription>
                                                         </div>
                                                         {fieldState?.invalid && fieldState?.error && (
