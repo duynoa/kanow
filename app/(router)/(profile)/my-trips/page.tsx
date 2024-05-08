@@ -15,6 +15,7 @@ import MyTripSelfDrivingCar from './components/MyTripSelfDrivingCar'
 
 import { Button } from '@/components/ui/button'
 import { useDialogFilterMyCar } from '@/hooks/useOpenDialog'
+import MyTripTalentedCar from './components/MyTripTalentedCar'
 
 type Props = {}
 
@@ -23,14 +24,17 @@ type Props = {}
 const MyTrips = (props: Props) => {
     const initialState: IMyTrips = {
         openFilter: false,
-        isLoadingCar: false,
+        isLoadingCar: true,
         dataMyTrips: [],
         dataMyTripsTalented: [],
-        page: 1,
+        pageMyTrips: 1,
+        pageMyTripsTalented: 1,
         limit: 4,
         tab: "1",
-        next: "",
+        nextMyTrips: "",
+        nextMyTripsTalented: "",
         totalDrivingCar: 0,
+        totalTalentedCar: 0,
         isLoadingScroll: false,
         daTafilter: [],
     }
@@ -50,20 +54,21 @@ const MyTrips = (props: Props) => {
     const { setDataFilter, setValueFilter, valueFilter, setOpenDialogFilterCar } = useDialogFilterMyCar()
 
 
-    const handleFetchListCars = async (page: any) => {
-        queryState({ isLoadingCar: true })
+    const handleFetchListdMyTrips = async (page: any) => {
         try {
-            const { data } = await apiListMyTrips(page, isState.limit, { status_search: valueFilter })
-            if (data && data.data && data.base) {
-                const { customDataMyTripCar } = CustomDataMyTripCar(data)
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            const { data: dataMyTrips } = await apiListMyTrips(page, isState.limit, { status_search: valueFilter ? valueFilter : -1, type: 1 })
+
+            if (dataMyTrips && dataMyTrips.data && dataMyTrips.base) {
+                const { customDataMyTripCar } = CustomDataMyTripCar(dataMyTrips)
                 queryState({
                     dataMyTrips: customDataMyTripCar,
-                    page: isState.page + 1,
-                    next: data?.links?.next,
-                    totalDrivingCar: data?.meta?.total ?? 0
+                    pageMyTrips: isState.pageMyTrips + 1,
+                    nextMyTrips: dataMyTrips?.links?.next,
+                    totalDrivingCar: dataMyTrips?.meta?.total ?? 0
                 })
             }
-
         }
         catch (err) {
             throw err
@@ -71,13 +76,40 @@ const MyTrips = (props: Props) => {
         finally {
             queryState({ isLoadingCar: false })
         }
+    }
 
+    const handleFetchListMyTripsTalented = async (page: any) => {
+        try {
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            const { data: dataMyTripsTalented } = await apiListMyTrips(page, isState.limit, { status_search: valueFilter ? valueFilter : -1, type: 2 })
+
+            if (dataMyTripsTalented && dataMyTripsTalented.data && dataMyTripsTalented.base) {
+                const { customDataMyTripCar } = CustomDataMyTripCar(dataMyTripsTalented)
+                queryState({
+                    dataMyTripsTalented: customDataMyTripCar,
+                    pageMyTripsTalented: isState.pageMyTripsTalented + 1,
+                    nextMyTripsTalented: dataMyTripsTalented?.links?.next,
+                    totalTalentedCar: dataMyTripsTalented?.meta?.total ?? 0
+                })
+            }
+        }
+        catch (err) {
+            throw err
+        }
+        finally {
+            queryState({ isLoadingCar: false })
+        }
     }
 
     useEffect(() => {
-        // handleFetchListCars(isState.page)
-        setValueFilter(-1)
-    }, [isState.tab])
+        if (isState.tab == '1') {
+            handleFetchListdMyTrips(1)
+        } else {
+            handleFetchListMyTripsTalented(1)
+        }
+    }, [valueFilter])
+
 
 
     const fetDataFilter = async () => {
@@ -97,8 +129,62 @@ const MyTrips = (props: Props) => {
     }
 
     useEffect(() => {
+        if (isState.tab == '1') {
+            handleFetchListMyTripsTalented(1)
+        }
         fetDataFilter()
     }, [])
+
+
+    const fetchDataListCar = async () => {
+        try {
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            const { data } = await apiListMyTrips(isState.tab == '1' ? isState.pageMyTrips : isState.pageMyTripsTalented, isState.limit, { status_search: valueFilter, type: isState.tab })
+
+            if (data && data?.links && data?.data && data?.base) {
+                let { customDataMyTripCar } = CustomDataMyTripCar(data)
+                if (!isState.isLoadingScroll) {
+                    if (isState.tab == '1') {
+                        queryState({
+                            dataMyTrips: [...(isState.dataMyTrips || []), ...customDataMyTripCar],
+                            nextMyTrips: data?.links?.next,
+                            pageMyTrips: isState.pageMyTrips + 1,
+                        })
+                    }
+                    if (isState.tab == '2') {
+                        queryState({
+                            dataMyTripsTalented: [...(isState.dataMyTripsTalented || []), ...customDataMyTripCar],
+                            nextMyTripsTalented: data?.links?.next,
+                            pageMyTripsTalented: isState.pageMyTripsTalented + 1,
+                        })
+                    }
+                }
+                return
+            }
+            if (isState.tab == '1') {
+                queryState({
+                    dataMyTrips: isState.dataMyTrips,
+                    nextMyTrips: data?.links?.next,
+                    pageMyTrips: data?.links?.next !== null ? isState.pageMyTrips + 1 : isState.pageMyTrips,
+                    isLoadingScroll: false,
+                });
+            }
+            if (isState.tab == '2') {
+                queryState({
+                    dataMyTripsTalented: isState.dataMyTripsTalented,
+                    nextMyTripsTalented: data?.links?.next,
+                    pageMyTripsTalented: data?.links?.next !== null ? isState.pageMyTripsTalented + 1 : isState.pageMyTripsTalented,
+                    isLoadingScroll: false,
+                });
+            }
+        } catch (error) {
+            throw error
+        } finally {
+            queryState({ isLoadingScroll: false });
+        }
+
+    };
 
     useEffect(() => {
         const handleWheel = (event: any) => {
@@ -114,40 +200,20 @@ const MyTrips = (props: Props) => {
             const threshold = containerHeight * 0.1; // 10% của kích thước containe
 
             if (scrollContainerBottom <= lastContainerBottom + threshold) {
-                if (isState.dataMyTrips && isState.next !== null) {
-                    queryState({ isLoadingScroll: true });
-                    const fetchDataListCar = async () => {
-                        try {
-                            await new Promise(resolve => setTimeout(resolve, 1500));
-
-                            const { data } = await apiListMyTrips(isState.page, isState.limit, { status_search: valueFilter })
-
-                            if (data && data?.links && data?.data && data?.base) {
-                                let { customDataMyTripCar } = CustomDataMyTripCar(data)
-                                if (!isState.isLoadingScroll) {
-                                    queryState({
-                                        dataMyTrips: [...(isState.dataMyTrips || []), ...customDataMyTripCar],
-                                        next: data?.links?.next,
-                                        page: isState.page + 1,
-                                    })
-                                }
-                                return
-                            }
-                            queryState({
-                                dataMyTrips: isState.dataMyTrips,
-                                next: data?.links?.next,
-                                page: data?.links?.next !== null ? isState.page + 1 : isState.page,
-                                isLoadingScroll: false,
-                            });
-                        } catch (error) {
-                            throw error
-                        } finally {
-                            queryState({ isLoadingScroll: false });
-                        }
-
-                    };
-                    fetchDataListCar()
-                } else {
+                if (isState.tab == "1") {
+                    if (isState.dataMyTrips && isState.nextMyTrips !== null) {
+                        queryState({ isLoadingScroll: true });
+                        fetchDataListCar()
+                        return
+                    }
+                    console.log("check next false");
+                }
+                if (isState.tab == "2") {
+                    if (isState.dataMyTripsTalented && isState.nextMyTripsTalented !== null) {
+                        queryState({ isLoadingScroll: true });
+                        fetchDataListCar()
+                        return
+                    }
                     console.log("check next false");
                 }
             }
@@ -161,14 +227,9 @@ const MyTrips = (props: Props) => {
         return () => {
             scrollCurrent?.removeEventListener(isVisibleMobile ? "touchmove" : "wheel", handleWheel);
         };
-    }, [scrollContainerRef, isState.next, isState.page, isState.isLoadingScroll]);
+    }, [scrollContainerRef, isState.nextMyTrips, isState.nextMyTripsTalented, isState.pageMyTrips, isState.pageMyTripsTalented, isState.isLoadingScroll]);
 
 
-    useEffect(() => {
-        if (valueFilter) {
-            handleFetchListCars(1)
-        }
-    }, [valueFilter, isState.tab])
 
     return (
         <BackgroundUiProfile className='space-y-4 '>
@@ -182,7 +243,20 @@ const MyTrips = (props: Props) => {
                     </Button>
                 </div>
             </div>
-            <Tabs defaultValue="1" onValueChange={(value) => queryState({ tab: value, page: 1 })} className="w-full">
+            <Tabs value={isState.tab} defaultValue="1" onValueChange={(value) => {
+                setValueFilter(-1)
+                queryState({
+                    tab: value,
+                    pageMyTrips: 1,
+                    pageMyTripsTalented: 1,
+                    isLoadingCar: true
+                })
+                if (value == '1') {
+                    handleFetchListdMyTrips(1)
+                    return
+                }
+                handleFetchListMyTripsTalented(1)
+            }} className="w-full">
                 <TabsList className='bg-transparent border-b border-b-[#F6F6F8] rounded-none w-full justify-start gap-8 p-0'>
                     <TabsTrigger
                         value="1"
@@ -194,7 +268,7 @@ const MyTrips = (props: Props) => {
                         value="2"
                         className='data-[state=active]:text-[#2FB9BD] text-[#667085] data-[state=active]:border-b-[#2FB9BD]
                                 border-b-2 border-transparent rounded-none pb-[15px] px-0 font-semibold text-sm leading-[17px]'>
-                        Xe có tài xế (0)
+                        Xe có tài xế ({isState.totalTalentedCar})
                     </TabsTrigger>
                 </TabsList>
                 <TabsContent value="1" className='lg:mt-4 mt-5'>
@@ -229,12 +303,23 @@ const MyTrips = (props: Props) => {
                 </TabsContent>
                 <TabsContent value="2" className='lg:mt-4 mt-5'>
                     <ScrollArea
-                        // ref={scrollContainerRef}
+                        ref={scrollContainerRef}
                         className={`${isState.dataMyTripsTalented?.length > 0 &&
                             isVisibleMobile ? isState.dataMyTripsTalented?.length > 4 ? 'h-[680px]' : 'h-auto' :
                             isVisibleTablet ? isState.dataMyTripsTalented?.length > 4 ? 'h-[980px]' : 'h-auto' : isState.dataMyTripsTalented?.length > 0 ? 'h-[780px]' : 'h-[550px]'} lg:pr-6 pr-3`}
                     >
-                        <Nodata type='mytrip' />
+                        <div className='flex flex-col gap-4'>
+                            <MyTripTalentedCar isState={isState} />
+                        </div>
+                        {
+                            isState?.isLoadingScroll && (
+                                <div className="w-full 3xl:h-[80px] h-[60px] flex justify-center items-center gap-2">
+                                    <div className="text-[#2FB9BD] inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                                    <span className="text-[#2FB9BD] 3xl:text-xl text-base">Loading...</span>
+                                </div>
+                            )
+                        }
+                        <div ref={lastContainerRef} />
                     </ScrollArea>
                 </TabsContent>
             </Tabs>
