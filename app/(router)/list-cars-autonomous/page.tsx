@@ -22,7 +22,7 @@ import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
 import { useResize } from '@/hooks/useResize';
 
 import { useDialogAddress, useDialogCalendar, useDialogFilterListCars, useDialogLogin } from '@/hooks/useOpenDialog';
-import { format } from 'date-fns';
+import { differenceInMinutes, format, setDate } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import Image from 'next/image';
 import { getListCars, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
@@ -36,6 +36,7 @@ import Nodata from '@/components/image/Nodata';
 import useGoogleApi from '@/services/filter/google/google.services';
 
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 type Props = {}
 
@@ -117,11 +118,19 @@ const ListCarAutonomous = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [flagFirstFetchApi, setFlagFirstFetchApi] = useState<boolean>(false)
 
+    const router = useRouter()
 
     // KHAI BÁO ZUSTAND
     const { isVisibleMobile } = useResize()
     const { setOpenDialogLogin } = useDialogLogin()
-    const { dateReal, setOpenDialogCalendar, setTypeCarCalendar } = useDialogCalendar()
+    const {
+        dateReal,
+        numberDay,
+        setOpenDialogCalendar,
+        setTypeCarCalendar,
+        setNumberDay
+    } = useDialogCalendar()
+
     const { setOpenDialogFilterListCars } = useDialogFilterListCars()
     const { getCookie } = useCookie()
     const {
@@ -199,6 +208,7 @@ const ListCarAutonomous = (props: Props) => {
                             onSuccessPage: false
                         }
                     })
+
                     setFlagFirstFetchApi(true)
                 }
             }
@@ -224,9 +234,9 @@ const ListCarAutonomous = (props: Props) => {
         const handleScroll = () => {
             const topOffset = window.scrollY || document.documentElement.scrollTop;
 
-            if (topOffset > 40) {
+            if (topOffset > 20) {
                 setIsFilterFixed(true);
-            } else if (topOffset <= 40) {
+            } else if (topOffset <= 20) {
                 setIsFilterFixed(false);
             }
         }
@@ -334,6 +344,20 @@ const ListCarAutonomous = (props: Props) => {
         isStateListCarAutonomous.isLoadingScroll,
         isVisibleMobile
     ]);
+
+    useEffect(() => {
+        if (dateReal?.from && dateReal?.to) {
+            const minutesDifference = differenceInMinutes(dateReal?.to, dateReal?.from);
+            const timeDate = Math.ceil(minutesDifference / 1440)
+            console.log('minutesDifference', minutesDifference);
+            console.log('timeDate', timeDate);
+            setNumberDay(timeDate)
+        }
+    }, [router])
+
+    console.log('numberDay list', numberDay);
+    console.log('dateReal', dateReal);
+
 
     // handle open modal address
     const handleOpenDialogAddress = (type: string, index?: number) => {

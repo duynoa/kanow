@@ -83,6 +83,7 @@ const DetailCar = ({ params }: Props) => {
     const {
         dateReal,
         dateTemp,
+        dateEnd,
         numberDay,
         openDialogCalendar,
         setDateTemp,
@@ -246,7 +247,7 @@ const DetailCar = ({ params }: Props) => {
                             }
                         })
 
-                        let numberDayWithAddress = parseInt(FormatDistanceFullKm(data.result.routes[0].distance.value)) / isStateDetailCar.dataDetailCar.price.total_km_day
+                        let numberDayWithAddress = parseInt(FormatDistanceFullKm(data.result.routes[0].distance.value)) / (isStateDetailCar.dataDetailCar.price.total_km_day ? isStateDetailCar.dataDetailCar.price.total_km_day : 1)
 
                         // Đặt options vào state
                         queryKeyIsStateDetailCar({
@@ -267,8 +268,8 @@ const DetailCar = ({ params }: Props) => {
 
                             // Thiết lập giá trị mặc định cho defaultDateRange
                             const defaultDateRange: DateRange = {
-                                from: setMinutes(setHours(fromDate, 21), 0),
-                                to: setMinutes(setHours(toDate, 21), 0),
+                                from: setMinutes(setHours(fromDate, 8), 0),
+                                to: setMinutes(setHours(toDate, 8), 0),
                             };
                             console.log('check defaultDateRange', defaultDateRange);
 
@@ -354,28 +355,79 @@ const DetailCar = ({ params }: Props) => {
             if (data && data.data && data.base.base) {
                 let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
 
-                if (data.data?.hour_receive_car &&
-                    data.data?.hour_back_car &&
-                    data.data?.hour_receive_car?.length > 0 &&
-                    data.data?.hour_back_car?.length > 0
-                ) {
-                    const [startHours, startMinutes] = parseTimeString(data.data?.hour_receive_car ? data.data?.hour_receive_car[0]?.hour_start : "21:00");
-                    const [endHours, endMinutes] = parseTimeString(data.data?.hour_back_car ? data.data?.hour_back_car[0]?.hour_start : "20:00");
+                if (typeCarDetail === "1" && dateReal?.from && dateReal?.to) {
+                    if (data.data?.hour_receive_car &&
+                        data.data?.hour_back_car &&
+                        data.data?.hour_receive_car?.length > 0 &&
+                        data.data?.hour_back_car?.length > 0
+                    ) {
+                        const [startHours, startMinutes] = parseTimeString(data.data?.hour_receive_car ? data.data?.hour_receive_car[0]?.hour_start : "8:00");
+                        const [endHours, endMinutes] = parseTimeString(data.data?.hour_back_car ? data.data?.hour_back_car[0]?.hour_start : "8:00");
 
-                    const startDate = setMinutes(setHours(new Date(), startHours), startMinutes);
-                    const endDate = setMinutes(setHours(addDays(new Date(), 1), endHours), endMinutes);
+                        const startDate = setMinutes(setHours(dateReal.from, startHours), startMinutes);
+                        // const endDate = setMinutes(setHours(addDays(new Date(), 1), endHours), endMinutes);
+                        const endDate = setMinutes(setHours(dateReal?.to, endHours), endMinutes);
 
-                    const minutesDifference = differenceInMinutes(endDate, startDate);
-                    const timeDate = Math.ceil(minutesDifference / 1440)
 
-                    setDateStart(startDate)
-                    setDateEnd(endDate)
+                        const minutesDifference = differenceInMinutes(endDate, startDate);
+                        const timeDate = Math.ceil(minutesDifference / 1440)
 
-                    setNumberDay(timeDate)
-                } else {
-                    setDateStart(dateReal?.from)
-                    setDateEnd(dateReal?.to)
+
+                        console.log('dateTemp : ', dateTemp)
+                        console.log('dateReal : ', dateReal);
+                        console.log('startDate : ', startDate);
+                        console.log('endDate : ', endDate);
+
+                        setDateStart(startDate)
+                        setDateEnd(endDate)
+
+                        setNumberDay(timeDate)
+
+                        setDateTemp({
+                            from: startDate,
+                            to: endDate,
+                        })
+
+                    } else {
+                        setDateStart(dateReal?.from)
+                        setDateEnd(dateReal?.to)
+                        setDateTemp({
+                            from: dateReal?.from,
+                            to: dateReal?.to,
+                        })
+                    }
+                } else if (typeCarDetail === "2" && dateReal?.from && dateReal?.to) {
+                    if (data.data?.hour_receive_car &&
+                        data.data?.hour_back_car &&
+                        data.data?.hour_receive_car?.length > 0 &&
+                        data.data?.hour_back_car?.length > 0
+                    ) {
+                        const [startHours, startMinutes] = parseTimeString(data.data?.hour_receive_car ? data.data?.hour_receive_car[0]?.hour_start : "8:00");
+                        const [endHours, endMinutes] = parseTimeString(data.data?.hour_back_car ? data.data?.hour_back_car[0]?.hour_start : "8:00");
+
+                        const startDate = setMinutes(setHours(new Date(), startHours), startMinutes);
+
+                        const endDate = setMinutes(setHours(addDays(startDate, numberDay ? Math.ceil(numberDay) : 1), endHours), endMinutes);
+
+                        const minutesDifference = differenceInMinutes(endDate, startDate);
+                        const timeDate = Math.ceil(minutesDifference / 1440)
+
+                        setDateStart(startDate)
+                        setDateEnd(endDate)
+
+                        setNumberDay(timeDate)
+
+                        setDateTemp({
+                            from: startDate,
+                            to: endDate,
+                        })
+                    } else {
+                        setDateStart(dateReal?.from)
+                        setDateEnd(dateReal?.to)
+                    }
+
                 }
+
 
                 queryKeyIsStateDetailCar({
                     dataDetailCar: customDataDetailCar
@@ -498,6 +550,8 @@ const DetailCar = ({ params }: Props) => {
 
     useEffect(() => {
         if (typeCarDetail == "1") {
+            console.log('numberDay numberDay type 1 : ', numberDay);
+
             queryKeyIsStateDetailCar({
                 dataDetailCar: {
                     ...isStateDetailCar?.dataDetailCar,
@@ -510,7 +564,8 @@ const DetailCar = ({ params }: Props) => {
                         total_amount:
                             isStateDetailCar?.dataDetailCar?.promotion?.length > 0
                                 ?
-                                ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1)) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day
+                                (((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion)
+                                // ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion)* (numberDay ? numberDay : 1) ) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day
                                 :
                                 (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
 
@@ -519,6 +574,7 @@ const DetailCar = ({ params }: Props) => {
                             isStateDetailCar?.dataDetailCar?.promotion?.length > 0
                                 ?
                                 ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
+                                // ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
                                 :
                                 (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
                         ,
@@ -537,6 +593,8 @@ const DetailCar = ({ params }: Props) => {
                 }
             })
         } else if (typeCarDetail == "2") {
+            console.log('numberDay numberDay type 2 : ', numberDay);
+
             // Đặt options vào state
             queryKeyIsStateDetailCar({
                 ...isStateDetailCar,
@@ -549,7 +607,8 @@ const DetailCar = ({ params }: Props) => {
                         total_amount:
                             isStateDetailCar?.dataDetailCar?.promotion?.length > 0
                                 ?
-                                ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1)) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day
+                                (((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion)
+                                // ((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1)) + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day
                                 :
                                 (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
                         // tiền đặt cọc
@@ -560,6 +619,7 @@ const DetailCar = ({ params }: Props) => {
                                 :
                                 (isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)
                         ,
+                        number_day: numberDay ? numberDay : 1,
                         // thanh toán khi nhận xe (Thành tiền - tiền cọc)
                         cash_on_delivery:
                             isStateDetailCar?.dataDetailCar?.promotion?.length > 0
@@ -571,7 +631,9 @@ const DetailCar = ({ params }: Props) => {
                 }
             })
         }
-    }, [typeCarDetail, numberDay, router])
+    }, [params.slug, typeCarDetail, numberDay, router])
+
+
 
     // on/off thả tim
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {

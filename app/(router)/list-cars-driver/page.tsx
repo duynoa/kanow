@@ -1010,7 +1010,7 @@ const ListCarsDriver = (props: Props) => {
             </div >
 
             <div
-                className={`${isFilterFixed ? "lg:mt-40 mt-60" : "mt-0"} ${isStateListCarsDriver?.isLoadingScroll ? "pb-0" : "pb-20"}`}
+                className={`${isFilterFixed ? "lg:mt-40 mt-60" : "mt-6"} ${isStateListCarsDriver?.isLoadingScroll ? "pb-0" : "pb-20"}`}
                 ref={scrollContainerRef}
             >
                 <div className='custom-container grid xxl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-6 gap-4 justify-start h-full'>
