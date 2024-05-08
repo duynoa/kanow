@@ -458,21 +458,22 @@ export function DialogCalendar({ }: Props) {
                 }))
             }
         } else if (type === 'calendar_car_driver') {
-            console.log('check dateTimeComponent: ', dateTimeComponent);
+            console.log('check newDate: ', newDate);
+            if (newDate) {
+                // Tạo một đối tượng Date mới từ newDate
+                const newFromDate = new Date(newDate);
+                // Thiết lập thời gian của newFromDate từ dateTimeComponent.from
+                newFromDate?.setHours(dateTimeComponent?.from?.getHours(), dateTimeComponent?.from?.getMinutes(), dateTimeComponent?.from?.getSeconds());
 
-            // Tạo một đối tượng Date mới từ newDate
-            const newFromDate = new Date(newDate);
-            // Thiết lập thời gian của newFromDate từ dateTimeComponent.from
-            newFromDate?.setHours(dateTimeComponent?.from?.getHours(), dateTimeComponent?.from?.getMinutes(), dateTimeComponent?.from?.getSeconds());
+                const newToDate = new Date(newFromDate)
+                newToDate?.setDate(newDate?.getDate() + 1);
 
-            const newToDate = new Date(newFromDate)
-            newToDate?.setDate(newDate?.getDate() + 1);
-
-            setDateTimeComponent({
-                from: newFromDate,
-                to: newToDate
-            })
-            setFlagSubmit(true)
+                setDateTimeComponent({
+                    from: newFromDate,
+                    to: newToDate
+                })
+                setFlagSubmit(true)
+            }
         }
     }
 
@@ -820,7 +821,7 @@ export function DialogCalendar({ }: Props) {
     ])
 
     useEffect(() => {
-        
+
         setDateTemp(dateReal)
         setDateStart(dateReal?.from)
         setDateEnd(dateReal?.to)
@@ -833,7 +834,8 @@ export function DialogCalendar({ }: Props) {
             if (pathname.startsWith('/detail-car/')) {
                 // setDateStart(dateTemp?.from)
                 // setDateEnd(dateTemp?.to)
-                setDateTimeComponent(dateTemp)
+                setDateStart(dateTemp?.from)
+                setDateEnd(dateTemp?.to)
             } else {
                 setDateTimeComponent(dateReal)
             }
