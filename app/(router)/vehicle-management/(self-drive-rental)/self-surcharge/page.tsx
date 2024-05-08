@@ -203,7 +203,7 @@ export default function SelftSurcharge(props: Props) {
                         : <Nodata type="vehicle-surcharge" />
                     }
                 </div>
-                {isState.arraySurcharge?.length && isState.arraySurcharge?.length > 0 &&
+                {isState.arraySurcharge && isState.arraySurcharge?.length > 0 &&
                     <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
                         <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} />
                     </div>

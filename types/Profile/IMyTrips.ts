@@ -54,15 +54,18 @@ export interface IDataFilterMyTrips {
 }
 
 export interface IMyTrips {
+    pageMyTrips: number;
+    pageMyTripsTalented: number;
     openFilter: boolean;
     isLoadingCar: boolean;
     dataMyTripsTalented: IArrayMyTripCar[];
     dataMyTrips: IArrayMyTripCar[];
-    page: number;
     limit: number;
     tab: string;
-    next: any;
+    nextMyTrips: any;
+    nextMyTripsTalented: any;
     totalDrivingCar: number;
+    totalTalentedCar: number;
     isLoadingScroll: boolean;
     daTafilter: IDataFilterMyTrips[];
 }
