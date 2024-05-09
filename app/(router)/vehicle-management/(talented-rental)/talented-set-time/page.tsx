@@ -11,20 +11,15 @@ import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.servi
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { OBJSlect } from "@/types/VehicleManagement/ICommon";
 import { ITalentedSetTime } from "@/types/VehicleManagement/TalentedRental/ISetTime";
-import { fi } from "date-fns/locale";
 import { ChevronsUpDown } from "lucide-react";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ControllerRenderProps, UseFormReturn, useForm } from "react-hook-form";
+import { ControllerRenderProps, useForm } from "react-hook-form";
 
 type Props = {}
 
 
 export default function TalentedSetTime(props: Props) {
-    const param: ReadonlyURLSearchParams = useSearchParams()
-
-    const id: string | null = param.get("id") || ''
-
     const initialState: ITalentedSetTime = {
         bookCarQuickly: {
             // giới hạn từ
@@ -86,7 +81,6 @@ export default function TalentedSetTime(props: Props) {
 
     useEffect(() => {
         if (!Array.isArray(data) && data) {
-            console.log(data, idCar);
             form.setValue("bookCarQuickly.open", data?.car_talent?.book_car_flash == 1)
             form.setValue("bookCarQuickly.wordLimit", data?.car_talent?.from_book_car_flash)
             form.setValue("bookCarQuickly.until", data?.car_talent?.to_book_car_flash)

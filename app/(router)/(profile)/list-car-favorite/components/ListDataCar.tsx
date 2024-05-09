@@ -1,0 +1,188 @@
+"use client"
+import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
+import { FormatNumberHundred, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
+import Nodata from '@/components/image/Nodata'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import Image from 'next/image'
+import Link from 'next/link'
+import { FaStar } from 'react-icons/fa'
+import { FaCircleCheck } from 'react-icons/fa6'
+import { TiHeartFullOutline, TiLocation } from 'react-icons/ti'
+import SkeletonCarFavorite from './SkeletonCarFavorite'
+import { IListCarFavorite } from '@/types/Profile/IListCarFavorite'
+type Props = {
+    isState: IListCarFavorite,
+    arrData: any[],
+    handleClickFavorite: (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string) => void
+}
+const ListDataCar = ({ isState, handleClickFavorite, arrData }: Props) => {
+
+    return (
+        <>
+            {isState.isLoadingCar ?
+                [...Array(3)].map((_, index) => (
+                    <SkeletonCarFavorite key={index} />
+                ))
+                :
+                arrData?.length > 0 ? arrData.map((card) => (
+                    <div
+                        key={`card-${card.id}`}
+                        id={`card-${card.id}`}
+                        className={`flex lg:flex-nowrap flex-wrap lg:gap-6 gap-3 xl:items-start lg:items-start items-start bg-white border-[#D7D9E0] border w-full p-4 rounded-xl relative z-0`}
+                    >
+                        <Link
+                            prefetch={false}
+                            href={`/detail-car/${card.id}?type=${isState.tab}&${ConvertToSlug(card?.name_car)}`}
+                            className='3xl:w-[30%] xxl:w-[35%]  2xl:w-[35%] xl:w-[40%] lg:w-[45%] w-full 3xl:h-[210px] xxl:h-[185px] 2xl:h-[190px] xl:h-[175px] lg:h-[165px] md:h-[280px] h-[180px] relative'>
+                            <Image
+                                src={card?.image_car?.length > 0 ? card?.image_car[0]?.name : '/default/default.png'}
+                                alt="image_card"
+                                width={1280}
+                                height={1024}
+                                className='rounded-xl h-full w-full object-cover'
+                            />
+                            <div
+                                onClick={(event) => handleClickFavorite(event, card.id)}
+                                className='absolute right-2 top-2 bg-[#1D1D1D]/40 rounded-full p-2 cursor-pointer hover:bg-[#1D1D1D]/50 group duration-200 transition-color ease-in-out z-20'
+                            >
+                                <TiHeartFullOutline className={`${card.favorite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
+                            </div>
+                            <div className='flex gap-2 absolute bottom-[10px] left-[10px]'>
+                                {
+                                    card?.type?.mortgage &&
+                                    <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
+                                        Miễn thế chấp
+                                    </Badge>
+                                }
+                                {
+                                    card?.type?.book_car_flash &&
+                                    <Badge className='bg-[#000000]/50 font-normal cursor-default 3xl:text-sm text-xs'>
+                                        Đặt xe nhanh
+                                    </Badge>
+                                }
+                            </div>
+                        </Link>
+                        <div className='3xl:w-[50%] xxl:w-[45%] 2xl:w-[45%] xl:w-[40%] lg:w-[45%] w-full flex flex-col 3xl:gap-2 xxl:gap-2.5 2xl:gap-2 xl:gap-2 lg:gap-2 gap-3'>
+                            <div className='flex items-center gap-2 '>
+                                <Badge className='bg-[#C9DCF9]/35 hover:bg-[#C9DCF9]/50 text-[#3561FF] 3xl:text-sm text-xs font-medium cursor-default caret-transparent'>
+                                    {card?.type?.transmission_search ? card?.type?.transmission_search : ""}
+                                </Badge>
+                                {card?.type?.delivery_car &&
+                                    <Badge className='bg-[#F9ECC9]/35 hover:bg-[#F9ECC9]/50 text-[#FF9900] 3xl:text-sm text-xs font-medium cursor-default'>
+                                        Giao tận nơi
+                                    </Badge>
+                                }
+                            </div>
+                            <div className='3xl:text-lg text-base text-[#1D1D1D] font-bold uppercase'>
+                                {card.name_car ?? ''}
+                            </div>
+                            <div className='flex gap-1 items-center'>
+                                <TiLocation className='text-base text-[#FA3434] w-[16px] max-w-[16px]' />
+                                <div className='3xl:text-sm text-xs text-[#8C93A3] font-medium w-[90%] max-w-[90%]'>
+                                    {card.address ?? ''}
+                                </div>
+                            </div>
+                            <div className='border-b lg:hidden block border-[#D7D9E0]/50 w-full col-span-12' />
+                            <div className={`flex lg:flex-col xl:justify-start lg:justify-center md:justify-between ${card.total_trip ? 'justify-between ' : 'justify-between px-3'} lg:px-0 px-2  flex-row 3xl:gap-2 2xl:gap-2 xxl:gap-2.5 xl:gap-2 lg:gap-2 gap-2  lg:bg-transparent lg:py-0 lg:rounded-none
+                                            rounded-md py-3 bg-[#F2FCF7] `}>
+                                <div className='flex lg:flex-col flex-row lg:items-start items-center gap-2'>
+                                    {
+                                        card.point_star &&
+                                        <div className='flex items-center gap-1'>
+                                            <div className='flex items-center gap-1'>
+                                                <FaStar className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#FFC118]' />
+                                                <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
+                                                    {card.point_star ? (FormatNumberToDecimal(card.point_star, 1)) : 0}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    {
+                                        card.total_trip ?
+                                            <>
+                                                <div className='size-1 bg-[#B4B8C5] rounded-full md:hidden block'></div>
+                                                <div className='flex items-center gap-1'>
+                                                    <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs md:text-sm text-base text-[#3AC996]' />
+                                                    <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] md:text-xs text-sm text-[#484D5C] font-semibold'>
+                                                        {card.total_trip ? FormatNumberHundred(card.total_trip, 100) : 0} Chuyến
+                                                    </div>
+                                                </div>
+                                            </>
+                                            :
+                                            <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                                Chưa có chuyến
+                                            </div>
+                                    }
+                                </div>
+                                <div className='flex items-center gap-1 3xl:mt-4 2xl:mt-3 xxl:mt-2 xl:mt-2'>
+                                    {
+                                        card?.promotion?.length > 0 ?
+                                            <>
+                                                <div className='3xl:text-[32px] xxl:text-2xl 2xl:text-[28px] xl:text-[18px] lg:text-xl text-base text-[#D7D9E0] font-medium line-through'>
+                                                    {card.price_before_promotion ? FormatNumberToThousands(card.price_before_promotion) : 0}
+                                                </div>
+                                                <div className='flex'>
+                                                    <span className='3xl:text-[32px] xxl:text-2xl 2xl:text-[28px] xl:text-[18px] lg:text-xl text-base text-[#1AC5CA] font-medium'>
+                                                        {card.price_after_promotion ? FormatNumberToThousands(card.price_after_promotion) : 0}
+                                                    </span>
+                                                    <span className='xxl:text-[14px] 2xl:text-[16px] xl:text-[14px] text-xs text-[#585F71] flex justify-start font-bold capitalize'>
+                                                        /ngày
+                                                    </span>
+                                                </div>
+                                            </>
+                                            :
+                                            <div className='flex'>
+                                                <span className='3xl:text-[32px] xxl:text-2xl 2xl:text-[28px] xl:text-[18px] text-[#1AC5CA] font-medium'>
+                                                    {card.price_before_promotion ? FormatNumberToThousands(card.price_before_promotion) : 0}
+                                                </span>
+                                                <span className='xxl:text-[14px] 2xl:text-[16px] xl:text-[14px] text-xs text-[#585F71] flex justify-start font-semibold capitalize'>
+                                                    /ngày
+                                                </span>
+                                            </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div className='3xl:w-[20%] xxl:w-[20%] 2xl:w-[20%] xl:w-[20%] lg:w-[15%] w-full flex lg:flex-col flex-row justify-start items-center lg:gap-2 gap-4  mt-2'>
+                            <div className="lg:size-11 size-10 lg:block hidden">
+                                <Avatar className='w-full h-full shadow'>
+                                    <AvatarImage
+                                        alt="@kanow"
+                                        src={card?.car_owner?.avatar ? card?.car_owner?.avatar : '/avatar/avatar_default.png'}
+                                    />
+                                    <AvatarFallback >
+                                        <Image
+                                            width={44}
+                                            height={44}
+                                            src='/avatar/avatar_default.png'
+                                            alt="@kanow"
+                                            className='w-full h-full'
+                                        />
+                                    </AvatarFallback>
+                                </Avatar>
+                            </div>
+                            <Button
+                                type='button'
+                                onClick={(e: any) => handleClickFavorite(e, card.id)}
+                                className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] w-full xl:text-sm lg:text-[9px] text-sm
+                                2xl:py-3 xl:py-2.5 lg:py-1.5 py-2.5  rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  lg:border border-[1.5px] uppercases`}>
+                                Bỏ thích
+                            </Button>
+                            <Link
+                                prefetch={false}
+                                href={`/detail-car/${card.id}?type=${isState.tab}&${ConvertToSlug(card?.name_car)}`}
+                                className={`bg-[#2FB9BD]/80 hover:bg-[#2FB9BD]/80 text-white border-[#2FB9BD] w-full xl:text-sm lg:text-[9px] text-sm text-center
+                                2xl:py-3 xl:py-2.5 lg:py-1.5 py-2.5  rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  lg:border border-[1.5px] uppercases`}>
+                                Xem chi tiết
+                            </Link>
+                        </div>
+                    </div>
+                )) :
+                    <Nodata type='list-car-favorite' />
+            }
+        </>
+    )
+}
+export default ListDataCar

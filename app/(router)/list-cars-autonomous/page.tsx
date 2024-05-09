@@ -382,7 +382,8 @@ const ListCarAutonomous = (props: Props) => {
             try {
                 const dataParams = {
                     car_id: car_id,
-                    status: isStateListCarAutonomous?.listCardCars[index]?.favorite_car ? 0 : 1
+                    status: isStateListCarAutonomous?.listCardCars[index]?.favorite_car ? 0 : 1,
+                    type: 1
                 }
 
                 const { data } = await postUpdateFavoriteHeartCar(dataParams)

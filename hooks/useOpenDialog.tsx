@@ -308,17 +308,21 @@ export const useDialogRegisterOwnerDriver = create<IOpenDialogRegisterOwnerDrive
 // Dialog bộ lọc xe của tôi, chuyến của tôi
 interface IOpenDialogFilterCar {
     type?: string;
+    defaultValue?: any;
     valueFilter?: any;
     dataFilter: any[];
     openDialogFilterCar: boolean;
     setValueFilter: (key: any) => void;
+    setDefaultValue: (key: any) => void;
     setOpenDialogFilterCar: (key: any, type?: string) => void;
     setDataFilter: (key: any) => void;
 }
 
 export const useDialogFilterMyCar = create<IOpenDialogFilterCar>((set) => ({
     openDialogFilterCar: false,
-    setValueFilter: (value: any) => set((state) => ({ valueFilter: value })),
+    defaultValue: "",
+    setValueFilter: (value: any) => set((state) => ({ valueFilter: value, defaultValue: value })),
+    setDefaultValue: (value: any) => set((state) => ({ defaultValue: value })),
     setOpenDialogFilterCar: (key: any, type?: string) => set((state) => ({ openDialogFilterCar: key, type: type })),
     dataFilter: [],
     valueFilter: '',

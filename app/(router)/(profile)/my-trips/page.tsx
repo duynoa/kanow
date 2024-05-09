@@ -1,7 +1,6 @@
 "use client"
 import { useEffect, useRef, useState } from 'react'
 
-import Nodata from '@/components/image/Nodata'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import BackgroundUiProfile from '@/themes/profile/BackgroundUiProfile'
@@ -16,15 +15,15 @@ import MyTripSelfDrivingCar from './components/MyTripSelfDrivingCar'
 import { Button } from '@/components/ui/button'
 import { useDialogFilterMyCar } from '@/hooks/useOpenDialog'
 import MyTripTalentedCar from './components/MyTripTalentedCar'
+import LoadingData from '@/components/loadingData/LoadingData'
 
 type Props = {}
-
 
 
 const MyTrips = (props: Props) => {
     const initialState: IMyTrips = {
         openFilter: false,
-        isLoadingCar: true,
+        isLoadingCar: false,
         dataMyTrips: [],
         dataMyTripsTalented: [],
         pageMyTrips: 1,
@@ -51,10 +50,10 @@ const MyTrips = (props: Props) => {
 
     const queryState = (key: any) => sIsState((prev: IMyTrips) => ({ ...prev, ...key }))
 
-    const { setDataFilter, setValueFilter, valueFilter, setOpenDialogFilterCar } = useDialogFilterMyCar()
-
+    const { setDataFilter, setValueFilter, valueFilter, defaultValue, setOpenDialogFilterCar, openDialogFilterCar, setDefaultValue } = useDialogFilterMyCar()
 
     const handleFetchListdMyTrips = async (page: any) => {
+        queryState({ isLoadingCar: true })
         try {
             await new Promise(resolve => setTimeout(resolve, 1500));
 
@@ -79,6 +78,7 @@ const MyTrips = (props: Props) => {
     }
 
     const handleFetchListMyTripsTalented = async (page: any) => {
+        queryState({ isLoadingCar: true })
         try {
             await new Promise(resolve => setTimeout(resolve, 1500));
 
@@ -88,7 +88,7 @@ const MyTrips = (props: Props) => {
                 const { customDataMyTripCar } = CustomDataMyTripCar(dataMyTripsTalented)
                 queryState({
                     dataMyTripsTalented: customDataMyTripCar,
-                    pageMyTripsTalented: isState.pageMyTripsTalented + 1,
+                    pageMyTripsTalented: isState.tab == "1" ? 2 : isState.pageMyTripsTalented + 1,
                     nextMyTripsTalented: dataMyTripsTalented?.links?.next,
                     totalTalentedCar: dataMyTripsTalented?.meta?.total ?? 0
                 })
@@ -101,16 +101,6 @@ const MyTrips = (props: Props) => {
             queryState({ isLoadingCar: false })
         }
     }
-
-    useEffect(() => {
-        if (isState.tab == '1') {
-            handleFetchListdMyTrips(1)
-        } else {
-            handleFetchListMyTripsTalented(1)
-        }
-    }, [valueFilter])
-
-
 
     const fetDataFilter = async () => {
         try {
@@ -129,61 +119,77 @@ const MyTrips = (props: Props) => {
     }
 
     useEffect(() => {
-        if (isState.tab == '1') {
+        if (valueFilter != defaultValue) {
+            handleFetchListdMyTrips(1)
             handleFetchListMyTripsTalented(1)
         }
+    }, [valueFilter])
+
+    useEffect(() => {
+        setValueFilter(-1)
+        setDefaultValue(-1)
+        handleFetchListdMyTrips(1)
+        handleFetchListMyTripsTalented(1)
         fetDataFilter()
     }, [])
+
+    useEffect(() => {
+        if (valueFilter != defaultValue) {
+            queryState({
+                pageMyTrips: 1,
+                pageMyTripsTalented: 1
+            })
+        }
+    }, [openDialogFilterCar])
 
 
     const fetchDataListCar = async () => {
         try {
             await new Promise(resolve => setTimeout(resolve, 1500));
 
-            const { data } = await apiListMyTrips(isState.tab == '1' ? isState.pageMyTrips : isState.pageMyTripsTalented, isState.limit, { status_search: valueFilter, type: isState.tab })
+            const page = isState.tab == '1' ? isState.pageMyTrips : isState.pageMyTripsTalented
+
+            const { data } = await apiListMyTrips(page, isState.limit, { status_search: valueFilter ? valueFilter : -1, type: isState.tab })
 
             if (data && data?.links && data?.data && data?.base) {
                 let { customDataMyTripCar } = CustomDataMyTripCar(data)
                 if (!isState.isLoadingScroll) {
-                    if (isState.tab == '1') {
-                        queryState({
+                    const dataNewNext: any = {
+                        1: {
                             dataMyTrips: [...(isState.dataMyTrips || []), ...customDataMyTripCar],
                             nextMyTrips: data?.links?.next,
                             pageMyTrips: isState.pageMyTrips + 1,
-                        })
-                    }
-                    if (isState.tab == '2') {
-                        queryState({
+                        },
+                        2: {
                             dataMyTripsTalented: [...(isState.dataMyTripsTalented || []), ...customDataMyTripCar],
                             nextMyTripsTalented: data?.links?.next,
                             pageMyTripsTalented: isState.pageMyTripsTalented + 1,
-                        })
+                        }
                     }
+                    queryState(dataNewNext[isState.tab])
                 }
                 return
             }
-            if (isState.tab == '1') {
-                queryState({
+            const dataNotNext: any = {
+                1: {
                     dataMyTrips: isState.dataMyTrips,
                     nextMyTrips: data?.links?.next,
                     pageMyTrips: data?.links?.next !== null ? isState.pageMyTrips + 1 : isState.pageMyTrips,
                     isLoadingScroll: false,
-                });
-            }
-            if (isState.tab == '2') {
-                queryState({
+                },
+                2: {
                     dataMyTripsTalented: isState.dataMyTripsTalented,
                     nextMyTripsTalented: data?.links?.next,
                     pageMyTripsTalented: data?.links?.next !== null ? isState.pageMyTripsTalented + 1 : isState.pageMyTripsTalented,
                     isLoadingScroll: false,
-                });
+                }
             }
+            queryState(dataNotNext[isState.tab])
         } catch (error) {
             throw error
         } finally {
             queryState({ isLoadingScroll: false });
         }
-
     };
 
     useEffect(() => {
@@ -217,7 +223,6 @@ const MyTrips = (props: Props) => {
                     console.log("check next false");
                 }
             }
-
         }
 
         const scrollCurrent = scrollContainerRef.current;
@@ -236,7 +241,9 @@ const MyTrips = (props: Props) => {
             <div className="flex md:flex-row flex-col justify-between">
                 <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Chuyến của tôi</h1>
                 <div className='items-center gap-5 md:my-0 my-5 md:flex hidden'>
-                    <Button onClick={() => setOpenDialogFilterCar(true)} className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
+                    <Button onClick={() => {
+                        setOpenDialogFilterCar(true)
+                    }} className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
                              md:block hidden    px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}
                     >
                         Bộ lọc
@@ -244,7 +251,8 @@ const MyTrips = (props: Props) => {
                 </div>
             </div>
             <Tabs value={isState.tab} defaultValue="1" onValueChange={(value) => {
-                setValueFilter(-1)
+                // setValueFilter(-1)
+                // setDefaultValue(-1)
                 queryState({
                     tab: value,
                     pageMyTrips: 1,
@@ -274,7 +282,10 @@ const MyTrips = (props: Props) => {
                 <TabsContent value="1" className='lg:mt-4 mt-5'>
                     {isVisibleMobile &&
                         <div className='items-center gap-5  my-5'>
-                            <Button onClick={() => setOpenDialogFilterCar(true)} className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
+                            <Button onClick={() => {
+
+                                setOpenDialogFilterCar(true)
+                            }} className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
                              md:block hidden    px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}
                             >
                                 Bộ lọc
@@ -290,14 +301,7 @@ const MyTrips = (props: Props) => {
                         <div className='flex flex-col gap-4'>
                             <MyTripSelfDrivingCar isState={isState} />
                         </div>
-                        {
-                            isState?.isLoadingScroll && (
-                                <div className="w-full 3xl:h-[80px] h-[60px] flex justify-center items-center gap-2">
-                                    <div className="text-[#2FB9BD] inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
-                                    <span className="text-[#2FB9BD] 3xl:text-xl text-base">Loading...</span>
-                                </div>
-                            )
-                        }
+                        {isState?.isLoadingScroll && <LoadingData />}
                         <div ref={lastContainerRef} />
                     </ScrollArea>
                 </TabsContent>
@@ -311,14 +315,7 @@ const MyTrips = (props: Props) => {
                         <div className='flex flex-col gap-4'>
                             <MyTripTalentedCar isState={isState} />
                         </div>
-                        {
-                            isState?.isLoadingScroll && (
-                                <div className="w-full 3xl:h-[80px] h-[60px] flex justify-center items-center gap-2">
-                                    <div className="text-[#2FB9BD] inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
-                                    <span className="text-[#2FB9BD] 3xl:text-xl text-base">Loading...</span>
-                                </div>
-                            )
-                        }
+                        {isState?.isLoadingScroll && <LoadingData />}
                         <div ref={lastContainerRef} />
                     </ScrollArea>
                 </TabsContent>

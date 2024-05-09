@@ -14,6 +14,7 @@ import MyCar from "./components/mycar/MyCar"
 import { Button } from "@/components/ui/button"
 import { useDialogFilterMyCar } from "@/hooks/useOpenDialog"
 import { useDataProfileMyCar } from "@/hooks/useDataQueryKey"
+import LoadingData from "@/components/loadingData/LoadingData"
 
 type Props = {
 
@@ -189,7 +190,9 @@ const ListMyCar = (props: Props) => {
             <div className="flex justify-between items-center">
                 <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Xe của tôi</h1>
                 {isStateProfileMyCar.tab == 1 &&
-                    <Button onClick={() => setOpenDialogFilterCar(true)} className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
+                    <Button
+                        onClick={() => setOpenDialogFilterCar(true)}
+                        className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
                              md:block hidden    px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}
                     >
                         Bộ lọc
@@ -212,11 +215,15 @@ const ListMyCar = (props: Props) => {
                     }
                 </TabsList>
                 <TabsContent value="1" className='lg:mt-4 mt-5'>
-                    {isVisibleMobile && <Button onClick={() => setOpenDialogFilterCar(true)} className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
-                   px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all mb-5  border uppercases`}
-                    >
-                        Bộ lọc
-                    </Button>
+                    {
+                        isVisibleMobile &&
+                        <Button
+                            onClick={() => setOpenDialogFilterCar(true)}
+                            className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
+                            px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all mb-5  border uppercases`}
+                        >
+                            Bộ lọc
+                        </Button>
                     }
                     <ScrollArea
                         ref={scrollContainerRef}
@@ -229,12 +236,7 @@ const ListMyCar = (props: Props) => {
                             <MyCar />
                         </div>
                         {
-                            isStateProfileMyCar?.isLoadingScroll && (
-                                <div className="w-full 3xl:h-[80px] h-[60px] flex justify-center items-center gap-2">
-                                    <div className="text-[#2FB9BD] inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
-                                    <span className="text-[#2FB9BD] 3xl:text-xl text-base">Loading...</span>
-                                </div>
-                            )
+                            isStateProfileMyCar?.isLoadingScroll && <LoadingData />
                         }
                         <div ref={lastContainerRef} />
                     </ScrollArea>

@@ -645,7 +645,9 @@ const DetailCar = ({ params }: Props) => {
             try {
                 const dataParams = {
                     car_id: car_id,
-                    status: isStateDetailCar?.listCarsRelated[index]?.favorite_car ? 0 : 1
+                    status: isStateDetailCar?.listCarsRelated[index]?.favorite_car ? 0 : 1,
+                    type: typeCarDetail
+
                 }
 
                 const { data } = await postUpdateFavoriteHeartCar(dataParams)
@@ -664,7 +666,8 @@ const DetailCar = ({ params }: Props) => {
             try {
                 const dataParams = {
                     car_id: params.slug,
-                    status: isStateDetailCar?.dataDetailCar?.favorite_car ? 0 : 1
+                    status: isStateDetailCar?.dataDetailCar?.favorite_car ? 0 : 1,
+                    type: typeCarDetail
                 }
 
                 const { data } = await postUpdateFavoriteHeartCar(dataParams)

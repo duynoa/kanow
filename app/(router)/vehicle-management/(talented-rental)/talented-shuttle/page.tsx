@@ -2,15 +2,14 @@
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import { FormatNumberToThousands } from "@/components/format/FormatNumber";
 import { CustomSlider } from "@/components/ui/customSlider";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { IShuttle } from "@/types/VehicleManagement/TalentedRental/IShuttle";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ControllerRenderProps, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 type Props = {}
 
@@ -57,17 +56,9 @@ export default function TalentedShuttle(props: Props) {
 
     const [isMount, setIsMount] = useState(false)
 
-    const checkValueArray = (array: any[], field: ControllerRenderProps<any, any>) => {
-        return array.find((x: any) => x.value === field.value)?.label
-    }
-
     const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
-
     const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
-
-
-    const findValue = form.getValues()
 
     const { apiUpdateCar } = apiVehicleCommon()
 
@@ -84,7 +75,6 @@ export default function TalentedShuttle(props: Props) {
             form.setValue('shuttle.freeShuttle', data?.car_talent?.free_km_delivery_car ?? 0)
 
             queryState({
-                flag: true,
                 within: {
                     ...isState.within,
                     propose: +dataOther.other_talent?.km_delivery_car,
@@ -97,7 +87,6 @@ export default function TalentedShuttle(props: Props) {
                     ...isState.freeShuttle,
                     propose: +dataOther.other_talent?.free_km_delivery_car,
                 },
-
             })
             return
         }

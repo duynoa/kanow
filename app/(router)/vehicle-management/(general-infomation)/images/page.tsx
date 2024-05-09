@@ -115,15 +115,11 @@ export default function VehicleImages(props: Props) {
                                             <DragDropContext
                                                 onDragEnd={result => {
                                                     const { destination, source, draggableId } = result;
-                                                    console.log(draggableId);
-
                                                     if (!destination) return;
                                                     if (destination.index === source.index) return;
                                                     const newValue = Array.from(value);
                                                     const [removed] = newValue.splice(source.index, 1);
                                                     newValue.splice(destination.index, 0, removed);
-                                                    console.log(newValue);
-
                                                     onChange(newValue);
                                                 }}
                                             >
