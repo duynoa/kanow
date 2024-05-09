@@ -367,8 +367,6 @@ export function DialogCalendar({ }: Props) {
         return isBefore(date, startOfDay(toDate));
     };
 
-    console.log('typeCarCalendar', typeCarCalendar);
-
     const handleCloseModal = (type: string) => {
         // if (validateDateSubmit && type === "close1" || flagSubmit && type === "close1") {
         //     // không có hoạt động gì để tránh người dùng tạo bug khi click ra ngoài

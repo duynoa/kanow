@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-
+// resize responsive
 interface ResizeStore {
     isVisibleMobile: boolean,
     isVisibleTablet: boolean,

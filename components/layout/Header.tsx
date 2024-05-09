@@ -20,20 +20,12 @@ import useAuthenticationAPI from '@/services/auth/auth.services';
 import { useCookie } from '@/hooks/useCookie';
 import { Skeleton } from '../ui/skeleton';
 import { useDialogLogin } from '@/hooks/useOpenDialog';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import moment from 'moment';
-import { ScrollArea } from '../ui/scroll-area';
+
 import { Badge } from '../ui/badge';
 import { useNotification } from '@/hooks/useNotification';
 import DropdownHeaderNotification from '../dropdown/DropdownHeaderNotification';
 import { useDataProfileMyCar } from '@/hooks/useDataQueryKey';
+import { getListNotifications } from '@/services/notification/notification.services';
 const Header = () => {
     // lấy thông tin user
     const router = useRouter()
@@ -48,7 +40,13 @@ const Header = () => {
     const [showActive, setShowActive] = useState<boolean>(false);
     const [activeService, setActiveService] = useState<boolean>(false)
     const [openModalLogin, setOpenModalLogin] = useState<boolean>(false)
-    const { setDataNotification, setOpenNotification, openNotification } = useNotification()
+
+    const {
+        isLoadingNotification,
+        dataListNotifications,
+        setIsLoadingNotification,
+        setDataListNotifications,
+    } = useNotification()
 
     const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
 
@@ -96,14 +94,6 @@ const Header = () => {
             desription: "Chào mừng bạn tham gia cộng đồng Kanow, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
             link: '#',
             time: new Date(),
-        }
-        ,
-        {
-            id: uuidv4(),
-            title: "Giới thiệu về Kanow",
-            desription: "Chào mừng bạn tham gia cộng đồng Kanow, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
-            link: '#',
-            time: new Date(),
         },
         {
             id: uuidv4(),
@@ -118,8 +108,14 @@ const Header = () => {
             desription: "Chào mừng bạn tham gia cộng đồng Kanow, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
             link: '#',
             time: new Date(),
-        }
-        ,
+        },
+        {
+            id: uuidv4(),
+            title: "Giới thiệu về Kanow",
+            desription: "Chào mừng bạn tham gia cộng đồng Kanow, bấm vào đây để xem những kinh nghiệm thuê xe hữu ích.",
+            link: '#',
+            time: new Date(),
+        },
         {
             id: uuidv4(),
             title: "Giới thiệu về Kanow",
@@ -143,14 +139,11 @@ const Header = () => {
         }
     ]
 
-
-
     useEffect(() => {
         setIsMounted(true)
     }, [])
 
     useEffect(() => {
-        setDataNotification(dataNotice)
         const getInfoUser = async () => {
             const { data: information } = await apiInfoUser();
             if (information?.result) {
@@ -162,12 +155,43 @@ const Header = () => {
             }
             setIsLoading(false)
         }
+
         if (getCookie && getCookie != "kanow" && !informationUser) {
             getInfoUser()
             setIsLoading(true)
-
+        } else if (getCookie && getCookie != "kanow") {
         }
     }, [getCookie])
+
+    useEffect(() => {
+        if (dataListNotifications.length == 0) {
+            const fetchListNotifications = async () => {
+                try {
+                    setIsLoadingNotification(true)
+                    const dataParams = {
+                        current_page: 1,
+                        per_page: 10,
+                        type: "customer"
+                    }
+
+                    const { data } = await getListNotifications(dataParams)
+
+                    console.log('data: ', data);
+                    if (data && data.data.length) {
+                        setDataListNotifications(data.data)
+                        setIsLoadingNotification(false)
+                    } else {
+                        setIsLoadingNotification(false)
+                    }
+
+                } catch (err) {
+                    throw err
+                }
+            }
+
+            fetchListNotifications()
+        }
+    }, [])
 
 
     const handleClickToZoom = () => {
@@ -201,6 +225,7 @@ const Header = () => {
         setIsScrollBlocked(true);
         setShowActive(true)
     }
+
     const _ToogleIsOff = (): void => {
         setIsScrollBlocked(false);
         setShowActive(false)
@@ -223,21 +248,6 @@ const Header = () => {
             setStatusModal('signup')
         }
     }
-
-    // useEffect(() => {
-    //     // if (token) {
-    //     const fetchAutoLogin = async () => {
-    //         const res = await postAutoLoginAccount()
-    //         if (res && res.data && res.data.isSuccess) {
-    //             setInfoUser(res.data.user)
-    //         } else {
-    //             Cookies.remove("token")
-    //             instance.defaults.headers.common = { 'Authorization': `Bearer undefined` }
-    //         }
-    //     }
-    //     fetchAutoLogin()
-    //     // }
-    // }, [token])
 
     if (!isMounted) {
         return null;
@@ -533,11 +543,16 @@ const Header = () => {
                                             {informationUser ?
                                                 <>
                                                     <DropdownHeaderNotification>
-                                                        <div className='cursor-pointer size-7 relative' >
+                                                        <div className='cursor-pointer size-7 relative'>
                                                             <Image src={'/icon/header/notifications.png'} width={100} height={100} alt='' className='object-contain size-full' />
-                                                            <Badge variant="outline" className='absolute top-0 -right-1/2 -translate-x-1/3 -translate-y-1/2 bg-red-500 text-white rounded-full px-[7px] text-[10px] border-white'>
-                                                                {dataNotice.length}
-                                                            </Badge>
+                                                            {
+                                                                dataListNotifications.length > 0 ?
+                                                                    <Badge variant="outline" className='absolute top-0 -right-1/2 -translate-x-1/3 -translate-y-1/2 bg-red-500 text-white rounded-full px-[7px] text-[10px] border-white'>
+                                                                        {dataListNotifications.length}
+                                                                    </Badge>
+                                                                    :
+                                                                    null
+                                                            }
                                                         </div>
                                                     </DropdownHeaderNotification>
                                                     <Link
