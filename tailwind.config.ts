@@ -2,12 +2,7 @@ import type { Config } from "tailwindcss";
 
 const config = {
     darkMode: ["class"],
-    content: [
-        "./pages/**/*.{ts,tsx}",
-        "./components/**/*.{ts,tsx}",
-        "./app/**/*.{ts,tsx}",
-        "./src/**/*.{ts,tsx}",
-    ],
+    content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
     prefix: "",
     theme: {
         container: {
@@ -17,7 +12,11 @@ const config = {
                 xxl: "1440px",
             },
         },
+
         extend: {
+            gridTemplateColumns: {
+                14: "repeat(14, minmax(0, 1fr))",
+            },
             colors: {
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",

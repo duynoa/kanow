@@ -14,7 +14,7 @@ type Props = {
 }
 
 const DialogFilterMyCar = ({ children }: Props) => {
-    const { dataFilter, openDialogFilterCar, setOpenDialogFilterCar, setValueFilter, valueFilter } = useDialogFilterMyCar()
+    const { dataFilter, openDialogFilterCar, setOpenDialogFilterCar, setValueFilter, valueFilter, defaultValue, setDefaultValue } = useDialogFilterMyCar()
 
     const [valueModel, setValueModel] = useState<any>(valueFilter ?? -1)
     const { queryKeyIsStateProfileMyCar, isStateProfileMyCar } = useDataProfileMyCar()
@@ -22,6 +22,7 @@ const DialogFilterMyCar = ({ children }: Props) => {
     const handleSubmitFilter = () => {
         queryKeyIsStateProfileMyCar({ page: 1 })
         setValueFilter(valueModel)
+        setDefaultValue(valueFilter)
         setOpenDialogFilterCar(!openDialogFilterCar)
     }
 

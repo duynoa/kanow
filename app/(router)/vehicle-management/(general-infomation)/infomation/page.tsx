@@ -114,7 +114,6 @@ export default function VehicleInfomation(props: Props) {
     }, [])
 
 
-
     const fetchListCity = async (search: any) => {
         try {
             const { data } = await apiListCity({ 'search': search })
@@ -149,10 +148,8 @@ export default function VehicleInfomation(props: Props) {
             }
         } catch (error) {
             throw error
-
         }
     }
-
 
 
     useEffect(() => {
@@ -194,13 +191,10 @@ export default function VehicleInfomation(props: Props) {
 
     useEffect(() => {
         if (!Array.isArray(data) && data) {
-            console.log(data);
-
             setCoordinates({
                 lat: data?.location?.latitude,
                 lng: data?.location?.longitude
             })
-
 
             const arr = [
                 ['nameCar', data?.name],

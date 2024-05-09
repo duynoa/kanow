@@ -25,6 +25,7 @@ import { Select, SelectContent, SelectGroup, SelectTrigger, SelectValue } from '
 import { SelectItemNocheck } from '../ui/selectNocheck'
 import { Separator } from '../ui/separator'
 import { Skeleton } from '../ui/skeleton'
+import { useDialogFilterMyCar } from '@/hooks/useOpenDialog'
 
 const LayoutProfile = ({
     children
@@ -41,6 +42,7 @@ const LayoutProfile = ({
     const { openAlertDialogLogout, setOpenAlertDialogLogout } = useAlertDialogLogout()
     const { queryKeyIsStateProfileMyCar, isStateProfileMyCar } = useDataProfileMyCar()
     const [isMounted, setIsMounted] = useState<boolean>(false)
+    const { setValueFilter, setDefaultValue } = useDialogFilterMyCar()
 
     const initialState = {
         tab: 1,
@@ -209,13 +211,22 @@ const LayoutProfile = ({
     const handleChangeSidebar = (value: any) => {
         if (value !== '/logout') {
             if (value == '/list-my-car') {
-                queryKeyIsStateProfileMyCar({ page: 1 })
+                queryKeyIsStateProfileMyCar({ page: 1, tab: 1 })
+            }
+            if (value == '/my-trips') {
+                setValueFilter(-1)
+                setDefaultValue(-1)
             }
             router.push(value)
-
         } else {
             setOpenAlertDialogLogout(true)
         }
+    }
+
+    const handeNav = () => {
+        queryKeyIsStateProfileMyCar({ page: 1, tab: 1 })
+        setValueFilter(-1)
+        setDefaultValue(-1)
     }
 
     if (!isMounted) {
@@ -378,41 +389,38 @@ const LayoutProfile = ({
                                     {
                                         listNavbar && listNavbar.map((e) => {
                                             return (
-                                                <>
+                                                <div key={e.id} className='flex flex-col gap-3 caret-transparent'>
+                                                    <div className='xxl:text-xs text-[11px] uppercase font-semibold text-[#6F7689]'>
+                                                        {e.lable}
+                                                    </div>
 
-                                                    <div className='flex flex-col gap-3 caret-transparent'>
-                                                        <div className='xxl:text-xs text-[11px] uppercase font-semibold text-[#6F7689]'>
-                                                            {e.lable}
-                                                        </div>
-
-                                                        <div className='flex flex-col gap-4'>
-                                                            {
-                                                                e.list?.map((item, index) => (
-                                                                    <Link
-                                                                        key={item.id}
-                                                                        href={item.link}
-                                                                        onClick={() => queryKeyIsStateProfileMyCar({ page: 1 })}
-                                                                        className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
-                                                                    >
-                                                                        <div className='3xl:size-6 size-5'>
-                                                                            <Image
-                                                                                width={100}
-                                                                                height={100}
-                                                                                alt="@kanow"
-                                                                                className='w-full h-full'
-                                                                                src={pathname === item.link ? item.icon_active : item.icon_inactive}
-                                                                            />
-                                                                        </div>
-                                                                        <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
-                                                                            {item.name}
-                                                                        </div>
-                                                                    </Link>
-                                                                ))
-                                                            }
-                                                        </div>
+                                                    <div className='flex flex-col gap-4'>
+                                                        {
+                                                            e.list?.map((item, index) => (
+                                                                <Link
+                                                                    key={item.id}
+                                                                    href={item.link}
+                                                                    onClick={() => handeNav()}
+                                                                    className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
+                                                                >
+                                                                    <div className='3xl:size-6 size-5'>
+                                                                        <Image
+                                                                            width={100}
+                                                                            height={100}
+                                                                            alt="@kanow"
+                                                                            className='w-full h-full'
+                                                                            src={pathname === item.link ? item.icon_active : item.icon_inactive}
+                                                                        />
+                                                                    </div>
+                                                                    <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
+                                                                        {item.name}
+                                                                    </div>
+                                                                </Link>
+                                                            ))
+                                                        }
                                                     </div>
                                                     <Separator orientation='horizontal' />
-                                                </>
+                                                </div>
                                             )
                                         })
                                     }

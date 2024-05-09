@@ -44,8 +44,6 @@ export default function VehicleRegistration(props: Props) {
 
     const { dataDetail: { data, base }, idCar } = useVehicleManage()
 
-
-
     const findValue = form.getValues()
 
     const { apiUpdateCar } = apiVehicleCommon()
@@ -53,33 +51,6 @@ export default function VehicleRegistration(props: Props) {
     useEffect(() => {
 
         if (!Array.isArray(data) && data) {
-            console.log(data);
-
-            form.setValue("imagesRegistration", data?.image_parrot_car?.length > 0 ? data?.image_parrot_car.map((i: any) => {
-                return {
-                    id: uuidv4(),
-                    name: `${base.base}/${i.name}`,
-                    nameDefault: i.name
-                }
-            }) : [])
-
-            form.setValue("imagesRegistry", data?.image_registry_car?.length > 0 ? data?.image_registry_car.map((i: any) => {
-                return {
-                    id: uuidv4(),
-                    name: `${base.base}/${i.name}`,
-                    nameDefault: i.name
-                }
-            }) : [])
-
-            form.setValue("imagesInsurance", data?.image_insurance_car?.length > 0 ? data?.image_insurance_car.map((i: any) => {
-                return {
-                    id: uuidv4(),
-                    name: `${base.base}/${i.name}`,
-                    nameDefault: i.name
-                }
-            }) : [])
-
-            console.log(data?.image_car_position_before);
             const converArray = (arr: any) => {
                 return arr.map((i: any) => {
                     return {
@@ -89,52 +60,31 @@ export default function VehicleRegistration(props: Props) {
                     }
                 })
             }
-
             const arr = [
+                ['imagesRegistration', data?.image_parrot_car?.length > 0 ? converArray(data?.image_parrot_car) : []],
+                ['imagesRegistry', data?.image_registry_car?.length > 0 ? converArray(data?.image_registry_car) : []],
+                ['imagesInsurance', data?.image_insurance_car?.length > 0 ? converArray(data?.image_insurance_car) : []],
                 ['carPhoto.before', data?.image_car_position_before?.length > 0 ? converArray(data?.image_car_position_before) : []],
                 ['carPhoto.after', data?.image_car_position_affter?.length > 0 ? converArray(data?.image_car_position_affter) : []],
                 ['carPhoto.left', data?.image_car_position_left?.length > 0 ? converArray(data?.image_car_position_left) : []],
                 ['carPhoto.right', data?.image_car_position_right?.length > 0 ? converArray(data?.image_car_position_right) : []],
             ]
             arr.forEach(([key, value]: any) => form.setValue(key, value))
-            console.log(arr);
-
-            console.log(findValue)
         }
     }, [data])
 
     const onSubmit = async (value: any) => {
-        console.log(value)
         let formData = new FormData()
-
         formData.append('car_id', idCar)
         // //cà vẹt
-        // value.imagesRegistration.filter((i: any) => i?.nameDefault).forEach((i: any, index: number) => {
-        //     formData.append(`image_parrot_old[${index}]`, i?.nameDefault)
-        // })
-        // value.imagesRegistration.filter((i: any) => !i?.nameDefault).forEach((i: any, index: number) => {
-        //     formData.append(`image_parrot[${index}]`, i?.name)
-        // })
-        // // đăng kiểm
-        // value.imagesRegistry.filter((i: any) => i?.nameDefault).forEach((i: any, index: number) => {
-        //     formData.append(`image_registry_old[${index}]`, i?.nameDefault)
-        // })
-        // value.imagesRegistry.filter((i: any) => !i?.nameDefault).forEach((i: any, index: number) => {
-        //     formData.append(`image_registry[${index}]`, i?.name)
-        // })
-        // //         bảo hiểm
-        // value.imagesInsurance.filter((i: any) => i?.nameDefault).forEach((i: any, index: number) => {
-        //     formData.append(`image_insurance_old[${index}]`, i.nameDefault)
-        // })
-        // value.imagesInsurance.filter((i: any) => !i?.nameDefault).forEach((i: any, index: number) => {
-        //     formData.append(`image_insurance[${index}]`, i?.name)
-        // })
         value.imagesRegistration.forEach((i: any, index: number) => {
             formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i.nameDefault || i.name)
         })
+        // // đăng kiểm
         value.imagesRegistry.forEach((i: any, index: number) => {
             formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i.nameDefault || i.name)
         })
+        // //         bảo hiểm
         value.imagesInsurance.forEach((i: any, index: number) => {
             formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i.nameDefault || i.name)
         })
@@ -160,9 +110,7 @@ export default function VehicleRegistration(props: Props) {
                 let nameFile = text[text?.length - 1];
                 return x?.name == event.target.files[0]?.name || x.name?.name == event.target.files[0]?.name || nameFile == event.target.files[0]?.name
             }
-
         })
-
         return check
     }
 

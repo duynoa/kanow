@@ -1,11 +1,14 @@
 export interface IListCarFavorite {
     dataDrivingCar: any[];
-    datalentedCar: any[];
-    page: number;
-    next: any;
+    dataTalentedCar: any[];
     limit: number;
-    favourite: string;
+    tab: string;
     isLoadingScroll: boolean;
     totalDrivingCar: number;
     isLoadingCar: boolean;
+    totalTalentedCar: number;
+    pageDrivingCar: number;
+    pageTalentedCar: number;
+    nextDrivingCar: string;
+    nextTalentedCar: string;
 }

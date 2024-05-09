@@ -378,7 +378,8 @@ const ListCarsDriver = (props: Props) => {
             try {
                 const dataParams = {
                     car_id: car_id,
-                    status: isStateListCarsDriver?.listCardCars[index]?.favorite_car ? 0 : 1
+                    status: isStateListCarsDriver?.listCardCars[index]?.favorite_car ? 0 : 1,
+                    type: 2
                 }
 
                 const { data } = await postUpdateFavoriteHeartCar(dataParams)

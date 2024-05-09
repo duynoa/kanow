@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
 
 const SkeletonCarFavorite = () => {
     return (

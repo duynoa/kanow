@@ -1,6 +1,5 @@
 "use client"
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
-// import CustomQuill from "@/components/quill/CustomQuill";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -61,8 +60,6 @@ export default function SeltProcedure(props: Props) {
     const initialState: any = {
         openMortgage: false,
     }
-
-    const { apiListSurchargeCar } = apiVehicleSurcharge()
 
     const [isState, setIsState] = useState(initialState)
 
