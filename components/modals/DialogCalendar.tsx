@@ -401,25 +401,31 @@ export function DialogCalendar({ }: Props) {
 
             if (newDate && dateTimeComponent.from && dateTimeComponent.to) {
                 if (isBeforeInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
-                    newDate?.from?.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+                    const newFromDate = new Date(newDate?.from);
+
+                    newFromDate?.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
 
                     setDateTimeComponent((prevState: any) => ({
-                        from: newDate.from,
+                        from: newFromDate,
                         to: undefined
                     }))
                     setFlagSubmit(true)
                 } else if (isAfterInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
-                    newDate?.from?.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+                    const newFromDate = new Date(newDate?.from);
+
+                    newFromDate?.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
 
                     setDateTimeComponent((prevState: any) => ({
-                        from: newDate.from,
+                        from: newFromDate,
                         to: undefined
                     }))
                     setFlagSubmit(true)
                 } else {
-                    newDate?.to?.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+                    const newToDate = new Date(newDate?.to);
+                    newToDate?.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+
                     setDateTimeComponent({
-                        from: newDate.to,
+                        from: newToDate,
                         to: undefined
                     })
                     setFlagSubmit(true)
@@ -427,27 +433,32 @@ export function DialogCalendar({ }: Props) {
 
             } else if (newDate && dateTimeComponent.from && !dateTimeComponent.to) {
                 if (isBeforeInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
-                    newDate.from.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+                    const newFromDate = new Date(newDate.from);
+
+                    newFromDate.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
 
                     setDateTimeComponent((prevState: any) => ({
-                        from: newDate.from,
+                        from: newFromDate,
                         to: newDate.to
                     }))
                     setFlagSubmit(true)
                 } else if (isAfterInSameYearAndMonth(newDate.from, dateTimeComponent.from)) {
-                    newDate.to.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+                    const newToDate = new Date(newDate.to);
+
+                    newToDate.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
 
                     setDateTimeComponent((prevState: any) => ({
                         ...prevState,
-                        to: newDate.to
+                        to: newToDate
                     }))
                     setFlagSubmit(true)
                 } else {
-                    newDate.to.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
+                    const newToDate = new Date(newDate.to);
+                    newToDate.setHours(dateTimeComponent.from?.getHours(), dateTimeComponent.from?.getMinutes(), dateTimeComponent.from?.getSeconds());
 
                     setDateTimeComponent((prevState: any) => ({
                         ...prevState,
-                        to: newDate.to
+                        to: newToDate
                     }))
                     setFlagSubmit(true)
                 }
@@ -481,7 +492,6 @@ export function DialogCalendar({ }: Props) {
     const handleTimeChange = (value: string, type: string) => {
         if (typeCarCalendar === "calendar_car_autonomous") {
             if (dateTimeComponent.from && dateTimeComponent.to) {
-                console.log('checkkk');
 
                 if (dateTimeComponent.from && type === 'from') {
                     const updatedDateStart = new Date(dateTimeComponent.from);
@@ -825,17 +835,19 @@ export function DialogCalendar({ }: Props) {
         setDateTemp(dateReal)
         setDateStart(dateReal?.from)
         setDateEnd(dateReal?.to)
-        setNumberDay(numberDayComponent)
+        // setNumberDay(numberDayComponent)
         setDateTimeComponent(dateReal)
     }, [slug])
+
+  
+
 
     useEffect(() => {
         if (typeCarDetail == "1") {
             if (pathname.startsWith('/detail-car/')) {
-                // setDateStart(dateTemp?.from)
-                // setDateEnd(dateTemp?.to)
                 setDateStart(dateTemp?.from)
                 setDateEnd(dateTemp?.to)
+                setDateTimeComponent(dateTemp)
             } else {
                 setDateTimeComponent(dateReal)
             }

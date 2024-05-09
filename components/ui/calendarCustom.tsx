@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
-import { differenceInDays, format, getMonth, getYear, isAfter, isBefore, isSameDay, isSameMonth, isSameYear, isWithinInterval } from 'date-fns';
+import { addDays, differenceInDays, differenceInMinutes, format, getMonth, getYear, isAfter, isBefore, isSameDay, isSameMonth, isSameYear, isWithinInterval, setHours, setMinutes } from 'date-fns';
 import { DateFormatter, DayPicker, Modifiers, Months } from 'react-day-picker';
 import { vi } from "date-fns/locale";
 import { FormatNumberToThousands } from "../format/FormatNumber";
@@ -12,6 +12,7 @@ import { A11y, Pagination } from "swiper/modules";
 import { TiArrowLeft, TiArrowRight } from "react-icons/ti";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useDialogCalendar } from "@/hooks/useOpenDialog";
+import { useDataDetailCar } from "@/hooks/useDataQueryKey";
 
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
@@ -22,16 +23,26 @@ function CalendarCustom({
     showOutsideDays = true,
     ...props
 }: CalendarProps) {
+    const { isStateDetailCar } = useDataDetailCar()
+
     const {
         dateStart,
         dateEnd,
         dataCalendar,
         typeCarCalendar,
         numberDay,
+        setNumberDay,
         setDateStart,
         setDateEnd,
         setFlagSubmit,
+        setDateTemp
     } = useDialogCalendar()
+
+    const parseTimeString = (timeString: string): [number, number] => {
+        const [hours, minutes] = timeString?.split(':').map(Number);
+        return [hours, minutes];
+    };
+
 
     const seasonEmoji: Record<string, string> = {
         winter: '⛄️',
@@ -211,7 +222,7 @@ function CalendarCustom({
                             slidesPerView: typeCarCalendar == "calendar_car_autonomous" ? 2 : 1,
                         },
                         768: {
-                            slidesPerView:typeCarCalendar == "calendar_car_autonomous" ? 2 : 1,
+                            slidesPerView: typeCarCalendar == "calendar_car_autonomous" ? 2 : 1,
                         },
                     }}
                     onSwiper={(swiper) => {
@@ -294,8 +305,9 @@ function CalendarCustom({
 
                 if (dateStart && dateEnd) {
                     if (isBeforeInSameYearAndMonth(date, dateStart)) {
-                        date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
 
+                        date.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+                        
                         setDateStart(date)
                         setFlagSubmit(true)
                     } else {
@@ -348,7 +360,7 @@ function CalendarCustom({
 
                     const newToDate = new Date(newFromDate)
                     newToDate?.setDate(date?.getDate() + numberDay);
-                    
+
                     setDateStart(newFromDate)
                     setDateEnd(newToDate)
                     setFlagSubmit(true)

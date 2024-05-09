@@ -98,7 +98,8 @@ const PaymentCar = ({ }: Props) => {
         queryKeyIsStateDetailCar({
             infoPromotion: {
                 ...isStateDetailCar?.infoPromotion,
-                selectPromotion: "0"
+                selectPromotion: "0",
+                activePromotion: null
             },
             dataDetailCar: {
                 ...isStateDetailCar?.dataDetailCar,
