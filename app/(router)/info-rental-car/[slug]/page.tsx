@@ -24,6 +24,10 @@ import { CustomDataInfoRentalCar, CustomDataPolicy } from '@/custom/CustomData'
 import { getDataPolicy } from '@/services/cars/policy.services'
 import SkeletonIntroRentalCar from './components/SkeletonIntroRentalCar'
 import { useSearchParams } from 'next/navigation'
+import { useGeneralKey } from '@/hooks/useGeneralKey'
+import { useAuth } from '@/hooks/useAuth'
+
+import Pusher from "pusher-js";
 
 type Props = {
     params: {
@@ -36,6 +40,10 @@ const InfoRentalCar = ({ params }: Props) => {
 
     const searchParams = useSearchParams()
     const typeCarDetail = searchParams.get('type')
+
+    const { informationUser } = useAuth()
+
+    const { generalKey, setGeneralKey } = useGeneralKey()
 
     const {
         isStateInfoRentalCar,
@@ -116,6 +124,57 @@ const InfoRentalCar = ({ params }: Props) => {
         }
         fetchStepTransaction()
     }, [])
+
+
+    useEffect(() => {
+        if (generalKey && generalKey?.pusher && generalKey?.cluster && informationUser.id) {
+            const pusher = new Pusher(generalKey?.pusher, {
+                authTransport: "ajax",
+                cluster: generalKey?.cluster,
+            });
+
+            pusher.connection.bind("connected", () => {
+                console.log("Đã kết nối thành công đến Pusher!");
+            });
+
+            pusher.connection.bind("error", (err: any) => {
+                console.error("Lỗi kết nối Pusher:", err);
+            });
+
+            const presenceChannel = pusher.subscribe(`notifications-channel-${informationUser?.id}-customer`);
+
+            presenceChannel.bind("change-status", (data: any) => {
+                console.log('CHANGE-STATUS PUSHER: ', data);
+
+                if (data && isStateInfoRentalCar?.detailRentalCar) {
+                    queryKeyIsStateInfoRentalCar({
+                        detailRentalCar: {
+                            ...isStateInfoRentalCar?.detailRentalCar,
+                            status: {
+                                ...isStateInfoRentalCar?.detailRentalCar?.status,
+                                status: +data.status,
+                                statusCustom: +data.status,
+                                note: data.note_status
+                            }
+                        }
+                    })
+
+                }
+            });
+
+            return () => {
+                presenceChannel.unbind("change-status"); // Unbind sự kiện khi component bị unmounted
+                pusher.unsubscribe(`notifications-channel-${informationUser.id}-customer`); // Unsubscribe channel khi component bị unmounted
+                pusher.disconnect(); // Ngắt kết nối khi component bị unmounted
+
+            };
+        }
+    }, [
+        generalKey,
+        informationUser.id,
+        isStateInfoRentalCar.detailRentalCar,
+        queryKeyIsStateInfoRentalCar,
+    ]);
 
     // Hàm để đếm số cụm từ trong một chuỗi (dùng để chỉnh vị trí chữ trong step nhìn cho tương đối)
     const countWordClusters = (sentence: string) => {

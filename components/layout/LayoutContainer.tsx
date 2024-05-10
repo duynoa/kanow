@@ -58,6 +58,7 @@ import DialogRouteAddress from '../modals/DialogRouteAddress';
 import Cookies from 'js-cookie';
 import { DialogNotification } from '../modals/DialogNotification';
 import { useAuth } from '@/hooks/useAuth';
+import { useNotification } from '@/hooks/useNotification';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -89,6 +90,12 @@ const LayoutContainer = ({
         setValueAddressDestination,
         setCoordinates,
     } = useDialogAddress()
+
+    const {
+        isStateNotification,
+        queryKeyIsStateNotification,
+    } = useNotification()
+
     const { setValueTwoAddress } = useDialogRouteAddress()
 
     const { openDialogRegisterOwnerDriver } = useDialogRegisterOwnerDriver();
@@ -494,52 +501,42 @@ const LayoutContainer = ({
 
             const presenceChannel = pusher.subscribe(`notifications-channel-${informationUser?.id}-customer`);
 
-            //pusher xóa mẫu
             presenceChannel.bind("notification", (data: any) => {
-                console.log('Check notification PUSHER: ', data);
+                console.log('NOTIFICATION PUSHER: ', data);
+                if (data) {
+                    const newData: any = {
+                        id: data.id,
+                        object_id: +data.object_id,
+                        object_type: `${data.object_type}`,
+                        title: data.title,
+                        content: data.content,
+                        created_at: data.created_at,
+                        is_read: 0,
+                        customer_id: informationUser?.id
+                    }
 
-                // if (data && isStateInfoRentalCar?.detailRentalCar) {
-                //     queryKeyIsStateInfoRentalCar({
-                //         detailRentalCar: {
-                //             ...isStateInfoRentalCar?.detailRentalCar,
-                //             status: {
-                //                 ...isStateInfoRentalCar?.detailRentalCar?.status,
-                //                 status: +data.status,
-                //                 statusCustom: +data.status,
-                //                 note: data.note_status
-                //             }
-                //         }
-                //     })
+                    const newListNotifications = [newData, ...isStateNotification.dataListNotifications]
 
-                // }
-            });
-
-            presenceChannel.bind("change-status", (data: any) => {
-                console.log('Check change-status PUSHER: ', data);
-
-                if (data && isStateInfoRentalCar?.detailRentalCar) {
-                    queryKeyIsStateInfoRentalCar({
-                        detailRentalCar: {
-                            ...isStateInfoRentalCar?.detailRentalCar,
-                            status: {
-                                ...isStateInfoRentalCar?.detailRentalCar?.status,
-                                status: +data.status,
-                                statusCustom: +data.status,
-                                note: data.note_status
-                            }
-                        }
+                    queryKeyIsStateNotification({
+                        ...isStateNotification,
+                        dataListNotifications: newListNotifications
                     })
-
                 }
             });
 
             return () => {
-                presenceChannel.unbind(); // Unbind sự kiện khi component bị unmounted
+                presenceChannel.unbind("notification"); // Unbind sự kiện khi component bị unmounted
                 pusher.unsubscribe(`notifications-channel-${informationUser.id}-customer`); // Unsubscribe channel khi component bị unmounted
                 pusher.disconnect(); // Ngắt kết nối khi component bị unmounted
+
             };
         }
-    }, [generalKey, isStateInfoRentalCar, queryKeyIsStateInfoRentalCar, informationUser.id]);
+    }, [
+        generalKey,
+        informationUser.id,
+        queryKeyIsStateNotification,
+        isStateNotification.dataListNotifications,
+    ]);
 
     return (
         <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>

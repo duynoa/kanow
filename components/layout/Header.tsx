@@ -42,10 +42,8 @@ const Header = () => {
     const [openModalLogin, setOpenModalLogin] = useState<boolean>(false)
 
     const {
-        isLoadingNotification,
-        dataListNotifications,
-        setIsLoadingNotification,
-        setDataListNotifications,
+        isStateNotification,
+        queryKeyIsStateNotification,
     } = useNotification()
 
     const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
@@ -164,13 +162,20 @@ const Header = () => {
     }, [getCookie])
 
     useEffect(() => {
-        if (dataListNotifications.length == 0) {
+        if (isStateNotification.dataListNotifications.length == 0) {
             const fetchListNotifications = async () => {
                 try {
-                    setIsLoadingNotification(true)
+                    queryKeyIsStateNotification({
+                        ...isStateNotification,
+                        isLoading: {
+                            ...isStateNotification.isLoading,
+                            isLoadingNotification: true,
+                        }
+                    })
+
                     const dataParams = {
                         current_page: 1,
-                        per_page: 10,
+                        per_page: 15,
                         type: "customer"
                     }
 
@@ -178,10 +183,24 @@ const Header = () => {
 
                     console.log('data: ', data);
                     if (data && data.data.length) {
-                        setDataListNotifications(data.data)
-                        setIsLoadingNotification(false)
+                        queryKeyIsStateNotification({
+                            ...isStateNotification,
+                            dataNotify: data,
+                            dataListNotifications: data.data,
+                            isLoading: {
+                                ...isStateNotification.isLoading,
+                                isLoadingNotification: false,
+                            },
+                            next: data.links.next
+                        })
                     } else {
-                        setIsLoadingNotification(false)
+                        queryKeyIsStateNotification({
+                            ...isStateNotification,
+                            isLoading: {
+                                ...isStateNotification.isLoading,
+                                isLoadingNotification: false,
+                            }
+                        })
                     }
 
                 } catch (err) {
@@ -192,7 +211,6 @@ const Header = () => {
             fetchListNotifications()
         }
     }, [])
-
 
     const handleClickToZoom = () => {
         setIsZoomAnimated(true);
@@ -248,6 +266,8 @@ const Header = () => {
             setStatusModal('signup')
         }
     }
+
+    const dataListUnreadNotify = isStateNotification.dataListNotifications?.filter((item) => item?.is_read == 0)
 
     if (!isMounted) {
         return null;
@@ -546,9 +566,9 @@ const Header = () => {
                                                         <div className='cursor-pointer size-7 relative'>
                                                             <Image src={'/icon/header/notifications.png'} width={100} height={100} alt='' className='object-contain size-full' />
                                                             {
-                                                                dataListNotifications.length > 0 ?
+                                                                dataListUnreadNotify && dataListUnreadNotify.length > 0 ?
                                                                     <Badge variant="outline" className='absolute top-0 -right-1/2 -translate-x-1/3 -translate-y-1/2 bg-red-500 text-white rounded-full px-[7px] text-[10px] border-white'>
-                                                                        {dataListNotifications.length}
+                                                                        {dataListUnreadNotify.length}
                                                                     </Badge>
                                                                     :
                                                                     null
