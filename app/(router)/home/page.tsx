@@ -37,7 +37,6 @@ export default function Home() {
 
             const { data } = await getListCarsForYou(params)
 
-            console.log('data: ', data);
             if (data && data.data && data.base) {
                 let { customDataListCars } = CustomDataListCars(data)
 

@@ -1,8 +1,10 @@
 'use client'
 
 import Link from 'next/link';
-import React, { useEffect, useRef, useState } from 'react'
+import Image from 'next/image';
+import { vi } from 'date-fns/locale';
 import { v4 as uuidv4 } from 'uuid';
+import React, { useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -22,9 +24,7 @@ import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
 import { useResize } from '@/hooks/useResize';
 
 import { useDialogAddress, useDialogCalendar, useDialogFilterListCars, useDialogLogin } from '@/hooks/useOpenDialog';
-import { differenceInMinutes, format, setDate } from 'date-fns';
-import { vi } from 'date-fns/locale';
-import Image from 'next/image';
+import { differenceInMinutes, format } from 'date-fns';
 import { getListCars, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
 
 import { CustomDataListCars } from '@/custom/CustomData';
@@ -349,15 +349,10 @@ const ListCarAutonomous = (props: Props) => {
         if (dateReal?.from && dateReal?.to) {
             const minutesDifference = differenceInMinutes(dateReal?.to, dateReal?.from);
             const timeDate = Math.ceil(minutesDifference / 1440)
-            console.log('minutesDifference', minutesDifference);
-            console.log('timeDate', timeDate);
+
             setNumberDay(timeDate)
         }
     }, [router])
-
-    console.log('numberDay list', numberDay);
-    console.log('dateReal', dateReal);
-
 
     // handle open modal address
     const handleOpenDialogAddress = (type: string, index?: number) => {
@@ -878,8 +873,6 @@ const ListCarAutonomous = (props: Props) => {
         }
     }, [isStateListCarAutonomous.dataParams.company_car_search])
 
-    console.log('isStateListCarAutonomous', isStateListCarAutonomous);
-
     if (!isMounted) {
         return null;
     }
@@ -1026,10 +1019,10 @@ const ListCarAutonomous = (props: Props) => {
             </div >
 
             <div
-                className={`${isFilterFixed ? "lg:mt-40 mt-60" : "mt-6"} ${isStateListCarAutonomous?.isLoadingScroll ? "pb-0" : "pb-20"}`}
+                className={`${isFilterFixed ? "lg:mt-40 mt-60" : "mt-6"} ${isStateListCarAutonomous?.isLoadingScroll ? "pb-0" : "3xl:pb-20 pb-6 "}`}
                 ref={scrollContainerRef}
             >
-                <div className='custom-container grid xxl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-6 gap-4 justify-start h-full'>
+                <div className='custom-container grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-6 2xl:gap-4 xxl:gap-6 gap-4 justify-start h-full'>
                     {
                         isStateListCarAutonomous.onSuccess.onSuccessPage ?
                             <>
@@ -1046,7 +1039,7 @@ const ListCarAutonomous = (props: Props) => {
                                         <Link
                                             id={`card-${card.id}`}
                                             key={card.id}
-                                            className='caret-transparent col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
+                                            className='caret-transparent col-span-1 bg-white border w-full 2xl:p-4 xxl:p-6 p-4  flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 hover:scale-105 transition duration-200 ease-in-out'
                                             href={`/detail-car/${card.id}?type=1&${ConvertToSlug(card?.name_car)}`}
                                             prefetch={false}
                                         >
@@ -1058,7 +1051,7 @@ const ListCarAutonomous = (props: Props) => {
                                                     :
                                                     null
                                             }
-                                            <div className='w-full 3xl:h-[230px] xxl:h-auto xl:h-[180px] h-[180px] relative'>
+                                            <div className='w-full 3xl:h-[230px] 2xl:h-auto xxl:h-[230px] xl:h-[180px] h-[180px] relative'>
                                                 <Image
                                                     width={400}
                                                     height={300}

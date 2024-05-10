@@ -292,7 +292,6 @@ export const useDialogRouteAddress = create<IOpenDialogRouteAddress>((set) => ({
     setDataTotalAddress: (dataTotalAddress: any) => set((state) => ({ ...state, dataTotalAddress: dataTotalAddress })),
 }));
 
-
 // dialog đăng ký xe cho thuê ở trang menu dropdow
 interface IOpenDialogRegisterOwnerDriver {
     type?: string
@@ -305,7 +304,6 @@ export const useDialogRegisterOwnerDriver = create<IOpenDialogRegisterOwnerDrive
     setOpenDialogRegisterOwnerDriver: (key: any, type?: string) => set((state) => ({ openDialogRegisterOwnerDriver: key, type: type })),
     type: "",
 }));
-
 
 // Dialog bộ lọc xe của tôi, chuyến của tôi
 interface IOpenDialogFilterCar {

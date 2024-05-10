@@ -30,6 +30,7 @@ import 'swiper/css/autoplay'
 import "aos/dist/aos.css";
 import '@/styles/globals.scss';
 import 'react-toastify/dist/ReactToastify.css';
+import "moment/locale/vi";
 
 import { useDataHome, useDataInfoRentalCar, useDataListCarAutonomous, useDataListCarsDriver, useDataPolicy } from '@/hooks/useDataQueryKey';
 import { useDialogAddress, useDialogRegisterOwnerDriver, useDialogRouteAddress } from '@/hooks/useOpenDialog';
@@ -55,6 +56,8 @@ import useGoogleApi from '@/services/filter/google/google.services';
 import DialogRouteAddress from '../modals/DialogRouteAddress';
 
 import Cookies from 'js-cookie';
+import { DialogNotification } from '../modals/DialogNotification';
+import { useAuth } from '@/hooks/useAuth';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -73,6 +76,7 @@ const LayoutContainer = ({
 
     const { getKeySettings } = useAuthenticationAPI()
     const { apiGetCurrentPosition } = useGoogleApi()
+    const { informationUser } = useAuth()
 
     const { generalKey, setGeneralKey } = useGeneralKey()
     const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
@@ -473,9 +477,8 @@ const LayoutContainer = ({
         document.body.style.overflow = "unset";
     }, [openDialogAddress, openDialogRegisterOwnerDriver])
 
-
     useEffect(() => {
-        if (generalKey && generalKey?.pusher && generalKey?.cluster) {
+        if (generalKey && generalKey?.pusher && generalKey?.cluster && informationUser.id) {
             const pusher = new Pusher(generalKey?.pusher, {
                 authTransport: "ajax",
                 cluster: generalKey?.cluster,
@@ -489,9 +492,31 @@ const LayoutContainer = ({
                 console.error("Lỗi kết nối Pusher:", err);
             });
 
-            const presenceChannel = pusher.subscribe("notification-status");
+            const presenceChannel = pusher.subscribe(`notifications-channel-${informationUser?.id}-customer`);
+
             //pusher xóa mẫu
+            presenceChannel.bind("notification", (data: any) => {
+                console.log('Check notification PUSHER: ', data);
+
+                // if (data && isStateInfoRentalCar?.detailRentalCar) {
+                //     queryKeyIsStateInfoRentalCar({
+                //         detailRentalCar: {
+                //             ...isStateInfoRentalCar?.detailRentalCar,
+                //             status: {
+                //                 ...isStateInfoRentalCar?.detailRentalCar?.status,
+                //                 status: +data.status,
+                //                 statusCustom: +data.status,
+                //                 note: data.note_status
+                //             }
+                //         }
+                //     })
+
+                // }
+            });
+
             presenceChannel.bind("change-status", (data: any) => {
+                console.log('Check change-status PUSHER: ', data);
+
                 if (data && isStateInfoRentalCar?.detailRentalCar) {
                     queryKeyIsStateInfoRentalCar({
                         detailRentalCar: {
@@ -504,19 +529,17 @@ const LayoutContainer = ({
                             }
                         }
                     })
-                    console.log('data dsadsadsad đá sads: ', data);
 
                 }
             });
 
             return () => {
                 presenceChannel.unbind(); // Unbind sự kiện khi component bị unmounted
-                pusher.unsubscribe("notification-status"); // Unsubscribe channel khi component bị unmounted
+                pusher.unsubscribe(`notifications-channel-${informationUser.id}-customer`); // Unsubscribe channel khi component bị unmounted
                 pusher.disconnect(); // Ngắt kết nối khi component bị unmounted
             };
         }
-    }, [generalKey, isStateInfoRentalCar, queryKeyIsStateInfoRentalCar]);
-
+    }, [generalKey, isStateInfoRentalCar, queryKeyIsStateInfoRentalCar, informationUser.id]);
 
     return (
         <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>
@@ -545,6 +568,8 @@ const LayoutContainer = ({
                         <DialogRegisterOwnerDriver />
                         <DialogFilterMyCar />
                         <DialogFilterListCars />
+
+                        <DialogNotification />
                     </main>
                     {pathname !== "/list-cars-autonomous" && pathname !== "/list-cars-driver" && <Footer />}
                     <ToastContainer
