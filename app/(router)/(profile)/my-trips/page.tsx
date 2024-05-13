@@ -296,7 +296,7 @@ const MyTrips = (props: Props) => {
                         ref={scrollContainerRef}
                         className={`${isState.dataMyTrips?.length > 0 &&
                             isVisibleMobile ? isState.dataMyTrips?.length > 4 ? 'h-[680px]' : 'h-auto' :
-                            isVisibleTablet ? isState.dataMyTrips?.length > 4 ? 'h-[980px]' : 'h-auto' : isState.dataMyTrips?.length >= 3 ? 'h-[780px]' : 'h-[550px]'} lg:pr-6 pr-3`}
+                            isVisibleTablet ? isState.dataMyTrips?.length > 4 ? 'h-[980px]' : 'h-auto' : isState.dataMyTrips?.length >= 3 ? 'h-[780px]' : 'h-[550px]'} pr-3`}
                     >
                         <div className='flex flex-col gap-4'>
                             <MyTripSelfDrivingCar isState={isState} />
@@ -310,7 +310,7 @@ const MyTrips = (props: Props) => {
                         ref={scrollContainerRef}
                         className={`${isState.dataMyTripsTalented?.length > 0 &&
                             isVisibleMobile ? isState.dataMyTripsTalented?.length > 4 ? 'h-[680px]' : 'h-auto' :
-                            isVisibleTablet ? isState.dataMyTripsTalented?.length > 4 ? 'h-[980px]' : 'h-auto' : isState.dataMyTripsTalented?.length > 0 ? 'h-[780px]' : 'h-[550px]'} lg:pr-6 pr-3`}
+                            isVisibleTablet ? isState.dataMyTripsTalented?.length > 4 ? 'h-[980px]' : 'h-auto' : isState.dataMyTripsTalented?.length > 0 ? 'h-[780px]' : 'h-[550px]'} pr-3`}
                     >
                         <div className='flex flex-col gap-4'>
                             <MyTripTalentedCar isState={isState} />
