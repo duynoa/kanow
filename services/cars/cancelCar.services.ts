@@ -2,14 +2,14 @@ import { AxiosRequestConfig } from "axios";
 import axios from "../../utils/axios-customize";
 
 // cancel rental car
-const getListReasonsCancel = (type: any) => {
-    let config: AxiosRequestConfig = {
-        params: {
-            type, // Nối các tham số trong param object
-        },
-    };
+const getListReasonsCancel = () => {
+    // let config: AxiosRequestConfig = {
+    //     params: {
+    //         type, // Nối các tham số trong param object
+    //     },
+    // };
 
-    return axios.get("/category/getListNoteCancel", config)
+    return axios.get("/category/getListNoteCancel")
 }
 const postReasonCancelCar = (data: any) => {
     return axios.post("/transaction/changeStatus", data)

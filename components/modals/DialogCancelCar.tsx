@@ -61,7 +61,7 @@ export function DialogCancelCar({ }: Props) {
             const fetchListReasonsCancel = async () => {
                 try {
                     setIsLoadingDialogCancelCar(true)
-                    const { data } = await getListReasonsCancel(type)
+                    const { data } = await getListReasonsCancel()
                     console.log('data data Dtaa:', data);
 
                     if (data && data.data) {
@@ -93,7 +93,6 @@ export function DialogCancelCar({ }: Props) {
                 }
 
                 const { data } = await postReasonCancelCar(dataReport)
-                console.log('data xcxc', data);
 
                 if (data?.result) {
                     toastCore?.success(data?.message)

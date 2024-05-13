@@ -42,11 +42,13 @@ const PriceList = ({
     const { isStatePolicy } = useDataPolicy()
 
     const handleOpenAlertCancel = () => {
-        setOpenDialogCancelCar(true, "1")
-        setDataInfo({
-            car_id: isStateInfoRentalCar?.detailRentalCar?.id,
-            status: isStateInfoRentalCar?.detailRentalCar?.status?.status
-        })
+        if (typeCarDetail) {
+            setOpenDialogCancelCar(true, typeCarDetail)
+            setDataInfo({
+                car_id: isStateInfoRentalCar?.detailRentalCar?.id,
+                status: isStateInfoRentalCar?.detailRentalCar?.status?.status
+            })
+        }
     }
 
     console.log('isStateInfoRentalCar :', isStateInfoRentalCar);
