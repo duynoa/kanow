@@ -107,12 +107,12 @@ const MyTripTalentedCar = ({ isState }: Props) => {
                         <Link
                             href={`/info-rental-car/${e.id}?type=${isState.tab}`}
                             id={`card-${e.id}`}
-                            className={`flex lg:items-center lg:flex-nowrap group items-start flex-wrap lg:gap-6 gap-3  bg-white border-[#D7D9E0]  ${index === isState.dataMyTrips?.length - 1 ? 'border-b-0' : 'border-b'} pb-5 w-full relative z-0`}
+                            className={`flex lg:items-center lg:flex-nowrap group items-start flex-wrap 2xl:gap-6 gap-3  bg-white border-[#D7D9E0]  ${index === isState.dataMyTrips?.length - 1 ? 'border-b-0' : 'border-b'} pb-5 w-full relative z-0`}
                         >
                             <div
 
                                 // href={`/detail-car/${e.id}?${ConvertToSlug(e?.car.name)}`}
-                                className='lg:w-[20%] w-[35%] h-[170px] relative overflow-hidden rounded-xl'>
+                                className='xxl:w-[25%] xl:w-[25%] lg:w-[28%] w-[35%] h-[170px] relative overflow-hidden rounded-xl'>
                                 <Image
                                     src={e?.car.image ? e?.car.image : '/default/default.png'}
                                     alt="image_card"
@@ -122,19 +122,19 @@ const MyTripTalentedCar = ({ isState }: Props) => {
                                 />
                                 <div style={{
                                     backgroundColor: e.status.color
-                                }} className={`w-full py-2 absolute top-0 text-center mx-auto text-[#FFFFFF] font-semibold text-sm rounded-tl-xl rounded-tr-xl`}>
+                                }} className={`w-full py-2 absolute top-0 text-center mx-auto text-[#FFFFFF] font-semibold 2xl:text-sm xl:text-xs text-[10px] rounded-tl-xl rounded-tr-xl`}>
                                     {e.status.name ? e.status.name : ""}
                                 </div>
                             </div>
-                            <div className='lg:w-[35%] w-[60%] flex flex-col 3xl:gap-2 xxl:gap-2.5 2xl:gap-2 xl:gap-2 lg:gap-2 gap-3'>
-                                <div className='3xl:text-lg text-base text-[#1D1D1D] font-bold uppercase'>
+                            <div className='xxl:w-[30%] xl:w-[25%] lg:w-[30%] w-[60%] flex flex-col 3xl:gap-2 xxl:gap-2.5 2xl:gap-2 xl:gap-2 lg:gap-2 gap-3'>
+                                <div className='3xl:text-lg xl:text-base text-sm text-[#1D1D1D] font-bold uppercase'>
                                     {e.car.name ? e.car.name : ''}
                                 </div>
                                 <div className='flex items-center gap-1'>
                                     <div className='w-[15px] h-3'>
                                         <Image src={'/profile/mytrip/myTripMy.png'} alt='' width={1280} height={1024} className='size-full' />
                                     </div>
-                                    <h1 className='text-sm text-[#3561FF] font-medium'>
+                                    <h1 className='2xl:text-sm xl:text-xs text-[10px] text-[#3561FF] font-medium'>
                                         Xe có tài xế
                                     </h1>
                                 </div>
@@ -144,7 +144,7 @@ const MyTripTalentedCar = ({ isState }: Props) => {
                                     }} className='size-[15px]' />
                                     <div style={{
                                         color: e.status.color,
-                                    }} className='text-sm font-medium'>
+                                    }} className='2xl:text-sm xl:text-xs text-[9px] font-medium'>
                                         {e.status.date_status ?
                                             `${e.status.name} lúc ${moment(e.status.date_status).format('h')}h${moment(e.status.date_status).format('mm')} ${moment(e.status.date_status).format('DD/MM/YY')}` :
                                             e.status.name
@@ -152,28 +152,28 @@ const MyTripTalentedCar = ({ isState }: Props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className='lg:w-[45%] w-full flex lg:justify-end justify-between  lg:gap-12 gap-8 lg:mt-0 mt-2'>
+                            <div className='3xl:w-1/2 xxl:w-[45%] 2xl:w-1/2 xl:w-[50%] lg:w-[45%] w-full flex 2xl:justify-end justify-between 2xl:gap-12  lg:gap-2 gap-8 lg:mt-0 mt-2'>
                                 <div className='flex flex-col gap-2'>
-                                    <h1 className='text-[#8C93A3] font-medium lg:text-[13px] text-xs leading-4'>
+                                    <h1 className='text-[#8C93A3] font-medium 3xl:text-[13px] xl:text-xs text-[10px] leading-4'>
                                         Bắt đầu
                                     </h1>
-                                    <h1 className='text-[#3E424E] font-medium lg:text-base text-sm leading-5'>
+                                    <h1 className='text-[#3E424E] font-medium32xl:text-base xl:text-sm text-[10px] leading-5'>
                                         {e.date_start && `${moment(e.date_start).format('h')}h${moment(e.date_start).format('mm')} ${moment(e.date_start).format('DD/MM/YYYY')}`}
                                     </h1>
                                 </div>
                                 <div className='flex flex-col gap-2'>
-                                    <h1 className='text-[#8C93A3] font-medium lg:text-[13px] text-xs leading-4'>
+                                    <h1 className='text-[#8C93A3] font-medium 3xl:text-[13px] xl:text-xs text-[10px] leading-4'>
                                         Kết thúc
                                     </h1>
-                                    <h1 className='text-[#3E424E] font-medium lg:text-base text-sm leading-5'>
+                                    <h1 className='text-[#3E424E] font-medium32xl:text-base xl:text-sm text-[10px] leading-5'>
                                         {e.date_end && `${moment(e.date_end).format('h')}h${moment(e.date_end).format('mm')} ${moment(e.date_end).format('DD/MM/YYYY')}`}
                                     </h1>
                                 </div>
                                 <div className='flex flex-col gap-2'>
-                                    <h1 className='text-[#8C93A3] font-medium lg:text-[13px] text-xs leading-4'>
+                                    <h1 className='text-[#8C93A3] font-medium 3xl:text-[13px] xl:text-xs text-[10px] leading-4'>
                                         Tổng tiền:
                                     </h1>
-                                    <h1 className='text-[#2FB9BD] font-[700] lg:text-base text-sm leading-5'>
+                                    <h1 className='text-[#2FB9BD] font-[700] 3xl:text-base xl:text-sm text-[10px] leading-5'>
                                         {e.grand_total && FormatCurrency(e.grand_total)}
                                     </h1>
                                 </div>
