@@ -1,6 +1,7 @@
 import { IAutomaker, IDataCardCar, IDataDetailCar, IDetailRentalCar, ITypesCar } from "../Cars/ICars";
 import { IInfoPromotion } from "../Cars/IPromotions";
 import { IReportCar } from "../Cars/IReportCar";
+import { INotification } from "../Notification/INotification";
 import { IDataPolicy } from "../Policy/IPolicy";
 
 // initial Data page home
@@ -55,8 +56,8 @@ interface IInitialStateListCarAutonomous {
 interface IInitialStateListCarsDriver {
     listCardCars: IDataCardCar[];
     page: number;
-    isLoadingScroll: boolean;
     next: any;
+    isLoadingScroll: boolean;
     filter: {
         listTypesCar: ITypesCar[];
         listAutomaker: IAutomaker[];
@@ -161,6 +162,20 @@ interface IInitialStateProfileMyCar {
     tab: number | string;
 }
 
+// initial notification
+interface IInitialStateNotification {
+    dataListNotifications: INotification[];
+    dataItemNotification?: INotification;
+    isLoading: {
+        isLoadingNotification: boolean,
+        isLoadingScroll: boolean,
+    };
+    dataNotify: any,
+    page: number;
+    next: any;
+    limit: number
+}
+
 export type {
     IInitialStateDataHome,
     IInitialStateListCarAutonomous,
@@ -170,4 +185,5 @@ export type {
     IInitialStatePayment,
     IInitialStatePolicy,
     IInitialStateProfileMyCar,
+    IInitialStateNotification,
 };

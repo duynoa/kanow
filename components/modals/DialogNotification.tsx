@@ -18,7 +18,7 @@ type Props = {}
 export function DialogNotification({ }: Props) {
     const {
         openDialogNotification,
-        dataItemNotification,
+        isStateNotification,
         setOpenDialogNotification,
     } = useNotification()
 
@@ -50,10 +50,10 @@ export function DialogNotification({ }: Props) {
                 </DialogHeader>
 
                 {
-                    dataItemNotification &&
+                    isStateNotification?.dataItemNotification &&
                     <div className='px-4'>
                         <div className='text-base'>
-                            {dataItemNotification.content ? dataItemNotification.content : ''}
+                            {isStateNotification?.dataItemNotification?.content ? isStateNotification?.dataItemNotification?.content : ''}
                         </div>
                     </div>
                 }

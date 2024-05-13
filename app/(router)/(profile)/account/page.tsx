@@ -178,7 +178,9 @@ const Account = (props: Props) => {
         let form: any = new FormData();
         form.append('current_page', isState.page)
         form.append('per_page', isState.limit)
+
         const { data } = await apiPaginationStartingUser(form)
+        
         if (data?.result) {
             const newData = dataStarRatings(data?.info?.review?.data)
             const dataDB = {

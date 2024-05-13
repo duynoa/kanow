@@ -18,9 +18,16 @@ import { uuidv4 } from '@/lib/uuid';
 import { toastCore } from '@/lib/toast';
 import Cookies from 'js-cookie';
 import { DateRange } from 'react-day-picker';
+import { Input } from '@/components/ui/input';
+
+import { PiPiBold } from "react-icons/pi";
+import { MdOutlineGpsFixed } from 'react-icons/md';
+import { useForm } from 'react-hook-form';
+import { regexPatterns } from '@/lib/regex';
 
 const IntroSection = () => {
     const MAX_DESTINATIONS = 4;
+    const { register, handleSubmit, formState: { errors } } = useForm();
 
     const { isVisibleMobile } = useResize()
     const router = useRouter()
@@ -97,7 +104,7 @@ const IntroSection = () => {
             from: setMinutes(setHours(new Date(), 8), 0),
             to: setMinutes(setHours(addDays(new Date(), 1), 8), 0),
         };
-        
+
         setDateReal(defaultDateRange)
 
         queryKeyIsStateDataHome({
@@ -160,6 +167,11 @@ const IntroSection = () => {
             setIndexAddressDestination(index)
         }
     }
+
+    const onSubmit = (data: any) => {
+        // Xử lý dữ liệu form khi submit
+        console.log("data submit: ", data);
+    };
 
     return (
         <div className='xl:h-[100vh] lg:h-[80vh] md:h-[80svh] h-[100svh] w-full relative '>
@@ -323,7 +335,7 @@ const IntroSection = () => {
                             <div className=' flex flex-col gap-4 bg-white h-[380px] max-h-[400px] overflow-y-auto w-full rounded-tr-xl rounded-b-xl xl:px-6 xl:py-4 p-4'>
                                 <div className='flex flex-col gap-2 w-full'>
                                     <Label className='text-sm text-[#6F7689]' htmlFor="place">
-                                        Địa điểm đón
+                                        Điểm đi
                                     </Label>
                                     <div className="relative">
                                         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -344,7 +356,7 @@ const IntroSection = () => {
                                     valueAddressDestination && valueAddressDestination?.map((destination, index) => (
                                         <div className='flex flex-col gap-2 w-full' key={index}>
                                             <Label className='text-sm text-[#6F7689]' htmlFor="place">
-                                                Địa điểm đến {valueAddressDestination.length === 1 ? "" : index + 1}
+                                                Điểm đến {valueAddressDestination.length === 1 ? "" : index + 1}
                                             </Label>
                                             <div className="relative">
                                                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -416,71 +428,91 @@ const IntroSection = () => {
                         }
                         {
                             isStateDataHome.tabSearch.tab === 3 &&
-                            <div className='flex flex-col gap-4 bg-white w-full h-full rounded-tr-xl rounded-b-xl xl:px-6 xl:py-4 p-4'>
-                                {/* <div className='flex flex-col gap-2'>
-                                    <Label className='text-sm text-[#6F7689]' htmlFor="place">
-                                        Địa điểm
+                            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4 bg-white w-full h-full rounded-tr-xl rounded-b-xl xl:px-6 xl:py-4 p-4'>
+                                <div className='flex flex-col gap-2 w-full'>
+                                    <Label className='text-sm text-[#6F7689]' htmlFor="place_1">
+                                        Điểm đi
                                     </Label>
                                     <div className="relative">
                                         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <TiLocation className="text-xl text-[#1EAAB1]" />
+                                            <MdOutlineGpsFixed className="text-xl text-[#1EAAB1]" />
                                         </span>
-                                        <div
-                                            id="place"
-                                            onClick={() => setOpenDialogAddress(true)}
-                                            className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
-                                        focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
-                                        >
-                                            {valueAddressPickup ? valueAddressPickup : 'Chọn địa điểm'}
-                                        </div>
+                                        <Input
+                                            id="place_1"
+                                            placeholder='Nhập điểm đi'
+                                            className={`${errors.startPoint ? "border border-[#FA3434]" : "border-0"} pl-10 placeholder:text-[#B4B8C5] placeholder:font-medium pr-2 py-3 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                        focus-visible:ring-offset-0 text-[#16171B] font-normal`}
+                                            {...register("startPoint", {
+                                                required: "Vui lòng nhập điểm đi",
+                                            })}
+                                        />
                                     </div>
+                                    {errors.startPoint ? <span className="text-red-500">{typeof errors.startPoint.message === 'string' && errors?.startPoint?.message ? errors?.startPoint?.message : ""}</span> : null}
                                 </div>
-
-                                <div className='flex flex-col gap-2'>
-                                    <Label className='text-sm text-[#6F7689] w-fit' htmlFor="date">
-                                        Thời gian thuê
+                                <div className='flex flex-col gap-2 w-full'>
+                                    <Label className='text-sm text-[#6F7689]' htmlFor="place_2">
+                                        Điểm đến
                                     </Label>
-
-                                    <div className=''>
-                                        <Button
-                                            id="date"
-                                            variant={"outline"}
-                                            className={cn(
-                                                `3xl:py-4 3xl:px-3 px-3 py-3.5 w-full justify-start text-left font-normal rounded-xl bg-[#F6F6F8]/70 border-0 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs`,
-                                                !dateReal && "text-muted-foreground"
-                                            )}
-                                            onClick={() => handleOpenDialog('calendar')}
-                                        >
-                                            <FaCalendarAlt className="3xl:mr-4 mr-2 3xl:text-lg text-base text-[#1EAAB1]" />
-                                            {dateReal?.from ? (
-                                                dateReal.to ? (
-                                                    <>
-                                                        {format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })} -{" "}
-                                                        {format(dateReal.to, "HH'h'mm dd/MM/yyyy", { locale: vi })}
-                                                    </>
-                                                ) : (
-                                                    format(dateReal.from, "HH'h'mm dd/MM/yyyy", { locale: vi })
-                                                )
-                                            ) : (
-                                                <span className='text-[#B4B8C5] font-medium 3xl:text-base text-sm'>Chọn ngày</span>
-                                            )}
-                                        </Button>
+                                    <div className="relative">
+                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                            < TiLocation className="text-xl text-[#FA3434]" />
+                                        </span>
+                                        <Input
+                                            id="place_2"
+                                            placeholder='Nhập điểm đến'
+                                            className={`${errors.destinationPoint ? "border border-[#FA3434]" : "border-0"} pl-10 placeholder:text-[#B4B8C5] placeholder:font-medium pr-2 py-3 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70  hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                        focus-visible:ring-offset-0 text-[#16171B] font-normal`} // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
+                                            {...register("destinationPoint", {
+                                                required: "Vui lòng nhập điểm đến",
+                                            })}
+                                        />
                                     </div>
+                                    {errors.destinationPoint ? <span className="text-red-500">{typeof errors.destinationPoint.message === 'string' && errors?.destinationPoint?.message ? errors?.destinationPoint?.message : ""}</span> : null}
+                                </div>
+                                <div className='flex flex-col gap-2 w-full'>
+                                    <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                        Thông tin liên hệ
+                                    </Label>
+                                    <div className={`${errors.fullname || errors.phone ? "border border-[#FA3434]" : ""} flex items-center rounded-xl bg-[#F6F6F8]/70`}>
+                                        <Input
+                                            id="place"
+                                            placeholder="Nhập họ và tên"
+                                            className="w-[60%] max-w-[60%] pl-4 pr-2 py-3 placeholder:text-[#B4B8C5] placeholder:font-medium 3xl:text-base 2xl:text-sm xl:text-[13px] bg-transparent rounded-none rounded-tl-xl rounded-bl-xl lg:text-xs md:text-xs text-xs truncate justify-start border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 text-[#16171B] font-normal"
+                                            {...register("fullname", {
+                                                required: "Vui lòng nhập số họ và tên",
+                                            })}
+                                        />
 
+                                        <div className='h-6 w-[1px] bg-[#B4B8C5]' />
+
+                                        <Input
+                                            id="phone"
+                                            placeholder="Nhập số điện thoại"
+                                            type='tel'
+                                            maxLength={10}
+                                            className="w-[40%] max-w-[40%] pl-4 pr-2 py-3 placeholder:text-[#B4B8C5] placeholder:font-medium 3xl:text-base 2xl:text-sm xl:text-[13px] bg-transparent rounded-tr-xl rounded-br-xl rounded-none lg:text-xs md:text-xs text-xs truncate justify-start border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 text-[#16171B] font-normal"
+                                            {...register("phone", {
+                                                required: "Vui lòng nhập số điện thoại",
+                                                pattern: {
+                                                    value: regexPatterns.phone,
+                                                    message: "Số điện thoại không hợp lệ",
+                                                },
+                                            })}
+                                        />
+                                    </div>
+                                    {errors.fullname ? <span className="text-red-500">{typeof errors.fullname.message === 'string' && errors?.fullname?.message ? errors?.fullname?.message : ""}</span> : null}
+                                    {errors.phone ? <span className="text-red-500">{typeof errors.phone.message === 'string' && errors?.phone?.message ? errors?.phone?.message : ""}</span> : null}
                                 </div>
 
                                 <Button
-                                    type='button'
+                                    type='submit'
                                     size="basic"
                                     className='3xl:text-base text-sm w-full 3xl:py-4 xl:py-3 py-2 text-center uppercase text-white bg-[#FF9900] hover:bg-[#FF9900]/80 font-bold rounded-xl caret-transparent'
-                                    onClick={() => handleSearchCar()}
+                                // onClick={() => handleSearchCar()}
                                 >
-                                    <span>Tìm xe</span>
-                                </Button> */}
-                                <div className='h-40'>
-
-                                </div>
-                            </div>
+                                    <span>Hẹn tài xế</span>
+                                </Button>
+                            </form>
                         }
                     </div>
                 </div>
