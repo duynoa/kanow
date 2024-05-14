@@ -77,22 +77,22 @@ export default function VehicleTripManagement(props: Props) {
 
     const handleFetchListCars = async (page: any) => {
         queryState({ isLoadingCar: true })
+
         try {
             await new Promise(resolve => setTimeout(resolve, 1500));
 
             const { data: db } = await apiListTrips(page, isState.limit, { status_search: valueFilter, customer_search: informationUser?.id })
+
             if (db && db.data && db.base) {
                 queryState({
                     dataTrips: convertArray(db.data),
-                    page: isState.page + 1,
+                    page: isState.page === 1 ? isState.page + 1 : 2,
                     next: db?.links?.next,
                 })
             }
-        }
-        catch (err) {
+        } catch (err) {
             throw err
-        }
-        finally {
+        } finally {
             queryState({ isLoadingCar: false })
         }
     }
@@ -165,9 +165,6 @@ export default function VehicleTripManagement(props: Props) {
             scrollCurrent?.removeEventListener(isVisibleMobile ? "touchmove" : "wheel", handleWheel);
         };
     }, [scrollContainerRef, isState.next, isState.page, isState.isLoadingScroll]);
-
-
-
 
     return (
         <BackgroundUiVehicle className="flex flex-col gap-4">

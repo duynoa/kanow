@@ -27,6 +27,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/bundle';
 import 'swiper/css/autoplay'
+import 'swiper/swiper-bundle.css';
 import "aos/dist/aos.css";
 import '@/styles/globals.scss';
 import 'react-toastify/dist/ReactToastify.css';
@@ -485,7 +486,7 @@ const LayoutContainer = ({
     }, [openDialogAddress, openDialogRegisterOwnerDriver])
 
     useEffect(() => {
-        if (generalKey && generalKey?.pusher && generalKey?.cluster && informationUser.id) {
+        if (generalKey && generalKey?.pusher && generalKey?.cluster && informationUser?.id) {
             const pusher = new Pusher(generalKey?.pusher, {
                 authTransport: "ajax",
                 cluster: generalKey?.cluster,
@@ -533,7 +534,7 @@ const LayoutContainer = ({
         }
     }, [
         generalKey,
-        informationUser.id,
+        informationUser?.id,
         queryKeyIsStateNotification,
         isStateNotification.dataListNotifications,
     ]);

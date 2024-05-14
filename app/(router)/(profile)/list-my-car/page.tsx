@@ -75,7 +75,7 @@ const ListMyCar = (props: Props) => {
                 const { customDataMyCar } = CustomDataMyCar(data)
                 queryKeyIsStateProfileMyCar({
                     dataMyCar: customDataMyCar,
-                    page: isStateProfileMyCar.page + 1,
+                    page: isStateProfileMyCar.page === 1 ? isStateProfileMyCar.page + 1 : 2,
                     next: data?.links?.next,
                 })
             }
@@ -125,6 +125,7 @@ const ListMyCar = (props: Props) => {
                                 }
                                 return
                             }
+                            
                             queryKeyIsStateProfileMyCar({
                                 listCardCars: isStateProfileMyCar.dataMyCar,
                                 next: data?.links?.next,

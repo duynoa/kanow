@@ -220,6 +220,12 @@ interface IDetailRentalCar {
         total_trip: number,
         phone: string,
     },
+    customer_renter: {
+        id: number,
+        fullname: string,
+        avatar: string,
+        phone: string,
+    },
     address: {
         district: string,
         province: string,
@@ -266,6 +272,16 @@ interface IDetailRentalCar {
         // khuyến mãi
         promotion: number,
     },
+    price_owner: {
+        rent_cost_day: number,
+        number_day: number,
+        rent_cost: number,
+        amount_km: number,
+        price_service_owner: number,
+        revenue_customer: number,
+        payment_recevie: number,
+        amount_receive_owner: number
+    }
     type: {
         delivery_car: boolean;
         book_car_flash: boolean;

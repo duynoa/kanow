@@ -6,7 +6,7 @@ const DisputeResolution = (props: Props) => {
     return (
         <div className='flex flex-col gap-4 2xl:pb-20 pb-16'>
             <div className='3xl:text-4xl text-2xl text-[#000000] font-semibold'>
-                Quy trình giải quyết khiếu nại
+                Chính sách huỷ chuyến
             </div>
             <div className='flex flex-col gap-2 mt-6'>
                 <div className='2xl:text-base text-sm text-[#000000] font-light space-y-2'>

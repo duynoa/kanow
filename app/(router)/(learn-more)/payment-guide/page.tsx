@@ -6,11 +6,11 @@ const SecurityInfo = (props: Props) => {
     return (
         <div className='flex flex-col gap-4 2xl:pb-20 pb-16'>
             <div className='3xl:text-4xl text-2xl text-[#000000] font-semibold'>
-                Chính sách bảo mật
+                Hướng dẫn thanh toán
             </div>
             <div className='flex flex-col gap-2 mt-6'>
                 <div className='2xl:text-2xl text-xl text-[#000000] font-medium'>
-                    1. Giới thiệu
+                    1. Thanh toán qua thẻ của tôi
                 </div>
                 <div className='2xl:text-base text-sm text-[#000000] font-light space-y-2'>
                     <div className='flex flex-col gap-2'>
@@ -55,7 +55,7 @@ const SecurityInfo = (props: Props) => {
 
             <div className='flex flex-col gap-2'>
                 <div className='2xl:text-2xl text-xl text-[#000000] font-medium'>
-                    2. Khi nào Kanow sẽ thu thập dữ liệu cá nhân?
+                    2. Thanh toán trực tiếp - Ví điện tử
                 </div>
                 <div className='2xl:text-base text-sm text-[#000000] font-light space-y-2'>
                     <div className='flex flex-col gap-2'>
@@ -86,7 +86,73 @@ const SecurityInfo = (props: Props) => {
 
             <div className='flex flex-col gap-2'>
                 <div className='2xl:text-2xl text-xl text-[#000000] font-medium'>
-                    3. Phạm vi, mục đích thu thập và sử dụng thông tin
+                    3. Thanh toán qua thẻ tín dụng/thẻ ghi nợ VISA, Master
+                </div>
+                <div className='2xl:text-base text-sm text-[#000000] font-light space-y-2'>
+                    <div className='flex flex-col gap-2'>
+                        <div className='underline underline-offset-2 font-semibold'>
+                            Phạm vi thu thập
+                        </div>
+
+                        <div className='space-x-2'>
+                            <span className='font-semibold'>Đối với Người bán/chủ xe:</span>
+                            <span>Họ tên, email, chứng minh nhân dân/căn cước công dân, mã số thuế, điện thoại, tên đăng nhập, mật khẩu đăng nhập, địa chỉ sinh sống, tài khoản ngân hàng và thông tin thanh toán, các hình ảnh và thông tin về sản phẩm muốn đăng tải trên nền tảng.</span>
+                        </div>
+
+                        <div className='space-x-2'>
+                            <span className='font-semibold'>Đối với Người mua/khách thuê:</span>
+                            <span>Họ tên, email, chứng minh nhân dân/căn cước công dân, giấy phép lái xe ô tô, điện thoại, tên đăng nhập, mật khẩu đăng nhập, địa chỉ sinh sống, tài khoản ngân hàng và thông tin thanh toán.</span>
+                        </div>
+
+                        <div>
+                            Các thành viên sẽ tự chịu trách nhiệm về bảo mật và lưu giữ mọi hoạt động sử dụng dịch vụ dưới tên đăng ký, mật khẩu và hộp thư điện tử của mình. Ngoài ra, thành viên có trách nhiệm thông báo kịp thời cho Kanow về những hành vi sử dụng trái phép, lạm dụng, vi phạm bảo mật, lưu giữ tên đăng ký và mật khẩu của bên thứ ba để có biện pháp giải quyết phù hợp.
+                        </div>
+
+                        <div>
+                            Bạn đồng ý không cung cấp cho chúng tôi bất cứ thông tin nào không chính xác hoặc gây hiểu nhầm và bạn đồng ý sẽ thông báo cho chúng tôi về bất cứ thông tin nào không chính xác hoặc khi có sự thay đổi thông tin.
+                        </div>
+
+                        <div>
+                            Nếu bạn đăng nhập để trở thành người dùng các Nền tảng của chúng tôi sử dụng tài khoản mạng xã hội của Bạn (“Tài khoản Mạng Xã hội”), liên kết tài khoản của bạn với Tài khoản Mạng Xã hội của bạn hoặc sử dụng bất cứ tính năng mạng xã hội nào, chúng tôi có quyền truy cập thông tin về bạn mà bạn đã cung cấp một cách tự nguyên cho nhà cung cấp dịch vụ Tài khoản Mạng Xã hội của bạn và tuân theo các chính sách của các nhà cung cấp dịch vụ này, và chúng tôi sẽ quản lý và sử dụng các dữ liệu cá nhân này của bạn theo các quy định của Chính sách này tại mọi thời điểm.
+                        </div>
+                    </div>
+
+                    <div className='flex flex-col gap-2'>
+                        <div className='underline underline-offset-2 font-semibold'>
+                            Mục đích thu thập và sử dụng thông tin
+                        </div>
+
+                        <div>
+                            Kanow thu thập thông tin thành viên để:
+                        </div>
+
+                        <div>
+                            <ul className="list-disc list-inside">
+                                <li>Xác minh danh tính của bạn và để quản lý tài khoản trực tuyến mà bạn có thể đã thiết lập với chúng tôi</li>
+                                <li>Liên hệ xác nhận khi khách hàng đăng ký sử dụng dịch vụ trên website nhằm đảm bảo quyền lợi cho cho người tiêu dùng</li>
+                                <li>Hỗ trợ việc đặt xe và cung cấp xe cho Khách hàng</li>
+                                <li>Cung cấp các dịch vụ đến thành viên</li>
+                                <li>Để xử lý các đơn đặt hàng bạn gửi qua Nền tảng</li>
+                                <li>Gửi các thông báo về các hoạt động trao đổi thông tin giữa thành viên và Kanow bao gồm nhưng không giới hạn: chương trình khuyến mại, khảo sát ý kiến, tiếp thị và quảng cáo sản phẩm</li>
+                                <li>Liên lạc với bạn để xử lý và trả lời các truy vấn, phản hồi, khiếu nại hoặc tranh chấp của bạn, cho dù trực tiếp hoặc thông qua bất kỳ nhà cung cấp dịch vụ khách hàng được thuê ở bên ngoài nào</li>
+                                <li>Để lập số liệu thống kê và nghiên cứu đáp ứng yêu cầu báo cáo và/hoặc duy trì sổ sách nội bộ hoặc theo quy định</li>
+                                <li>Để thực hiện quy trình tìm hiểu và xác minh hoặc các hoạt động sàng lọc khác (bao gồm nhưng không giới hạn kiểm tra lý lịch) tuân thủ các nghĩa vụ theo quy định pháp luật hoặc cơ quan nhà nước có thẩm quyền hoặc các thủ tục kiểm soát rủi ro của chúng tôi, có thể được pháp luật yêu cầu hoặc có thể đã được chúng tôi áp dụng</li>
+                                <li>Ngăn ngừa các hoạt động phá hủy tài khoản người dùng của thành viên hoặc các hoạt động giả mạo thành viên</li>
+                                <li>Để ngăn chặn hoặc điều tra bất kỳ hoạt động gian lận thực tế hoặc bị nghi ngờ nào đối với Điều khoản dịch vụ của chúng tôi, gian lận, các hành vi phi pháp, thiếu sót hay hành vi sai trái nào, cho dù có liên quan đến việc bạn sử dụng Các Dịch Vụ của chúng tôi hay không hay bất kỳ vấn đề nào phát sinh từ quan hệ của bạn với chúng tôi;Phạm vi sử dụng thông tin</li>
+                                <li>Để bảo vệ quyền lợi của công ty và những đối tác của công ty: Chúng tôi chỉ đưa ra những thông tin cá nhân của khách hàng khi chắc chắn rằng những thông tin đó có thể bảo vệ được quyền lợi, tài sản của công ty chúng tôi và những đối tác liên quan. Những thông tin này sẽ được tiết lộ một cách hợp pháp theo Pháp luật Việt Nam.</li>
+                                <li>Trong trường hợp có yêu cầu của pháp luật: Kanow có trách nhiệm hợp tác cung cấp thông tin cá nhân thành viên khi có yêu cầu từ cơ quan tư pháp bao gồm: Viện kiểm sát, tòa án, cơ quan thuế, cơ quan công an điều tra liên quan đến hành vi vi phạm pháp luật nào đó của thành viên. Ngoài ra, không ai có quyền xâm phạm vào thông tin cá nhân của thành viên.</li>
+                            </ul>
+                            <span>
+                                Các trường hợp trên không nhằm mục đích liệt kê đầy đủ các trường hợp và chỉ đưa ra một số trường hợp phổ biến về thời điểm dữ liệu cá nhân của bạn có thể bị thu thập.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className='flex flex-col gap-2'>
+                <div className='2xl:text-2xl text-xl text-[#000000] font-medium'>
+                    4. Thanh toán qua thẻ ATM đã đăng kí thanh toán trực tiếp
                 </div>
                 <div className='2xl:text-base text-sm text-[#000000] font-light space-y-2'>
                     <div className='flex flex-col gap-2'>

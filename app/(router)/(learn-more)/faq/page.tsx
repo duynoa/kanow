@@ -6,12 +6,12 @@ const PolicyRegulations = (props: Props) => {
     return (
         <div className='flex flex-col gap-4 2xl:pb-20 pb-16'>
             <div className='3xl:text-4xl text-2xl text-[#000000] font-semibold'>
-                Chính sách & Quy định
+                Câu hỏi thường gặp
             </div>
 
             <div className='flex flex-col gap-2 mt-6'>
                 <div className='2xl:text-2xl text-xl  text-[#000000] font-medium'>
-                    1. Trách nhiệm của khách thuê xe và chủ xe trong giao dịch cho thuê xe tự lái
+                    1. Thuê xe tháng hay thuê xe chạy Grab
                 </div>
                 <div className='2xl:text-lg text-base text-[#000000] font-normal'>
                     Mục đích lâu dài của Kanow là hướng đến việc xây dựng cộng đồng chia sẻ xe ô tô văn minh và uy tín tại Việt Nam. Vì thế, để đảm bảo các giao dịch thuê xe trong cộng đồng được diễn ra một cách thuận lợi và thành công tốt đẹp thì việc quy định trách nhiệm của các bên trong tuân thủ các chính sách của Kanow và các điều khoản cam kết là rất quan trọng.
@@ -57,7 +57,7 @@ const PolicyRegulations = (props: Props) => {
 
             <div className='flex flex-col gap-2'>
                 <div className='2xl:text-2xl text-xl  text-[#000000] font-medium'>
-                    2. Trách nhiệm của Kanow trong các trường hợp xảy ra sự cố ngoài ý muốn như xe bị cầm cố, thế chấp, bị bắt giữ khi được dùng để vận chuyển ma túy, hàng quốc cấm, hoặc gây tai nạn
+                    2. Thuê xe có tài?
                 </div>
                 <div className='2xl:text-base text-sm  text-[#000000] font-light space-y-2'>
                     <div>
@@ -76,7 +76,7 @@ const PolicyRegulations = (props: Props) => {
 
             <div className='flex flex-col gap-2'>
                 <div className='2xl:text-2xl text-xl  text-[#000000] font-medium'>
-                    3. Chính sách hủy chuyến
+                    3. Ưu đãi khi giới thiệu bạn bè hoặc thuê xe nhiều lần
                 </div>
                 <div className='2xl:text-base text-sm  text-[#000000] font-light space-y-2'>
                     <div>
@@ -191,7 +191,7 @@ const PolicyRegulations = (props: Props) => {
 
             <div className='flex flex-col gap-2'>
                 <div className='2xl:text-2xl text-xl  text-[#000000] font-medium'>
-                    4. Chính sách giá
+                    4. Bảo hiểm 2 chiều khi thuê xe trên Mioto?
                 </div>
                 <div className='2xl:text-base text-sm  text-[#000000] font-light space-y-2'>
                     <div>
@@ -240,7 +240,7 @@ const PolicyRegulations = (props: Props) => {
 
             <div className='flex flex-col gap-2'>
                 <div className='2xl:text-2xl text-xl  text-[#000000] font-medium'>
-                    5. Chính sách thanh toán
+                    5. Chính sách thanh toán?
                 </div>
                 <div className='2xl:text-base text-sm  text-[#000000] font-light space-y-2'>
                     <div>
@@ -252,7 +252,7 @@ const PolicyRegulations = (props: Props) => {
 
             <div className='flex flex-col gap-2'>
                 <div className='2xl:text-2xl text-xl  text-[#000000] font-medium'>
-                    6. Chính sách thời gian giao nhận
+                    6. Chính sách thời gian giao nhận?
                 </div>
                 <div className='2xl:text-base text-sm  text-[#000000] font-light space-y-2'>
                     <div>
@@ -263,7 +263,7 @@ const PolicyRegulations = (props: Props) => {
 
             <div className='flex flex-col gap-2'>
                 <div className='2xl:text-2xl text-xl  text-[#000000] font-medium'>
-                    7. Chính sách kết thúc sớm chuyến đi
+                    7. Chính sách kết thúc sớm chuyến đi?
                 </div>
                 <div className='2xl:text-base text-sm  text-[#000000] font-light space-y-2'>
                     <div>

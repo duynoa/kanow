@@ -341,7 +341,7 @@ export const useDataProfileMyCar = create<IStateProfileMyCar>((set) => ({
     isStateProfileMyCar: {
         isLoadingCar: false,
         isLoadingScroll: false,
-        limit: 4,
+        limit: 8,
         page: 1,
         dataMyCar: [],
         next: "",

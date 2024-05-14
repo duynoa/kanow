@@ -20,7 +20,7 @@ const ListCarFavorite = (props: Props) => {
         ///xe tu lai
         pageDrivingCar: 1,
         pageTalentedCar: 1,
-        limit: 4,
+        limit: 8,
         nextDrivingCar: "",
         nextTalentedCar: "",
         tab: "1",
@@ -51,7 +51,7 @@ const ListCarFavorite = (props: Props) => {
 
                 queryState({
                     dataDrivingCar: customDataListCars,
-                    pageDrivingCar: isState.pageDrivingCar + 1,
+                    pageDrivingCar: isState.pageDrivingCar === 1 ? isState.pageDrivingCar + 1 : 2,
                     nextDrivingCar: data?.links?.next,
                     totalDrivingCar: data?.meta?.total ?? 0,
 

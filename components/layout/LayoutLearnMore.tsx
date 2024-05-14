@@ -63,7 +63,7 @@ const LayoutLearnMore = ({
         <div className='flex flex-col lg:gap-20 md:gap-16 gap-10 custom-container'>
             <div className="w-full lg:h-[50vh] md:h-[50dvh] h-[30dvh] bg-[url('/policy/banner_supercar.jpg')] bg-cover bg-center rounded-xl flex justify-center items-center">
                 <div className='3xl:text-6xl md:text-5xl text-3xl text-white font-semibold'>
-                    Chính sách & quy định
+                    Hướng dẫn & Quy định
                 </div>
             </div>
             <div className='grid grid-cols-5 gap-6'>

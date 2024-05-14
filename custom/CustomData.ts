@@ -194,6 +194,12 @@ const CustomDataInfoRentalCar = (res: any) => {
             total_trip: res?.data?.customer?.total_trip,
             phone: res?.data?.customer?.phone,
         },
+        customer_renter: {
+            id: res?.data?.customer_renter?.id,
+            fullname: res?.data?.customer_renter?.fullname,
+            avatar: res?.data?.customer_renter?.avatar,
+            phone: res?.data?.customer_renter?.phone,
+        },
         address: {
             district: res?.data?.district,
             province: res?.data?.province,
@@ -230,6 +236,17 @@ const CustomDataInfoRentalCar = (res: any) => {
             amount_km: +res?.data?.price?.amount_km,
             // khuyến mãi
             promotion: +res?.data?.price?.promotion,
+        },
+        price_owner: {
+            rent_cost_day: res?.data?.price_owner?.rent_cost_day,
+            number_day: res?.data?.price_owner?.number_day,
+            rent_cost: res?.data?.price_owner?.rent_cost,
+            amount_km: res?.data?.price_owner?.amount_km,
+            price_service_owner: res?.data?.price_owner?.price_service_owner,
+            revenue_customer: res?.data?.price_owner?.revenue_customer,
+            payment_recevie: res?.data?.price_owner?.payment_recevie,
+            // data này tự tính lấy (revenue_customer - payment_recevie)
+            amount_receive_owner: res?.data?.price_owner?.revenue_customer - res?.data?.price_owner?.payment_recevie,
         },
         type: {
             delivery_car: res?.data?.delivery_car === 1,

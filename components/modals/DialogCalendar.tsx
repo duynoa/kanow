@@ -837,8 +837,6 @@ export function DialogCalendar({ }: Props) {
         setDateTimeComponent(dateReal)
     }, [slug])
 
-  
-
 
     useEffect(() => {
         if (typeCarDetail == "1") {

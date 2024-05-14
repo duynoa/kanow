@@ -47,6 +47,7 @@ const Account = (props: Props) => {
     useEffect(() => {
         setIsMounted(true)
     }, [])
+    
     const form = useForm({
         defaultValues: {
             fullName: informationUser?.fullname ?? "",
@@ -151,7 +152,7 @@ const Account = (props: Props) => {
             form.append('image', values.filePapers ?? "")
             form.append('drivingLiscense[fullname]', values.namePapers ?? "")
             form.append('drivingLiscense[number_liscense]', values.numberPapers ?? "")
-            form.append('drivingLiscense[driving_liscense_id]', informationUser.drivingLiscense.id ?? "")
+            form.append('drivingLiscense[driving_liscense_id]', informationUser?.drivingLiscense?.id ?? "")
             form.append('drivingLiscense[birthday]', moment(values.datePapers).format('DD/MM/YYYY') ?? null ?? "")
         }
 
