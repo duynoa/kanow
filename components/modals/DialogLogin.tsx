@@ -32,6 +32,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { useDialogLogin } from "@/hooks/useOpenDialog";
 import { FormatPhoneNumber } from "../format/FormatNumber";
+import { regexPatterns } from "@/lib/regex";
 
 type Props = {};
 
@@ -295,7 +296,11 @@ export function DialogLogin({ }: Props) {
                                             maxLength: {
                                                 value: 10,
                                                 message: "Số điện thoại không được dài hơn 10 số!"
-                                            }
+                                            },
+                                            pattern: {
+                                                value: regexPatterns.phone,
+                                                message: "Số điện thoại không hợp lệ",
+                                            },
                                         }}
                                         render={({ field, fieldState }) => {
                                             return (
@@ -305,7 +310,8 @@ export function DialogLogin({ }: Props) {
                                                     </FormLabel>
                                                     <FormControl>
                                                         <Input
-                                                            type="number"
+                                                            type="tel"
+                                                            maxLength={10}
                                                             disabled={isLoading}
                                                             className={`${fieldState?.invalid && fieldState?.error
                                                                 ? "border rounded-lg border-[#F15A5A]"
@@ -436,7 +442,11 @@ export function DialogLogin({ }: Props) {
                                             maxLength: {
                                                 value: 10,
                                                 message: "Số điện thoại không được dài hơn 10 số!"
-                                            }
+                                            },
+                                            pattern: {
+                                                value: regexPatterns.phone,
+                                                message: "Số điện thoại không hợp lệ",
+                                            },
                                         }}
                                         render={({ field, fieldState }) => {
                                             return (
@@ -447,7 +457,8 @@ export function DialogLogin({ }: Props) {
                                                     </FormLabel>
                                                     <FormControl>
                                                         <Input
-                                                            type="number"
+                                                            type="tel"
+                                                            maxLength={10}
                                                             disabled={isLoading}
                                                             className={`${fieldState?.invalid && fieldState?.error
                                                                 ? "border rounded-lg border-[#F15A5A]"
@@ -766,7 +777,11 @@ export function DialogLogin({ }: Props) {
                                             maxLength: {
                                                 value: 10,
                                                 message: "Số điện thoại không được dài hơn 10 số!"
-                                            }
+                                            },
+                                            pattern: {
+                                                value: regexPatterns.phone,
+                                                message: "Số điện thoại không hợp lệ",
+                                            },
                                         }}
                                         render={({ field, fieldState }) => {
                                             return (
@@ -778,7 +793,8 @@ export function DialogLogin({ }: Props) {
                                                     </div>
                                                     <FormControl className="">
                                                         <Input
-                                                            type="number"
+                                                            type="tel"
+                                                            maxLength={10}
                                                             disabled={isLoading}
                                                             className={`${fieldState?.invalid && fieldState?.error
                                                                 ? "border rounded-lg border-[#F15A5A]"

@@ -16,6 +16,8 @@ import SessionStarRating from './components/SessionStarRating'
 import useAuthenticationAPI from '@/services/auth/auth.services'
 import apiAccount from '@/services/profile/account/account.services'
 import BackgroundUiProfile from '@/themes/profile/BackgroundUiProfile'
+import { ActionTooltip } from '@/components/tooltip/ActionTooltip'
+import { useDataPolicy } from '@/hooks/useDataQueryKey'
 type Props = {}
 
 
@@ -26,6 +28,7 @@ const Account = (props: Props) => {
         editInfo: false,
         editPapers: false,
         dataStarRatings: [],
+        type: "",
         //danh gia
         totalStar: 0,
         totalReview: 0,
@@ -35,6 +38,8 @@ const Account = (props: Props) => {
     }
 
     const { apiInfoUser } = useAuthenticationAPI()
+
+    const { isStatePolicy } = useDataPolicy()
 
     const { informationUser, setInformationUser } = useAuth()
 
@@ -47,7 +52,7 @@ const Account = (props: Props) => {
     useEffect(() => {
         setIsMounted(true)
     }, [])
-    
+
     const form = useForm({
         defaultValues: {
             fullName: informationUser?.fullname ?? "",
@@ -64,9 +69,8 @@ const Account = (props: Props) => {
     });
 
 
-    const onSetValue = (informationUser: any) => {
-
-        const newData = [
+    const onSetValue = (informationUser: any, type: string) => {
+        const editInfo = [
             {
                 name: 'fullName', value: informationUser?.fullname
             },
@@ -82,6 +86,8 @@ const Account = (props: Props) => {
             {
                 name: 'gender', value: informationUser?.gender == 1 && "male" || informationUser?.gender == 2 && "girl"
             },
+        ]
+        const editPapers = [
             {
                 name: 'namePapers', value: informationUser?.drivingLiscense?.fullname
             },
@@ -96,6 +102,15 @@ const Account = (props: Props) => {
             }
         ]
 
+        let newData: any[] = []
+
+        if (type == 'all') {
+            newData = [...editInfo, ...editPapers]
+        } else if (type == 'editInfo') {
+            newData = editInfo
+        } else {
+            newData = editPapers
+        }
         newData.forEach((item: any) => {
             form.setValue(item.name, item.value)
         })
@@ -117,7 +132,7 @@ const Account = (props: Props) => {
 
     useEffect(() => {
         if (informationUser) {
-            onSetValue(informationUser)
+            onSetValue(informationUser, 'all')
             const newData = dataStarRatings(informationUser?.review?.data)
             queryState({
                 dataStarRatings: newData || [],
@@ -128,20 +143,18 @@ const Account = (props: Props) => {
     }, [informationUser])
 
     const handleClickButtonEdit = (type: string) => {
+        form.clearErrors()
+        queryState({ type: type })
+        onSetValue(informationUser, type)
         if (type === "editInfo") {
             queryState({ editInfo: !isState.editInfo })
-            return
-        }
-        queryState({ editPapers: !isState.editPapers })
-
-        if (!isState.editInfo || !isState.editPapers) {
-            onSetValue(informationUser)
+        } else {
+            queryState({ editPapers: !isState.editPapers })
         }
     }
 
     const onSubmit = async (values: any, type: any) => {
         let form: any = new FormData();
-        let success: boolean = false
         if (type === 'editInfo') {
             form.append('email', values.email ?? '')
             form.append('phone', values.phone ?? "")
@@ -160,20 +173,15 @@ const Account = (props: Props) => {
         const { data: { message, result } } = await apiUpdateInfo(form)
         if (result) {
             toastCore.success(message)
-            success = true
+            const { data: information } = await apiInfoUser()
+            if (information?.result) {
+                setInformationUser(information?.info);
+            }
             type === 'editInfo' && queryState({ editInfo: !isState.editInfo })
             type === 'editPapers' && queryState({ editPapers: !isState.editPapers })
             return
         }
         toastCore.error(message)
-        if (success) {
-            const { data: information } = await apiInfoUser()
-            if (information?.result) {
-                setInformationUser(information?.info);
-            }
-            success = false
-        }
-
     }
     const handlePage = async () => {
         let form: any = new FormData();
@@ -181,7 +189,7 @@ const Account = (props: Props) => {
         form.append('per_page', isState.limit)
 
         const { data } = await apiPaginationStartingUser(form)
-        
+
         if (data?.result) {
             const newData = dataStarRatings(data?.info?.review?.data)
             const dataDB = {
@@ -203,19 +211,21 @@ const Account = (props: Props) => {
     }, [isState.page])
 
 
-    const handleClickOptionsButton = (type: string) => {
+    const handleClickOptionsButton = async (type: string) => {
         const checkKey: any = {
             editInfo: isState.editInfo,
             editPapers: isState.editPapers
         }
         if (checkKey[type]) {
+            queryState({ type: type })
+            // delay để  nó set xong type rồi mới submit mục đích rào submit
+            await new Promise((resolve) => setTimeout(resolve, 100))
             form.handleSubmit((values) => onSubmit(values, `${type}`))()
             return
         }
         handleClickButtonEdit(`${type}`)
         form.clearErrors()
     }
-
 
     if (!isMounted) {
         return null;
@@ -228,7 +238,9 @@ const Account = (props: Props) => {
                 <div className="flex md:flex-row flex-col justify-between">
                     <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Thông tin tài khoản</h1>
                     <div className='flex items-center gap-5 md:my-0 my-5'>
-                        <Button onClick={() => handleClickOptionsButton('editInfo')}
+                        <Button onClick={() => {
+                            handleClickOptionsButton('editInfo')
+                        }}
                             className={`${isState.editInfo ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full text-sm lg:px-8
                                  px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
                             {isState.editInfo ? 'Cập nhật' : "Chỉnh sửa"}
@@ -251,19 +263,40 @@ const Account = (props: Props) => {
                         <div className='flex flex-col gap-3'>
                             <div className='flex items-center md:gap-4 gap-2'>
                                 <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold '>Giấy phép lái xe </h1>
-                                <span className={`${informationUser?.drivingLiscense?.length == 0 || informationUser?.drivingLiscense?.status == 0 ? "bg-[#FA3434]" : "bg-[#2FB9BD]"} rounded-2xl ml-1 text-white  py-1 px-4 text-xs  font-normal`}>
-                                    {informationUser?.drivingLiscense?.length == 0 || informationUser?.drivingLiscense?.status == 0 ? "Chưa xác thực" : "Đã xác thực"}
+                                <span className={`${(
+                                    (informationUser?.drivingLiscense?.length == 0 || informationUser?.drivingLiscense?.status == 0) && "bg-[#FF9900]" ||
+                                    informationUser?.drivingLiscense?.status == 1 && "bg-[#2FB9BD]" ||
+                                    informationUser?.drivingLiscense?.status == 2 && "bg-[#FA3434]"
+                                )} rounded-2xl ml-1 text-white  py-1 px-4 text-xs  font-normal`}>
+                                    {(informationUser?.drivingLiscense?.length == 0 || informationUser?.drivingLiscense?.status == 0) && "Chưa xác thực" ||
+                                        informationUser?.drivingLiscense?.status == 1 && "Đã xác thực" ||
+                                        informationUser?.drivingLiscense?.status == 2 && 'Không xác thực'
+                                    }
                                 </span>
                             </div>
                             <div className='flex flex-row items-center gap-2'>
                                 <h4 className='text-[#3E424E] font-normal lg:text-base text-sm'>
                                     Vì sao tôi phải xác thực GPLX
                                 </h4>
-                                <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
+                                <ActionTooltip
+                                    side="bottom"
+                                    align="center"
+                                    label={(
+                                        <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
+                                            <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.document_license ? isStatePolicy?.dataPolicy?.document_license : ''}` }} />
+                                        </div>
+                                    )}
+                                >
+                                    <div>
+                                        <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
+                                    </div>
+                                </ActionTooltip>
                             </div>
                         </div>
                         <div className='flex items-center gap-5 md:my-0 my-5'>
-                            <Button onClick={() => handleClickOptionsButton('editPapers')}
+                            <Button onClick={() => {
+                                handleClickOptionsButton('editPapers')
+                            }}
                                 className={`${isState.editPapers ? "bg-[#2FB9BD]/80 text-white hover:bg-[#2FB9BD]/80" : "hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD]"} md:w-fit w-full text-sm
                                  lg:px-8 px-5 xl:py-3 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
                                 {isState.editPapers ? 'Cập nhật' : "Chỉnh sửa"}
@@ -279,13 +312,6 @@ const Account = (props: Props) => {
                         </div>
                     </div>
                     <FormPapers form={form} isState={isState} />
-                </div>
-            </BackgroundUiProfile>
-            <BackgroundUiProfile>
-                <div className=" flex flex-col gap-8">
-                    <h1 className='text-[#3E424E] lg:text-2xl text-xl font-semibold '>Danh sách xe</h1>
-                    <Nodata type='account' />
-                    {/* <Image src={'/card/no_car.png'} alt="logo" width={1280} height={1024} className='w-full h-full object-cover'></Image> */}
                 </div>
             </BackgroundUiProfile>
             <BackgroundUiProfile>

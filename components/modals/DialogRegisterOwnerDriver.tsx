@@ -29,6 +29,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CommandEmpty, CommandGroup, CommandItem, CommandList } from "../ui/commandCustom";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { useAuth } from "@/hooks/useAuth";
+import { regexPatterns } from "@/lib/regex";
 
 
 type Props = {
@@ -272,7 +273,11 @@ export function DialogRegisterOwnerDriver({ }: Props) {
                                         maxLength: {
                                             value: 10,
                                             message: "Số điện thoại không được dài hơn 10 số!"
-                                        }
+                                        },
+                                        pattern: {
+                                            value: regexPatterns.phone,
+                                            message: "Số điện thoại không hợp lệ",
+                                        },
                                     }}
                                     render={({ field, fieldState }) => {
                                         return (
@@ -283,10 +288,11 @@ export function DialogRegisterOwnerDriver({ }: Props) {
                                                 <FormControl>
                                                     <>
                                                         <Input
+                                                            maxLength={10}
                                                             className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
                                             focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                             placeholder="Nhập số điện thoại"
-                                                            type={'number'}
+                                                            type={'tel'}
                                                             {...field}
                                                         />
                                                     </>

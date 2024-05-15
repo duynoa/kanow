@@ -26,9 +26,6 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
             case 'list-cars':
                 quertyState({ title: 'Hiện chưa có danh sách xe', image: '/nodata/no-data-amico.png' })
                 break;
-            case 'account':
-                quertyState({ title: 'Không tìm thấy xe nào', image: '/profile/account/nodata.png' })
-                break;
             case 'mytrip':
                 quertyState({ title: 'Hiện tại bạn chưa có chuyến nào', image: '/profile/mytrip/nodata.png' })
                 break;
