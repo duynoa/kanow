@@ -9,9 +9,9 @@ import { create } from "zustand";
 interface IOpenNotification {
     openDropdownNotification: boolean;
     openDialogNotification: boolean;
+    isStateNotification: IInitialStateNotification;
     setOpenDropdownNotification: (key: boolean) => void;
     setOpenDialogNotification: (key: boolean) => void;
-    isStateNotification: IInitialStateNotification;
     queryKeyIsStateNotification: (key: any) => void;
 }
 
@@ -26,9 +26,10 @@ export const useNotification = create<IOpenNotification>((set) => ({
         dataNotify: undefined,
         page: 1,
         next: null,
-        limit: 15
+        limit: 15,
     },
-
+    openDropdownNotification: false,
+    openDialogNotification: false,
     queryKeyIsStateNotification: (key: any) => set((state) => ({
         ...state,
         isStateNotification: {
@@ -36,9 +37,6 @@ export const useNotification = create<IOpenNotification>((set) => ({
             ...key,
         },
     })),
-
-    openDropdownNotification: false,
-    openDialogNotification: false,
     setOpenDropdownNotification: (key: boolean) => set((state) => ({ ...state, openDropdownNotification: key })),
     setOpenDialogNotification: (key: boolean) => set((state) => ({ ...state, openDialogNotification: key })),
 }));

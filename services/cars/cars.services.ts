@@ -29,6 +29,7 @@ const getListAutomaker = (param: any) => {
 
     return axios.get(`/car/getListCompanyCar`, config);
 };
+
 // lấy danh sách mẫu xe
 const getListModelCars = (param: any) => {
     let config: AxiosRequestConfig = {
@@ -94,14 +95,20 @@ const getListCarsForYou = (param?: any) => {
     return axios.get(`/car/getListCarForYou`, config)
 }
 
+// post data hẹn tài xế
+const postDriverAppointment = (data: any) => {
+    return axios.post(`/driver_ticket/addDriverTicket`, data)
+}
+
 export {
     getListCars,
     getListAutomaker,
     getListModelCars,
     getListTypeCars,
     getDataDetailCar,
-    postUpdateFavoriteHeartCar,
     getListCarsRelated,
-    postRequestRentalCar,
     getListCarsForYou,
+    postUpdateFavoriteHeartCar,
+    postRequestRentalCar,
+    postDriverAppointment,
 };

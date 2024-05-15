@@ -107,6 +107,7 @@ const InfoRentalCar = ({ params }: Props) => {
                 }
 
                 const { data } = await getInfoDetailCarTransaction(params?.slug, dataParams);
+                console.log('data data data:', data);
 
                 if (data && data.data && data.base) {
                     let { customDataInfoRentalCar } = CustomDataInfoRentalCar(data)
@@ -127,7 +128,7 @@ const InfoRentalCar = ({ params }: Props) => {
 
 
     useEffect(() => {
-        if (generalKey && generalKey?.pusher && generalKey?.cluster && informationUser.id) {
+        if (generalKey && generalKey?.pusher && generalKey?.cluster && informationUser?.id) {
             const pusher = new Pusher(generalKey?.pusher, {
                 authTransport: "ajax",
                 cluster: generalKey?.cluster,
@@ -164,14 +165,14 @@ const InfoRentalCar = ({ params }: Props) => {
 
             return () => {
                 presenceChannel.unbind("change-status"); // Unbind sự kiện khi component bị unmounted
-                pusher.unsubscribe(`notifications-channel-${informationUser.id}-customer`); // Unsubscribe channel khi component bị unmounted
+                pusher.unsubscribe(`notifications-channel-${informationUser?.id}-customer`); // Unsubscribe channel khi component bị unmounted
                 pusher.disconnect(); // Ngắt kết nối khi component bị unmounted
 
             };
         }
     }, [
         generalKey,
-        informationUser.id,
+        informationUser?.id,
         isStateInfoRentalCar.detailRentalCar,
         queryKeyIsStateInfoRentalCar,
     ]);

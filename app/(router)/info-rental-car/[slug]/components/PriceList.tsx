@@ -21,6 +21,7 @@ import Image from 'next/image'
 import { FaDeleteLeft } from 'react-icons/fa6'
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
 import { useSearchParams } from 'next/navigation'
+import { useAuth } from '@/hooks/useAuth'
 
 type Props = {
     params: {
@@ -40,17 +41,20 @@ const PriceList = ({
     const { isVisibleTablet } = useResize()
     const { isStateInfoRentalCar } = useDataInfoRentalCar()
     const { isStatePolicy } = useDataPolicy()
+    const { informationUser } = useAuth()
 
     const handleOpenAlertCancel = () => {
-        setOpenDialogCancelCar(true, "1")
-        setDataInfo({
-            car_id: isStateInfoRentalCar?.detailRentalCar?.id,
-            status: isStateInfoRentalCar?.detailRentalCar?.status?.status
-        })
+        if (typeCarDetail) {
+            setOpenDialogCancelCar(true, typeCarDetail)
+            setDataInfo({
+                car_id: isStateInfoRentalCar?.detailRentalCar?.id,
+                status: isStateInfoRentalCar?.detailRentalCar?.status?.status
+            })
+        }
     }
 
     console.log('isStateInfoRentalCar :', isStateInfoRentalCar);
-
+    console.log('informationUser :', informationUser);
 
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
@@ -126,6 +130,7 @@ const PriceList = ({
                 </>
             }
 
+            {/* Bảng tính giá  */}
             <div className='flex flex-col gap-4 3xl:p-6 p-6 border rounded-xl bg-white'>
                 <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                     Bảng tính giá
@@ -159,7 +164,7 @@ const PriceList = ({
                             }
                         </div>
 
-                        <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                        <div className='text-[#3E424E] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
                             {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price?.rent_cost_day ? isStateInfoRentalCar?.detailRentalCar?.price?.rent_cost_day : 0)}<span>đ/ngày</span>
                         </div>
                     </div>
@@ -190,7 +195,7 @@ const PriceList = ({
                                     </ActionTooltip>
                             }
                         </div>
-                        <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                        <div className='text-[#3E424E] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
                             {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price?.price_insurance_day ? isStateInfoRentalCar?.detailRentalCar?.price?.price_insurance_day : 0)}<span>đ/ngày</span>
                         </div>
                     </div>
@@ -201,7 +206,7 @@ const PriceList = ({
                     <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#383A43] font-medium'>
                         Tổng tạm tính:
                     </div>
-                    <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                    <div className='text-[#3E424E] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
                         {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price?.temp_total_amount ? isStateInfoRentalCar?.detailRentalCar?.price?.temp_total_amount : 0)}{isStateInfoRentalCar?.detailRentalCar?.price?.number_day === 1 ? <span>đ/ngày</span> : <span>đ/{isStateInfoRentalCar?.detailRentalCar?.price?.number_day} ngày</span>}
                     </div>
                 </div>
@@ -221,7 +226,7 @@ const PriceList = ({
                                     Chương trình khuyến mãi
                                 </div>
                             </div>
-                            <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
+                            <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-bold'>
                                 -{FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price?.promotion)}đ
                             </div>
                         </div>
@@ -267,7 +272,7 @@ const PriceList = ({
                             }
                         </div>
 
-                        <div className='text-[#2FB9BD] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                        <div className='text-[#2FB9BD] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
                             {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price?.price_depoist ? isStateInfoRentalCar?.detailRentalCar?.price?.price_depoist : 0)}<span>đ</span>
                         </div>
                     </div>
@@ -299,7 +304,7 @@ const PriceList = ({
                             }
                         </div>
 
-                        <div className='text-[#2FB9BD] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                        <div className='text-[#2FB9BD] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
                             {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price?.cash_on_delivery ? isStateInfoRentalCar?.detailRentalCar?.price?.cash_on_delivery : 0)}<span>đ</span>
                         </div>
                     </div>
@@ -307,7 +312,10 @@ const PriceList = ({
 
                 {/* button */}
                 {
-                    isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status !== 3
+                    informationUser?.fullname !== isStateInfoRentalCar?.detailRentalCar?.customer?.fullname &&
+                        informationUser?.phone !== isStateInfoRentalCar?.detailRentalCar?.customer?.phone &&
+                        isStateInfoRentalCar?.detailRentalCar?.status &&
+                        isStateInfoRentalCar?.detailRentalCar?.status?.status !== 3
                         ?
                         <div className='flex flex-col gap-2'>
                             {
@@ -344,6 +352,179 @@ const PriceList = ({
                         null
                 }
             </div>
+
+            {/* Hiển thị khi là chủ xe vào xem xe của mình được thuê */}
+            {
+                informationUser?.fullname === isStateInfoRentalCar?.detailRentalCar?.customer?.fullname &&
+                informationUser?.phone === isStateInfoRentalCar?.detailRentalCar?.customer?.phone &&
+                <div className='flex flex-col gap-4 3xl:p-6 p-6 border rounded-xl bg-white'>
+                    <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
+                        Bảng tính thu nhập chủ xe
+                    </div>
+
+                    {/* đơn giá */}
+                    <div className='flex flex-col gap-2 pb-2 border-b'>
+                        <div className='flex justify-between gap-2 items-center'>
+                            <div className='flex flex-row items-center gap-2'>
+                                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-normal'>
+                                    Đơn giá thuê
+                                </div>
+                                {
+                                    isVisibleTablet ?
+                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                            <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
+                                        </div>
+                                        :
+                                        <ActionTooltip
+                                            side="bottom"
+                                            align="center"
+                                            label={(
+                                                <div className='flex flex-col gap-1 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
+                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_price_policy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} />
+                                                </div>
+                                            )}
+                                        >
+                                            <div>
+                                                <FaRegQuestionCircle className='text-[#FF9900] lg:text-xl text-lg cursor-pointer' />
+                                            </div>
+                                        </ActionTooltip>
+                                }
+                            </div>
+
+                            <div className='text-[#3E424E] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price_owner?.rent_cost_day ? isStateInfoRentalCar?.detailRentalCar?.price_owner?.rent_cost_day : 0)}<span>đ/ngày</span>
+                            </div>
+                        </div>
+
+                        <div className='flex justify-between gap-2 items-center'>
+                            <div className='flex flex-row items-center gap-2'>
+                                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-normal'>
+                                    Số ngày thuê
+                                </div>
+                            </div>
+                            <div className='text-[#3E424E] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                {isStateInfoRentalCar?.detailRentalCar?.price_owner?.number_day ? <span>{isStateInfoRentalCar?.detailRentalCar?.price_owner?.number_day} ngày</span> : <span>0 ngày</span>}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* doanh thu*/}
+                    <div className='flex flex-col gap-2 pb-2 border-b'>
+                        <div className='flex justify-between gap-2 items-center'>
+                            <div className='flex flex-row items-center gap-2'>
+                                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-normal'>
+                                    Doanh thu cho thuê xe
+                                </div>
+                            </div>
+                            <div className='text-[#3E424E] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price_owner?.rent_cost ? isStateInfoRentalCar?.detailRentalCar?.price_owner?.rent_cost : 0)}đ
+                            </div>
+                        </div>
+
+                        {
+                            isStateInfoRentalCar?.detailRentalCar?.price_owner?.amount_km !== 0 ?
+                                <div className='flex justify-between gap-2 items-center'>
+                                    <div className='flex flex-row items-center gap-2'>
+                                        <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-normal'>
+                                            {typeCarDetail == "1" && "Doanh thu giao nhận xe"}
+                                            {typeCarDetail == "2" && "Doanh thu dịch vụ đưa đón"}
+                                        </div>
+                                    </div>
+                                    <div className='text-[#3E424E] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                        {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price_owner?.amount_km ? isStateInfoRentalCar?.detailRentalCar?.price_owner?.amount_km : 0)}đ
+                                    </div>
+                                </div>
+                                :
+                                null
+                        }
+                        {
+                            isStateInfoRentalCar?.detailRentalCar?.price_owner?.price_service_owner !== 0 ?
+                                <div className='flex justify-between gap-2 items-center'>
+                                    <div className='flex flex-row items-center gap-2'>
+                                        <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-normal'>
+                                            Phí dịch vụ - Chủ xe
+                                        </div>
+                                        {
+                                            isVisibleTablet ?
+                                                <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                                    <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
+                                                </div>
+                                                :
+                                                <ActionTooltip
+                                                    side="bottom"
+                                                    align="center"
+                                                    label={(
+                                                        <div className='flex flex-col gap-1 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
+                                                            <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_price_policy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} />
+                                                        </div>
+                                                    )}
+                                                >
+                                                    <div>
+                                                        <FaRegQuestionCircle className='text-[#FF9900] lg:text-xl text-lg cursor-pointer' />
+                                                    </div>
+                                                </ActionTooltip>
+                                        }
+                                    </div>
+
+                                    <div className='text-[#3E424E] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                        -{FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price_owner?.price_service_owner ? isStateInfoRentalCar?.detailRentalCar?.price_owner?.price_service_owner : 0)}<span>đ</span>
+                                    </div>
+                                </div>
+                                :
+                                null
+                        }
+                    </div>
+
+                    {/* khách thanh toán, số tiền cộng... */}
+                    <div className='flex flex-col gap-2 pb-2 border-b'>
+                        <div className='flex justify-between gap-2 items-center'>
+                            <div className='flex flex-row items-center gap-2'>
+                                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-normal'>
+                                    Thu nhập chủ xe (a)
+                                </div>
+                            </div>
+                            <div className='text-[#3E424E] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price_owner?.revenue_customer ? isStateInfoRentalCar?.detailRentalCar?.price_owner?.revenue_customer : 0)}đ
+                            </div>
+                        </div>
+
+                        <div className='flex justify-between gap-2 items-center'>
+                            <div className='flex flex-row items-center gap-2'>
+                                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-normal'>
+                                    Khách thanh toán cho chủ xe (b)
+                                </div>
+                            </div>
+                            <div className='text-[#3E424E] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price_owner?.payment_recevie ? isStateInfoRentalCar?.detailRentalCar?.price_owner?.payment_recevie : 0)}đ
+                            </div>
+                        </div>
+
+                        <div className='flex justify-between gap-2 items-center'>
+                            <div className='flex flex-row items-center gap-2'>
+                                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-bold'>
+                                    Số tiền cộng ví chủ xe (a-b)
+                                </div>
+                            </div>
+
+                            <div className='text-[#2FB9BD] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
+                                {FormatNumberDot(isStateInfoRentalCar?.detailRentalCar?.price_owner?.amount_receive_owner ? isStateInfoRentalCar?.detailRentalCar?.price_owner?.amount_receive_owner : 0)}<span>đ</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Thành tiền */}
+                    <div className='flex flex-col gap-2'>
+                        <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#3E424E] font-semibold'>
+                            Lời nhắn riêng:
+                        </div>
+
+                        <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#3E424E]'>
+                            Không có lời nhắn
+                        </div>
+                    </div>
+
+                </div>
+            }
         </div>
     )
 }

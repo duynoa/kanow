@@ -105,6 +105,9 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                 dataRequest.data.routes = dataListRequestCarRental?.map?.dataSubmit[0]?.routes;
             }
 
+            console.log('dataRequest', dataRequest);
+
+
             const { data } = await postRequestRentalCar(dataRequest)
 
             if (data && data.result) {

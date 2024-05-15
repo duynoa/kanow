@@ -43,12 +43,15 @@ const Header = () => {
 
     const {
         isStateNotification,
+        openDropdownNotification,
         queryKeyIsStateNotification,
+        setOpenDropdownNotification
     } = useNotification()
 
     const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
 
     const { queryKeyIsStateProfileMyCar } = useDataProfileMyCar()
+
     // const [statusModal, setStatusModal] = useState<string>("login")
 
     const dataHeader = [
@@ -162,7 +165,7 @@ const Header = () => {
     }, [getCookie])
 
     useEffect(() => {
-        if (isStateNotification.dataListNotifications.length == 0) {
+        if (informationUser && isStateNotification.dataListNotifications.length == 0) {
             const fetchListNotifications = async () => {
                 try {
                     queryKeyIsStateNotification({
@@ -174,8 +177,8 @@ const Header = () => {
                     })
 
                     const dataParams = {
-                        current_page: 1,
-                        per_page: 15,
+                        current_page: isStateNotification.page,
+                        per_page: isStateNotification.limit,
                         type: "customer"
                     }
 
@@ -191,7 +194,8 @@ const Header = () => {
                                 ...isStateNotification.isLoading,
                                 isLoadingNotification: false,
                             },
-                            next: data.links.next
+                            next: data.links.next,
+                            page: isStateNotification.page + 1
                         })
                     } else {
                         queryKeyIsStateNotification({
@@ -210,7 +214,7 @@ const Header = () => {
 
             fetchListNotifications()
         }
-    }, [])
+    }, [informationUser])
 
     const handleClickToZoom = () => {
         setIsZoomAnimated(true);
@@ -268,6 +272,8 @@ const Header = () => {
     }
 
     const dataListUnreadNotify = isStateNotification.dataListNotifications?.filter((item) => item?.is_read == 0)
+
+    console.log('openDropdownNotification: ', openDropdownNotification);
 
     if (!isMounted) {
         return null;
@@ -631,7 +637,7 @@ const Header = () => {
                             </div>
                         </div>
                 }
-            </header>
+            </header >
 
         </>
     )

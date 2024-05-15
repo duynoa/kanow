@@ -96,6 +96,7 @@ const DetailCar = ({ params }: Props) => {
 
     const {
         coordinates,
+        valueAddressPickup,
         valueAddressDestination,
         indexAddressDestination,
         setValueAddressPickup,
@@ -224,6 +225,8 @@ const DetailCar = ({ params }: Props) => {
 
                             return options;
                         };
+                        console.log('valueAddressPickup :', valueAddressPickup);
+                        console.log('valueAddressDestination[indexAddressDestination] :', valueAddressDestination[indexAddressDestination]);
 
                         // Sử dụng hàm để format data thành options
                         const options = formatDataToOptions(data.result);
@@ -233,7 +236,7 @@ const DetailCar = ({ params }: Props) => {
                                 total_route: item.distance.value,
                                 duration_text: item.duration.text,
                                 duration_value: item.duration.value,
-                                routes: item.legs.map((e: any) => {
+                                routes: item.legs.map((e: any, index: number) => {
                                     return {
                                         total_route: e.distance.value,
                                         duration_text: e.duration.text,
@@ -241,7 +244,8 @@ const DetailCar = ({ params }: Props) => {
                                         lat_start: e.startLocation.lat,
                                         lng_start: e.startLocation.lng,
                                         lat_end: e.endLocation.lat,
-                                        lng_end: e.endLocation.lng
+                                        lng_end: e.endLocation.lng,
+                                        name_location: index == 0 ? valueAddressPickup : valueAddressDestination[indexAddressDestination].valueAddress,
                                     }
                                 }),
                             }

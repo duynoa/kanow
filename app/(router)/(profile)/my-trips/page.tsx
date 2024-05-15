@@ -28,7 +28,7 @@ const MyTrips = (props: Props) => {
         dataMyTripsTalented: [],
         pageMyTrips: 1,
         pageMyTripsTalented: 1,
-        limit: 4,
+        limit: 8,
         tab: "1",
         nextMyTrips: "",
         nextMyTripsTalented: "",
@@ -52,7 +52,7 @@ const MyTrips = (props: Props) => {
 
     const { setDataFilter, setValueFilter, valueFilter, defaultValue, setOpenDialogFilterCar, openDialogFilterCar, setDefaultValue } = useDialogFilterMyCar()
 
-    const handleFetchListdMyTrips = async (page: any) => {
+    const handleFetchListMyTrips = async (page: any) => {
         queryState({ isLoadingCar: true })
         try {
             await new Promise(resolve => setTimeout(resolve, 1500));
@@ -63,7 +63,7 @@ const MyTrips = (props: Props) => {
                 const { customDataMyTripCar } = CustomDataMyTripCar(dataMyTrips)
                 queryState({
                     dataMyTrips: customDataMyTripCar,
-                    pageMyTrips: isState.pageMyTrips + 1,
+                    pageMyTrips: isState.pageMyTrips === 1 ? isState.pageMyTrips + 1 : 2,
                     nextMyTrips: dataMyTrips?.links?.next,
                     totalDrivingCar: dataMyTrips?.meta?.total ?? 0
                 })
@@ -120,7 +120,7 @@ const MyTrips = (props: Props) => {
 
     useEffect(() => {
         if (valueFilter != defaultValue) {
-            handleFetchListdMyTrips(1)
+            handleFetchListMyTrips(1)
             handleFetchListMyTripsTalented(1)
         }
     }, [valueFilter])
@@ -128,7 +128,7 @@ const MyTrips = (props: Props) => {
     useEffect(() => {
         setValueFilter(-1)
         setDefaultValue(-1)
-        handleFetchListdMyTrips(1)
+        handleFetchListMyTrips(1)
         handleFetchListMyTripsTalented(1)
         fetDataFilter()
     }, [])
@@ -260,7 +260,7 @@ const MyTrips = (props: Props) => {
                     isLoadingCar: true
                 })
                 if (value == '1') {
-                    handleFetchListdMyTrips(1)
+                    handleFetchListMyTrips(1)
                     return
                 }
                 handleFetchListMyTripsTalented(1)

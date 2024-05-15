@@ -24,10 +24,11 @@ import { PiPiBold } from "react-icons/pi";
 import { MdOutlineGpsFixed } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import { regexPatterns } from '@/lib/regex';
+import { postDriverAppointment } from '@/services/cars/cars.services';
 
 const IntroSection = () => {
     const MAX_DESTINATIONS = 4;
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const { isVisibleMobile } = useResize()
     const router = useRouter()
@@ -168,9 +169,30 @@ const IntroSection = () => {
         }
     }
 
-    const onSubmit = (data: any) => {
+    const onSubmit = async (value: any) => {
         // Xử lý dữ liệu form khi submit
-        console.log("data submit: ", data);
+        console.log("value submit: ", value);
+        try {
+            const dataSubmit = {
+                point_start: value.startPoint,
+                point_end: value.destinationPoint,
+                contact_name: value.fullname,
+                contact_phone: value.phone
+            }
+
+            const { data } = await postDriverAppointment(dataSubmit);
+            console.log('data :', data);
+
+            if (data && data.result) {
+                toastCore.success("Hẹn tài xế thành công!")
+                reset()
+            } else {
+                toastCore.error(data.message)
+            }
+
+        } catch (err) {
+            throw err
+        }
     };
 
     return (

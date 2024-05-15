@@ -66,27 +66,27 @@ const Footer = () => {
         },
         {
             id: uuidv4(),
-            title: '',
+            title: 'Tìm Hiểu Thêm',
             list: [
                 {
                     id: uuidv4(),
                     name: 'Chính sách huỷ chuyến',
-                    link: '/dispute-resolution'
+                    link: '/cancel-policy'
                 },
                 {
                     id: uuidv4(),
                     name: 'Hướng dẫn đặt xe',
-                    link: '/dispute-resolution'
+                    link: '/book-guide'
                 },
                 {
                     id: uuidv4(),
                     name: 'Hướng dẫn thanh toán',
-                    link: '/dispute-resolution'
+                    link: '/payment-guide'
                 },
                 {
                     id: uuidv4(),
                     name: 'Câu hỏi thường gặp',
-                    link: '/dispute-resolution'
+                    link: '/faq'
                 },
             ]
         },

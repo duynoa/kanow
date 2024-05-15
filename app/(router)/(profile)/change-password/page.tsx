@@ -45,7 +45,7 @@ const ChangePassWord = (props: Props) => {
 
     const onSubmit = async (value: any) => {
         let formData = new FormData()
-        if (!informationUser.password) {
+        if (!informationUser?.password) {
             formData.append('password', value.newPassword ?? "")
         } else {
             formData.append('password', value.oldPassword ?? "")
