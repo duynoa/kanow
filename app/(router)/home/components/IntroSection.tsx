@@ -361,7 +361,8 @@ const IntroSection = () => {
                                     </Label>
                                     <div className="relative">
                                         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <TiLocation className="text-xl text-[#1EAAB1]" />
+                                            {/* <TiLocation className="text-xl text-[#1EAAB1]" /> */}
+                                            <MdOutlineGpsFixed className="text-xl text-[#1EAAB1]" />
                                         </span>
                                         <div
                                             id="place"
@@ -382,7 +383,8 @@ const IntroSection = () => {
                                             </Label>
                                             <div className="relative">
                                                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                                    <TiLocation className="text-xl text-[#1EAAB1]" />
+                                                    {/* <TiLocation className="text-xl text-[#1EAAB1]" /> */}
+                                                    <TiLocation className="text-xl text-[#FA3434]" />
                                                 </span>
                                                 <div
                                                     id="place"
@@ -477,7 +479,7 @@ const IntroSection = () => {
                                     </Label>
                                     <div className="relative">
                                         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                            < TiLocation className="text-xl text-[#FA3434]" />
+                                            <TiLocation className="text-xl text-[#FA3434]" />
                                         </span>
                                         <Input
                                             id="place_2"

@@ -16,7 +16,7 @@ import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.servi
 import { IStateLease, TComboboxApi } from "@/types/Profile/mycar/IMyCar"
 import { debounce } from "lodash"
 import { ChevronsUpDown } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 type Props = {
     form: any,
@@ -324,6 +324,13 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                     placeholder="Nhập đơn giá thuê"
                                                     thousandSeparator={','}
                                                     {...field}
+                                                    getInputRef={(ref: HTMLInputElement) => {
+                                                        if (ref) {
+                                                            field.ref({
+                                                                focus: () => ref.focus(),
+                                                            })
+                                                        }
+                                                    }}
                                                 />
                                             </FormControl>
                                             {fieldState?.invalid && fieldState?.error && (

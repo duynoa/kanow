@@ -1,22 +1,19 @@
 'use client'
-import Image from "next/image"
-import { debounce } from "lodash"
-import { useEffect, useState } from "react"
-import { ChevronsUpDown } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import SelectCombobox from "@/components/combobox/SelectCombobox"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Textarea } from "@/components/ui/textarea"
-import SelectCombobox from "@/components/combobox/SelectCombobox"
-import { IStateInfomation, TComboboxApi } from "@/types/Profile/mycar/IMyCar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import apiMyCar from "@/services/profile/listMyCar/listMyCar.services"
-import SkeletonFeature from "../../Skeleton/SkeletonFeature"
-import { useWatch } from "react-hook-form"
+import { IStateInfomation, TComboboxApi } from "@/types/Profile/mycar/IMyCar"
+import { debounce } from "lodash"
+import { ChevronsUpDown } from "lucide-react"
 import dynamic from "next/dynamic"
-import { useVehicleManage } from "@/hooks/useVehicleManage"
+import Image from "next/image"
+import { useEffect, useState } from "react"
+import SkeletonFeature from "../../Skeleton/SkeletonFeature"
 // import CustomQuill from "@/components/quill/CustomQuill"
 const CustomQuill = dynamic(() => import("@/components/quill/CustomQuill"), { ssr: false });
 
@@ -643,17 +640,11 @@ const StepInfoMation = ({ form, checkValueArray, converArray, isStateChild: { ty
                         <FormField
                             control={form.control}
                             name="stepInformation.fuelConsumptionLevel"
-                            rules={{
-                                required: {
-                                    value: true,
-                                    message: 'Vui lòng nhập mức tiêu thụ nhiên liệu',
-                                },
-                            }}
                             render={({ field, fieldState }) => {
                                 return (
                                     <FormItem>
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                            Mức tiêu thụ nhiên liệu  <span className="text-red-500">*</span>
+                                            Mức tiêu thụ nhiên liệu
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -664,10 +655,6 @@ const StepInfoMation = ({ form, checkValueArray, converArray, isStateChild: { ty
                                                 {...field}
                                             />
                                         </FormControl>
-
-                                        {fieldState?.invalid && fieldState?.error && (
-                                            <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                        )}
                                     </FormItem>
                                 );
                             }}
@@ -682,12 +669,6 @@ const StepInfoMation = ({ form, checkValueArray, converArray, isStateChild: { ty
                                             Mô tả
                                         </FormLabel>
                                         <FormControl>
-                                            {/* <Textarea
-                                                className={`disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
-                                 focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
-                                                placeholder="Nhập mô tả"
-                                                {...field}
-                                            /> */}
                                             <>
                                                 <CustomQuill
                                                     field={field}
