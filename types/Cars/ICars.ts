@@ -281,7 +281,12 @@ interface IDetailRentalCar {
         revenue_customer: number,
         payment_recevie: number,
         amount_receive_owner: number
-    }
+    },
+    policy: {
+        rent_cost_owner: string,
+        fee_service_owner: string
+    },
+    note: string,
     type: {
         delivery_car: boolean;
         book_car_flash: boolean;

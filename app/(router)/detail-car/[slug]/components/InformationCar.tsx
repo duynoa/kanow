@@ -470,7 +470,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
 
                     {
                         isVisibleTablet ?
-                            <div onClick={() => setOpenDialogAnswerPolicy(true, "car_rental_policy")}>
+                            <div onClick={() => setOpenDialogAnswerPolicy(true, "documentation_policy_car")}>
                                 <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                             </div>
                             :
@@ -479,7 +479,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                                 align="center"
                                 label={(
                                     <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
-                                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_rental_policy ? isStatePolicy?.dataPolicy?.car_rental_policy : ''}` }} />
+                                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.documentation_policy_car ? isStatePolicy?.dataPolicy?.documentation_policy_car : ''}` }} />
                                     </div>
                                 )}
                             >
@@ -579,7 +579,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                     </div>
                     {
                         isVisibleTablet ?
-                            <div onClick={() => setOpenDialogAnswerPolicy(true, "car_collateral_policy")}>
+                            <div onClick={() => setOpenDialogAnswerPolicy(true, "mortgage_policy_car")}>
                                 <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                             </div>
                             :
@@ -588,7 +588,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                                 align="center"
                                 label={(
                                     <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
-                                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_collateral_policy ? isStatePolicy?.dataPolicy?.car_collateral_policy : ''}` }} />
+                                        <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.mortgage_policy_car ? isStatePolicy?.dataPolicy?.mortgage_policy_car : ''}` }} />
                                     </div>
                                 )}
                             >

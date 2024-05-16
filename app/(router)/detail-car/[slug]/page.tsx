@@ -495,13 +495,6 @@ const DetailCar = ({ params }: Props) => {
         fetchDataListCarsRelated()
     }, [])
 
-    // fetch data Loading 
-    // useEffect(() => {
-    //     if (coordinates.lat != 0 && coordinates.lng != 0 && coordinates.latTo != 0 && coordinates.lngTo != 0 && numberDay) {
-    //         fetchDataDetailCarSecond()
-    //     }
-    // }, [numberDay])
-
     // fetch data list report car và data list khuyến mãi
     useEffect(() => {
         if (openDialogReportCar && isStateDetailCar.reportCar.listReportCar.length === 0) {
@@ -636,8 +629,6 @@ const DetailCar = ({ params }: Props) => {
             })
         }
     }, [params.slug, typeCarDetail, numberDay, router])
-
-
 
     // on/off thả tim
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {

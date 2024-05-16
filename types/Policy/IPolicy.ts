@@ -1,10 +1,10 @@
 interface IDataPolicy {
-    car_deposit_policy: string,
-    car_payment_policy: string,
-    car_rental_policy: string,
-    car_collateral_policy: string,
-    car_insurance_policy: string,
-    car_price_policy: string,
+    document_deposit: string,
+    document_payment: string,
+    documentation_policy_car: string,
+    mortgage_policy_car: string,
+    setting_insurance_car: string,
+    setting_price_car: string,
     cancel_trip: {
         title_cancel_trip: string;
         compensation_refund: string;
@@ -24,7 +24,13 @@ interface IDataPolicy {
         setting_service_car_talent: string,
         setting_shuttle_car_talent: string,
         total_km_car_talent: string,
-    }
+    },
+    getListPriceMonth: {
+        id: number,
+        name: string,
+        selected: boolean
+    }[],
+    document_license: string,
     number_deposit_car: number,
     percent_deposit: number,
     percent_insurance: number

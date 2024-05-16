@@ -7,9 +7,6 @@ import { Check, ChevronsUpDown, Search } from "lucide-react"
 const SelectCombobox = ({ data, onChange, field, onValueChange, placeholderInput }: any) => {
     return (
         <Command className="w-full">
-            {/* <CommandInput placeholder="Search x..." /> */}
-            {/* <CommandInput placeholder="Type 'cat' or 'dog'..." onValueChange={(e) => onValueChange(e)} /> */}
-
             {
                 placeholderInput ?
                     <div className="relative">
@@ -24,15 +21,16 @@ const SelectCombobox = ({ data, onChange, field, onValueChange, placeholderInput
             <CommandList>
                 <CommandEmpty>Không có dữ liệu</CommandEmpty>
                 {data && data?.length > 0 ?
-                    <CommandGroup>
+                    <CommandGroup className='p-1'>
                         {data?.map((x: any) => (
                             <CommandItem
                                 key={x.value}
                                 onSelect={(e) => onChange(x.value)}
                                 value={x.value}
-                                className="w-full"
+                                className="w-full flex items-center gap-1 cursor-pointer"
                             >
-                                {x.label}
+                                <span>{x.label}</span>
+                                <span>{x.selected ? "(khuyến nghị)" : ""}</span>
                                 <Check className={cn("mr-2 ml-2 h-4 w-4 text-[#2FB9BD]", field.value === x.value ? "opacity-100" : "opacity-0")} />
                             </CommandItem>
                         ))}

@@ -54,7 +54,7 @@ const PriceList = ({
     }
 
     console.log('isStateInfoRentalCar :', isStateInfoRentalCar);
-    console.log('informationUser :', informationUser);
+    console.log('isStatePolicy :', isStatePolicy);
 
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
@@ -144,7 +144,7 @@ const PriceList = ({
                             </div>
                             {
                                 isVisibleTablet ?
-                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "setting_price_car")}>
                                         <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                     </div>
                                     :
@@ -153,7 +153,7 @@ const PriceList = ({
                                         align="center"
                                         label={(
                                             <div className='flex flex-col gap-1 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_price_policy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} />
+                                                <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.setting_price_car ? isStatePolicy?.dataPolicy?.setting_price_car : ''}` }} />
                                             </div>
                                         )}
                                     >
@@ -176,7 +176,7 @@ const PriceList = ({
                             </div>
                             {
                                 isVisibleTablet ?
-                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "car_insurance_policy")}>
+                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "setting_insurance_car")}>
                                         <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                     </div>
                                     :
@@ -185,7 +185,7 @@ const PriceList = ({
                                         align="center"
                                         label={(
                                             <div className='flex flex-col gap-1 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_insurance_policy ? isStatePolicy?.dataPolicy?.car_insurance_policy : ''}` }} />
+                                                <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.setting_insurance_car ? isStatePolicy?.dataPolicy?.setting_insurance_car : ''}` }} />
                                             </div>
                                         )}
                                     >
@@ -252,7 +252,7 @@ const PriceList = ({
                             </div>
                             {
                                 isVisibleTablet ?
-                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "car_deposit_policy")}>
+                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "document_deposit")}>
                                         <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                     </div>
                                     :
@@ -261,7 +261,7 @@ const PriceList = ({
                                         align="center"
                                         label={(
                                             <div className='flex flex-col gap-1 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_deposit_policy ? isStatePolicy?.dataPolicy?.car_deposit_policy : ''}` }} />
+                                                <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.document_deposit ? isStatePolicy?.dataPolicy?.document_deposit : ''}` }} />
                                             </div>
                                         )}
                                     >
@@ -284,7 +284,7 @@ const PriceList = ({
                             </div>
                             {
                                 isVisibleTablet ?
-                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "car_payment_policy")}>
+                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "document_payment")}>
                                         <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                     </div>
                                     :
@@ -293,7 +293,7 @@ const PriceList = ({
                                         align="center"
                                         label={(
                                             <div className='flex flex-col gap-1 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_payment_policy ? isStatePolicy?.dataPolicy?.car_payment_policy : ''}` }} />
+                                                <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.document_payment ? isStatePolicy?.dataPolicy?.document_payment : ''}` }} />
                                             </div>
                                         )}
                                     >
@@ -367,11 +367,11 @@ const PriceList = ({
                         <div className='flex justify-between gap-2 items-center'>
                             <div className='flex flex-row items-center gap-2'>
                                 <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-normal'>
-                                    Đơn giá thuê
+                                    Đơn giá thuê - Chủ xe
                                 </div>
                                 {
                                     isVisibleTablet ?
-                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "rent_cost_owner")}>
                                             <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                         </div>
                                         :
@@ -380,7 +380,7 @@ const PriceList = ({
                                             align="center"
                                             label={(
                                                 <div className='flex flex-col gap-1 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_price_policy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} />
+                                                    <span dangerouslySetInnerHTML={{ __html: `${isStateInfoRentalCar?.detailRentalCar?.policy?.rent_cost_owner ? isStateInfoRentalCar?.detailRentalCar?.policy?.rent_cost_owner : ''}` }} />
                                                 </div>
                                             )}
                                         >
@@ -446,7 +446,7 @@ const PriceList = ({
                                         </div>
                                         {
                                             isVisibleTablet ?
-                                                <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                                <div onClick={() => setOpenDialogAnswerPolicy(true, "fee_service_owner")}>
                                                     <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                                 </div>
                                                 :
@@ -455,7 +455,7 @@ const PriceList = ({
                                                     align="center"
                                                     label={(
                                                         <div className='flex flex-col gap-1 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                            <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_price_policy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} />
+                                                            <span dangerouslySetInnerHTML={{ __html: `${isStateInfoRentalCar?.detailRentalCar?.policy?.fee_service_owner ? isStateInfoRentalCar?.detailRentalCar?.policy?.fee_service_owner : ''}` }} />
                                                         </div>
                                                     )}
                                                 >
@@ -519,7 +519,7 @@ const PriceList = ({
                         </div>
 
                         <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#3E424E]'>
-                            Không có lời nhắn
+                            {isStateInfoRentalCar?.detailRentalCar?.note ? isStateInfoRentalCar?.detailRentalCar?.note : "Không có lời nhắn"}
                         </div>
                     </div>
 

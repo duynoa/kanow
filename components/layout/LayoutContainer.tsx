@@ -60,6 +60,7 @@ import Cookies from 'js-cookie';
 import { DialogNotification } from '../modals/DialogNotification';
 import { useAuth } from '@/hooks/useAuth';
 import { useNotification } from '@/hooks/useNotification';
+import { DialogSubmit } from '../modals/DialogSubmit';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -563,6 +564,7 @@ const LayoutContainer = ({
                         <DialogRouteAddress />
 
                         <AlertDialogCustom />
+                        <DialogSubmit />
                         <DialogRegisterOwnerDriver />
                         <DialogFilterMyCar />
                         <DialogFilterListCars />

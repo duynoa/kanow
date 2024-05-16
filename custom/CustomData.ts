@@ -1,5 +1,6 @@
 import { IDataDetailCar, IDetailRentalCar } from "@/types/Cars/ICars";
 import { IInitialStateInfoRentalCar } from "@/types/Initial/IInitial";
+import { IDataPolicy } from "@/types/Policy/IPolicy";
 import { IArrayMyTripCar } from "@/types/Profile/IMyTrips";
 
 // custom in list cars
@@ -248,6 +249,11 @@ const CustomDataInfoRentalCar = (res: any) => {
             // data này tự tính lấy (revenue_customer - payment_recevie)
             amount_receive_owner: res?.data?.price_owner?.revenue_customer - res?.data?.price_owner?.payment_recevie,
         },
+        policy: {
+            rent_cost_owner: res?.data?.rent_cost_owner,
+            fee_service_owner: res?.data?.fee_service_owner
+        },
+        note: res?.data?.note,
         type: {
             delivery_car: res?.data?.delivery_car === 1,
             book_car_flash: res?.data?.book_car_flash === 1,
@@ -260,15 +266,27 @@ const CustomDataInfoRentalCar = (res: any) => {
 };
 
 const CustomDataPolicy = (res: any) => {
-    let customDataPolicy: any = {
-        car_deposit_policy: res?.document_deposit,
-        car_payment_policy: res?.document_payment,
-        car_rental_policy: res?.documentation_policy_car,
-        car_collateral_policy: res?.mortgage_policy_car,
-        car_insurance_policy: res?.setting_insurance_car,
-        car_price_policy: res?.setting_price_car,
+    let customDataPolicy: IDataPolicy = {
         cancel_trip: res?.cancel_trip,
-        car_talent: res?.car_talent
+        car_talent: res?.car_talent,
+        document_deposit: res?.document_deposit,
+        document_payment: res?.document_payment,
+        document_license: res?.document_license,
+        documentation_policy_car: res?.documentation_policy_car,
+        mortgage_policy_car: res?.mortgage_policy_car,
+        setting_insurance_car: res?.setting_insurance_car,
+        setting_price_car: res?.setting_price_car,
+        number_deposit_car: res?.number_deposit_car,
+        percent_deposit: res?.percent_deposit,
+        percent_insurance: res?.percent_insurance,
+        getListPriceMonth: res?.getListPriceMonth?.map((item: any) => {
+            return {
+                label: item.name,
+                value: item.id,
+                selected: item.selected
+            }
+        })
+
     };
     return { customDataPolicy };
 };

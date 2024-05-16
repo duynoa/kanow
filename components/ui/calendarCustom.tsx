@@ -80,6 +80,7 @@ function CalendarCustom({
         const swiperRef = React.useRef<any>(null);
         const [sliderStartMonth, setSliderStartMonth] = React.useState<boolean>(true)
         const [sliderEndMonth, setSliderEndMonth] = React.useState<boolean>(false)
+        const [currentSlideIndex, setCurrentSlideIndex] = React.useState<number>(0)
 
         const handlePrev = (e: any) => {
             console.log('check handleprev swiperRef.current: ', swiperRef.current);
@@ -88,6 +89,8 @@ function CalendarCustom({
 
             if (swiperRef.current && !sliderStartMonth) {
                 swiperRef?.current?.slidePrev();
+
+                setCurrentSlideIndex(swiperRef.current.realIndex)
                 setSliderStartMonth(swiperRef.current.isBeginning)
                 setSliderEndMonth(swiperRef.current.isEnd)
             }
@@ -98,6 +101,8 @@ function CalendarCustom({
 
             if (swiperRef.current && !sliderEndMonth) {
                 swiperRef?.current?.slideNext();
+
+                setCurrentSlideIndex(swiperRef.current.realIndex)
                 setSliderStartMonth(swiperRef.current.isBeginning)
                 setSliderEndMonth(swiperRef.current.isEnd)
             }
@@ -128,272 +133,10 @@ function CalendarCustom({
             }))
         }))
 
-        // Tạo giao diện cho từng tháng dựa trên dữ liệu
-        const monthComponents = customDataDate?.map((monthItem, index) => {
-            const month: any = monthItem?.month; // Tháng
-            const formattedMonth = parseInt(month, 10)?.toString() // tháng format bỏ số 0
-            const daysInMonth = monthItem?.price_detail?.length; // Số ngày trong tháng
-
-            // Tạo các component cho từng ngày trong tháng
-            // const dayComponents: any[] = [];
-            const daysOfWeek = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-            // Tìm thứ của ngày đầu tiên trong tháng
-            // const firstDayOfMonth = new Date(currentYear, month - 1, 1).getDay(); 
-
-            // Tìm ngày đầu tiên của tháng và ngày cuối của tháng
-            // Lưu ý: month phải trừ đi 1 vì months trong JavaScript bắt đầu từ 0 (tháng 1 là tháng 0)
-            const firstDayOfMonth = new Date(currentYear, month - 1, 1);
-            const lastDayOfMonth = new Date(currentYear, month, 1);
-
-            // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
-            const firstDayOfWeek = firstDayOfMonth?.getDay();
-            const lastDayOfWeek = lastDayOfMonth?.getDay();
-
-            // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
-            const startOfPreviousWeek = new Date(firstDayOfMonth);
-            startOfPreviousWeek?.setDate(startOfPreviousWeek?.getDate() - firstDayOfWeek);
-
-            const endOfNextWeek = new Date(lastDayOfMonth);
-            endOfNextWeek?.setDate(endOfNextWeek?.getDate() + (6 - lastDayOfWeek));
-
-            const previousMonthDays = [];
-            for (let d = new Date(startOfPreviousWeek); d < firstDayOfMonth; d.setDate(d.getDate() + 1)) {
-                previousMonthDays.push(
-                    <div key={`prev-${d}`} className='col-span-1 text-center text-[#000000]/40 font-normal 3xl:text-[15px] text-sm'>
-                        {d.getDate()}
-                    </div>
-                );
-            }
-
-            const currentMonthDays = monthItem.price_detail.map((dayDataApi: any, i: number) => {
-                const currentDate = new Date(dayDataApi.date);
-                const dayOfWeek = currentDate.getDay();
-
-                return (
-                    // <div key={`current-${i}`} className='col-span-1'>
-                    <CustomDay
-                        key={`current-${i}`}
-                        date={currentDate}
-                        dayDataApi={dayDataApi}
-                        dayOfWeek={dayOfWeek}
-                        index={i}
-                    />
-                    // </div>
-                );
-            });
-
-            const nextMonthDays = [];
-            for (let d = new Date(lastDayOfMonth); d <= endOfNextWeek; d.setDate(d.getDate() + 1)) {
-                nextMonthDays.push(
-                    <div key={`next-${d}`} className='col-span-1 text-center text-[#000000]/40 font-normal 3xl:text-[15px] text-sm'>
-                        {d.getDate()}
-                    </div>
-                );
-            }
-
-            const dayComponents = [...previousMonthDays, ...currentMonthDays, ...nextMonthDays];
-
-
-            return (
-                <SwiperSlide key={index} className="flex flex-col gap-2 p-0 max-w-[400px]">
-                    <div className="w-full text-center text-base font-bold mt-4 mb-2 text-[#166A71]">
-                        {formatCaption(formattedMonth)} Tháng {formattedMonth}, {currentYear}
-                    </div>
-                    <div className="grid grid-cols-7 text-center text-sm font-semibold">
-                        {/* Render các ngày trong tuần */}
-                        {
-                            daysOfWeek.map((item, index) => (
-                                <div key={`index-week-${index}`}>
-                                    {item}
-                                </div>
-                            ))
-                        }
-                    </div>
-                    {/* Render các ngày trong tháng */}
-                    <div className='grid grid-cols-7 items-center'>
-                        {/* <div className='grid grid-cols-7 items-center auto-cols-[minmax(0,_1fr)]'> */}
-                        {dayComponents}
-                    </div>
-                </SwiperSlide>
-            );
-        });
-        
-        // const monthComponents = customDataDate?.map((monthItem, index) => {
-        //     const month: any = monthItem?.month; // Tháng
-        //     const formattedMonth = parseInt(month, 10)?.toString() // tháng format bỏ số 0
-        //     const daysInMonth = monthItem?.price_detail?.length; // Số ngày trong tháng
-
-        //     // Tạo các component cho từng ngày trong tháng
-        //     const dayComponents: any[] = [];
-        //     const daysOfWeek = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-        //     // Tìm thứ của ngày đầu tiên trong tháng
-        //     // const firstDayOfMonth = new Date(currentYear, month - 1, 1).getDay(); 
-
-        //     // Tìm ngày đầu tiên của tháng và ngày cuối của tháng
-        //     // Lưu ý: month phải trừ đi 1 vì months trong JavaScript bắt đầu từ 0 (tháng 1 là tháng 0)
-        //     const firstDayOfMonth = new Date(currentYear, month - 1, 1);
-        //     const lastDayOfMonth = new Date(currentYear, month, 1);
-
-        //     // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
-        //     const firstDayOfWeek = firstDayOfMonth?.getDay();
-        //     const lastDayOfWeek = lastDayOfMonth?.getDay();
-
-        //     // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
-        //     const startOfPreviousWeek = new Date(firstDayOfMonth);
-        //     startOfPreviousWeek?.setDate(startOfPreviousWeek?.getDate() - firstDayOfWeek);
-
-        //     const endOfNextWeek = new Date(lastDayOfMonth);
-        //     endOfNextWeek?.setDate(endOfNextWeek?.getDate() + (6 - lastDayOfWeek));
-
-        //     // Render các ngày của tháng trước
-        //     for (let d = new Date(startOfPreviousWeek); d < firstDayOfMonth; d?.setDate(d?.getDate() + 1)) {
-        //         dayComponents.push(
-        //             <div key={`prev-${d}`} className='col-span-1 text-center text-[#000000]/40 font-normal 3xl:text-[15px] text-sm'>
-        //                 {/* Hiển thị ngày của tháng trước */}
-        //                 {d.getDate()}
-        //             </div>
-        //         );
-        //     }
-
-        //     // Render các ngày trong tháng
-        //     monthItem.price_detail.forEach((dayDataApi: any, i: any) => {
-        //         const currentDate = new Date(dayDataApi.date);
-        //         const dayOfWeek = currentDate.getDay();
-
-        //         dayComponents.push(
-        //             <CustomDay
-        //                 date={currentDate}
-        //                 dayDataApi={dayDataApi}
-        //                 dayOfWeek={dayOfWeek}
-        //                 index={i}
-        //             />
-        //         );
-        //     });
-
-        //     // Render các ngày của tháng sau
-        //     for (let d = new Date(lastDayOfMonth); d <= endOfNextWeek; d.setDate(d.getDate() + 1)) {
-        //         dayComponents.push(
-        //             <div key={`next-${d}`} className='col-span-1 text-center text-[#000000]/40 font-normal 3xl:text-[15px] text-sm'>
-        //                 {/* Hiển thị ngày của tháng sau */}
-        //                 {d.getDate()}
-        //             </div>
-        //         );
-        //     }
-
-        //     return (
-        //         <SwiperSlide key={index} className="flex flex-col gap-2 p-0 max-w-[400px]">
-        //             <div className="w-full text-center text-base font-bold mt-4 mb-2 text-[#166A71]">
-        //                 {formatCaption(formattedMonth)} Tháng {formattedMonth}, {currentYear}
-        //             </div>
-        //             <div className="grid grid-cols-7 text-center text-sm font-semibold">
-        //                 {/* Render các ngày trong tuần */}
-        //                 {
-        //                     daysOfWeek.map((item, index) => (
-        //                         <div key={`index-week-${index}`}>
-        //                             {item}
-        //                         </div>
-        //                     ))
-        //                 }
-        //             </div>
-        //             {/* Render các ngày trong tháng */}
-        //             {/* <div className='flex flex-wrap items-center'> */}
-        //                 {/* <div className='grid grid-cols-7 items-center auto-cols-[minmax(0,_1fr)]'> */}
-        //                 {dayComponents}
-        //             {/* </div> */}
-        //         </SwiperSlide>
-        //     );
-        // });
-
-
-        // Sử dụng useEffect để thiết lập swiperRef.current khi component được render ra lần đầu tiên
-        React.useEffect(() => {
-            if (swiperRef.current) {
-                swiperRef.current.swiper = swiperRef.current;
-                console.log('swiperRef.current if: ', swiperRef.current);
-                console.log('swiperRef.current.swiper if: ', swiperRef.current.swiper);
-            }
-
-            console.log('swiperRef.current: ', swiperRef.current);
-        }, [openDialogCalendar]);
-
-        return (
-            <>
-                <Swiper
-                    slidesPerView={typeCarCalendar == "calendar_car_autonomous" ? 2 : 1}
-                    spaceBetween={typeCarCalendar == "calendar_car_autonomous" ? 35 : 0}
-                    modules={[Pagination, A11y]}
-                    breakpoints={{
-                        320: {
-                            slidesPerView: typeCarCalendar == "calendar_car_autonomous" ? 2 : 1,
-                        },
-                        640: {
-                            slidesPerView: typeCarCalendar == "calendar_car_autonomous" ? 2 : 1,
-                        },
-                        768: {
-                            slidesPerView: typeCarCalendar == "calendar_car_autonomous" ? 2 : 1,
-                        },
-                    }}
-                    onSwiper={(swiper) => {
-                        swiperRef.current = swiper;
-                    }}
-                    allowTouchMove={false}
-                    pagination={customPagination}
-                    className='custom-swiper-calendar h-full'
-                // ref={swiperRef}
-                >
-                    {/* Hiển thị các tháng */}
-                    <div>
-                        {monthComponents}
-                    </div>
-                    {/* các nút chuyển lịch */}
-                    <div className='flex gap-2 absolute top-2 z-30 left-0 px-4 justify-between w-full disable-selection'>
-                        <IoIosArrowBack
-                            onClick={(e) => handlePrev(e)}
-                            className={`${sliderStartMonth ? 'bg-[#F2F2F4] text-[#B8B8C3] cursor-not-allowed' : 'bg-[#2FB9BD]/10 text-[#2FB9BD] cursor-pointer hover:scale-105 duration-500 ease-in-out transition'}  p-1 2xl:w-8 2xl:h-8 xl:w-8 xl:h-8 w-8 h-8 rounded-lg`}
-                        />
-                        <IoIosArrowForward
-                            onClick={(e) => handleNext(e)}
-                            className={`${sliderEndMonth ? 'bg-[#F2F2F4] text-[#B8B8C3] cursor-not-allowed' : 'bg-[#2FB9BD]/10 text-[#2FB9BD] cursor-pointer hover:scale-105 duration-500 ease-in-out transition'}  p-1 2xl:w-8 2xl:h-8 xl:w-8 xl:h-8 w-8 h-8 rounded-lg`}
-                        />
-                    </div>
-                </Swiper>
-            </>
-        );
-    };
-
-    // Component Day tùy chỉnh
-    const CustomDay = ({ date, dayDataApi, dayOfWeek, index, ...props }: any) => {
-        const daysBetweenDates = (startDate: Date, endDate: Date): number => {
-            const oneDay = 24 * 60 * 60 * 1000;
-            const firstDate = new Date(startDate);
-            const secondDate = new Date(endDate);
-            const diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / oneDay));
-            return diffDays;
-        };
-
-        const datesBetweenDates = (startDate: Date, endDate: Date): Date[] => {
-            const dates: Date[] = [];
-            const numberOfDays = daysBetweenDates(startDate, endDate);
-
-            for (let i = 1; i < numberOfDays; i++) {
-                const date = new Date(startDate);
-                date.setDate(startDate.getDate() + i);
-                date.setHours(0, 0, 0, 0);
-                dates.push(date);
-            }
-
-            return dates;
-        };
-
-        const checkDateInBetween = (dateToCheck: Date, datesInBetween: Date[]): boolean => {
-            return datesInBetween.some((date) => {
-                return dateToCheck.getTime() === date.getTime();
-            });
-        };
 
         const handleChangeDate = (event: React.MouseEvent<HTMLDivElement>, item: any) => {
-            event.preventDefault(); // Ngăn chặn hành vi mặc định của trình duyệt
-            event.stopPropagation()
+            // event.preventDefault(); // Ngăn chặn hành vi mặc định của trình duyệt
+            // event.stopPropagation()
             if (typeCarCalendar === "calendar_car_autonomous") {
                 const date = new Date(Number(item?.year), Number(item?.month) - 1, item?.day);
                 // sau ngày dateStart
@@ -413,6 +156,11 @@ function CalendarCustom({
                             isBefore(date, compareDate))
                     )
                 };
+
+                if (swiperRef.current) {
+                    swiperRef.current.slideTo(currentSlideIndex); // Chuyển slide về currentSlideIndex
+                    setCurrentSlideIndex(swiperRef.current.realIndex)
+                }
 
                 if (dateStart && dateEnd) {
                     if (isBeforeInSameYearAndMonth(date, dateStart)) {
@@ -470,6 +218,8 @@ function CalendarCustom({
                 }
 
             } else if (typeCarCalendar === "calendar_car_driver") {
+                const date = new Date(Number(item?.year), Number(item?.month) - 1, item?.day);
+
                 if (dateStart && dateEnd) {
                     // Tạo một đối tượng Date mới từ newDate
                     const newFromDate = new Date(date);
@@ -486,6 +236,269 @@ function CalendarCustom({
                 }
             }
         };
+
+        console.log('currentSlideIndex:', currentSlideIndex);
+
+        // Tạo giao diện cho từng tháng dựa trên dữ liệu
+        const monthComponents = customDataDate?.map((monthItem, index) => {
+            const month: any = monthItem?.month; // Tháng
+            const formattedMonth = parseInt(month, 10)?.toString() // tháng format bỏ số 0
+            const daysInMonth = monthItem?.price_detail?.length; // Số ngày trong tháng
+
+            // Tạo các component cho từng ngày trong tháng
+            // let dayComponents: any[] = [];
+            const daysOfWeek = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+            // Tìm ngày đầu tiên của tháng và ngày cuối của tháng
+            // Lưu ý: month phải trừ đi 1 vì months trong JavaScript bắt đầu từ 0 (tháng 1 là tháng 0)
+            const firstDayOfMonth = new Date(currentYear, month - 1, 1);
+            const lastDayOfMonth = new Date(currentYear, month, 1);
+
+            // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
+            const firstDayOfWeek = firstDayOfMonth?.getDay();
+            const lastDayOfWeek = lastDayOfMonth?.getDay();
+
+            // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
+            const startOfPreviousWeek = new Date(firstDayOfMonth);
+            startOfPreviousWeek?.setDate(startOfPreviousWeek?.getDate() - firstDayOfWeek);
+
+            const endOfNextWeek = new Date(lastDayOfMonth);
+            endOfNextWeek?.setDate(endOfNextWeek?.getDate() + (6 - lastDayOfWeek));
+
+            const previousMonthDays = [];
+            for (let d = new Date(startOfPreviousWeek); d < firstDayOfMonth; d.setDate(d.getDate() + 1)) {
+                previousMonthDays.push(
+                    <div key={`prev-${d}`} className='col-span-1 text-center text-[#000000]/40 font-normal 3xl:text-[15px] text-sm'>
+                        {d.getDate()}
+                    </div>
+                );
+            }
+
+            const currentMonthDays = monthItem.price_detail.map((dayDataApi: any, i: number) => {
+                const currentDate = new Date(dayDataApi.date);
+                const dayOfWeek = currentDate.getDay();
+
+                return (
+                    <CustomDay
+                        key={`current-${i}`}
+                        date={currentDate}
+                        dayDataApi={dayDataApi}
+                        dayOfWeek={dayOfWeek}
+                        index={i}
+                        handleChangeDate={handleChangeDate}
+                    />
+                );
+            });
+
+            const nextMonthDays = [];
+            for (let d = new Date(lastDayOfMonth); d <= endOfNextWeek; d.setDate(d.getDate() + 1)) {
+                nextMonthDays.push(
+                    <div key={`next-${d}`} className='col-span-1 text-center text-[#000000]/40 font-normal 3xl:text-[15px] text-sm'>
+                        {d.getDate()}
+                    </div>
+                );
+            }
+
+            let dayComponents = [...previousMonthDays, ...currentMonthDays, ...nextMonthDays];
+
+
+            return (
+                <SwiperSlide key={index} className="flex flex-col gap-2 p-0 max-w-[400px]">
+                    <div className="w-full text-center text-base font-bold mt-4 mb-2 text-[#166A71]">
+                        {formatCaption(formattedMonth)} Tháng {formattedMonth}, {currentYear}
+                    </div>
+                    <div className="grid grid-cols-7 text-center text-sm font-semibold">
+                        {/* Render các ngày trong tuần */}
+                        {
+                            daysOfWeek.map((item, index) => (
+                                <div key={`index-week-${index}`}>
+                                    {item}
+                                </div>
+                            ))
+                        }
+                    </div>
+                    {/* Render các ngày trong tháng */}
+                    <div className='grid grid-cols-7 items-center'>
+                        {/* <div className='grid grid-cols-7 items-center auto-cols-[minmax(0,_1fr)]'> */}
+                        {dayComponents}
+                    </div>
+                </SwiperSlide>
+            );
+        });
+
+        // Sử dụng useEffect để thiết lập swiperRef.current khi component được render ra lần đầu tiên
+
+        return (
+            <>
+                <Swiper
+                    slidesPerView={typeCarCalendar == "calendar_car_autonomous" ? 2 : 1}
+                    spaceBetween={typeCarCalendar == "calendar_car_autonomous" ? 35 : 0}
+                    modules={[Pagination, A11y]}
+                    breakpoints={{
+                        320: {
+                            slidesPerView: typeCarCalendar == "calendar_car_autonomous" ? 2 : 1,
+                        },
+                        640: {
+                            slidesPerView: typeCarCalendar == "calendar_car_autonomous" ? 2 : 1,
+                        },
+                        768: {
+                            slidesPerView: typeCarCalendar == "calendar_car_autonomous" ? 2 : 1,
+                        },
+                    }}
+                    onSwiper={(swiper) => {
+                        swiperRef.current = swiper;
+                    }}
+                    allowTouchMove={false}
+                    pagination={customPagination}
+                    className='custom-swiper-calendar h-full'
+                // ref={swiperRef}
+                >
+                    {/* Hiển thị các tháng */}
+                    <div>
+                        {monthComponents}
+                    </div>
+                    {/* các nút chuyển lịch */}
+                    <div className='flex gap-2 absolute top-2 z-30 left-0 px-4 justify-between w-full disable-selection'>
+                        <IoIosArrowBack
+                            onClick={(e) => handlePrev(e)}
+                            className={`${sliderStartMonth ? 'bg-[#F2F2F4] text-[#B8B8C3] cursor-not-allowed' : 'bg-[#2FB9BD]/10 text-[#2FB9BD] cursor-pointer hover:scale-105 duration-500 ease-in-out transition'}  p-1 2xl:w-8 2xl:h-8 xl:w-8 xl:h-8 w-8 h-8 rounded-lg`}
+                        />
+                        <IoIosArrowForward
+                            onClick={(e) => handleNext(e)}
+                            className={`${sliderEndMonth ? 'bg-[#F2F2F4] text-[#B8B8C3] cursor-not-allowed' : 'bg-[#2FB9BD]/10 text-[#2FB9BD] cursor-pointer hover:scale-105 duration-500 ease-in-out transition'}  p-1 2xl:w-8 2xl:h-8 xl:w-8 xl:h-8 w-8 h-8 rounded-lg`}
+                        />
+                    </div>
+                </Swiper>
+            </>
+        );
+    };
+
+    // Component Day tùy chỉnh
+    const CustomDay = ({ date, dayDataApi, dayOfWeek, index, handleChangeDate, ...props }: any) => {
+        const daysBetweenDates = (startDate: Date, endDate: Date): number => {
+            const oneDay = 24 * 60 * 60 * 1000;
+            const firstDate = new Date(startDate);
+            const secondDate = new Date(endDate);
+            const diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / oneDay));
+            return diffDays;
+        };
+
+        const datesBetweenDates = (startDate: Date, endDate: Date): Date[] => {
+            const dates: Date[] = [];
+            const numberOfDays = daysBetweenDates(startDate, endDate);
+
+            for (let i = 1; i < numberOfDays; i++) {
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+                date.setHours(0, 0, 0, 0);
+                dates.push(date);
+            }
+
+            return dates;
+        };
+
+        const checkDateInBetween = (dateToCheck: Date, datesInBetween: Date[]): boolean => {
+            return datesInBetween.some((date) => {
+                return dateToCheck.getTime() === date.getTime();
+            });
+        };
+
+        // const handleChangeDate = (event: React.MouseEvent<HTMLDivElement>, item: any) => {
+        //     event.preventDefault(); // Ngăn chặn hành vi mặc định của trình duyệt
+        //     event.stopPropagation()
+        //     if (typeCarCalendar === "calendar_car_autonomous") {
+        //         const date = new Date(Number(item?.year), Number(item?.month) - 1, item?.day);
+        //         // sau ngày dateStart
+        //         const isAfterInSameYearAndMonth = (date: any, compareDate: any) => {
+        //             return (
+        //                 (isSameYear(date, compareDate) || (getYear(date) > getYear(compareDate))) &&
+        //                 ((isSameMonth(date, compareDate) || (getMonth(date) > getMonth(compareDate))) &&
+        //                     isAfter(date, compareDate))
+        //             )
+        //         };
+
+        //         // trước ngày dateStart
+        //         const isBeforeInSameYearAndMonth = (date: any, compareDate: any) => {
+        //             return (
+        //                 (isSameYear(date, compareDate) || (getYear(date) < getYear(compareDate))) &&
+        //                 ((isSameMonth(date, compareDate) || (getMonth(date) < getMonth(compareDate))) &&
+        //                     isBefore(date, compareDate))
+        //             )
+        //         };
+
+        //         if (dateStart && dateEnd) {
+        //             if (isBeforeInSameYearAndMonth(date, dateStart)) {
+        //                 const newDate = new Date(date);
+        //                 newDate?.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+
+        //                 setDateStart(newDate)
+        //                 setFlagSubmit(true)
+        //             } else {
+        //                 const newDate = new Date(date);
+        //                 newDate?.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+
+        //                 setDateStart(newDate)
+        //                 setDateEnd(undefined)
+        //                 setFlagSubmit(true)
+        //             }
+
+        //             if (isBeforeInSameYearAndMonth(date, dateStart)) {
+        //                 const newDate = new Date(date);
+        //                 newDate.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+
+        //                 setDateStart(newDate)
+        //                 setDateEnd(undefined)
+        //                 setFlagSubmit(true)
+        //             } else if (isAfterInSameYearAndMonth(date, dateStart)) {
+        //                 const newDate = new Date(date);
+        //                 newDate?.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+
+        //                 setDateStart(newDate)
+        //                 setDateEnd(undefined)
+        //                 setFlagSubmit(true)
+        //             } else {
+        //                 const newDate = new Date(date);
+        //                 newDate?.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+
+        //                 setDateStart(newDate)
+        //                 setDateEnd(undefined)
+        //                 setFlagSubmit(true)
+        //             }
+
+        //         } else if (dateStart && !dateEnd) {
+        //             const newDate = new Date(date);
+        //             newDate.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+
+        //             if (isBeforeInSameYearAndMonth(newDate, dateStart)) {
+        //                 setDateStart(newDate)
+        //                 setFlagSubmit(true)
+        //             } else if (isAfterInSameYearAndMonth(newDate, dateStart)) {
+        //                 setFlagSubmit(true)
+        //                 setDateEnd(newDate)
+        //             } else {
+        //                 setFlagSubmit(true)
+        //                 setDateEnd(newDate)
+        //             }
+        //         }
+
+        //     } else if (typeCarCalendar === "calendar_car_driver") {
+        //         const date = new Date(Number(item?.year), Number(item?.month) - 1, item?.day);
+
+        //         if (dateStart && dateEnd) {
+        //             // Tạo một đối tượng Date mới từ newDate
+        //             const newFromDate = new Date(date);
+        //             // Thiết lập thời gian của newFromDate từ dateTimeComponent.from
+        //             newFromDate?.setHours(dateStart?.getHours(), dateStart?.getMinutes(), dateStart?.getSeconds());
+
+        //             const newToDate = new Date(newFromDate)
+        //             newToDate?.setDate(date?.getDate() + numberDay);
+
+        //             setDateStart(newFromDate)
+        //             setDateEnd(newToDate)
+        //             setFlagSubmit(true)
+
+        //         }
+        //     }
+        // };
 
         const datesInBetween = dateStart && dateEnd ? datesBetweenDates(dateStart, dateEnd) : [];
 
@@ -582,8 +595,6 @@ function CalendarCustom({
             </div>
         )
     };
-
-
 
     return (
         <>

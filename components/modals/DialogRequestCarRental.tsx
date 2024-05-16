@@ -366,7 +366,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
 
                                         {
                                             isVisibleTablet ?
-                                                <div onClick={() => setOpenDialogAnswerPolicy(true, "car_rental_policy")}>
+                                                <div onClick={() => setOpenDialogAnswerPolicy(true, "documentation_policy_car")}>
                                                     <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                                 </div>
                                                 :
@@ -375,7 +375,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                     align="center"
                                                     label={(
                                                         <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
-                                                            <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_rental_policy ? isStatePolicy?.dataPolicy?.car_rental_policy : ''}` }} />
+                                                            <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.documentation_policy_car ? isStatePolicy?.dataPolicy?.documentation_policy_car : ''}` }} />
                                                         </div>
                                                     )}
                                                 >
@@ -480,7 +480,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                 </div>
                                                 {
                                                     isVisibleTablet ?
-                                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "setting_price_car")}>
                                                             <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                                         </div>
                                                         :
@@ -489,7 +489,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                             align="center"
                                                             label={(
                                                                 <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_price_policy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} />
+                                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.setting_price_car ? isStatePolicy?.dataPolicy?.setting_price_car : ''}` }} />
                                                                 </div>
                                                             )}
                                                         >
@@ -512,7 +512,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                 </div>
                                                 {
                                                     isVisibleTablet ?
-                                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_insurance_policy")}>
+                                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "setting_insurance_car")}>
                                                             <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                                         </div>
                                                         :
@@ -521,7 +521,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                             align="center"
                                                             label={(
                                                                 <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_insurance_policy ? isStatePolicy?.dataPolicy?.car_insurance_policy : ''}` }} />
+                                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.setting_insurance_car ? isStatePolicy?.dataPolicy?.setting_insurance_car : ''}` }} />
                                                                 </div>
                                                             )}
                                                         >
@@ -637,7 +637,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                 </div>
                                                 {
                                                     isVisibleTablet ?
-                                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "setting_price_car")}>
                                                             <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                                         </div>
                                                         :
@@ -646,7 +646,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                             align="center"
                                                             label={(
                                                                 <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_deposit_policy ? isStatePolicy?.dataPolicy?.car_deposit_policy : ''}` }} />
+                                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.document_deposit ? isStatePolicy?.dataPolicy?.document_deposit : ''}` }} />
                                                                 </div>
                                                             )}
                                                         >
@@ -669,7 +669,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                 </div>
                                                 {
                                                     isVisibleTablet ?
-                                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "setting_price_car")}>
                                                             <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                                         </div>
                                                         :
@@ -678,7 +678,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                             align="center"
                                                             label={(
                                                                 <div className='flex flex-col gap-1 text-center justify-center 2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_payment_policy ? isStatePolicy?.dataPolicy?.car_payment_policy : ''}` }} />
+                                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.document_payment ? isStatePolicy?.dataPolicy?.document_payment : ''}` }} />
                                                                 </div>
                                                             )}
                                                         >
