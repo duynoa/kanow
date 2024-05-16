@@ -13,7 +13,7 @@ export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
 // Mở rộng CalendarProps với thuộc tính form
 export type Form = CalendarProps & {
-    form?: () => void;
+    form?: (e: any) => void;
 };
 function DatePickerShowYear({ className, classNames, showOutsideDays = true, form, ...props }: Form) {
     return (
@@ -40,7 +40,7 @@ function DatePickerShowYear({ className, classNames, showOutsideDays = true, for
                             value={value?.toString()}
                             onValueChange={(value) => {
                                 handleChange(value)
-                                form?.()
+                                form?.(value)
                             }}
 
                         >

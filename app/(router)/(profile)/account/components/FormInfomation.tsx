@@ -1,15 +1,14 @@
-import moment from "moment";
-import Image from "next/image";
+import { DatePickerShowYear } from "@/components/datePicker/DatePickerShowYear";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useAuth } from "@/hooks/useAuth";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { regexPatterns } from "@/lib/regex";
 import { toastCore } from "@/lib/toast";
-import { DatePickerShowYear } from "@/components/datePicker/DatePickerShowYear";
+import moment from "moment";
+import Image from "next/image";
 
 type Props = {
     form: any,
@@ -37,7 +36,8 @@ const FormInformation = ({ form, isState }: Props) => {
                             name="fullName"
                             rules={{
                                 required: {
-                                    value: isState.editInfo,
+                                    value: isState.editInfo && isState.type === "editInfo"
+                                    ,
                                     message: 'Vui lòng nhập họ và tên',
                                 },
                             }}
@@ -73,7 +73,7 @@ const FormInformation = ({ form, isState }: Props) => {
                                 name="dateInfo"
                                 rules={{
                                     required: {
-                                        value: isState.editInfo,
+                                        value: isState.editInfo && isState.type === "editInfo",
                                         message: 'Vui lòng chọn ngày sinh',
                                     },
                                     validate: {
@@ -109,20 +109,20 @@ const FormInformation = ({ form, isState }: Props) => {
                                                         </Button>
                                                     </PopoverTrigger>
                                                     <PopoverContent className="w-auto p-0">
-                                                        {/* <Calendar
-                                                            mode="single"
-                                                            selected={field.value}
-                                                            onSelect={(newDate: any) => field.onChange(newDate)}
-                                                            initialFocus
-
-                                                        /> */}
                                                         <DatePickerShowYear
                                                             mode="single"
                                                             captionLayout="dropdown-buttons"
                                                             selected={field.value}
                                                             onSelect={(newDate: any) => field.onChange(newDate)}
-                                                            // onSelect={field.onChange}
-                                                            form={() => form.setValue('dateInfo', null)}
+                                                            form={(e: any) => {
+                                                                const date: any = new Date(field.value)
+                                                                if (e > 12) {
+                                                                    date.setFullYear(e)
+                                                                } else {
+                                                                    date.setMonth(e)
+                                                                }
+                                                                form.setValue('dateInfo', date)
+                                                            }}
                                                             fromYear={1960}
                                                             toYear={2030}
 
@@ -185,7 +185,7 @@ const FormInformation = ({ form, isState }: Props) => {
                             name="email"
                             rules={{
                                 required: {
-                                    value: isState.editInfo,
+                                    value: isState.editInfo && isState.type === "editInfo",
                                     message: 'Vui lòng nhập email',
                                 },
                             }}
@@ -218,7 +218,7 @@ const FormInformation = ({ form, isState }: Props) => {
                             name="phone"
                             rules={{
                                 required: {
-                                    value: isState.editInfo,
+                                    value: isState.editInfo && isState.type === "editInfo",
                                     message: 'Vui lòng nhập số điện thoại',
                                 },
                                 minLength: {
@@ -228,7 +228,11 @@ const FormInformation = ({ form, isState }: Props) => {
                                 maxLength: {
                                     value: 10,
                                     message: "Số điện thoại không được dài hơn 10 số"
-                                }
+                                },
+                                pattern: {
+                                    value: regexPatterns.phone,
+                                    message: "Số điện thoại không hợp lệ",
+                                },
                             }}
                             render={({ field, fieldState }) => {
                                 return (
@@ -239,7 +243,8 @@ const FormInformation = ({ form, isState }: Props) => {
                                         <FormControl>
                                             <Input
                                                 disabled={!isState.editInfo}
-                                                type="number"
+                                                type='tel'
+                                                maxLength={10}
                                                 className={`  disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC] border-2  focus:border-[#2FB9BD]
                                                 2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                 placeholder="Số điện thoại"

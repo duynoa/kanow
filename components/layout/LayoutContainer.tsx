@@ -79,7 +79,7 @@ const LayoutContainer = ({
 
     const { getKeySettings } = useAuthenticationAPI()
     const { apiGetCurrentPosition } = useGoogleApi()
-    const { informationUser } = useAuth()
+    const { informationUser, setInformationUser } = useAuth()
 
     const { generalKey, setGeneralKey } = useGeneralKey()
     const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
@@ -99,7 +99,6 @@ const LayoutContainer = ({
     } = useNotification()
 
     const { setValueTwoAddress } = useDialogRouteAddress()
-
     const { openDialogRegisterOwnerDriver } = useDialogRegisterOwnerDriver();
     const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useDataListCarAutonomous()
     const { isStateListCarsDriver, queryKeyIsStateListCarsDriver } = useDataListCarsDriver()
@@ -516,6 +515,15 @@ const LayoutContainer = ({
                         is_read: 0,
                         customer_id: informationUser?.id
                     }
+                    // đổi trạng thái xác thực trong trang account
+                    const checkStatus = JSON.parse(data?.json_data)
+                    setInformationUser({
+                        ...informationUser,
+                        drivingLiscense: {
+                            ...informationUser.drivingLiscense,
+                            status: checkStatus?.status
+                        }
+                    })
 
                     const newListNotifications = [newData, ...isStateNotification.dataListNotifications]
 

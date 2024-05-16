@@ -19,9 +19,10 @@ import { IoMdNotificationsOutline } from "react-icons/io"
 import { useNotification } from "@/hooks/useNotification"
 import { useResize } from "@/hooks/useResize"
 import { INotification } from "@/types/Notification/INotification";
-import { getListNotifications, postReadSingleNotification } from "@/services/notification/notification.services";
+import { getListNotifications, postReadAllNotifications, postReadSingleNotification } from "@/services/notification/notification.services";
 import Nodata from "../image/Nodata";
 import LoadingData from "../loadingData/LoadingData";
+import { Button } from "../ui/button";
 
 
 const DropdownHeaderNotification = ({ children }: any) => {
@@ -35,6 +36,7 @@ const DropdownHeaderNotification = ({ children }: any) => {
         queryKeyIsStateNotification,
         setOpenDropdownNotification,
     } = useNotification()
+
 
     // THÊM MỘT HẰNG SỐ ĐỂ ĐỊNH NGHĨA KHOẢNG ĐỘ CHO PHÉP
     const ALLOWED_OFFSET = 20;
@@ -62,9 +64,6 @@ const DropdownHeaderNotification = ({ children }: any) => {
                 const lastRefBottom = Math.floor(lastScrollCurrentRef.getBoundingClientRect().bottom);
                 const currentScroll = Math.floor(scrollCurrent.getBoundingClientRect().bottom);
 
-                // console.log('currentScroll: ', currentScroll);
-                // console.log('lastRefBottom: ', lastRefBottom);
-
                 if ((currentScroll >= (lastRefBottom - ALLOWED_OFFSET)) && !isAtBottomRef.current && isStateNotification.isLoading.isLoadingScroll === false) {
                     // Bạn đã cuộn đến cuối phần ScrollArea
                     if (isStateNotification.dataListNotifications && isStateNotification.next !== null) {
@@ -75,37 +74,26 @@ const DropdownHeaderNotification = ({ children }: any) => {
                                 isLoadingScroll: true
                             }
                         });
-
                         const fetchDataListNotifications = async () => {
                             const dataParams = {
                                 current_page: isStateNotification.page,
                                 per_page: isStateNotification.limit,
                                 type: "customer"
                             }
-
                             const { data } = await getListNotifications(dataParams);
-
-                            console.log('data data:', data);
-
                             if (data && data?.links && data?.data && data?.base) {
-                                // let { customDataListCars } = CustomDataListCars(data)
                                 const newListNotifications = [...isStateNotification.dataListNotifications, ...data.data]
-                                console.log('newListNotifications : ', newListNotifications);
-
                                 queryKeyIsStateNotification({
                                     dataListNotifications: newListNotifications,
-                                    // listCardCars: [...(isStateListCarsDriver.listCardCars || []), ...customDataListCars],
                                     page: isStateNotification.page + 1,
                                     next: data?.links?.next
                                 });
-
                                 const lastElementIndex = isStateNotification.dataListNotifications.length - 1;
                                 // Lấy id của phần tử đầu tiên trong mảng mới
                                 const lastElementId = isStateNotification.dataListNotifications && isStateNotification.dataListNotifications.length > 0 ? `card-${isStateNotification.dataListNotifications[lastElementIndex]?.id}` : "";
                                 const lastElement = document.getElementById(lastElementId);
 
                                 if (lastElement) {
-                                    // const newElementTop = lastElement.getBoundingClientRect().bottom + currentScroll
                                     const newElementTop = lastElement.getBoundingClientRect().bottom + currentScroll + ALLOWED_OFFSET
 
                                     window.scrollTo({
@@ -121,8 +109,6 @@ const DropdownHeaderNotification = ({ children }: any) => {
                                     }
                                 });
                             } else {
-                                console.log('check 2');
-
                                 queryKeyIsStateNotification({
                                     dataListNotifications: isStateNotification.dataListNotifications,
                                     next: data?.links?.next,
@@ -166,17 +152,13 @@ const DropdownHeaderNotification = ({ children }: any) => {
     const handleClickNotification = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, item: INotification) => {
         event.preventDefault();
         event.isPropagationStopped()
-        console.log('item', item);
-
         if (item.is_read === 0) {
             const postReadNotification = async () => {
                 try {
                     const dataPost = {
                         notification_id: item.id
                     }
-
                     const { data } = await postReadSingleNotification(dataPost)
-
                     if (data && data.result == 1) {
                         const newData: any = isStateNotification?.dataListNotifications.map((e) => {
                             if (item.id == e.id) {
@@ -188,32 +170,42 @@ const DropdownHeaderNotification = ({ children }: any) => {
 
                             return e
                         })
-
                         queryKeyIsStateNotification({
                             ...isStateNotification,
                             dataItemNotification: item,
                             dataListNotifications: newData
                         })
-
                         setOpenDialogNotification(true)
                     }
                 } catch (err) {
                     throw err
                 }
             }
-
             postReadNotification()
         } else {
             queryKeyIsStateNotification({
                 ...isStateNotification,
                 dataItemNotification: item,
             })
-
             setOpenDialogNotification(true)
         }
     }
 
-    console.log('isStateNotification: ', isStateNotification);
+    const handleClickAllNotification = async () => {
+        const { data: { result, message } } = await postReadAllNotifications({ type: "customer" })
+        if (result == 1) {
+            const newData: any = isStateNotification?.dataListNotifications.map((e) => {
+                return {
+                    ...e,
+                    is_read: 1
+                }
+            })
+            queryKeyIsStateNotification({
+                ...isStateNotification,
+                dataListNotifications: newData
+            })
+        }
+    }
 
     if (!isMounted) return null
 
@@ -230,25 +222,31 @@ const DropdownHeaderNotification = ({ children }: any) => {
                 align={isVisibleMobile ? "center" : "end"}
                 className={`${isVisibleMobile ? "w-[67%]" : "w-[460px]"} p-1 rounded-xl border-0 shadow`}
             >
-                <DropdownMenuLabel className='lg:text-xl text-base px-4 py-2'>
-                    Thông báo
+                <DropdownMenuLabel className='lg:text-xl text-base px-4 py-2 flex items-center justify-between'>
+                    <h1>Thông báo</h1>
+                    {isStateNotification.dataListNotifications.some((item: any) => item.is_read == 0) &&
+                        <Button
+                            type="button"
+                            onClick={() => handleClickAllNotification()}
+                            className="bg-transparent text-[#2FB9BD] text-xs hover:text-[#2FB9BD]/80 px-4 py-1 hover:bg-transparent">
+                            Đọc tất cả
+                        </Button>
+                    }
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <ScrollArea
                     className={`${isStateNotification.dataListNotifications?.length > 3 ? "[&>[data-radix-scroll-area-viewport]]:max-h-[350px] pr-3" : "h-auto"}`}
-                    // className={`${isStateNotification.dataListNotifications?.length > 3 ? "h-[350px] pr-3" : "h-[350px]"}`}
                     ref={scrollAreaRef}
                 >
                     {
                         isStateNotification.dataListNotifications && isStateNotification.dataListNotifications.length > 0 ?
-
                             isStateNotification.dataListNotifications?.map((item: any, index: any) => (
                                 <div key={`key-${item.id}`} className='m-2'>
                                     {index != 0 && <DropdownMenuSeparator className="my-2" />}
                                     <DropdownMenuItem
                                         onClick={(event) => handleClickNotification(event, item)}
                                         className={`${item.is_read != 1 ? "bg-[#F1FCFC]" : ""} focus:bg-[#64E4E4]/30 flex items-start gap-3 px-2 cursor-pointer`}
-                                    
+
                                     >
                                         {
                                             item.object_type != "2" && item.object_type != 4 ?
@@ -260,7 +258,6 @@ const DropdownHeaderNotification = ({ children }: any) => {
                                                     <FcCancel className='text-white text-2xl' />
                                                 </div>
                                         }
-
                                         <div className="flex items-center gap-2 w-full">
                                             <div className="flex flex-col gap-2 w-[95%]">
                                                 <h1 className='lg:text-base text-sm font-semibold leading-5 text-[#16171B]'>
@@ -279,7 +276,6 @@ const DropdownHeaderNotification = ({ children }: any) => {
                                                     </h1>
                                                 </div>
                                             </div>
-
                                             {
                                                 item.is_read != 1 ?
                                                     <div className="w-[5%]">
@@ -295,11 +291,8 @@ const DropdownHeaderNotification = ({ children }: any) => {
                             :
                             <Nodata type="list-notifications" className='h-full w-full' />
                     }
-
                     {
-                        isStateNotification.isLoading?.isLoadingScroll && (
-                            <LoadingData />
-                        )
+                        isStateNotification.isLoading?.isLoadingScroll && <LoadingData />
                     }
                     <div ref={lastContainerRef} />
                 </ScrollArea>

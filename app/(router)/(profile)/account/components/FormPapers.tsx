@@ -50,9 +50,21 @@ const FormPapers = ({ form, isState }: Props) => {
                             control={form.control}
                             rules={{
                                 required: {
-                                    value: isState.editPapers,
+                                    value: isState.editPapers && isState.type === "editPapers",
                                     message: 'Vui lòng nhập số GPLX',
                                 },
+                                minLength: {
+                                    value: 15,
+                                    message: 'Số GPLX tối thiểu 15 số',
+                                },
+                                maxLength: {
+                                    value: 20,
+                                    message: 'Số GPLX tối đa 20 số',
+                                },
+                                pattern: {
+                                    value: /^[0-9]+$/,
+                                    message: 'Số GPLX không hơp lệ'
+                                }
                             }}
                             name="numberPapers"
                             render={({ field, fieldState }) => {
@@ -64,7 +76,9 @@ const FormPapers = ({ form, isState }: Props) => {
                                         <FormControl>
                                             <Input
                                                 disabled={!isState.editPapers}
-                                                type="text"
+                                                type="number"
+                                                minLength={15}
+                                                maxLength={20}
                                                 className={`  disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs md:py-2 py-2 disabled:border-gray-300 disabled:border-2  focus:border-[#2FB9BD]
                                                 w-full border-[#E6E8EC] border-2 2xl:py-3 lg:py-2 rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                 placeholder="Số GPLX"
@@ -84,7 +98,7 @@ const FormPapers = ({ form, isState }: Props) => {
                             name="namePapers"
                             rules={{
                                 required: {
-                                    value: isState.editPapers,
+                                    value: isState.editPapers && isState.type === "editPapers",
                                     message: 'Vui lòng nhập họ và tên',
                                 },
                             }}
@@ -117,7 +131,7 @@ const FormPapers = ({ form, isState }: Props) => {
                             name="datePapers"
                             rules={{
                                 required: {
-                                    value: isState.editPapers,
+                                    value: isState.editPapers && isState.type === "editPapers",
                                     message: 'Vui lòng chọn ngày sinh',
                                 },
                                 validate: {
@@ -159,8 +173,15 @@ const FormPapers = ({ form, isState }: Props) => {
                                                         captionLayout="dropdown-buttons"
                                                         selected={field.value}
                                                         onSelect={(newDate: any) => field.onChange(newDate)}
-                                                        // onSelect={field.onChange}
-                                                        form={() => form.setValue('datePapers', null)}
+                                                        form={(e: any) => {
+                                                            const date: any = new Date(field.value)
+                                                            if (e > 12) {
+                                                                date.setFullYear(e)
+                                                            } else {
+                                                                date.setMonth(e)
+                                                            }
+                                                            form.setValue('datePapers', date)
+                                                        }}
                                                         fromYear={1960}
                                                         toYear={2030}
 
@@ -184,7 +205,7 @@ const FormPapers = ({ form, isState }: Props) => {
                             name="filePapers"
                             rules={{
                                 required: {
-                                    value: isState.editPapers,
+                                    value: isState.editPapers && isState.type === "editPapers",
                                     message: 'Vui lòng thêm hình ảnh',
                                 },
                             }}

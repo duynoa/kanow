@@ -8,19 +8,15 @@ const getListNotifications = (param: any) => {
         },
     };
 
-    return axios.get("/notification/getListNotification", config)
-}
+    return axios.get("/notification/getListNotification", config);
+};
 
 const postReadSingleNotification = (data: any) => {
-    return axios.post("/notification/readSingleNotification", data)
-}
+    return axios.post("/notification/readSingleNotification", data);
+};
 
-const postReadAllNotifications = () => {
-    return axios.post("/notification/readAllNotification")
-}
+const postReadAllNotifications = (type: any) => {
+    return axios.post("/notification/readAllNotification", type);
+};
 
-export {
-    getListNotifications,
-    postReadAllNotifications,
-    postReadSingleNotification
-}
+export { getListNotifications, postReadAllNotifications, postReadSingleNotification };
