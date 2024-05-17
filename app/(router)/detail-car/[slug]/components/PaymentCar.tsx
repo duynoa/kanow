@@ -345,7 +345,7 @@ const PaymentCar = ({ }: Props) => {
                                 </div>
                                 {
                                     isVisibleTablet ?
-                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "setting_price_car")}>
                                             <FaRegQuestionCircle className='text-[#767676] text-lg cursor-pointer' />
                                         </div>
                                         :
@@ -354,7 +354,7 @@ const PaymentCar = ({ }: Props) => {
                                             align="center"
                                             label={(
                                                 <div className='2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                    {/* <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} /> */}
+                                                    {/* <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy ? isStatePolicy?.dataPolicy?.setting_price_car : ''}` }} /> */}
                                                     chưa có
                                                 </div>
                                             )}
@@ -534,7 +534,7 @@ const PaymentCar = ({ }: Props) => {
                                 </div>
                                 {
                                     isVisibleTablet ?
-                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "setting_price_car")}>
                                             <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                         </div>
                                         :
@@ -543,7 +543,7 @@ const PaymentCar = ({ }: Props) => {
                                             align="center"
                                             label={(
                                                 <div className='2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_price_policy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} />
+                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.setting_price_car ? isStatePolicy?.dataPolicy?.setting_price_car : ''}` }} />
                                                 </div>
                                             )}
                                         >
@@ -566,7 +566,7 @@ const PaymentCar = ({ }: Props) => {
                                 </div>
                                 {
                                     isVisibleTablet ?
-                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "car_insurance_policy")}>
+                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "setting_insurance_car")}>
                                             <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
                                         </div>
                                         :
@@ -575,7 +575,7 @@ const PaymentCar = ({ }: Props) => {
                                             align="center"
                                             label={(
                                                 <div className='2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_insurance_policy ? isStatePolicy?.dataPolicy?.car_insurance_policy : ''}` }} />
+                                                    <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.setting_insurance_car ? isStatePolicy?.dataPolicy?.setting_insurance_car : ''}` }} />
                                                 </div>
                                             )}
                                         >

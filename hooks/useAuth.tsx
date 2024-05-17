@@ -3,7 +3,7 @@ import { create } from "zustand";
 
 interface Auth {
     informationUser?: any | IInfomationUser;
-    setInformationUser: (key: IInfomationUser) => void;
+    setInformationUser: (key: any | IInfomationUser) => void;
 }
 
 export const useAuth = create<Auth>((set) => ({

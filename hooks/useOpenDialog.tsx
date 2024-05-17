@@ -51,6 +51,7 @@ interface IOpenDialogCalendar {
     validateDateSubmit: boolean;
     dataCalendar: any[];
     flagSubmit: boolean;
+    currentSlideIndex: number,
     setDateReal: (dateReal: DateRange | undefined) => void;
     setDateTemp: (dateTemp: DateRange | undefined) => void;
     setDateStart: (dateStart: Date | undefined) => void;
@@ -62,6 +63,7 @@ interface IOpenDialogCalendar {
     setStatusDate: (statusDate: number) => void;
     setValidateDateSubmit: (validateDateSubmit: boolean) => void;
     setDataCalendar: (dataCalenndar: any[]) => void;
+    setCurrentSlideIndex: (currentSlideIndex: number) => void;
 }
 
 const defaultDateRange: DateRange = {
@@ -81,6 +83,8 @@ export const useDialogCalendar = create<IOpenDialogCalendar>((set) => ({
     typeCarCalendar: "",
     validateDateSubmit: false,
     dataCalendar: [],
+    currentSlideIndex: 0,
+    setCurrentSlideIndex: (key: number) => set((state) => ({ ...state, currentSlideIndex: key })),
     setOpenDialogCalendar: (key: any) => set((state) => ({ ...state, openDialogCalendar: key })),
     setTypeCarCalendar: (typeCarCalendar?: string) => set((state) => ({ ...state, typeCarCalendar: typeCarCalendar })),
     setDateReal: (dateReal: DateRange | undefined) => set((state) => ({ ...state, dateReal })),
@@ -328,3 +332,26 @@ export const useDialogFilterMyCar = create<IOpenDialogFilterCar>((set) => ({
     valueFilter: '',
     setDataFilter: (key: any) => set((state) => ({ dataFilter: key })),
 }))
+
+// dialog Submit 
+interface IOpenDialogSubmit {
+    openDialogSubmit: boolean;
+    typeDialogSubmit: string;
+    typeCar: string;
+    dataItem: any;
+    setOpenDialogSubmit: (key: any, type?: string) => void;
+    setTypeDialogSubmit: (type: string) => void;
+    setTypeCar: (typeCar: string) => void;
+    setDataItem: (dataItem: string) => void;
+}
+
+export const useDialogSubmit = create<IOpenDialogSubmit>((set) => ({
+    openDialogSubmit: false,
+    typeDialogSubmit: "",
+    typeCar: "",
+    dataItem: undefined,
+    setOpenDialogSubmit: (key: any) => set((state) => ({ openDialogSubmit: key })),
+    setTypeDialogSubmit: (typeDialogSubmit: string) => set((state) => ({ typeDialogSubmit: typeDialogSubmit })),
+    setTypeCar: (typeCar: string) => set((state) => ({ typeCar: typeCar })),
+    setDataItem: (dataItem: any) => set((state) => ({ dataItem: dataItem })),
+}));

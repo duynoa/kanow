@@ -33,7 +33,7 @@ const AlertDialogLogout = (props: Props) => {
         const { data } = await apiLogout()
         if (data?.result) {
             router.push('/')
-            setInformationUser("")
+            setInformationUser(undefined)
             if (getCookie == 'kanow') {
                 removeCookie("token_kanow")
             } else {

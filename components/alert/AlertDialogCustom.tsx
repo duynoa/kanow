@@ -73,7 +73,7 @@ const AlertDialogCustom = (props: Props) => {
                     if (result) {
                         toastCore.success(message)
                         setOpenAlert(false)
-                        setInformationUser("")
+                        setInformationUser(undefined)
                         setCookie('token_kanow', 'kanow', { expires: 7 })
                         return
                     }

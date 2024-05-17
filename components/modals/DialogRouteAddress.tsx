@@ -323,7 +323,7 @@ const DialogRouteAddress = memo(({ }: Props) => {
                                     </div>
                                     {
                                         isVisibleTablet ?
-                                            <div onClick={() => setOpenDialogAnswerPolicy(true, "car_price_policy")}>
+                                            <div onClick={() => setOpenDialogAnswerPolicy(true, "setting_price_car")}>
                                                 <FaRegQuestionCircle className='text-[#767676] text-lg cursor-pointer' />
                                             </div>
                                             :
@@ -332,7 +332,7 @@ const DialogRouteAddress = memo(({ }: Props) => {
                                                 align="center"
                                                 label={(
                                                     <div className='2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                        {/* <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy ? isStatePolicy?.dataPolicy?.car_price_policy : ''}` }} /> */}
+                                                        {/* <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy ? isStatePolicy?.dataPolicy?.setting_price_car : ''}` }} /> */}
                                                         chưa có
                                                     </div>
                                                 )}
