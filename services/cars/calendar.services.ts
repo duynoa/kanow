@@ -23,7 +23,7 @@ const putPriceSaturdayAndSunday = (data: any) => {
 }
 
 // update ngày bận 
-const putPriceStatus = (data: any) => {
+const putPriceBusyDay = (data: any) => {
     return axios.post("/car/updateStatusPrice", data)
 }
 
@@ -31,5 +31,5 @@ export {
     getListCalendarPriceMonth,
     putPriceSingleDate,
     putPriceSaturdayAndSunday,
-    putPriceStatus,
+    putPriceBusyDay,
 }

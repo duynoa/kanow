@@ -176,6 +176,14 @@ interface IInitialStateNotification {
     limit: number
 }
 
+// initial Load success (hàm sự kiện kiểm soát để fetch api, loading,...)
+interface IInitialStateLoadSuccess {
+    loading: {
+        isSuccessFetchApi: boolean
+    };
+    success: any;
+}
+
 export type {
     IInitialStateDataHome,
     IInitialStateListCarAutonomous,
@@ -186,4 +194,5 @@ export type {
     IInitialStatePolicy,
     IInitialStateProfileMyCar,
     IInitialStateNotification,
+    IInitialStateLoadSuccess,
 };

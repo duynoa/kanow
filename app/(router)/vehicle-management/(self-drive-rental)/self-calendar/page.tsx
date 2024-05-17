@@ -1,45 +1,77 @@
 "use client"
+
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import SelectCombobox from "@/components/combobox/SelectCombobox";
+import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
+
 import { FormatNumberToThousands } from "@/components/format/FormatNumber";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Switch } from "@/components/ui/switch";
+
 import { useDataPolicy } from "@/hooks/useDataQueryKey";
-import { useDialogSubmit } from "@/hooks/useOpenDialog";
+import { useLoadSuccess } from "@/hooks/useLoadSuccess";
+import { useDialogCalendar, useDialogSubmit } from "@/hooks/useOpenDialog";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
-import { toastCore } from "@/lib/toast";
-import { getListCalendarPriceMonth } from "@/services/cars/calendar.services";
-import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
-import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
-import { StateSeltSetTime } from "@/types/VehicleManagement/SelfDriveRental/ISetTime";
+
+import { getListCalendarPriceMonth, putPriceBusyDay } from "@/services/cars/calendar.services";
+
+
 import { isSameDay } from "date-fns";
-import { ChevronsUpDown } from "lucide-react";
+
 import { ReadonlyURLSearchParams, usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+
 import { useForm } from "react-hook-form";
+import { useCallback, useEffect, useState } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { toastCore } from "@/lib/toast";
+import { LuCalendarClock } from "react-icons/lu";
 
 type Props = {}
 
 export default function SeflCalendar(props: Props) {
+    const options = [
+        {
+            key: 'option-1',
+            value: 'customPriceSingleDay',
+            label: 'Tuỳ chỉnh giá',
+            icon: null,
+        },
+        {
+            key: 'option-2',
+            value: 'customPriceWeekendDay',
+            label: '',
+            icon: <LuCalendarClock className='text-xl' />,
+        },
+        {
+            key: 'option-3',
+            value: 'settingCalendarBusy',
+            label: 'Thiết lập lịch bận',
+            icon: null,
+        },
+    ];
+
+    const [optionRadio, setOptionRadio] = useState<string>("customPriceSingleDay")
+    // const [dataCalendar, setDataCalendar] = useState<any[]>([])
+
     const { isStatePolicy } = useDataPolicy()
-    const [optionRadio, setOptionRadio] = useState<string>("customPrice")
-    const [dataCalendar, setDataCalendar] = useState<any[]>([])
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
 
     const {
-        openDialogSubmit,
-        typeDialogSubmit,
         setOpenDialogSubmit,
         setTypeDialogSubmit,
         setTypeCar,
         setDataItem
     } = useDialogSubmit()
 
-    const pathname = usePathname()
+    const {
+        dataCalendar,
+        setDataCalendar,
+    } = useDialogCalendar()
+
+    const { dataDetail } = useVehicleManage()
 
     const param: ReadonlyURLSearchParams = useSearchParams()
 
@@ -48,7 +80,7 @@ export default function SeflCalendar(props: Props) {
     const type: string | null = param.get("t") || ''
 
     // fetch data calendar detail
-    const fetchDataListCalendarPriceMonth = async () => {
+    const fetchDataListCalendarPriceMonth = useCallback(async () => {
         try {
             let dataCar = {
                 type: (type === "1" || type === "2") ? parseInt(type) : null,
@@ -57,33 +89,55 @@ export default function SeflCalendar(props: Props) {
 
             const { data } = await getListCalendarPriceMonth(dataCar)
 
-            console.log('data', data);
-
             if (data && data.data) {
                 setDataCalendar(data.data)
             }
+
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    isSuccessFetchApi: false
+                }
+            })
         } catch (err) {
             throw err
         }
-    }
+    }, [id, type])
 
     useEffect(() => {
         if (id && type) {
-            fetchDataListCalendarPriceMonth()
+            fetchDataListCalendarPriceMonth();
         }
-    }, [pathname, id, type])
+    }, [id, type, fetchDataListCalendarPriceMonth]);
 
-    console.log('data calendar :', dataCalendar);
+    useEffect(() => {
+        if (isStateLoadSuccess.loading.isSuccessFetchApi) {
+            fetchDataListCalendarPriceMonth();
+        }
+    }, [isStateLoadSuccess.loading.isSuccessFetchApi, fetchDataListCalendarPriceMonth]);
 
 
     const form = useForm({
         defaultValues: {
             month: {
-                startMonth: undefined,
-                endMonth: undefined
+                startMonth: 0,
+                endMonth: 0
             },
         }
     })
+
+    useEffect(() => {
+        if (
+            dataCalendar.length > 0 &&
+            isStatePolicy.dataPolicy &&
+            isStatePolicy.dataPolicy.getListPriceMonth
+        ) {
+            const valueActive = isStatePolicy.dataPolicy.getListPriceMonth?.find((item) => item?.value === dataCalendar?.length)?.value
+
+            if (valueActive !== undefined) {
+                form.setValue("month.endMonth", valueActive);
+            }
+        }
+    }, [dataCalendar.length, isStatePolicy, form])
 
     const checkValueArray = (array: any[], field: any) => {
         return array.find((x: any) => x.value === field.value)?.label
@@ -97,16 +151,113 @@ export default function SeflCalendar(props: Props) {
         setOptionRadio(value)
     }
 
+    const handleChangePriceWeekend = () => {
+        setTypeDialogSubmit("price_weekend")
+        setOpenDialogSubmit(true)
+    }
+
     const handleSelectDate = (event: React.MouseEvent<HTMLDivElement>, item: any) => {
-        if (optionRadio === "customPrice") {
+        if (optionRadio === "customPriceSingleDay") {
             setOpenDialogSubmit(true)
             setTypeDialogSubmit("price_single")
             setTypeCar(type)
             setDataItem(item)
-        } else {
-
+        } else if (optionRadio === "settingCalendarBusy") {
+            onSubmitBusyDay(item)
         }
     };
+
+    const onSubmitBusyDay = async (item: any) => {
+        try {
+
+
+            const dataSubmit = {
+                type: type,
+                price_detail_id: item.id
+            }
+
+            const { data } = await putPriceBusyDay(dataSubmit)
+
+            console.log('data res:', data);
+            if (data && data.result) {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        isSuccessFetchApi: true
+                    }
+                })
+
+                toastCore.success("Cập nhật ngày bận thành công!")
+            } else {
+                toastCore.error(data.message)
+            }
+
+        } catch (err) {
+            throw err
+        }
+    }
+
+    const handleChangeMonthCalendar = (e: any) => {
+        // Lấy số lượng tháng muốn thêm vào từ giá trị của trường "Cho đến"
+        const additionalMonths = parseInt(e) + 1;
+
+        // Lấy tháng và năm hiện tại
+        const currentDate = new Date();
+        let currentMonth = currentDate.getMonth() + 1; // Lấy tháng hiện tại (từ 1 đến 12)
+        let currentYear = currentDate.getFullYear(); // Lấy năm hiện tại
+
+        // Mảng để lưu thông tin về các tháng được thêm vào
+        let monthInfoArray: any[] = [];
+
+        // Thêm tháng hiện tại vào mảng
+        monthInfoArray = [
+            ...monthInfoArray,
+            {
+                car: {
+                    id: dataDetail.data.id,
+                    name: dataDetail.data.name
+                },
+                month: currentMonth,
+                year: currentYear,
+            }
+        ];
+
+
+        // Thêm các tháng tiếp theo vào mảng
+        for (let i = 1; i < additionalMonths; i++) {
+            // Tính toán tháng tiếp theo
+            let nextMonth = currentMonth + i;
+            let nextYear = currentYear;
+            let car = {
+                id: dataDetail.data.id,
+                name: dataDetail.data.name
+            }
+
+            if (nextMonth > 12) {
+                nextMonth -= 12; // Trường hợp tháng vượt quá 12, chuyển sang năm tiếp theo
+                nextYear++;
+            }
+
+            // Thêm thông tin về tháng vào mảng
+            // monthInfoArray.push({ month: nextMonth, year: nextYear });
+
+            monthInfoArray = [
+                ...monthInfoArray,
+                {
+                    car: {
+                        id: dataDetail.data.id,
+                        name: dataDetail.data.name
+                    },
+                    month: nextMonth,
+                    year: nextYear,
+                }
+            ];
+        }
+
+        console.log('monthInfoArray', monthInfoArray);
+    };
+
+    console.log('dataDetail', dataDetail);
+
 
     return (
         <BackgroundUiVehicle className={"min-h-[90vh]"}>
@@ -157,14 +308,8 @@ export default function SeflCalendar(props: Props) {
                                     value: true,
                                     message: 'Vui lòng chọn mốc thời gian đến',
                                 },
-                                validate: {
-                                    checkTime: (value: any, d: any) => {
-                                        if (value === d.deliver.from) return false || 'Khoảng thời gian không được giống nhau'
-                                    }
-                                }
                             }}
                             render={({ field, fieldState }) => {
-
                                 const checkValue = checkValueArray(isStatePolicy?.dataPolicy && isStatePolicy?.dataPolicy?.getListPriceMonth?.length > 0 ? isStatePolicy?.dataPolicy?.getListPriceMonth : [], field)
 
                                 return (
@@ -191,9 +336,17 @@ export default function SeflCalendar(props: Props) {
                                                             field={field}
                                                             onChange={(e: any) => {
                                                                 field.onChange(e)
-                                                                // const toTime: any = revertTime(e, 'minus')
-                                                                // form.setValue('deliver.from', toTime);
+                                                                handleChangeMonthCalendar(e)
                                                             }}
+
+                                                        // onChange={(e: any) => {
+                                                        //     field.onChange(e)
+                                                        //     queryState({ openCombobox: false })
+                                                        //     form.setValue('address.district', '')
+                                                        //     form.setValue('address.wards', '')
+                                                        // }}
+                                                        // onValueChange={(e: any) => handleSearchApi(e, 'city')}
+
                                                         />
                                                     </PopoverContent>
                                                 </Popover>
@@ -220,26 +373,31 @@ export default function SeflCalendar(props: Props) {
                 </div>
 
                 <RadioGroup
-                    defaultValue="customPrice"
+                    defaultValue="customPriceSingleDay"
                     value={optionRadio}
                     onValueChange={(value) => handleChangeRadio(value)}
                     className='flex items-center gap-6 w-full'
                     autoFocus={false}
                 >
-                    <div key={'option-1'} className='flex items-center space-x-3 group w-fit'>
-                        <RadioGroupItem
-                            value={`customPrice`}
-                            id={`customPrice`}
-                            className={`${optionRadio == "customPrice" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
-                        />
-                        <Label
-                            htmlFor={`customPrice`}
-                            className="flex items-center gap-4 cursor-pointer"
-                        >
-                            <div className='text-sm font-normal capitalize'>
-                                Tuỳ chỉnh giá
-                            </div>
-                        </Label>
+                    <div key={'option-1'} className='flex items-center space-x-2 group w-fit'>
+                        <div className='flex items-center space-x-3'>
+                            <RadioGroupItem
+                                value={`customPriceSingleDay`}
+                                id={`customPriceSingleDay`}
+                                className={`${optionRadio == "customPriceSingleDay" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
+                            />
+                            <Label
+                                htmlFor={`customPriceSingleDay`}
+                                className="flex items-center gap-4 cursor-pointer"
+                            >
+                                <div className='text-sm font-normal capitalize'>
+                                    Tuỳ chỉnh giá
+                                </div>
+                            </Label>
+                        </div>
+                        <div onClick={() => handleChangePriceWeekend()}>
+                            <LuCalendarClock className='text-lg text-[#2FB9BD] hover:text-[#2FB9BD]/80 cursor-pointer transition-all duration-300' />
+                        </div>
                     </div>
                     <div key={'option-2'} className='flex items-center space-x-3 group w-fit'>
                         <RadioGroupItem
@@ -257,6 +415,24 @@ export default function SeflCalendar(props: Props) {
                         </Label>
                     </div>
 
+                    {/* {
+                        options && options.map(option => (
+                            <div key={option.key} className="flex items-center space-x-3 group w-fit">
+                                <RadioGroupItem
+                                    value={option.value}
+                                    id={option.value}
+                                    className={`${optionRadio === option.value ? 'border-[#2FB9BD]' : 'border-[#B4B8C5]'
+                                        } focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
+                                />
+                                <Label
+                                    htmlFor={option.value}
+                                    className="flex items-center gap-4 cursor-pointer"
+                                >
+                                    {option.icon ? option.icon : <div className="text-sm font-normal capitalize">{option.label}</div>}
+                                </Label>
+                            </div>
+                        ))
+                    } */}
                 </RadioGroup>
 
                 {/* <div className='flex flex-col gap-2 px-6 py-2 bg-[#F7FBFF] rounded-lg'>
@@ -300,6 +476,7 @@ export default function SeflCalendar(props: Props) {
                                 previousMonthDays.push({
                                     date: new Date(d),
                                     day: d.getDate(),
+                                    isPreviousMonthDay: true,
                                 });
                             }
 
@@ -336,12 +513,16 @@ export default function SeflCalendar(props: Props) {
                                 return (
                                     <div
                                         key={`day-${i}`}
-                                        onClick={(event) => handleSelectDate(event, dayData)}
-                                        className={`col-span-1  border-[#F4F4F4] border-r border-b flex flex-col gap-1 justify-center items-center w-full h-14 group text-center
-                                        ${isPastDay ? "text-[#EBEBE4] font-normal cursor-default" : "cursor-pointer"}
-                                        ${dayData.status === 2 || dayData.status === 3 ? "bg-[#E0E0E0] cursor-pointer" : ""}
-                                        ${isPastDay && dayData.status === 2 || isPastDay && dayData.status === 3 ? "bg-[#E0E0E0] cursor-default" : ""}
-                                        ${dayData.isNextMonthDay ? "text-[#EBEBE4] font-normal cursor-default" : ""}
+                                        onClick={
+                                            isPastDay || dayData.isNextMonthDay || dayData.isPreviousMonthDay ?
+                                                () => { }
+                                                :
+                                                (event) => handleSelectDate(event, dayData)
+                                        }
+                                        className={`col-span-1  border-[#F4F4F4] border-r border-b flex flex-col gap-1 justify-center items-center w-full h-14 group text-center                            
+                                        ${!isPastDay && dayData.status === 2 || !isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-pointer" : ""}
+                                        ${isPastDay && dayData.status === 2 || isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-default" : ""}
+                                        ${isPastDay || dayData.isNextMonthDay || dayData.isPreviousMonthDay ? "text-gray-400 font-normal cursor-default" : " cursor-pointer hover:bg-[#E0E0E0]/20 duration-200 transition-all"}
                                         `}
                                     >
                                         <div className='text-xs font-normal'>

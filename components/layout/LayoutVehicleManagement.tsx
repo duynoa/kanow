@@ -175,7 +175,6 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
 
     const { dataDetail, setIdCar, setDataDetail, setDataOther, dataOther } = useVehicleManage()
 
-
     const fetchData = async () => {
         const { data: db } = await apiDetailCar(id, { type: -1, car_owner: 1 })
         // const { data: db } = await apiDetailCar(id, { type: 1, car_owner: 1 })

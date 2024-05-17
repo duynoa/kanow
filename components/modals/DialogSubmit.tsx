@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
     Dialog,
@@ -8,51 +8,48 @@ import {
     DialogOverlay,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 
 import { X } from "lucide-react";
-import { Label } from "../ui/label";
 import { toastCore } from "@/lib/toast";
-import { Checkbox } from "../ui/checkbox";
 import { useForm } from "react-hook-form";
-import { useAuth } from "@/hooks/useAuth";
-import { useCookie } from "@/hooks/useCookie";
-import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
-import useAuthenticationAPI from "@/services/auth/auth.services";
-import {
-    InputOTP,
-    InputOTPGroup,
-    InputOTPSlot,
-} from "@/components/ui/input-otp"
-import { jwtDecode } from "jwt-decode";
-import { usePathname } from "next/navigation";
-import { GoogleLogin } from "@react-oauth/google";
-import { Avatar, AvatarImage } from "../ui/avatar";
-import { useDialogLogin, useDialogSubmit } from "@/hooks/useOpenDialog";
-import { FormatNumberToThousands, FormatPhoneNumber } from "../format/FormatNumber";
-import { regexPatterns } from "@/lib/regex";
+import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
+
+import { useDialogCalendar, useDialogSubmit } from "@/hooks/useOpenDialog";
+import { FormatNumberToThousands, FormatOnlyNumberToThousands, FormatOriginalString } from "../format/FormatNumber";
 import { NumericFormatCore } from "@/lib/numericFormat";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
-import { putPriceSingleDate } from "@/services/cars/calendar.services";
+import { putPriceSaturdayAndSunday, putPriceSingleDate } from "@/services/cars/calendar.services";
+import { useLoadSuccess } from "@/hooks/useLoadSuccess";
 
 type Props = {};
 
 export function DialogSubmit({ }: Props) {
-    const { dataOther } = useVehicleManage()
+    const {
+        dataCalendar,
+        setDataCalendar,
+    } = useDialogCalendar()
+
+    const { dataDetail, dataOther } = useVehicleManage()
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
+
+    const param: ReadonlyURLSearchParams = useSearchParams()
+    const car_id: string | null = param.get("key") || ''
+    const type: string | null = param.get("t") || ''
 
     const form = useForm({
         defaultValues: {
             //don gia thue mac dinh
-            unitPrice: "0",
+            singlePrice: "0",
+            saturdayPrice: "0",
+            sundayPrice: "0",
         }
     })
 
     const {
         openDialogSubmit,
         typeDialogSubmit,
-        typeCar,
         dataItem,
         setOpenDialogSubmit,
         setTypeDialogSubmit,
@@ -61,36 +58,87 @@ export function DialogSubmit({ }: Props) {
     const handleOpenChangeModal = (value: boolean) => {
         setOpenDialogSubmit(value)
     }
+    useEffect(() => {
+        if (typeDialogSubmit == "price_single" && !Array.isArray(dataItem) && dataItem && openDialogSubmit) {
+            [
+                ["singlePrice", `${dataItem?.price > 0 ? FormatOnlyNumberToThousands(dataItem?.price) : ""}`],
+            ].forEach(([name, value]: any) => {
+                form.setValue(name, value)
+            })
+            return
+        } else if (typeDialogSubmit == "price_weekend" && openDialogSubmit) {
+            form.setValue("saturdayPrice", dataOther?.rent_cost_propose > 0 ? FormatOnlyNumberToThousands(dataOther?.rent_cost_propose) : "")
+            form.setValue("sundayPrice", dataOther?.rent_cost_propose > 0 ? FormatOnlyNumberToThousands(dataOther?.rent_cost_propose) : "")
+            return
+        } else {
+            setTimeout(() => {
+                form.reset()
+            }, 300);
+        }
 
-    // useEffect(() => {
-    //     form.setValue("unitPrice", "0")
-
-    //     form.reset()
-    // }, [form])
+    }, [dataItem, dataOther, typeDialogSubmit, form, openDialogSubmit])
 
     const onSubmit = async (value: any) => {
         // Xử lý dữ liệu form khi submit
         console.log("value submit: ", value);
         try {
             console.log('dataItem', dataItem);
+            if (typeDialogSubmit === "price_single") {
+                const dataSubmit = {
+                    type: type,
+                    price_detail_id: dataItem.id,
+                    price_new: value.singlePrice === "0" ? `${dataDetail.data.rent_cost}` : `${FormatOriginalString(value.singlePrice)}000`
+                }
 
-            const dataSubmit = {
-                type: typeCar,
-                price_detail_id: dataItem.id,
-                price_new: value.unitPrice === "0" ? "100" : `${value.unitPrice}000`
+                const { data } = await putPriceSingleDate(dataSubmit)
+
+                console.log('data', data);
+                if (data && data.result) {
+                    toastCore.success("Thay đổi giá thành công!")
+                    queryKeyIsStateLoadSuccess({
+                        loading: {
+                            isSuccessFetchApi: true
+                        }
+                    })
+
+                    handleOpenChangeModal(false)
+
+
+                } else {
+                    toastCore.error(data.message)
+                }
+
+            } else if (typeDialogSubmit === "price_weekend") {
+                const dataSubmit = {
+                    type: type,
+                    car_id: car_id,
+                    price_sat: value.saturdayPrice === "0" ? `${dataDetail.data.rent_cost}` : `${FormatOriginalString(value.saturdayPrice)}000`,
+                    price_sun: value.sundayPrice === "0" ? `${dataDetail.data.rent_cost}` : `${FormatOriginalString(value.sundayPrice)}000`
+                }
+
+                const { data } = await putPriceSaturdayAndSunday(dataSubmit)
+
+                console.log('data', data);
+                if (data && data.result) {
+                    toastCore.success("Thay đổi giá thành công!")
+                    queryKeyIsStateLoadSuccess({
+                        loading: {
+                            isSuccessFetchApi: true
+                        }
+                    })
+
+                    handleOpenChangeModal(false)
+
+
+                } else {
+                    toastCore.error(data.message)
+                }
             }
-
-            const { data } = await putPriceSingleDate(dataSubmit)
-
-            console.log('data', data);
-
 
         } catch (err) {
             throw err
         }
-    };
-
-    console.log('openDialogSubmit', openDialogSubmit);
+    }
 
     return (
         <Dialog
@@ -111,16 +159,22 @@ export function DialogSubmit({ }: Props) {
                 <DialogHeader className="flex items-center justify-center w-full 3xl:mt-6 mt-3">
                     <DialogTitle className={` capitalize text-2xl`}>
                         {typeDialogSubmit === "price_single" && "Tuỳ chỉnh giá"}
+                        {typeDialogSubmit === "price_weekend" && "Tuỳ chỉnh giá ngày cuối tuần"}
                     </DialogTitle>
                 </DialogHeader>
 
-                {
-                    typeDialogSubmit === "price_single" &&
-                    <Form  {...form} >
+                <Form  {...form} >
+                    {
+                        typeDialogSubmit === "price_single" &&
                         <div className='flex flex-col gap-2'>
+                            <FormLabel>
+                                <h1 className="text-xs font-medium text-[#AAAAAA]">
+                                    Nhập giá truỳ chỉnh cho ngày này. Nhập 0 nếu muốn dùng giá mặc định
+                                </h1>
+                            </FormLabel>
                             <FormField
                                 control={form.control}
-                                name="unitPrice"
+                                name="singlePrice"
                                 rules={{
                                     required: {
                                         value: true,
@@ -143,10 +197,79 @@ export function DialogSubmit({ }: Props) {
                                 render={({ field, fieldState }) => {
                                     return (
                                         <FormItem className="space-y-0 flex flex-col gap-2">
-                                            <FormLabel>
-                                                <h1 className="text-xs font-medium text-gray-400">
-                                                    Nhập giá truỳ chỉnh cho ngày này. Nhập 0 nếu muốn dùng giá mặc định
-                                                </h1>
+                                            <FormControl>
+                                                <div className='flex gap-2 items-center'>
+                                                    <NumericFormatCore
+                                                        className={`w-[60%] max-w-[60%] disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2 focus:border-[#2FB9BD] outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-lg px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0`}
+                                                        placeholder="Nhập đơn giá thuê"
+                                                        thousandSeparator={','}
+                                                        maxLength={10}
+                                                        {...field}
+                                                    />
+                                                    <span>k</span>
+                                                </div>
+                                            </FormControl>
+
+
+                                            {fieldState?.invalid && fieldState?.error && (
+                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                            )}
+                                        </FormItem>
+                                    );
+                                }}
+                            />
+                            {
+                                dataOther?.rent_cost_propose > 0 &&
+                                <h1 className="text-xs font-medium text-[#AAAAAA]">
+                                    <span>Giá đề xuất</span>
+                                    <span className="px-1">{FormatNumberToThousands(dataOther?.rent_cost_propose)}</span>
+                                </h1>
+                            }
+                            <Button
+                                type="button"
+                                className='text-white font-semibold bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 rounded-lg h-14 3xl:text-base text-sm'
+                                onClick={form.handleSubmit((values) => onSubmit(values))}
+                            >
+                                Xác nhận
+                            </Button>
+                        </div>
+                    }
+
+                    {
+                        typeDialogSubmit === "price_weekend" &&
+                        <div className='flex flex-col gap-2'>
+                            <FormLabel>
+                                <h1 className="text-xs font-medium text-[#AAAAAA]">
+                                    Nhập giá truỳ chỉnh cho ngày này. Nhập 0 nếu muốn dùng giá mặc định
+                                </h1>
+                            </FormLabel>
+                            <FormField
+                                control={form.control}
+                                name="saturdayPrice"
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'Vui lòng nhập đơn giá thuê',
+                                    },
+                                    validate: {
+                                        function: (value: any) => {
+                                            try {
+                                                let message = ''
+                                                if (value < 0) {
+                                                    message = 'Vui lòng không nhập số âm!'
+                                                }
+                                                return message || true;
+                                            } catch (error) {
+                                                throw error;
+                                            }
+                                        }
+                                    }
+                                }}
+                                render={({ field, fieldState }) => {
+                                    return (
+                                        <FormItem className="space-y-0 flex flex-col">
+                                            <FormLabel className="text-xs font-medium text-[#000000]/80">
+                                                Thứ 7
                                             </FormLabel>
                                             <FormControl>
                                                 <div className='flex gap-2 items-center'>
@@ -160,13 +283,6 @@ export function DialogSubmit({ }: Props) {
                                                     <span>k</span>
                                                 </div>
                                             </FormControl>
-                                            {
-                                                dataOther?.rent_cost_propose > 0 &&
-                                                <h1 className="text-xs font-medium text-gray-400">
-                                                    <span>Giá đề xuất</span>
-                                                    <span className="px-1">{FormatNumberToThousands(dataOther?.rent_cost_propose)}</span>
-                                                </h1>
-                                            }
 
                                             {fieldState?.invalid && fieldState?.error && (
                                                 <FormMessage>{fieldState?.error?.message}</FormMessage>
@@ -175,6 +291,61 @@ export function DialogSubmit({ }: Props) {
                                     );
                                 }}
                             />
+                            <FormField
+                                control={form.control}
+                                name="sundayPrice"
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'Vui lòng nhập đơn giá thuê',
+                                    },
+                                    validate: {
+                                        function: (value: any) => {
+                                            try {
+                                                let message = ''
+                                                if (value < 0) {
+                                                    message = 'Vui lòng không nhập số âm!'
+                                                }
+                                                return message || true;
+                                            } catch (error) {
+                                                throw error;
+                                            }
+                                        }
+                                    }
+                                }}
+                                render={({ field, fieldState }) => {
+                                    return (
+                                        <FormItem className="space-y-0 flex flex-col">
+                                            <FormLabel className="text-xs font-medium text-[#000000]/80">
+                                                Chủ nhật
+                                            </FormLabel>
+                                            <FormControl>
+                                                <div className='flex gap-2 items-center'>
+                                                    <NumericFormatCore
+                                                        className={`w-[60%] max-w-[60%] disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2 focus:border-[#2FB9BD] outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-lg px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0`}
+                                                        placeholder="Nhập đơn giá thuê"
+                                                        thousandSeparator={','}
+                                                        maxLength={10}
+                                                        {...field}
+                                                    />
+                                                    <span>k</span>
+                                                </div>
+                                            </FormControl>
+
+                                            {fieldState?.invalid && fieldState?.error && (
+                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                            )}
+                                        </FormItem>
+                                    );
+                                }}
+                            />
+                            {
+                                dataOther?.rent_cost_propose > 0 &&
+                                <h1 className="text-xs font-medium text-[#AAAAAA]">
+                                    <span>Giá đề xuất: </span>
+                                    <span className="px-1 font-bold">{FormatNumberToThousands(dataOther?.rent_cost_propose)}</span>
+                                </h1>
+                            }
                             <Button
                                 type="button"
                                 className='text-white font-semibold bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 rounded-lg h-14 3xl:text-base text-sm'
@@ -183,8 +354,9 @@ export function DialogSubmit({ }: Props) {
                                 Xác nhận
                             </Button>
                         </div>
-                    </Form>
-                }
+                    }
+                </Form>
+
             </DialogContent>
         </Dialog>
     );

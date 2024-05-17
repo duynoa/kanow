@@ -26,8 +26,8 @@ interface IDataPolicy {
         total_km_car_talent: string,
     },
     getListPriceMonth: {
-        id: number,
-        name: string,
+        value: number,
+        label: string,
         selected: boolean
     }[],
     document_license: string,

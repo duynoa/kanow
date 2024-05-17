@@ -1,6 +1,7 @@
-export const FormatNumberToThousands = (number: number): string => {
+//  format số đến hàng ngàn (vdu: 300k)
+const FormatNumberToThousands = (number: number): string => {
     if (number >= 1000) {
-        return (number / 1000)?.toFixed(0)?.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "k";
+        return (number / 1000)?.toFixed(0)?.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "k";
     }
 
     else {
@@ -8,24 +9,34 @@ export const FormatNumberToThousands = (number: number): string => {
     }
 }
 
-export const FormatNumberComma = (number: number): string => {
+const FormatOnlyNumberToThousands = (number: number): string => {
+    if (number >= 1000) {
+        return (number / 1000)?.toFixed(0)?.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    else {
+        return number?.toString();
+    }
+}
+
+// format 3 số là có dấu ","
+const FormatNumberComma = (number: number): string => {
     return number?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
 
-export const FormatNumberDot = (number: number): string => {
+// format 3 số là có dấu "."
+const FormatNumberDot = (number: number): string => {
     return Math.round(number)?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 }
 
-export const FormatNumberToDecimal = (number: number, decimalPlaces: number): string => {
+// format đã có làm tròn (3 số -> .)
+const FormatNumberToDecimal = (number: number, decimalPlaces: number): string => {
     const roundedNumber = parseFloat(number.toFixed(decimalPlaces));
     return roundedNumber?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-// export const FormatPointStar = (number: number, decimalPlaces: number): string => {
-//     return number.toString()?.replace(/\B(?=(\d{decimalPlaces})+(?!\d))/g, ".");
-// }
-
-export const FormatPointStar = (number: number, decimalPlaces: number): string => {
+// format số sao yêu thích
+const FormatPointStar = (number: number, decimalPlaces: number): string => {
     const stringNumber = number.toString();
     const decimalIndex = stringNumber.indexOf('.');
 
@@ -36,17 +47,17 @@ export const FormatPointStar = (number: number, decimalPlaces: number): string =
     }
 }
 
-export const FormatNumberHundred = (number: number, max_number: number): string => {
+// format số vượt quá max là "+"
+const FormatNumberHundred = (number: number, max_number: number): string => {
     if (number >= max_number) {
         return `${max_number}+`;
     } else {
         return number?.toString()
     }
 }
-// export const FormatPhoneNumber = (phoneNumber: string): string => {
-//     return phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-// };
-export const FormatPhoneNumber = (number: number | string, decimalPlaces?: number): string => {
+
+// format số điện thoại 
+const FormatPhoneNumber = (number: number | string, decimalPlaces?: number): string => {
     // Chuyển đổi số điện thoại thành chuỗi và loại bỏ tất cả các ký tự không phải là số
     const numberString = number.toString().replace(/\D/g, '');
 
@@ -62,7 +73,7 @@ export const FormatPhoneNumber = (number: number | string, decimalPlaces?: numbe
 }
 
 // formart trang my trip
-export function FormatCurrency(amount: any) {
+function FormatCurrency(amount: any) {
     // Chuyển số tiền sang chuỗi
     var amountString = amount.toString();
 
@@ -77,7 +88,8 @@ export function FormatCurrency(amount: any) {
     return amountString;
 }
 
-export function FormatDistance(distance: number) {
+// format số km & số m
+function FormatDistance(distance: number) {
     if (distance >= 1000) {
         // Nếu lớn hơn hoặc bằng 1000, chuyển đổi thành km
         return (distance / 1000).toFixed(1) + 'km';
@@ -87,7 +99,8 @@ export function FormatDistance(distance: number) {
     }
 }
 
-export function FormatDistanceFullKm(distance: number) {
+// format full km
+function FormatDistanceFullKm(distance: number) {
     if (distance >= 1000) {
         // Nếu lớn hơn hoặc bằng 1000, chuyển đổi thành km và giữ 1 chữ số thập phân
         return (distance / 1000).toFixed(1) + 'km';
@@ -95,4 +108,24 @@ export function FormatDistanceFullKm(distance: number) {
         // Nếu bé hơn 1000, chuyển đổi thành km và giữ 3 chữ số thập phân
         return (distance / 1000).toFixed(3) + 'km';
     }
+}
+
+// format bỏ dấu "," trong chuỗi string
+const FormatOriginalString = (value: string) => {
+    return value.replace(/[.,]/g, "")
+}
+
+export {
+    FormatNumberToThousands,
+    FormatOnlyNumberToThousands,
+    FormatOriginalString,
+    FormatNumberDot,
+    FormatNumberToDecimal,
+    FormatPointStar,
+    FormatNumberHundred,
+    FormatPhoneNumber,
+    FormatCurrency,
+    FormatDistance,
+    FormatDistanceFullKm,
+    FormatNumberComma,
 }
