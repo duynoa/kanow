@@ -58,6 +58,7 @@ export function DialogSubmit({ }: Props) {
     const handleOpenChangeModal = (value: boolean) => {
         setOpenDialogSubmit(value)
     }
+
     useEffect(() => {
         if (typeDialogSubmit == "price_single" && !Array.isArray(dataItem) && dataItem && openDialogSubmit) {
             [
@@ -83,6 +84,12 @@ export function DialogSubmit({ }: Props) {
         console.log("value submit: ", value);
         try {
             console.log('dataItem', dataItem);
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isLoadingButton: true
+                }
+            })
             if (typeDialogSubmit === "price_single") {
                 const dataSubmit = {
                     type: type,
@@ -97,7 +104,9 @@ export function DialogSubmit({ }: Props) {
                     toastCore.success("Thay đổi giá thành công!")
                     queryKeyIsStateLoadSuccess({
                         loading: {
-                            isSuccessFetchApi: true
+                            ...isStateLoadSuccess.loading,
+                            isSuccessFetchApi: true,
+                            isLoadingButton: false
                         }
                     })
 
@@ -105,10 +114,23 @@ export function DialogSubmit({ }: Props) {
 
 
                 } else {
+                    queryKeyIsStateLoadSuccess({
+                        loading: {
+                            ...isStateLoadSuccess.loading,
+                            isLoadingButton: false
+                        }
+                    })
                     toastCore.error(data.message)
                 }
 
             } else if (typeDialogSubmit === "price_weekend") {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        ...isStateLoadSuccess.loading,
+                        isLoadingButton: true
+                    }
+                })
+
                 const dataSubmit = {
                     type: type,
                     car_id: car_id,
@@ -123,14 +145,19 @@ export function DialogSubmit({ }: Props) {
                     toastCore.success("Thay đổi giá thành công!")
                     queryKeyIsStateLoadSuccess({
                         loading: {
-                            isSuccessFetchApi: true
+                            ...isStateLoadSuccess.loading,
+                            isSuccessFetchApi: true,
+                            isLoadingButton: false
                         }
                     })
-
                     handleOpenChangeModal(false)
-
-
                 } else {
+                    queryKeyIsStateLoadSuccess({
+                        loading: {
+                            ...isStateLoadSuccess.loading,
+                            isLoadingButton: false
+                        }
+                    })
                     toastCore.error(data.message)
                 }
             }

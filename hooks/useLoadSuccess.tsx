@@ -11,6 +11,7 @@ export const useLoadSuccess = create<IStateLoadSuccess>((set) => ({
     isStateLoadSuccess: {
         loading: {
             isSuccessFetchApi: false,
+            isLoadingButton:false,
         },
         success: undefined,
     },

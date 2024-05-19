@@ -179,7 +179,8 @@ interface IInitialStateNotification {
 // initial Load success (hàm sự kiện kiểm soát để fetch api, loading,...)
 interface IInitialStateLoadSuccess {
     loading: {
-        isSuccessFetchApi: boolean
+        isSuccessFetchApi: boolean;
+        isLoadingButton: boolean;
     };
     success: any;
 }
