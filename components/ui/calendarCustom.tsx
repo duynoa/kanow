@@ -73,6 +73,34 @@ function CalendarCustom({
         );
     };
 
+    const daysBetweenDates = (startDate: Date, endDate: Date): number => {
+        const oneDay = 24 * 60 * 60 * 1000;
+        const firstDate = new Date(startDate);
+        const secondDate = new Date(endDate);
+        const diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / oneDay));
+        return diffDays;
+    };
+
+    const datesBetweenDates = (startDate: Date, endDate: Date): Date[] => {
+        const dates: Date[] = [];
+        const numberOfDays = daysBetweenDates(startDate, endDate);
+
+        for (let i = 1; i < numberOfDays; i++) {
+            const date = new Date(startDate);
+            date.setDate(startDate.getDate() + i);
+            date.setHours(0, 0, 0, 0);
+            dates.push(date);
+        }
+
+        return dates;
+    };
+
+    const checkDateInBetween = (dateToCheck: Date, datesInBetween: Date[]): boolean => {
+        return datesInBetween.some((date) => {
+            return dateToCheck.getTime() === date.getTime();
+        });
+    };
+
 
     // custom tháng + day
     const CustomMonth = () => {
@@ -241,7 +269,7 @@ function CalendarCustom({
 
         // Tạo giao diện cho từng tháng dựa trên dữ liệu
         const monthComponents = customDataDate?.map((monthItem, index) => {
-            const month: any = monthItem?.month; // Tháng
+            const month: any = monthItem?.month; //     Tháng
             const formattedMonth = parseInt(month, 10)?.toString() // tháng format bỏ số 0
             const daysInMonth = monthItem?.price_detail?.length; // Số ngày trong tháng
 
@@ -374,34 +402,6 @@ function CalendarCustom({
 
     // Component Day tùy chỉnh
     const CustomDay = ({ date, dayDataApi, dayOfWeek, index, handleChangeDate, ...props }: any) => {
-        const daysBetweenDates = (startDate: Date, endDate: Date): number => {
-            const oneDay = 24 * 60 * 60 * 1000;
-            const firstDate = new Date(startDate);
-            const secondDate = new Date(endDate);
-            const diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / oneDay));
-            return diffDays;
-        };
-
-        const datesBetweenDates = (startDate: Date, endDate: Date): Date[] => {
-            const dates: Date[] = [];
-            const numberOfDays = daysBetweenDates(startDate, endDate);
-
-            for (let i = 1; i < numberOfDays; i++) {
-                const date = new Date(startDate);
-                date.setDate(startDate.getDate() + i);
-                date.setHours(0, 0, 0, 0);
-                dates.push(date);
-            }
-
-            return dates;
-        };
-
-        const checkDateInBetween = (dateToCheck: Date, datesInBetween: Date[]): boolean => {
-            return datesInBetween.some((date) => {
-                return dateToCheck.getTime() === date.getTime();
-            });
-        };
-
         // const handleChangeDate = (event: React.MouseEvent<HTMLDivElement>, item: any) => {
         //     event.preventDefault(); // Ngăn chặn hành vi mặc định của trình duyệt
         //     event.stopPropagation()
@@ -513,7 +513,7 @@ function CalendarCustom({
         const secondMonth = secondDate.getMonth();
         const secondDay = secondDate.getDate();
 
-
+        
         const dateStartYear = dateStart?.getFullYear();
         const dateStartMonth = dateStart?.getMonth();
         const dateStartDay = dateStart?.getDate();

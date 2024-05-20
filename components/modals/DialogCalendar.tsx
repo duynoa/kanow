@@ -367,14 +367,171 @@ export function DialogCalendar({ }: Props) {
         return isBefore(date, startOfDay(toDate));
     };
 
+    useEffect(() => {
+        if (pathname.startsWith('/detail-car/')) {
+            const filterDatesByRange = (dataCalendar: any[], startDate: Date, endDate: Date) => {
+                const dataBetweens = dataCalendar?.map((item: any) => {
+                    return {
+                        ...item,
+                        price_detail: item?.price_detail?.filter((detail: any) => {
+                            const date = new Date(detail.date);
+                            const startOfDay = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+                            const endOfDay = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
+                            // Kiểm tra xem ngày có nằm trong khoảng thời gian đã chọn không
+                            const withinDateRange = date >= startOfDay && date <= endOfDay;
+                            // Kiểm tra xem status có phù hợp không
+                            return withinDateRange;
+                        })
+                    };
+                })
+
+                return dataBetweens
+            }
+
+            // Hàm kiểm tra xem có ngày nào trong khoảng thời gian có status là 2 hoặc 3 không
+            const validateDates = (dataCalendar: any[], startDate: Date, endDate: Date) => {
+                const filteredDates = filterDatesByRange(dataCalendar, startDate, endDate);
+
+                return filteredDates?.some((item: any) => {
+                    return item?.price_detail?.some((detail: any) => {
+                        return detail.status === 2 || detail.status === 3;
+                    });
+                });
+            }
+
+            if (dateStart && dateEnd) {
+                //    validate ngày
+                const isValid = validateDates(dataCalendar, dateStart, dateEnd)
+
+                setValidateDateSubmit(isValid);
+
+                // state chọn số ngày thuê
+                const daysDifference = differenceInCalendarDays(dateEnd, dateStart);
+                const hoursDifference = differenceInHours(dateEnd, dateStart);
+                const minutesDifference = differenceInMinutes(dateEnd, dateStart);
+                const isDateEndAfter = isAfter(dateEnd, dateStart);
+                const timeDate = Math.ceil(minutesDifference / 1440)
+                let minTimeInDay = hoursDifference >= +generalKey.hour_min_car
+
+                if (daysDifference > 0 && isDateEndAfter) {
+
+                    setNumberDayComponent(timeDate);
+                } else if (minutesDifference >= 1440 && isDateEndAfter) {
+                    setNumberDayComponent(timeDate);
+                } else {
+
+                    setHoursBetWeenDays(hoursDifference)
+                    setNumberDayComponent(1);
+                }
+
+                // lọc giờ trong modal
+                if (isStateDetailCar?.dataDetailCar?.hour_receive_car?.length > 0 && isStateDetailCar?.dataDetailCar?.hour_back_car?.length > 0) {
+                    const filterByHourRange = (dataTime: any[], hourStart: string, hourEnd: string) =>
+                        dataTime.filter((item) => (
+                            (item.value >= hourStart) &&
+                            (item.value <= hourEnd)
+                        ));
+
+                    const newDataTimeReceiveCar = filterByHourRange(
+                        dataTime.dataTimeLeft,
+                        isStateDetailCar?.dataDetailCar?.hour_receive_car[0].hour_start,
+                        isStateDetailCar?.dataDetailCar?.hour_receive_car[0].hour_end
+                    );
+
+                    const newDataTimeBackCar = filterByHourRange(
+                        dataTime.dataTimeRight,
+                        isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_start,
+                        isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_end
+                    );
+
+                    console.log('isStateDetailCar?.dataDetailCar?.hour_receive_car');
+                    
+
+                    setDateTime({
+                        dataTimeLeft: newDataTimeReceiveCar,
+                        dataTimeRight: newDataTimeBackCar
+                    })
+                }
+
+            } else if (!dateEnd) {
+                        // setHoursBetWeenDays(0)
+                setNumberDayComponent(1)
+                setValidateDateSubmit(false)
+            }
+        } else {
+            // giờ trong lịch mặc định 
+            setDateTime(initialDateTime)
+
+            // phần này để làm tròn giờ nếu qua ngày mới
+            // state chọn số ngày thuê
+            const daysDifference = differenceInCalendarDays(dateTimeComponent?.to, dateTimeComponent?.from);
+            const hoursDifference = differenceInHours(dateTimeComponent?.to, dateTimeComponent?.from);
+            const minutesDifference = differenceInMinutes(dateTimeComponent?.to, dateTimeComponent?.from);
+            const isDateEndAfter = isAfter(dateTimeComponent?.to, dateTimeComponent?.from);
+            const timeDate = Math.ceil(minutesDifference / 1440)
+
+            if (daysDifference > 0 && isDateEndAfter) {
+
+                setNumberDayComponent(timeDate);
+            } else if (minutesDifference >= 1440 && isDateEndAfter) {
+                setNumberDayComponent(timeDate);
+            } else {
+
+                setHoursBetWeenDays(hoursDifference)
+                setNumberDayComponent(1);
+            }
+        }
+    }, [
+        slug,
+        dateStart,
+        dateEnd,
+        dataCalendar,
+        dateTimeComponent?.from,
+        dateTimeComponent?.to,
+        numberDayComponent
+    ])
+
+    useEffect(() => {
+
+        setDateTemp(dateReal)
+        setDateStart(dateReal?.from)
+        setDateEnd(dateReal?.to)
+        // setNumberDay(numberDayComponent)
+        setDateTimeComponent(dateReal)
+    }, [slug])
+
+
+    useEffect(() => {
+        if (typeCarDetail == "1") {
+            if (pathname.startsWith('/detail-car/')) {
+                setDateStart(dateTemp?.from)
+                setDateEnd(dateTemp?.to)
+                setDateTimeComponent(dateTemp)
+            } else {
+                setDateTimeComponent(dateReal)
+            }
+        } else if (typeCarDetail == "2") {
+            console.log('dateTemp', dateTemp);
+            if (pathname.startsWith('/detail-car/')) {
+
+                setDateTimeComponent(dateTemp)
+                setDateStart(dateTemp?.from)
+                setDateEnd(dateTemp?.to)
+
+
+            } else {
+                setDateTimeComponent(dateReal)
+            }
+        }
+    }, [
+        openDialogCalendar,
+        pathname,
+        typeCarCalendar,
+    ])
+
+
     const handleCloseModal = (type: string) => {
-        // if (validateDateSubmit && type === "close1" || flagSubmit && type === "close1") {
-        //     // không có hoạt động gì để tránh người dùng tạo bug khi click ra ngoài
-        // } else if (validateDateSubmit && type === "close2" || flagSubmit && type === "close2") {
-        //     toastCore.warning("Vui lòng nhấn áp dụng vì bạn đã thay đổi ngày hoặc giờ!")
-        // } else {
         setOpenDialogCalendar(false)
-        // }
     }
 
     // change date in calender default
@@ -706,165 +863,6 @@ export function DialogCalendar({ }: Props) {
             throw err
         }
     };
-
-    useEffect(() => {
-        if (pathname.startsWith('/detail-car/')) {
-            const filterDatesByRange = (dataCalendar: any[], startDate: Date, endDate: Date) => {
-                const dataBetweens = dataCalendar?.map((item: any) => {
-                    return {
-                        ...item,
-                        price_detail: item?.price_detail?.filter((detail: any) => {
-                            const date = new Date(detail.date);
-                            const startOfDay = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-                            const endOfDay = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
-                            // Kiểm tra xem ngày có nằm trong khoảng thời gian đã chọn không
-                            const withinDateRange = date >= startOfDay && date <= endOfDay;
-                            // Kiểm tra xem status có phù hợp không
-                            return withinDateRange;
-                        })
-                    };
-                })
-
-                return dataBetweens
-            }
-
-            // Hàm kiểm tra xem có ngày nào trong khoảng thời gian có status là 2 hoặc 3 không
-            const validateDates = (dataCalendar: any[], startDate: Date, endDate: Date) => {
-                const filteredDates = filterDatesByRange(dataCalendar, startDate, endDate);
-
-                return filteredDates?.some((item: any) => {
-                    return item?.price_detail?.some((detail: any) => {
-                        return detail.status === 2 || detail.status === 3;
-                    });
-                });
-            }
-
-            if (dateStart && dateEnd) {
-                //    validate ngày
-                const isValid = validateDates(dataCalendar, dateStart, dateEnd)
-
-                setValidateDateSubmit(isValid);
-
-                // state chọn số ngày thuê
-                const daysDifference = differenceInCalendarDays(dateEnd, dateStart);
-                const hoursDifference = differenceInHours(dateEnd, dateStart);
-                const minutesDifference = differenceInMinutes(dateEnd, dateStart);
-                const isDateEndAfter = isAfter(dateEnd, dateStart);
-                const timeDate = Math.ceil(minutesDifference / 1440)
-                let minTimeInDay = hoursDifference >= +generalKey.hour_min_car
-
-                if (daysDifference > 0 && isDateEndAfter) {
-
-                    setNumberDayComponent(timeDate);
-                } else if (minutesDifference >= 1440 && isDateEndAfter) {
-                    setNumberDayComponent(timeDate);
-                } else {
-
-                    setHoursBetWeenDays(hoursDifference)
-                    setNumberDayComponent(1);
-                }
-
-                // lọc giờ trong modal
-                if (isStateDetailCar?.dataDetailCar?.hour_receive_car?.length > 0 && isStateDetailCar?.dataDetailCar?.hour_back_car?.length > 0) {
-                    const filterByHourRange = (dataTime: any[], hourStart: string, hourEnd: string) =>
-                        dataTime.filter((item) => (
-                            (item.value >= hourStart) &&
-                            (item.value <= hourEnd)
-                        ));
-
-                    const newDataTimeReceiveCar = filterByHourRange(
-                        dataTime.dataTimeLeft,
-                        isStateDetailCar?.dataDetailCar?.hour_receive_car[0].hour_start,
-                        isStateDetailCar?.dataDetailCar?.hour_receive_car[0].hour_end
-                    );
-
-                    const newDataTimeBackCar = filterByHourRange(
-                        dataTime.dataTimeRight,
-                        isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_start,
-                        isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_end
-                    );
-
-                    setDateTime({
-                        dataTimeLeft: newDataTimeReceiveCar,
-                        dataTimeRight: newDataTimeBackCar
-                    })
-                }
-
-            } else if (!dateEnd) {
-                // setHoursBetWeenDays(0)
-                setNumberDayComponent(1)
-                setValidateDateSubmit(false)
-            }
-        } else {
-            // giờ trong lịch mặc định 
-            setDateTime(initialDateTime)
-
-            // phần này để làm tròn giờ nếu qua ngày mới
-            // state chọn số ngày thuê
-            const daysDifference = differenceInCalendarDays(dateTimeComponent?.to, dateTimeComponent?.from);
-            const hoursDifference = differenceInHours(dateTimeComponent?.to, dateTimeComponent?.from);
-            const minutesDifference = differenceInMinutes(dateTimeComponent?.to, dateTimeComponent?.from);
-            const isDateEndAfter = isAfter(dateTimeComponent?.to, dateTimeComponent?.from);
-            const timeDate = Math.ceil(minutesDifference / 1440)
-
-            if (daysDifference > 0 && isDateEndAfter) {
-
-                setNumberDayComponent(timeDate);
-            } else if (minutesDifference >= 1440 && isDateEndAfter) {
-                setNumberDayComponent(timeDate);
-            } else {
-
-                setHoursBetWeenDays(hoursDifference)
-                setNumberDayComponent(1);
-            }
-        }
-    }, [
-        slug,
-        dateStart,
-        dateEnd,
-        dataCalendar,
-        dateTimeComponent?.from,
-        dateTimeComponent?.to,
-        numberDayComponent
-    ])
-
-    useEffect(() => {
-
-        setDateTemp(dateReal)
-        setDateStart(dateReal?.from)
-        setDateEnd(dateReal?.to)
-        // setNumberDay(numberDayComponent)
-        setDateTimeComponent(dateReal)
-    }, [slug])
-
-
-    useEffect(() => {
-        if (typeCarDetail == "1") {
-            if (pathname.startsWith('/detail-car/')) {
-                setDateStart(dateTemp?.from)
-                setDateEnd(dateTemp?.to)
-                setDateTimeComponent(dateTemp)
-            } else {
-                setDateTimeComponent(dateReal)
-            }
-        } else if (typeCarDetail == "2") {
-            console.log('dateTemp', dateTemp);
-            if (pathname.startsWith('/detail-car/')) {
-
-                setDateTimeComponent(dateTemp)
-                setDateStart(dateTemp?.from)
-                setDateEnd(dateTemp?.to)
-
-
-            } else {
-                setDateTimeComponent(dateReal)
-            }
-        }
-    }, [
-        openDialogCalendar,
-        pathname,
-        typeCarCalendar,
-    ])
 
     // console.log('dateStart', dateStart);
     // console.log('dateEnd', dateEnd);

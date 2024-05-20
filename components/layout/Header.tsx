@@ -184,7 +184,6 @@ const Header = () => {
 
                     const { data } = await getListNotifications(dataParams)
 
-                    console.log('data: ', data);
                     if (data && data.data.length) {
                         queryKeyIsStateNotification({
                             ...isStateNotification,
@@ -272,8 +271,6 @@ const Header = () => {
     }
 
     const dataListUnreadNotify = isStateNotification.dataListNotifications?.filter((item) => item?.is_read == 0)
-
-    console.log('openDropdownNotification: ', openDropdownNotification);
 
     if (!isMounted) {
         return null;

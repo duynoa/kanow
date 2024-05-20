@@ -23,13 +23,25 @@ const putPriceSaturdayAndSunday = (data: any) => {
 }
 
 // update ngày bận 
-const putPriceStatus = (data: any) => {
+const putPriceBusyDay = (data: any) => {
     return axios.post("/car/updateStatusPrice", data)
+}
+
+// đổi số lượng tháng của xe tự lái
+const postChangeQuantityMonths = (data: any) => {
+    return axios.post("/car/price_month_car", data)
+}
+
+// đổi số lượng tháng của xe có tài
+const postChangeQuantityMonthsTalend = (data: any) => {
+    return axios.post("/car/price_month_car_talent", data)
 }
 
 export {
     getListCalendarPriceMonth,
     putPriceSingleDate,
     putPriceSaturdayAndSunday,
-    putPriceStatus,
+    putPriceBusyDay,
+    postChangeQuantityMonths,
+    postChangeQuantityMonthsTalend
 }
