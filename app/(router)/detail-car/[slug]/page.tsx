@@ -225,8 +225,6 @@ const DetailCar = ({ params }: Props) => {
 
                             return options;
                         };
-                        console.log('valueAddressPickup :', valueAddressPickup);
-                        console.log('valueAddressDestination[indexAddressDestination] :', valueAddressDestination[indexAddressDestination]);
 
                         // Sử dụng hàm để format data thành options
                         const options = formatDataToOptions(data.result);
@@ -275,7 +273,6 @@ const DetailCar = ({ params }: Props) => {
                                 from: setMinutes(setHours(fromDate, 8), 0),
                                 to: setMinutes(setHours(toDate, 8), 0),
                             };
-                            console.log('check defaultDateRange', defaultDateRange);
 
                             // Thiết lập giá trị cho dateTemp
                             setDateTemp(defaultDateRange);
@@ -355,6 +352,7 @@ const DetailCar = ({ params }: Props) => {
                 lon: coordinates.lng != 0 ? coordinates.lng : undefined,
             }
             const { data } = await getDataDetailCar(params.slug, dataParams)
+            console.log('data', data);
 
             if (data && data.data && data.base.base) {
                 let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
@@ -375,12 +373,6 @@ const DetailCar = ({ params }: Props) => {
 
                         const minutesDifference = differenceInMinutes(endDate, startDate);
                         const timeDate = Math.ceil(minutesDifference / 1440)
-
-
-                        console.log('dateTemp : ', dateTemp)
-                        console.log('dateReal : ', dateReal);
-                        console.log('startDate : ', startDate);
-                        console.log('endDate : ', endDate);
 
                         setDateStart(startDate)
                         setDateEnd(endDate)
@@ -467,8 +459,6 @@ const DetailCar = ({ params }: Props) => {
             if (data && data.data && data.base.base) {
                 let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
 
-                console.log('customDataDetailCar', customDataDetailCar);
-
                 queryKeyIsStateDetailCar({
                     dataDetailCar: customDataDetailCar,
                 })
@@ -547,8 +537,6 @@ const DetailCar = ({ params }: Props) => {
 
     useEffect(() => {
         if (typeCarDetail == "1") {
-            console.log('numberDay numberDay type 1 : ', numberDay);
-
             queryKeyIsStateDetailCar({
                 dataDetailCar: {
                     ...isStateDetailCar?.dataDetailCar,
@@ -590,8 +578,6 @@ const DetailCar = ({ params }: Props) => {
                 }
             })
         } else if (typeCarDetail == "2") {
-            console.log('numberDay numberDay type 2 : ', numberDay);
-
             // Đặt options vào state
             queryKeyIsStateDetailCar({
                 ...isStateDetailCar,

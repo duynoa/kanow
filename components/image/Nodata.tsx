@@ -44,6 +44,9 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
             case "list-notifications":
                 quertyState({ title: 'Chưa có thông báo', image: '/profile/address/nodata.png' })
                 break;
+            case "list-calendar":
+                quertyState({ title: 'Chưa có lịch xe!', image: '/nodata/no-data-calendar.png' })
+                break;
             default:
                 break;
         }
@@ -53,7 +56,7 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
 
     // return <div className={`${className}  h-fit  flex flex-col items-center`}>
     return (
-        <div className={`${className}  flex flex-col gap-4 items-center`}>
+        <div className={`${className}  flex flex-col gap-2 items-center`}>
             <div className={` h-full w-full`}>
                 {/* <div className="lg:h-[472px] h-fit"> */}
                 <Image
@@ -71,6 +74,7 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
                  ${type == 'address' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
                  ${type == 'list-my-car' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
                  ${type == 'list-notifications' && (isVisibleMobile ? "size-full" : 'size-[80%]')}
+                 ${type == 'list-calendar' && (isVisibleMobile ? "size-full" : 'size-[45%]')}
                  mx-auto`} />
             </div>
             <h1 className="3xl:text-lg lg:text-sm text-xs font-medium">{data.title}</h1>

@@ -17,6 +17,7 @@ import { SelectItemNocheck } from '../ui/selectNocheck'
 import { Separator } from '../ui/separator'
 import { Switch } from '../ui/switch'
 import { toastCore } from '@/lib/toast'
+import { useDialogCalendar } from '@/hooks/useOpenDialog'
 
 const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) => {
     const href = usePathname()
@@ -209,6 +210,7 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
         formData.append('model_car', db?.data?.model_car?.id)
 
         const { data } = await apiRentCostPropose(formData)
+
         setDataOther(({
             ...dataOther,
             rent_cost_propose: data?.rent_cost_propose

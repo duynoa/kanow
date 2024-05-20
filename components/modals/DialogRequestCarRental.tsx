@@ -81,7 +81,6 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
 
     const onSubmit = async (values: any) => {
         try {
-
             const dataRequest: any = {
                 data: {
                     car_id: dataListRequestCarRental?.dataDetailCar?.id,
@@ -106,7 +105,6 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
             }
 
             console.log('dataRequest', dataRequest);
-
 
             const { data } = await postRequestRentalCar(dataRequest)
 

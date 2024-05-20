@@ -35,6 +35,7 @@ import { useDataDetailCar, useDataPolicy } from '@/hooks/useDataQueryKey'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { toastCore } from '@/lib/toast'
 import Map from '@/components/map/Maps'
+import { useAuth } from '@/hooks/useAuth'
 
 type Props = {}
 
@@ -61,6 +62,8 @@ const PaymentCar = ({ }: Props) => {
     const { isStatePolicy } = useDataPolicy()
     const { setDataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
     const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
+    const { informationUser } = useAuth()
+    const { openDialogValidate, setOpenDialogValidate } = useDialogValidate();
 
     const {
         valueAddressPickup,
@@ -155,6 +158,14 @@ const PaymentCar = ({ }: Props) => {
             toastCore.error("Vui lòng chọn lại bộ lịch!")
         } else if (validateDateSubmit && getCookie !== "kanow" && getCookie !== undefined) {
             toastCore.error("Xe bận trong khoảng thời gian trên. Vui lòng đặt xe khác hoặc thay đổi lịch trình thích hợp!")
+        } else if (
+            informationUser?.id === isStateDetailCar?.dataDetailCar?.car_owner?.id &&
+            getCookie !== "kanow" &&
+            getCookie !== undefined
+        ) {
+            toastCore.error("Chủ xe không thể đặt xe của chính mình!")
+        } else if ((informationUser?.drivingLiscense?.status == 0 || informationUser?.drivingLiscense?.status == 2) && getCookie !== "kanow" && getCookie !== undefined) {
+            setOpenDialogValidate(true)
         } else if (getCookie !== "kanow" && getCookie !== undefined) {
             setDataListRequestCarRental(isStateDetailCar)
             setOpenDialogRequestCarRental(true)
@@ -463,7 +474,7 @@ const PaymentCar = ({ }: Props) => {
                                         Tổng lộ trình
                                     </div>
                                     <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
-                                        {isStateDetailCar?.map?.totalDistance ? FormatDistance(isStateDetailCar?.map?.totalDistance) : 0}
+                                        {isStateDetailCar?.map?.totalDistance ? FormatDistance(isStateDetailCar?.map?.totalDistance) : "0 km"}
                                     </div>
                                 </div>
 

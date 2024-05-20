@@ -70,7 +70,13 @@ const ListMyCar = (props: Props) => {
 
         queryKeyIsStateProfileMyCar({ isLoadingCar: true })
         try {
-            const { data } = await apiListCar(page, isStateProfileMyCar.limit, { car_owner: 1, status_car: valueFilter })
+            const dataParams = {
+                car_owner: 1,
+                status_car: valueFilter,
+                web: 1,
+            }
+            const { data } = await apiListCar(page, isStateProfileMyCar.limit, dataParams)
+
             if (data && data.data && data.base) {
                 const { customDataMyCar } = CustomDataMyCar(data)
                 queryKeyIsStateProfileMyCar({
@@ -125,7 +131,7 @@ const ListMyCar = (props: Props) => {
                                 }
                                 return
                             }
-                            
+
                             queryKeyIsStateProfileMyCar({
                                 listCardCars: isStateProfileMyCar.dataMyCar,
                                 next: data?.links?.next,
