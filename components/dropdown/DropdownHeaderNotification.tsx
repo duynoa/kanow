@@ -208,18 +208,24 @@ const DropdownHeaderNotification = ({ children }: any) => {
     }
 
     const handleClickAllNotification = async () => {
-        const { data: { result, message } } = await postReadAllNotifications({ type: "customer" })
-        if (result == 1) {
-            const newData: any = isStateNotification?.dataListNotifications.map((e) => {
-                return {
-                    ...e,
-                    is_read: 1
+        try {
+            if (isStateNotification.dataListNotifications.some((item: any) => item.is_read == 0)) {
+                const { data: { result, message } } = await postReadAllNotifications({ type: "customer" })
+                if (result == 1) {
+                    const newData: any = isStateNotification?.dataListNotifications.map((e) => {
+                        return {
+                            ...e,
+                            is_read: 1
+                        }
+                    })
+                    queryKeyIsStateNotification({
+                        ...isStateNotification,
+                        dataListNotifications: newData
+                    })
                 }
-            })
-            queryKeyIsStateNotification({
-                ...isStateNotification,
-                dataListNotifications: newData
-            })
+            }
+        } catch (err) {
+            throw err
         }
     }
 
