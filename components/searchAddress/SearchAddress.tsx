@@ -52,9 +52,12 @@ const SearchAddress = ({ onChange, children, field }: any) => {
             const { data } = await apiViewboxSearch(dataParams)
 
             if (data && data.code == 'ok' && data.result) {
-
+                setOpenBoxSearch(true)
                 setDataBoxSearch(data.result)
+            } else {
+                setOpenBoxSearch(false)
             }
+
 
         } catch (err) {
             throw err
@@ -65,6 +68,8 @@ const SearchAddress = ({ onChange, children, field }: any) => {
 
     useEffect(() => {
         if (debouncedDataAddress) {
+            console.log("aaaa");
+
             fetchDataTextSearch()
         }
     }, [debouncedDataAddress])
@@ -73,7 +78,7 @@ const SearchAddress = ({ onChange, children, field }: any) => {
         <div className="relative">
             {children}
             {
-                debouncedOpenBoxSearch && debouncedDataAddress && dataBoxSearch.length > 0 ?
+                field.value != '' && debouncedOpenBoxSearch && debouncedDataAddress && dataBoxSearch.length > 0 ?
                     <ScrollArea className='absolute top-full left-0 bg-white border w-full h-fit max-h-[300px] z-[999] pr-2 mt-2 rounded-2xl'>
                         <div className='flex flex-col '>
                             {dataBoxSearch.slice(0, 10).map((item, index) => (
