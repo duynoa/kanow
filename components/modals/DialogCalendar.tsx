@@ -4,13 +4,10 @@ import {
     Dialog,
     DialogClose,
     DialogContent,
-    DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogOverlay,
     DialogPortal,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 
 import {
@@ -18,31 +15,50 @@ import {
     SelectContent,
     SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
 
-import { Check, X } from "lucide-react"
+import { X } from "lucide-react"
 
-import { useDialogCalendar, useDialogPromotion } from "@/hooks/useOpenDialog";
-import { addDays, addMonths, differenceInCalendarDays, differenceInDays, differenceInHours, differenceInMinutes, endOfDay, endOfMonth, format, getMonth, getYear, isAfter, isBefore, isSameDay, isSameMinute, isSameMonth, isSameYear, parseISO, setHours, setMinutes, startOfDay, startOfMonth, sub } from "date-fns";
-import { DateRange } from "react-day-picker";
-import { Input } from "../ui/input";
+import { useDialogCalendar } from "@/hooks/useOpenDialog";
+import {
+    addDays,
+    addMonths,
+    differenceInCalendarDays,
+    differenceInDays,
+    differenceInHours,
+    differenceInMinutes,
+    endOfDay,
+    endOfMonth,
+    format,
+    getMonth,
+    getYear,
+    isAfter,
+    isBefore,
+    isSameDay,
+    isSameMinute,
+    isSameMonth,
+    isSameYear,
+    parseISO,
+    setHours,
+    setMinutes,
+    startOfDay,
+    startOfMonth,
+    sub
+} from "date-fns";
 import { v4 as uuidv4 } from 'uuid';
 import { Label } from "../ui/label";
 import { BsFillArrowRightCircleFill } from "react-icons/bs";
 import { Button } from "../ui/button";
 
-import * as SelectPrimitive from "@radix-ui/react-select"
 import { useParams, usePathname, useSearchParams } from "next/navigation";
-import { toastCore } from "@/lib/toast";
+
 import { CalendarCustom } from "../ui/calendarCustom";
-import { getListCalendarPriceMonth } from "@/services/cars/calendar.services";
+
 import { useDataDetailCar, useDataListCarAutonomous, useDataListCarsDriver } from "@/hooks/useDataQueryKey";
 import { useGeneralKey } from "@/hooks/useGeneralKey";
 import { Calendar } from "../ui/calendar";
-import moment from "moment";
 
 type Props = {
 }
@@ -318,8 +334,6 @@ export function DialogCalendar({ }: Props) {
     const initialDateTime = {
         dataTimeLeft: generateTimeSlots(),
         dataTimeRight: generateTimeSlots()
-        // dataTimeLeft: generateTimeSlots(),
-        // dataTimeRight: generateTimeSlots()
     }
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [dateTimeComponent, setDateTimeComponent] = useState<any>()
@@ -442,7 +456,7 @@ export function DialogCalendar({ }: Props) {
                         dataTime.dataTimeRight,
                         isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_start,
                         isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_end
-                    );                    
+                    );
 
                     setDateTime({
                         dataTimeLeft: newDataTimeReceiveCar,
@@ -451,7 +465,7 @@ export function DialogCalendar({ }: Props) {
                 }
 
             } else if (!dateEnd) {
-                        // setHoursBetWeenDays(0)
+                // setHoursBetWeenDays(0)
                 setNumberDayComponent(1)
                 setValidateDateSubmit(false)
             }
@@ -468,12 +482,10 @@ export function DialogCalendar({ }: Props) {
             const timeDate = Math.ceil(minutesDifference / 1440)
 
             if (daysDifference > 0 && isDateEndAfter) {
-
                 setNumberDayComponent(timeDate);
             } else if (minutesDifference >= 1440 && isDateEndAfter) {
                 setNumberDayComponent(timeDate);
             } else {
-
                 setHoursBetWeenDays(hoursDifference)
                 setNumberDayComponent(1);
             }
@@ -525,7 +537,6 @@ export function DialogCalendar({ }: Props) {
         pathname,
         typeCarCalendar,
     ])
-
 
     const handleCloseModal = (type: string) => {
         setOpenDialogCalendar(false)
@@ -684,7 +695,6 @@ export function DialogCalendar({ }: Props) {
                 setFlagSubmit(true)
             }
         }
-
     };
 
     // change time in calender custotm
@@ -861,17 +871,14 @@ export function DialogCalendar({ }: Props) {
         }
     };
 
-    // console.log('dateStart', dateStart);
-    // console.log('dateEnd', dateEnd);
-
     return (
         <Dialog modal open={openDialogCalendar} onOpenChange={() => handleCloseModal('close1')}>
             <DialogPortal >
                 <DialogOverlay className='z-40' />
                 <DialogContent className={`
-                ${pathname.startsWith('/detail-car/') ? "h-[95vh]" : ""} 
-                ${typeCarCalendar === "calendar_car_autonomous" ? "lg:max-w-[800px] md:max-w-[480px] max-w-[400px]" : "max-w-[400px]"}
-                p-0 w-fit max-h-[95vh] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`
+                ${pathname.startsWith('/detail-car/') ? "h-[95vh]" : "w-fit"} 
+                ${typeCarCalendar === "calendar_car_autonomous" ? "lg:max-w-[840px] md:max-w-[640px] max-w-[380px]" : "max-w-[400px]"}
+                p-0 max-h-[95vh] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`
                 }>
                     <DialogClose
                         onClick={() => handleCloseModal('close2')}
@@ -892,11 +899,11 @@ export function DialogCalendar({ }: Props) {
                                 <div className='flex flex-col gap-2 overflow-auto'>
                                     {
                                         pathname.startsWith('/detail-car/') ?
-                                            <div className='px-2 border m-2 rounded-lg drop-shadow-md max-w-[760px]'>
+                                            <div className='px-2 border m-2 rounded-lg'>
                                                 <CalendarCustom />
                                             </div>
                                             :
-                                            <div className='px-2 border m-2 rounded-lg drop-shadow-md'>
+                                            <div className='px-2 border m-2 rounded-lg'>
                                                 <Calendar
                                                     initialFocus
                                                     mode="range"
@@ -905,7 +912,7 @@ export function DialogCalendar({ }: Props) {
                                                     onSelect={(newDate: any) => handleDateChange(newDate, 'calendar_car_autonomous')}
                                                     numberOfMonths={2}
                                                     fromMonth={toDate}
-                                                    toMonth={endMonth}
+                                                    // toMonth={endMonth}
                                                     disabled={disabledDays}
                                                 />
                                             </div>
@@ -1138,7 +1145,7 @@ export function DialogCalendar({ }: Props) {
                                 <div className='flex flex-col gap-2 overflow-auto'>
                                     {
                                         pathname.startsWith('/detail-car/') ?
-                                            <div className='px-2 border m-2 rounded-lg drop-shadow-md'>
+                                            <div className='px-2 border m-2 rounded-lg'>
                                                 <CalendarCustom />
                                             </div>
                                             :
@@ -1150,7 +1157,7 @@ export function DialogCalendar({ }: Props) {
                                                     selected={dateTimeComponent?.from}
                                                     onSelect={(newDate: any) => handleDateChange(newDate, 'calendar_car_driver')}
                                                     fromMonth={toDate}
-                                                    toMonth={endMonth}
+                                                    // toMonth={endMonth}
                                                     disabled={disabledDays}
                                                 />
                                             </div>

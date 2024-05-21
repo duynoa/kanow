@@ -796,7 +796,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 <div className={`flex ${isState.vehicleHanding.intersectionSquare.propose > 0 ? "justify-between" : "justify-end"}`}>
                                                                     {isState.vehicleHanding.intersectionSquare.propose > 0 &&
                                                                         <FormDescription>
-                                                                            Quãng đường đề xuất: {isState.vehicleHanding.intersectionSquare.propose}%
+                                                                            Quãng đường đề xuất: {isState.vehicleHanding.intersectionSquare.propose}Km
                                                                         </FormDescription>}
                                                                     <FormDescription className='font-bold'>
                                                                         {field.value}Km

@@ -182,18 +182,26 @@ export default function TalentedCalender(props: Props) {
     }
 
     const handleChangePriceWeekend = () => {
-        setTypeDialogSubmit("price_weekend")
-        setOpenDialogSubmit(true)
+        if (dataCalendarComponent.length > 0) {
+            toastCore.error("Vui lòng lưu cập nhật tháng!")
+        } else {
+            setTypeDialogSubmit("price_weekend")
+            setOpenDialogSubmit(true)
+        }
     }
 
     const handleSelectDate = (event: React.MouseEvent<HTMLDivElement>, item: any) => {
-        if (optionRadio === "customPriceSingleDay") {
-            setOpenDialogSubmit(true)
-            setTypeDialogSubmit("price_single")
-            setTypeCar(type)
-            setDataItem(item)
-        } else if (optionRadio === "settingCalendarBusy") {
-            onSubmitBusyDay(item)
+        if (dataCalendarComponent.length > 0) {
+            toastCore.error("Vui lòng lưu cập nhật tháng!")
+        } else {
+            if (optionRadio === "customPriceSingleDay") {
+                setOpenDialogSubmit(true)
+                setTypeDialogSubmit("price_single")
+                setTypeCar(type)
+                setDataItem(item)
+            } else if (optionRadio === "settingCalendarBusy") {
+                onSubmitBusyDay(item)
+            }
         }
     };
 
@@ -487,7 +495,7 @@ export default function TalentedCalender(props: Props) {
                     </div>
                     <div className="flex items-center md:justify-end justify-between gap-2 mt-2">
                         <ButtonSaveForm
-                            title="Lưu Thay Đổi"
+                            title="Cập Nhật Tháng"
                             onClick={form.handleSubmit((values) => onSubmit(values))}
                             disabled={isStateLoadSuccess.loading.isLoadingButton}
                         />

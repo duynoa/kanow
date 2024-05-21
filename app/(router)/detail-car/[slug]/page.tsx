@@ -291,6 +291,8 @@ const DetailCar = ({ params }: Props) => {
                 }
             }
             fetchDataRouteMatrixAddress()
+            console.log('check ??');
+            
         }
     }, [
         typeCarDetail,

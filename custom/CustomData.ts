@@ -64,7 +64,7 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
         favorite_car: res?.data?.favourite_car,
         price: {
             // Tổng số km đi được trong ngày theo xe
-            total_km_day: +res?.data?.total_km_day,
+            total_km_day: +res?.data?.total_km_day ? res?.data?.total_km_day : 1,
             // tiền trước khuyến mãi đầu
             price_before_promotion: res?.data?.price?.rent_cost_day,
             // tiền sau khuyến mãi đầu (nếu có lấy tiền gốc - tiền khuyến mãi trong mảng lấy cái đầu tiên)
@@ -94,11 +94,11 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
                 res?.data?.promotion?.length > 0
                     ? // (((isStateDetailCar?.dataDetailCar?.price?.rent_cost_day + isStateDetailCar?.dataDetailCar?.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion)
 
-                      (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
-                          (numberDay ? numberDay : 1) -
-                      res?.data?.promotion[0]?.price_promotion
+                    (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
+                    (numberDay ? numberDay : 1) -
+                    res?.data?.promotion[0]?.price_promotion
                     : (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
-                      (numberDay ? numberDay : 1),
+                    (numberDay ? numberDay : 1),
             // total_amount:
             //     res?.data?.promotion?.length > 0
             //         ? (res?.data?.price?.rent_cost_day - res?.data?.promotion[0]?.price_promotion) *
@@ -112,12 +112,12 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
             price_depoist:
                 res?.data?.promotion?.length > 0
                     ? ((res?.data?.price?.rent_cost_day - res?.data?.promotion[0]?.price_promotion) *
-                          (numberDay ? numberDay : 1) +
-                          res?.data?.price?.price_insurance_day) *
-                      (res?.data?.price?.percent_deposit / 100)
+                        (numberDay ? numberDay : 1) +
+                        res?.data?.price?.price_insurance_day) *
+                    (res?.data?.price?.percent_deposit / 100)
                     : (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
-                      (numberDay ? numberDay : 1) *
-                      (res?.data?.price?.percent_deposit / 100),
+                    (numberDay ? numberDay : 1) *
+                    (res?.data?.price?.percent_deposit / 100),
             // số ngày
             number_day: numberDay ? numberDay : 1,
             // number_day: res.data.price.number_day ? res.data.price.number_day : 1,
@@ -125,19 +125,19 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
             cash_on_delivery:
                 res?.data?.promotion?.length > 0
                     ? (+res?.data?.price?.rent_cost_day -
-                          +res?.data?.promotion[0]?.price_promotion +
-                          +res?.data?.price?.price_insurance_day) *
-                          (numberDay ? numberDay : 1) -
-                      (res?.data?.price?.rent_cost_day -
-                          res?.data?.promotion[0]?.price_promotion +
-                          res?.data?.price?.price_insurance_day) *
-                          (numberDay ? numberDay : 1) *
-                          (res?.data?.price?.percent_deposit / 100)
+                        +res?.data?.promotion[0]?.price_promotion +
+                        +res?.data?.price?.price_insurance_day) *
+                    (numberDay ? numberDay : 1) -
+                    (res?.data?.price?.rent_cost_day -
+                        res?.data?.promotion[0]?.price_promotion +
+                        res?.data?.price?.price_insurance_day) *
+                    (numberDay ? numberDay : 1) *
+                    (res?.data?.price?.percent_deposit / 100)
                     : (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
-                          (numberDay ? numberDay : 1) -
-                      (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
-                          (numberDay ? numberDay : 1) *
-                          (res?.data?.price?.percent_deposit / 100),
+                    (numberDay ? numberDay : 1) -
+                    (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
+                    (numberDay ? numberDay : 1) *
+                    (res?.data?.price?.percent_deposit / 100),
             max_money_discount: 0,
         },
         promotion: res?.data?.promotion,

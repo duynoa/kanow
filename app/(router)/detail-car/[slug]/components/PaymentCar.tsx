@@ -174,6 +174,9 @@ const PaymentCar = ({ }: Props) => {
         }
     }
 
+    console.log('isStateDetailCar', isStateDetailCar);
+
+
     const handleOpenDialogAddress = (type: string, index?: number) => {
         setOpenDialogAddress(true)
         setType(type)

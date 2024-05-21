@@ -109,11 +109,11 @@ const Footer = () => {
                     name: 'Tin tức và hoạt động',
                     link: '/dispute-resolution'
                 },
-                {
-                    id: uuidv4(),
-                    name: 'Bài viết',
-                    link: '/dispute-resolution'
-                },
+                // {
+                //     id: uuidv4(),
+                //     name: 'Bài viết',
+                //     link: '/dispute-resolution'
+                // },
             ]
         },
     ]
