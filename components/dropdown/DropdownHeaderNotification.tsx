@@ -23,11 +23,13 @@ import { getListNotifications, postReadAllNotifications, postReadSingleNotificat
 import Nodata from "../image/Nodata";
 import LoadingData from "../loadingData/LoadingData";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 
 const DropdownHeaderNotification = ({ children }: any) => {
     const { isVisibleMobile } = useResize()
     const [isMounted, setIsMounted] = useState<boolean>(false)
+    const router = useRouter()
 
     const {
         isStateNotification,
@@ -54,17 +56,18 @@ const DropdownHeaderNotification = ({ children }: any) => {
         setOpenDropdownNotification(open)
     }
 
-
     useEffect(() => {
         const handleWheel = () => {
             const lastScrollCurrentRef = lastContainerRef.current;
             const scrollCurrent = scrollAreaRef.current;
+
 
             if (lastScrollCurrentRef && scrollCurrent) {
                 const lastRefBottom = Math.floor(lastScrollCurrentRef.getBoundingClientRect().bottom);
                 const currentScroll = Math.floor(scrollCurrent.getBoundingClientRect().bottom);
 
                 if ((currentScroll >= (lastRefBottom - ALLOWED_OFFSET)) && !isAtBottomRef.current && isStateNotification.isLoading.isLoadingScroll === false) {
+
                     // Bạn đã cuộn đến cuối phần ScrollArea
                     if (isStateNotification.dataListNotifications && isStateNotification.next !== null) {
                         queryKeyIsStateNotification({
@@ -150,6 +153,8 @@ const DropdownHeaderNotification = ({ children }: any) => {
     ]);
 
     const handleClickNotification = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, item: INotification) => {
+        console.log('item notification:', item);
+
         event.preventDefault();
         event.isPropagationStopped()
         if (item.is_read === 0) {
@@ -175,19 +180,30 @@ const DropdownHeaderNotification = ({ children }: any) => {
                             dataItemNotification: item,
                             dataListNotifications: newData
                         })
-                        setOpenDialogNotification(true)
                     }
                 } catch (err) {
                     throw err
                 }
             }
             postReadNotification()
+
+            if (item.json_data.object === "transaction") {
+                // setOpenDialogNotification(true)
+                router.push(`/info-rental-car/${item?.json_data?.transaction_id}?type=${item?.json_data?.type}`)
+            } else if (item.json_data.object === "driving_liscense_client") {
+                router.push(`/account`)
+            }
         } else {
             queryKeyIsStateNotification({
                 ...isStateNotification,
                 dataItemNotification: item,
             })
-            setOpenDialogNotification(true)
+            if (item.json_data.object === "transaction") {
+                // setOpenDialogNotification(true)
+                router.push(`/info-rental-car/${item?.json_data?.transaction_id}?type=${item?.json_data?.type}`)
+            } else if (item.json_data.object === "driving_liscense_client") {
+                router.push(`/account`)
+            }
         }
     }
 
@@ -207,6 +223,9 @@ const DropdownHeaderNotification = ({ children }: any) => {
         }
     }
 
+    console.log('isStateNotification', isStateNotification);
+
+
     if (!isMounted) return null
 
     return (
@@ -224,14 +243,12 @@ const DropdownHeaderNotification = ({ children }: any) => {
             >
                 <DropdownMenuLabel className='lg:text-xl text-base px-4 py-2 flex items-center justify-between'>
                     <h1>Thông báo</h1>
-                    {isStateNotification.dataListNotifications.some((item: any) => item.is_read == 0) &&
-                        <Button
-                            type="button"
-                            onClick={() => handleClickAllNotification()}
-                            className="bg-transparent text-[#2FB9BD] text-xs hover:text-[#2FB9BD]/80 px-4 py-1 hover:bg-transparent">
-                            Đọc tất cả
-                        </Button>
-                    }
+                    <Button
+                        type="button"
+                        onClick={() => handleClickAllNotification()}
+                        className="bg-transparent text-[#2FB9BD] 2xl:text-sm text-xs     hover:text-[#2FB9BD]/80 px-4 py-1 hover:bg-transparent">
+                        Đọc tất cả
+                    </Button>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <ScrollArea

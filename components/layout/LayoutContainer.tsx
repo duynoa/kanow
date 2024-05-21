@@ -505,6 +505,8 @@ const LayoutContainer = ({
             presenceChannel.bind("notification", (data: any) => {
                 console.log('NOTIFICATION PUSHER: ', data);
                 if (data) {
+                    const jsonData = JSON.parse(data?.json_data)
+
                     const newData: any = {
                         id: data.id,
                         object_id: +data.object_id,
@@ -513,15 +515,15 @@ const LayoutContainer = ({
                         content: data.content,
                         created_at: data.created_at,
                         is_read: 0,
-                        customer_id: informationUser?.id
+                        customer_id: informationUser?.id,
+                        json_data: jsonData,
                     }
                     // đổi trạng thái xác thực trong trang account
-                    const checkStatus = JSON.parse(data?.json_data)
                     setInformationUser({
                         ...informationUser,
                         drivingLiscense: {
                             ...informationUser.drivingLiscense,
-                            status: checkStatus?.status
+                            status: jsonData?.status
                         }
                     })
 

@@ -276,12 +276,21 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 const location = data.result[0].location
 
                 setDataAddress(address)
-                setCoordinatesComponent({
-                    ...coordinatesComponent,
-                    lat: location.lat,
-                    lng: location.lng,
-                })
 
+                if (type === "address_pickup") {
+                    setCoordinatesComponent({
+                        ...coordinatesComponent,
+                        lat: location.lat,
+                        lng: location.lng,
+                    })
+                } else if (type === "address_destination") {
+                    setCoordinatesComponent({
+                        ...coordinatesComponent,
+                        latTo: location.lat,
+                        lngTo: location.lng,
+                    })
+
+                }
                 return
             }
             console.log('Không tìm thấy thông tin vị trí.');
@@ -292,6 +301,8 @@ const DialogFilterAddress = memo(({ }: Props) => {
 
     // handle click lấy vị trí hiện tại
     const handleAddressCurrent = () => {
+        console.log('check address current');
+
         fetchLocationName(coordinatesComponent.latCurrent, coordinatesComponent.lngCurrent)
         setFlagValidateSubmit(true)
     }
@@ -377,7 +388,7 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 setOpenDialogAddress(false)
 
                 // Đặt cookie với giá trị tương ứng
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
+                Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
 
             } else if (type === "address_destination" && dataAddress) {
                 // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
@@ -391,7 +402,7 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 setValueAddressDestination(updatedAddressDestination);
                 setOpenDialogAddress(false);
 
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
+                Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
 
             } else if (type === "address_pickup") {
                 setCoordinates({
@@ -402,7 +413,7 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 setOpenDialogAddress(false)
                 setFlagValidateSubmit(false)
 
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
+                Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
 
             } else if (type === "address_destination") {
                 setCoordinates({
@@ -421,83 +432,11 @@ const DialogFilterAddress = memo(({ }: Props) => {
 
                 setValueAddressDestination([updatedAddressDestination])
 
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
+                Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
             }
 
             setFlagCloseModalRouteAddress(true)
-        }
-        //  else if (pathname.startsWith('/detail-car/')) {
-        //     if (type === "address_pickup_detail" && dataAddress) {
-        //         queryKeyIsStateDetailCar({
-        //             ...isStateDetailCar,
-        //             map: {
-        //                 ...isStateDetailCar.map,
-        //                 coordinates: coordinatesComponent,
-        //                 valueAddressPickup: dataAddress
-        //             }
-        //         })
-        //         setDataAddress("")
-        //         setOpenDialogAddress(false)
-        //     } else if (type === "address_destination_detail" && dataAddress) {
-        //         // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-        //         const updatedAddressDestination = [...valueAddressDestination];
-        //         updatedAddressDestination[indexAddressDestination] = {
-        //             id: valueAddressDestination[indexAddressDestination].id,
-        //             valueAddress: dataAddress
-        //         };
-
-        //         queryKeyIsStateDetailCar({
-        //             ...isStateDetailCar,
-        //             map: {
-        //                 ...isStateDetailCar.map,
-        //                 coordinates: coordinatesComponent,
-        //                 valueAddressDestination: updatedAddressDestination
-        //             }
-        //         })
-
-        //         setDataAddress("")
-        //         setOpenDialogAddress(false);
-        //     } else if (type === "address_pickup_detail") {
-        //         queryKeyIsStateDetailCar({
-        //             ...isStateDetailCar,
-        //             map: {
-        //                 ...isStateDetailCar.map,
-        //                 valueAddressPickup: "",
-        //                 coordinates: {
-        //                     ...coordinatesComponent,
-        //                     lat: 0,
-        //                     lng: 0,
-        //                 },
-        //             }
-        //         })
-
-        //         setOpenDialogAddress(false)
-        //         setFlagValidateSubmit(false)
-        //     } else if (type === "address_destination_detail") {
-        //         const updatedAddressDestination = [...valueAddressDestination];
-        //         updatedAddressDestination[indexAddressDestination] = {
-        //             id: valueAddressDestination[indexAddressDestination].id,
-        //             valueAddress: ""
-        //         };
-
-        //         queryKeyIsStateDetailCar({
-        //             ...isStateDetailCar,
-        //             map: {
-        //                 ...isStateDetailCar.map,
-        //                 valueAddressDestination: updatedAddressDestination,
-        //                 coordinates: {
-        //                     ...coordinatesComponent,
-        //                     lat: 0,
-        //                     lng: 0,
-        //                 },
-        //             }
-        //         })
-
-        //         setOpenDialogAddress(false)
-        //         setFlagValidateSubmit(false)
-        //     }
-        // } 
-        else {
+        } else {
             if (type === "address_pickup" && dataAddress) {
                 setValueAddressPickup(dataAddress)
                 setCoordinates(coordinatesComponent)
@@ -506,9 +445,11 @@ const DialogFilterAddress = memo(({ }: Props) => {
 
                 setValueTwoAddress(itemValuePickup.name)
 
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
+                Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
 
             } else if (type === "address_destination" && dataAddress) {
+                console.log('check address coordinatesComponent:', coordinatesComponent);
+
                 // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
                 const updatedAddressDestination = [...valueAddressDestination];
                 updatedAddressDestination[indexAddressDestination] = {
@@ -523,8 +464,7 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 setValueTwoAddress(`${itemValuePickup.name} - ${itemValueDestination.name}`)
                 setOpenDialogAddress(false);
 
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
-
+                Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
             } else if (type === "address_pickup") {
                 setCoordinates({
                     ...coordinatesComponent,
@@ -535,8 +475,7 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 setOpenDialogAddress(false)
                 setFlagValidateSubmit(false)
 
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
-
+                Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
             } else if (type === "address_destination") {
                 setCoordinates({
                     ...coordinatesComponent,
@@ -554,7 +493,7 @@ const DialogFilterAddress = memo(({ }: Props) => {
 
                 setValueAddressDestination([updatedAddressDestination])
 
-                // Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
+                Cookies.set('coordinates', JSON.stringify(coordinatesComponent), { expires: expirationTime });
             }
         }
     }

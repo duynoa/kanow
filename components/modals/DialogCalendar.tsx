@@ -442,10 +442,7 @@ export function DialogCalendar({ }: Props) {
                         dataTime.dataTimeRight,
                         isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_start,
                         isStateDetailCar?.dataDetailCar?.hour_back_car[0]?.hour_end
-                    );
-
-                    console.log('isStateDetailCar?.dataDetailCar?.hour_receive_car');
-                    
+                    );                    
 
                     setDateTime({
                         dataTimeLeft: newDataTimeReceiveCar,

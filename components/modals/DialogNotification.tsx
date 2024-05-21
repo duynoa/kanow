@@ -51,10 +51,8 @@ export function DialogNotification({ }: Props) {
 
                 {
                     isStateNotification?.dataItemNotification &&
-                    <div className='px-4'>
-                        <div className='text-base'>
-                            {isStateNotification?.dataItemNotification?.content ? isStateNotification?.dataItemNotification?.content : ''}
-                        </div>
+                    <div className='px-4 text-base'>
+                        {isStateNotification?.dataItemNotification?.content ? isStateNotification?.dataItemNotification?.content : ''}
                     </div>
                 }
             </DialogContent>

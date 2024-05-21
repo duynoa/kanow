@@ -31,6 +31,7 @@ import { LuCalendarClock } from "react-icons/lu";
 import { uuidv4 } from "@/lib/uuid";
 import moment from "moment";
 import SkeletonCalendar from "@/components/skeleton/SkeletonCalendar";
+import Nodata from "@/components/image/Nodata";
 
 type Props = {}
 
@@ -82,6 +83,15 @@ export default function SeflCalendar(props: Props) {
     const id: string | null = param.get("key") || ''
 
     const type: string | null = param.get("t") || ''
+
+    const form = useForm({
+        defaultValues: {
+            month: {
+                startMonth: 0,
+                endMonth: 0
+            },
+        }
+    })
 
     // fetch data calendar detail
     const fetchDataListCalendarPriceMonth = useCallback(async () => {
@@ -146,16 +156,6 @@ export default function SeflCalendar(props: Props) {
         }
     }, [isStateLoadSuccess.loading.isSuccessFetchApi, fetchDataListCalendarPriceMonth]);
 
-
-    const form = useForm({
-        defaultValues: {
-            month: {
-                startMonth: 0,
-                endMonth: 0
-            },
-        }
-    })
-
     useEffect(() => {
         if (
             dataCalendar.length > 0 &&
@@ -167,6 +167,8 @@ export default function SeflCalendar(props: Props) {
             if (valueActive !== undefined) {
                 form.setValue("month.endMonth", valueActive);
             }
+        } else if (dataCalendar.length === 0) {
+            form.setValue("month.endMonth", 0);
         }
     }, [dataCalendar.length, isStatePolicy, form])
 
@@ -196,7 +198,11 @@ export default function SeflCalendar(props: Props) {
 
     const onSubmitBusyDay = async (item: any) => {
         try {
-
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    isSuccessFetchApi: true
+                }
+            })
 
             const dataSubmit = {
                 type: type,
@@ -207,12 +213,6 @@ export default function SeflCalendar(props: Props) {
 
             console.log('data res:', data);
             if (data && data.result) {
-                queryKeyIsStateLoadSuccess({
-                    loading: {
-                        isSuccessFetchApi: true
-                    }
-                })
-
                 toastCore.success("Cập nhật ngày bận thành công!")
             } else {
                 toastCore.error(data.message)
@@ -269,7 +269,7 @@ export default function SeflCalendar(props: Props) {
                     {
                         id: uuidv4(),
                         price_month_car_id: monthInfoId,
-                        price: dataOther.rent_cost_propose,
+                        price: dataDetail?.data?.car?.rent_cost,
                         date: dateString,
                         date_word: dateWord,
                         day: day,
@@ -296,6 +296,7 @@ export default function SeflCalendar(props: Props) {
 
         console.log('monthInfoArray', monthInfoArray);
     };
+    console.log('dataDetail', dataDetail);
 
     const onSubmit = async (value: any) => {
         console.log('value:', value);
@@ -315,7 +316,7 @@ export default function SeflCalendar(props: Props) {
                             // Thực hiện các thao tác bạn muốn với mỗi priceItem ở đây
                             // Ví dụ:
                             dataSubmit.append(`day[${item?.month}][]`, moment(priceItem?.date).format("DD/MM/YYYY"));
-                            dataSubmit.append(`price[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, priceItem?.price);
+                            dataSubmit.append(`price[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, dataDetail?.data?.car?.rent_cost);
                             dataSubmit.append(`status[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, "0");
                             // và những cái khác...
                         });
@@ -331,7 +332,7 @@ export default function SeflCalendar(props: Props) {
                             // Thực hiện các thao tác bạn muốn với mỗi priceItem ở đây
                             // Ví dụ:
                             dataSubmit.append(`day[${item?.month}][]`, moment(priceItem?.date).format("DD/MM/YYYY"));
-                            dataSubmit.append(`price[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, priceItem?.price);
+                            dataSubmit.append(`price[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, dataDetail?.data?.car?.rent_cost);
                             dataSubmit.append(`status[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, "0");
                             // và những cái khác...
                         });
@@ -340,7 +341,6 @@ export default function SeflCalendar(props: Props) {
             }
 
             console.log('dataSubmit : ', dataSubmit);
-
 
             if (value.month.endMonth !== 0) {
                 queryKeyIsStateLoadSuccess({
@@ -555,252 +555,263 @@ export default function SeflCalendar(props: Props) {
                             <SkeletonCalendar />
                             :
                             (
-                                dataCalendarComponent.length > 0 && dataCalendar ?
-                                    dataCalendarComponent.map((item: any, index: any) => {
-                                        // setup tháng
-                                        const currentDate = new Date(); // Lấy ngày hiện tại
-                                        const currentYear = currentDate?.getFullYear(); // Lấy năm hiện tại
-                                        const monthData = dataCalendar?.filter(item => +item?.year === currentYear);
+                                dataCalendarComponent.length > 0 ?
+                                    (
+                                        dataCalendarComponent.map((item: any, index: any) => {
+                                            // setup tháng
+                                            const currentDate = new Date(); // Lấy ngày hiện tại
+                                            const currentYear = currentDate?.getFullYear(); // Lấy năm hiện tại
+                                            const monthData = dataCalendar?.filter(item => +item?.year === currentYear);
 
-                                        const month: any = item?.month;
-                                        const formattedMonth = parseInt(month, 10)?.toString() // tháng format bỏ số 0
+                                            const month: any = item?.month;
+                                            const formattedMonth = parseInt(month, 10)?.toString() // tháng format bỏ số 0
 
-                                        const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ Nhật'];
-                                        // Tìm ngày đầu tiên của tháng và ngày cuối của tháng
-                                        // Lưu ý: month phải trừ đi 1 vì months trong JavaScript bắt đầu từ 0 (tháng 1 là tháng 0)
-                                        const firstDayOfMonth = new Date(currentYear, month - 1, 1);
-                                        const lastDayOfMonth = new Date(currentYear, month, 1);
+                                            const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ Nhật'];
+                                            // Tìm ngày đầu tiên của tháng và ngày cuối của tháng
+                                            // Lưu ý: month phải trừ đi 1 vì months trong JavaScript bắt đầu từ 0 (tháng 1 là tháng 0)
+                                            const firstDayOfMonth = new Date(currentYear, month - 1, 1);
+                                            const lastDayOfMonth = new Date(currentYear, month, 1);
 
-                                        // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
-                                        const firstDayOfWeek = firstDayOfMonth?.getDay();
-                                        const lastDayOfWeek = lastDayOfMonth?.getDay();
+                                            // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
+                                            const firstDayOfWeek = firstDayOfMonth?.getDay();
+                                            const lastDayOfWeek = lastDayOfMonth?.getDay();
 
-                                        // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
-                                        const startOfPreviousWeek = new Date(firstDayOfMonth);
-                                        startOfPreviousWeek?.setDate(startOfPreviousWeek?.getDate() - (firstDayOfWeek - 1));
+                                            // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
+                                            const startOfPreviousWeek = new Date(firstDayOfMonth);
+                                            startOfPreviousWeek?.setDate(startOfPreviousWeek?.getDate() - (firstDayOfWeek - 1));
 
-                                        const endOfNextWeek = new Date(lastDayOfMonth);
-                                        endOfNextWeek?.setDate(endOfNextWeek?.getDate() + (7 - lastDayOfWeek));
+                                            const endOfNextWeek = new Date(lastDayOfMonth);
+                                            endOfNextWeek?.setDate(endOfNextWeek?.getDate() + (7 - lastDayOfWeek));
 
-                                        const previousMonthDays = [];
-                                        for (let d = new Date(startOfPreviousWeek); d < firstDayOfMonth; d.setDate(d.getDate() + 1)) {
-                                            previousMonthDays.push({
-                                                date: new Date(d),
-                                                day: d.getDate(),
-                                                isPreviousMonthDay: true,
+                                            const previousMonthDays = [];
+                                            for (let d = new Date(startOfPreviousWeek); d < firstDayOfMonth; d.setDate(d.getDate() + 1)) {
+                                                previousMonthDays.push({
+                                                    date: new Date(d),
+                                                    day: d.getDate(),
+                                                    isPreviousMonthDay: true,
+                                                });
+                                            }
+
+                                            const currentMonthDays = item.price_detail.map((dayDataApi: any) => {
+                                                const currentDate = new Date(dayDataApi.date);
+                                                return {
+                                                    ...dayDataApi,
+                                                    date: currentDate,
+                                                    day: currentDate.getDate(),
+                                                    price: dayDataApi.price,
+                                                };
                                             });
-                                        }
 
-                                        const currentMonthDays = item.price_detail.map((dayDataApi: any) => {
-                                            const currentDate = new Date(dayDataApi.date);
-                                            return {
-                                                ...dayDataApi,
-                                                date: currentDate,
-                                                day: currentDate.getDate(),
-                                                price: dayDataApi.price,
-                                            };
-                                        });
+                                            const nextMonthDays = [];
+                                            for (let d = new Date(lastDayOfMonth); d <= endOfNextWeek; d.setDate(d.getDate() + 1)) {
+                                                nextMonthDays.push({
+                                                    date: new Date(d),
+                                                    day: d.getDate(),
+                                                    isNextMonthDay: true,
+                                                });
+                                            }
 
-                                        const nextMonthDays = [];
-                                        for (let d = new Date(lastDayOfMonth); d <= endOfNextWeek; d.setDate(d.getDate() + 1)) {
-                                            nextMonthDays.push({
-                                                date: new Date(d),
-                                                day: d.getDate(),
-                                                isNextMonthDay: true,
-                                            });
-                                        }
+                                            const dayComponents = [...previousMonthDays, ...currentMonthDays, ...nextMonthDays].map((dayData, i, arr) => {
+                                                // So sánh ngày hiện tại với ngày trong danh sách
+                                                const dayDate = dayData.date;
+                                                const isPastDay = dayDate < currentDate && !isSameDay(dayDate, currentDate);
+                                                // Xác định xem ngày hiện tại là thứ mấy
+                                                const dayOfWeek = dayData.date.getDay(); // 0 là Chủ Nhật, 1 là Thứ 2, ..., 6 là Thứ 7
 
-                                        const dayComponents = [...previousMonthDays, ...currentMonthDays, ...nextMonthDays].map((dayData, i, arr) => {
-                                            // So sánh ngày hiện tại với ngày trong danh sách
-                                            const dayDate = dayData.date;
-                                            const isPastDay = dayDate < currentDate && !isSameDay(dayDate, currentDate);
-                                            // Xác định xem ngày hiện tại là thứ mấy
-                                            const dayOfWeek = dayData.date.getDay(); // 0 là Chủ Nhật, 1 là Thứ 2, ..., 6 là Thứ 7
+                                                // Kiểm tra xem ngày hiện tại là thứ 7 hay chủ nhật không
+                                                const isSaturday = dayOfWeek === 6;
+                                                const isSunday = dayOfWeek === 0;
 
-                                            // Kiểm tra xem ngày hiện tại là thứ 7 hay chủ nhật không
-                                            const isSaturday = dayOfWeek === 6;
-                                            const isSunday = dayOfWeek === 0;
-
-                                            return (
-                                                <div
-                                                    key={`day-${i}`}
-                                                    onClick={
-                                                        isPastDay || dayData.isNextMonthDay || dayData.isPreviousMonthDay ?
-                                                            () => { }
-                                                            :
-                                                            (event) => handleSelectDate(event, dayData)
-                                                    }
-                                                    className={`col-span-1  border-[#F4F4F4] border-r border-b flex flex-col justify-center items-center 3xl:gap-1 gap-0 w-full 3xl:h-14 h-12 group text-center                            
+                                                return (
+                                                    <div
+                                                        key={`day-${i}`}
+                                                        onClick={
+                                                            isPastDay || dayData.isNextMonthDay || dayData.isPreviousMonthDay ?
+                                                                () => { }
+                                                                :
+                                                                (event) => handleSelectDate(event, dayData)
+                                                        }
+                                                        className={`col-span-1  border-[#F4F4F4] border-r border-b flex flex-col justify-center items-center 3xl:gap-1 gap-0 w-full 3xl:h-14 h-12 group text-center                            
                                 ${!isPastDay && dayData.status === 2 || !isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-pointer" : ""}
                                 ${isPastDay && dayData.status === 2 || isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-default" : ""}
                                 ${isPastDay || dayData.isNextMonthDay || dayData.isPreviousMonthDay ? "text-gray-400 font-normal cursor-default" : " cursor-pointer hover:bg-[#E0E0E0]/20 duration-200 transition-all"}
                                 `}
-                                                >
-                                                    <div className='3xl:text-xs text-[11px] font-normal'>
-                                                        {dayData.day}
-                                                    </div>
+                                                    >
+                                                        <div className='3xl:text-xs text-[11px] font-normal'>
+                                                            {dayData.day}
+                                                        </div>
 
-                                                    <div
-                                                        className={`3xl:text-[13px] text-xs 
+                                                        <div
+                                                            className={`3xl:text-[13px] text-xs 
                                     ${isPastDay ? "font-normal" : "font-semibold"} 
                                 ${(isSaturday && !isPastDay) || (isSunday && !isPastDay) ? 'text-[#2FB9BD]' : ''} 
                                 `}
-                                                    >
-                                                        {dayData.price ? FormatNumberToThousands(dayData.price) : ''}
+                                                        >
+                                                            {dayData.price ? FormatNumberToThousands(dayData.price) : ''}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            );
-                                        });
-
-                                        return (
-                                            <div key={`id-${item.id}`} className='flex flex-col 3xl:gap-6 gap-4'>
-                                                <div className='w-full flex items-center justify-center text-xl font-semibold text-[#2FB9BD] uppercase'>
-                                                    Tháng {formattedMonth}, {currentYear}
-                                                </div>
-
-                                                <div className='flex flex-col 3xl:gap-4 gap-2'>
-                                                    {/* Render các thứ trong tuần */}
-                                                    <div className="grid grid-cols-7 text-center 3xl:text-sm text-[13px] font-light uppercase">
-                                                        {
-                                                            daysOfWeek.map((item, index) => (
-                                                                <div key={`index-week-${index}`}>
-                                                                    {item}
-                                                                </div>
-                                                            ))
-                                                        }
-                                                    </div>
-
-                                                    {/* Render các ngày trong tuần */}
-                                                    <div className='grid grid-cols-7 items-center border-[#F4F4F4] border-l border-t'>
-                                                        {dayComponents}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )
-                                    })
-                                    :
-                                    dataCalendar.map((item: any, index: any) => {
-                                        // setup tháng
-                                        const currentDate = new Date(); // Lấy ngày hiện tại
-                                        const currentYear = currentDate?.getFullYear(); // Lấy năm hiện tại
-                                        const monthData = dataCalendar?.filter(item => +item?.year === currentYear);
-
-                                        const month: any = item?.month;
-                                        const formattedMonth = parseInt(month, 10)?.toString() // tháng format bỏ số 0
-
-                                        const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ Nhật'];
-                                        // Tìm ngày đầu tiên của tháng và ngày cuối của tháng
-                                        // Lưu ý: month phải trừ đi 1 vì months trong JavaScript bắt đầu từ 0 (tháng 1 là tháng 0)
-                                        const firstDayOfMonth = new Date(currentYear, month - 1, 1);
-                                        const lastDayOfMonth = new Date(currentYear, month, 1);
-
-                                        // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
-                                        const firstDayOfWeek = firstDayOfMonth?.getDay();
-                                        const lastDayOfWeek = lastDayOfMonth?.getDay();
-
-                                        // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
-                                        const startOfPreviousWeek = new Date(firstDayOfMonth);
-                                        startOfPreviousWeek?.setDate(startOfPreviousWeek?.getDate() - (firstDayOfWeek - 1));
-
-                                        const endOfNextWeek = new Date(lastDayOfMonth);
-                                        endOfNextWeek?.setDate(endOfNextWeek?.getDate() + (7 - lastDayOfWeek));
-
-                                        const previousMonthDays = [];
-                                        for (let d = new Date(startOfPreviousWeek); d < firstDayOfMonth; d.setDate(d.getDate() + 1)) {
-                                            previousMonthDays.push({
-                                                date: new Date(d),
-                                                day: d.getDate(),
-                                                isPreviousMonthDay: true,
+                                                );
                                             });
-                                        }
-
-                                        const currentMonthDays = item.price_detail.map((dayDataApi: any) => {
-                                            const currentDate = new Date(dayDataApi.date);
-                                            return {
-                                                ...dayDataApi,
-                                                date: currentDate,
-                                                day: currentDate.getDate(),
-                                                price: dayDataApi.price,
-                                            };
-                                        });
-
-                                        const nextMonthDays = [];
-                                        for (let d = new Date(lastDayOfMonth); d <= endOfNextWeek; d.setDate(d.getDate() + 1)) {
-                                            nextMonthDays.push({
-                                                date: new Date(d),
-                                                day: d.getDate(),
-                                                isNextMonthDay: true,
-                                            });
-                                        }
-
-                                        const dayComponents = [...previousMonthDays, ...currentMonthDays, ...nextMonthDays].map((dayData, i, arr) => {
-                                            // So sánh ngày hiện tại với ngày trong danh sách
-                                            const dayDate = dayData.date;
-                                            const isPastDay = dayDate < currentDate && !isSameDay(dayDate, currentDate);
-                                            // Xác định xem ngày hiện tại là thứ mấy
-                                            const dayOfWeek = dayData.date.getDay(); // 0 là Chủ Nhật, 1 là Thứ 2, ..., 6 là Thứ 7
-
-                                            // Kiểm tra xem ngày hiện tại là thứ 7 hay chủ nhật không
-                                            const isSaturday = dayOfWeek === 6;
-                                            const isSunday = dayOfWeek === 0;
 
                                             return (
-                                                <div
-                                                    key={`day-${i}`}
-                                                    onClick={
-                                                        isPastDay || dayData.isNextMonthDay || dayData.isPreviousMonthDay ?
-                                                            () => { }
-                                                            :
-                                                            (event) => handleSelectDate(event, dayData)
+                                                <div key={`id-${item.id}`} className='flex flex-col 3xl:gap-6 gap-4'>
+                                                    <div className='w-full flex items-center justify-center text-xl font-semibold text-[#2FB9BD] uppercase'>
+                                                        Tháng {formattedMonth}, {currentYear}
+                                                    </div>
+
+                                                    <div className='flex flex-col 3xl:gap-4 gap-2'>
+                                                        {/* Render các thứ trong tuần */}
+                                                        <div className="grid grid-cols-7 text-center 3xl:text-sm text-[13px] font-light uppercase">
+                                                            {
+                                                                daysOfWeek.map((item, index) => (
+                                                                    <div key={`index-week-${index}`}>
+                                                                        {item}
+                                                                    </div>
+                                                                ))
+                                                            }
+                                                        </div>
+
+                                                        {/* Render các ngày trong tuần */}
+                                                        <div className='grid grid-cols-7 items-center border-[#F4F4F4] border-l border-t'>
+                                                            {dayComponents}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    )
+                                    :
+                                    (
+                                        dataCalendar.length > 0 ?
+                                            (
+                                                dataCalendar.map((item: any, index: any) => {
+                                                    // setup tháng
+                                                    const currentDate = new Date(); // Lấy ngày hiện tại
+                                                    const currentYear = currentDate?.getFullYear(); // Lấy năm hiện tại
+                                                    const monthData = dataCalendar?.filter(item => +item?.year === currentYear);
+
+                                                    const month: any = item?.month;
+                                                    const formattedMonth = parseInt(month, 10)?.toString() // tháng format bỏ số 0
+
+                                                    const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ Nhật'];
+                                                    // Tìm ngày đầu tiên của tháng và ngày cuối của tháng
+                                                    // Lưu ý: month phải trừ đi 1 vì months trong JavaScript bắt đầu từ 0 (tháng 1 là tháng 0)
+                                                    const firstDayOfMonth = new Date(currentYear, month - 1, 1);
+                                                    const lastDayOfMonth = new Date(currentYear, month, 1);
+
+                                                    // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
+                                                    const firstDayOfWeek = firstDayOfMonth?.getDay();
+                                                    const lastDayOfWeek = lastDayOfMonth?.getDay();
+
+                                                    // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
+                                                    const startOfPreviousWeek = new Date(firstDayOfMonth);
+                                                    startOfPreviousWeek?.setDate(startOfPreviousWeek?.getDate() - (firstDayOfWeek - 1));
+
+                                                    const endOfNextWeek = new Date(lastDayOfMonth);
+                                                    endOfNextWeek?.setDate(endOfNextWeek?.getDate() + (7 - lastDayOfWeek));
+
+                                                    const previousMonthDays = [];
+                                                    for (let d = new Date(startOfPreviousWeek); d < firstDayOfMonth; d.setDate(d.getDate() + 1)) {
+                                                        previousMonthDays.push({
+                                                            date: new Date(d),
+                                                            day: d.getDate(),
+                                                            isPreviousMonthDay: true,
+                                                        });
                                                     }
-                                                    className={`col-span-1  border-[#F4F4F4] border-r border-b flex flex-col justify-center items-center 3xl:gap-1 gap-0 w-full 3xl:h-14 h-12 group text-center                            
-                                    ${!isPastDay && dayData.status === 2 || !isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-pointer" : ""}
-                                    ${isPastDay && dayData.status === 2 || isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-default" : ""}
-                                    ${isPastDay || dayData.isNextMonthDay || dayData.isPreviousMonthDay ? "text-gray-400 font-normal cursor-default" : " cursor-pointer hover:bg-[#E0E0E0]/20 duration-200 transition-all"}
-                                    `}
-                                                >
-                                                    <div className='3xl:text-xs text-[11px] font-normal'>
-                                                        {dayData.day}
-                                                    </div>
 
-                                                    <div
-                                                        className={`3xl:text-[13px] text-xs 
-                                        ${isPastDay ? "font-normal" : "font-semibold"} 
-                                    ${(isSaturday && !isPastDay) || (isSunday && !isPastDay) ? 'text-[#2FB9BD]' : ''} 
-                                    `}
-                                                    >
-                                                        {dayData.price ? FormatNumberToThousands(dayData.price) : ''}
-                                                    </div>
-                                                </div>
-                                            );
-                                        });
+                                                    const currentMonthDays = item.price_detail.map((dayDataApi: any) => {
+                                                        const currentDate = new Date(dayDataApi.date);
+                                                        return {
+                                                            ...dayDataApi,
+                                                            date: currentDate,
+                                                            day: currentDate.getDate(),
+                                                            price: dayDataApi.price,
+                                                        };
+                                                    });
 
-                                        return (
-                                            <div key={`id-${item.id}`} className='flex flex-col 3xl:gap-6 gap-4'>
-                                                <div className='w-full flex items-center justify-center text-xl font-semibold text-[#2FB9BD] uppercase'>
-                                                    Tháng {formattedMonth}, {currentYear}
-                                                </div>
+                                                    const nextMonthDays = [];
+                                                    for (let d = new Date(lastDayOfMonth); d <= endOfNextWeek; d.setDate(d.getDate() + 1)) {
+                                                        nextMonthDays.push({
+                                                            date: new Date(d),
+                                                            day: d.getDate(),
+                                                            isNextMonthDay: true,
+                                                        });
+                                                    }
 
-                                                <div className='flex flex-col 3xl:gap-4 gap-2'>
-                                                    {/* Render các thứ trong tuần */}
-                                                    <div className="grid grid-cols-7 text-center 3xl:text-sm text-[13px] font-light uppercase">
-                                                        {
-                                                            daysOfWeek.map((item, index) => (
-                                                                <div key={`index-week-${index}`}>
-                                                                    {item}
+                                                    const dayComponents = [...previousMonthDays, ...currentMonthDays, ...nextMonthDays].map((dayData, i, arr) => {
+                                                        // So sánh ngày hiện tại với ngày trong danh sách
+                                                        const dayDate = dayData.date;
+                                                        const isPastDay = dayDate < currentDate && !isSameDay(dayDate, currentDate);
+                                                        // Xác định xem ngày hiện tại là thứ mấy
+                                                        const dayOfWeek = dayData.date.getDay(); // 0 là Chủ Nhật, 1 là Thứ 2, ..., 6 là Thứ 7
+
+                                                        // Kiểm tra xem ngày hiện tại là thứ 7 hay chủ nhật không
+                                                        const isSaturday = dayOfWeek === 6;
+                                                        const isSunday = dayOfWeek === 0;
+
+                                                        return (
+                                                            <div
+                                                                key={`day-${i}`}
+                                                                onClick={
+                                                                    isPastDay || dayData.isNextMonthDay || dayData.isPreviousMonthDay ?
+                                                                        () => { }
+                                                                        :
+                                                                        (event) => handleSelectDate(event, dayData)
+                                                                }
+                                                                className={`col-span-1  border-[#F4F4F4] border-r border-b flex flex-col justify-center items-center 3xl:gap-1 gap-0 w-full 3xl:h-14 h-12 group text-center                            
+                                        ${!isPastDay && dayData.status === 2 || !isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-pointer" : ""}
+                                        ${isPastDay && dayData.status === 2 || isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-default" : ""}
+                                        ${isPastDay || dayData.isNextMonthDay || dayData.isPreviousMonthDay ? "text-gray-400 font-normal cursor-default" : " cursor-pointer hover:bg-[#E0E0E0]/20 duration-200 transition-all"}
+                                        `}
+                                                            >
+                                                                <div className='3xl:text-xs text-[11px] font-normal'>
+                                                                    {dayData.day}
                                                                 </div>
-                                                            ))
-                                                        }
-                                                    </div>
 
-                                                    {/* Render các ngày trong tuần */}
-                                                    <div className='grid grid-cols-7 items-center border-[#F4F4F4] border-l border-t'>
-                                                        {dayComponents}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )
-                                    })
+                                                                <div
+                                                                    className={`3xl:text-[13px] text-xs 
+                                            ${isPastDay ? "font-normal" : "font-semibold"} 
+                                        ${(isSaturday && !isPastDay) || (isSunday && !isPastDay) ? 'text-[#2FB9BD]' : ''} 
+                                        `}
+                                                                >
+                                                                    {dayData.price ? FormatNumberToThousands(dayData.price) : ''}
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    });
+
+                                                    return (
+                                                        <div key={`id-${item.id}`} className='flex flex-col 3xl:gap-6 gap-4'>
+                                                            <div className='w-full flex items-center justify-center text-xl font-semibold text-[#2FB9BD] uppercase'>
+                                                                Tháng {formattedMonth}, {currentYear}
+                                                            </div>
+
+                                                            <div className='flex flex-col 3xl:gap-4 gap-2'>
+                                                                {/* Render các thứ trong tuần */}
+                                                                <div className="grid grid-cols-7 text-center 3xl:text-sm text-[13px] font-light uppercase">
+                                                                    {
+                                                                        daysOfWeek.map((item, index) => (
+                                                                            <div key={`index-week-${index}`}>
+                                                                                {item}
+                                                                            </div>
+                                                                        ))
+                                                                    }
+                                                                </div>
+
+                                                                {/* Render các ngày trong tuần */}
+                                                                <div className='grid grid-cols-7 items-center border-[#F4F4F4] border-l border-t'>
+                                                                    {dayComponents}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })
+                                            )
+                                            :
+                                            (
+                                                <Nodata type="list-calendar" />
+                                            )
+                                    )
                             )
                     }
                 </div>

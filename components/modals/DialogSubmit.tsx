@@ -68,9 +68,15 @@ export function DialogSubmit({ }: Props) {
             })
             return
         } else if (typeDialogSubmit == "price_weekend" && openDialogSubmit) {
-            form.setValue("saturdayPrice", dataOther?.rent_cost_propose > 0 ? FormatOnlyNumberToThousands(dataOther?.rent_cost_propose) : "")
-            form.setValue("sundayPrice", dataOther?.rent_cost_propose > 0 ? FormatOnlyNumberToThousands(dataOther?.rent_cost_propose) : "")
-            return
+            if (type == "1") {
+                form.setValue("saturdayPrice", dataDetail?.data?.car?.rent_cost > 0 ? FormatOnlyNumberToThousands(dataDetail?.data?.car?.rent_cost) : "")
+                form.setValue("sundayPrice", dataDetail?.data?.car?.rent_cost > 0 ? FormatOnlyNumberToThousands(dataDetail?.data?.car?.rent_cost) : "")
+                return
+            } else if (type == "2") {
+                form.setValue("saturdayPrice", dataDetail?.data?.car_talent?.rent_cost > 0 ? FormatOnlyNumberToThousands(dataDetail?.data?.car_talent?.rent_cost) : "")
+                form.setValue("sundayPrice", dataDetail?.data?.car_talent?.rent_cost > 0 ? FormatOnlyNumberToThousands(dataDetail?.data?.car_talent?.rent_cost) : "")
+                return  
+            }
         } else {
             setTimeout(() => {
                 form.reset()

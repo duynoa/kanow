@@ -329,7 +329,7 @@ export const useDialogFilterMyCar = create<IOpenDialogFilterCar>((set) => ({
     setDefaultValue: (value: any) => set((state) => ({ defaultValue: value })),
     setOpenDialogFilterCar: (key: any, type?: string) => set((state) => ({ openDialogFilterCar: key, type: type })),
     dataFilter: [],
-    valueFilter: '',
+    valueFilter: "-1",
     setDataFilter: (key: any) => set((state) => ({ dataFilter: key })),
 }))
 

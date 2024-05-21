@@ -6,7 +6,13 @@ interface INotification {
     content: string,
     created_at: string,
     is_read: number,
-    customer_id: number
+    customer_id: number,
+    json_data: {
+        transaction_id: number,
+        object: string,
+        type?: number,
+        status?: number,
+    }
 }
 
 export type {
