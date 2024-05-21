@@ -92,15 +92,6 @@ const SectionArticle = (props: Props) => {
                                                     src={item.image ? item.image : '/default/default.png'}
                                                     className='w-full h-full object-cover rounded-2xl group-hover:scale-105 duration-500 transition ease-in-out'
                                                 />
-                                                {/* <BlurImage
-                                                    image={item.image ? item.image : '/default/default.png'}
-                                                    // image={"/other/car/car1.png" ? "/other/car/car1.png" : '/default/default.png'}
-                                                    alt="image_card"
-                                                    width={1200}
-                                                    height={600}
-                                                    className="rounded-2xl"
-                                                    zoomIn={true}
-                                                /> */}
                                             </div>
                                             <div className='flex flex-col 2xl:gap-4 gap-2 absolute md:left-[50px] left-[40px] md:top-[50px] top-[40px] 2xl:pr-4 pr-6'>
                                                 <div className='lg:text-sm md:text-base text-lg uppercase font-medium font-[inter] text-[#61F7F7] line-clamp-2'>
@@ -132,7 +123,7 @@ const SectionArticle = (props: Props) => {
                                 dataArticle?.length > 0 ?
                                     <div className='w-full lg:col-span-2 col-span-3'>
                                         <Link
-                                            href="#"
+                                            href="/blogs/2322"
                                             className='relative group'
                                         >
                                             <div className='w-full 3xl:h-[532px] 2xl:h-[532px] xxl:h-[524px] xl:h-[464px] lg:h-[416px] md:h-[320px] h-[200px] group overflow-hidden rounded-2xl'>

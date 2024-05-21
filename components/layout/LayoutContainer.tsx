@@ -112,6 +112,9 @@ const LayoutContainer = ({
         onCloseResizeTablet
     } = useResize()
 
+    const currentTime = new Date();
+    const expirationTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
+
     let InitialCoordinates = {
         latCurrent: 0,
         lngCurrent: 0,
@@ -358,81 +361,102 @@ const LayoutContainer = ({
                         }
                     }
                 } else if (pathname === "/" || pathname === "/home") {
-                    if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
-                        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
-                        const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
+                    // if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
+                    //     const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
+                    //     const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
 
-                        // điểm đón
-                        if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
-                            const address = dataPickup.result[0].address
-                            const location = dataPickup.result[0].location
+                    //     // điểm đón
+                    //     if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
+                    //         const address = dataPickup.result[0].address
+                    //         const location = dataPickup.result[0].location
 
-                            setValueAddressPickup(address)
-                            setCoordinates({
-                                ...parseCoordinates,
-                                lat: location.lat,
-                                lng: location.lng,
-                            })
+                    //         setValueAddressPickup(address)
+                    //         setCoordinates({
+                    //             ...parseCoordinates,
+                    //             lat: location.lat,
+                    //             lng: location.lng,
+                    //         })
 
-                        }
+                    //     }
 
-                        // điểm đến
-                        if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
-                            const address = dataDestination.result[0].address
-                            const location = dataDestination.result[0].location
+                    //     // điểm đến
+                    //     if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
+                    //         const address = dataDestination.result[0].address
+                    //         const location = dataDestination.result[0].location
 
-                            // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-                            const updatedAddressDestination = [...valueAddressDestination];
-                            updatedAddressDestination[indexAddressDestination] = {
-                                id: valueAddressDestination[indexAddressDestination].id,
-                                valueAddress: address ? address : ""
-                            };
+                    //         // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
+                    //         const updatedAddressDestination = [...valueAddressDestination];
+                    //         updatedAddressDestination[indexAddressDestination] = {
+                    //             id: valueAddressDestination[indexAddressDestination].id,
+                    //             valueAddress: address ? address : ""
+                    //         };
 
 
-                            setValueAddressDestination(updatedAddressDestination)
-                            setCoordinates({
-                                ...parseCoordinates,
-                                latTo: location.lat,
-                                lngTo: location.lng,
-                            })
+                    //         setValueAddressDestination(updatedAddressDestination)
+                    //         setCoordinates({
+                    //             ...parseCoordinates,
+                    //             latTo: location.lat,
+                    //             lngTo: location.lng,
+                    //         })
 
-                        }
-                    } else if (parseCoordinates.lat && parseCoordinates.lng) {
-                        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
+                    //     }
+                    // } else if (parseCoordinates.lat && parseCoordinates.lng) {
+                    //     const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
 
-                        if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
-                            const address = dataPickup.result[0].address
-                            const location = dataPickup.result[0].location
+                    //     if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
+                    //         const address = dataPickup.result[0].address
+                    //         const location = dataPickup.result[0].location
 
-                            setValueAddressPickup(address)
-                            setCoordinates({
-                                ...parseCoordinates,
-                                lat: location.lat,
-                                lng: location.lng,
-                            })
-                        }
-                    } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
-                        const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
+                    //         setValueAddressPickup(address)
+                    //         setCoordinates({
+                    //             ...parseCoordinates,
+                    //             lat: location.lat,
+                    //             lng: location.lng,
+                    //         })
+                    //     }
+                    // } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
+                    //     const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
 
-                        if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
-                            const address = dataDestination.result[0].address
-                            const location = dataDestination.result[0].location
+                    //     if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
+                    //         const address = dataDestination.result[0].address
+                    //         const location = dataDestination.result[0].location
 
-                            // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-                            const updatedAddressDestination = [...valueAddressDestination];
-                            updatedAddressDestination[indexAddressDestination] = {
-                                id: valueAddressDestination[indexAddressDestination].id,
-                                valueAddress: address ? address : ""
-                            };
+                    //         // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
+                    //         const updatedAddressDestination = [...valueAddressDestination];
+                    //         updatedAddressDestination[indexAddressDestination] = {
+                    //             id: valueAddressDestination[indexAddressDestination].id,
+                    //             valueAddress: address ? address : ""
+                    //         };
 
-                            setValueAddressDestination(updatedAddressDestination)
-                            setCoordinates({
-                                ...parseCoordinates,
-                                latTo: location.lat,
-                                lngTo: location.lng,
-                            })
-                        }
+                    //         setValueAddressDestination(updatedAddressDestination)
+                    //         setCoordinates({
+                    //             ...parseCoordinates,
+                    //             latTo: location.lat,
+                    //             lngTo: location.lng,
+                    //         })
+                    //     }
+                    // }
+
+                    const dataJson = {
+                        lat: 0,
+                        lng: 0,
+                        latTo: 0,
+                        lngTo: 0,
+                        latCurrent: 0,
+                        lngCurrent: 0,
                     }
+
+                    setCoordinates(InitialCoordinates)
+
+                    const updatedAddressDestination = [...valueAddressDestination];
+                    updatedAddressDestination[indexAddressDestination] = {
+                        id: valueAddressDestination[indexAddressDestination].id,
+                        valueAddress: ""
+                    };
+
+                    setValueAddressPickup("")
+                    setValueAddressDestination(updatedAddressDestination)
+                    Cookies.set('coordinates', JSON.stringify(InitialCoordinates), { expires: expirationTime });
                 }
             }
         }

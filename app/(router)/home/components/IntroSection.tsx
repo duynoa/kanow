@@ -79,6 +79,20 @@ const IntroSection = () => {
     // Tính thời điểm hết hạn của cookie là 60 giây sau thời điểm hiện tại
     const expirationTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
 
+    // useEffect(() => {
+    //     const dataJson = {
+    //         lat: 0,
+    //         lng: 0,
+    //         latTo: 0,
+    //         lngTo: 0,
+    //         latCurrent: 0,
+    //         lngCurrent: 0,
+    //     }
+
+    //     Cookies.set('coordinates', JSON.stringify(dataJson), { expires: expirationTime });
+    // }, [])
+
+
     useEffect(() => {
         queryKeyIsStateDataHome({
             ...isStateDataHome,
