@@ -509,6 +509,12 @@ export default function VehicleInfomation(props: Props) {
                                                                             w-full border-[#E6E8EC] border-2 2xl:py-3 lg:py-2 md:py-2 py-2 rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                                         placeholder="Nhập địa chỉ của bạn"
                                                                         {...field}
+                                                                        // onClick={() => setOpenBoxSearch(true)}
+                                                                        // onBlur={() => setOpenBoxSearch(false)}
+                                                                        onChange={(e: any) => {
+                                                                            field.onChange(e)
+                                                                            setOpenBoxSearch(true)
+                                                                        }}
                                                                         onClick={() => setOpenBoxSearch(true)}
                                                                         onBlur={() => setOpenBoxSearch(false)}
                                                                     />

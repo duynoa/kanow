@@ -18,9 +18,9 @@ const SearchAddress = ({ onChange, children, field }: any) => {
     useEffect(() => {
         if (field.value) {
             setDataAddress(field.value)
-            return
+        } else {
+            setOpenBoxSearch(false)
         }
-        setOpenBoxSearch(false)
     }, [field.value])
 
     const handleChangeAddress = (item: any) => {
@@ -52,7 +52,7 @@ const SearchAddress = ({ onChange, children, field }: any) => {
             const { data } = await apiViewboxSearch(dataParams)
 
             if (data && data.code == 'ok' && data.result) {
-                setOpenBoxSearch(true)
+
                 setDataBoxSearch(data.result)
             } else {
                 setOpenBoxSearch(false)
@@ -68,11 +68,16 @@ const SearchAddress = ({ onChange, children, field }: any) => {
 
     useEffect(() => {
         if (debouncedDataAddress) {
-            console.log("aaaa");
 
             fetchDataTextSearch()
         }
     }, [debouncedDataAddress])
+
+    // useEffect(() => {
+    //     if (dataBoxSearch?.length > 0) {
+    //         setOpenBoxSearch(true)
+    //     }
+    // }, [dataBoxSearch])
 
     return (
         <div className="relative">
@@ -80,7 +85,7 @@ const SearchAddress = ({ onChange, children, field }: any) => {
             {
                 field.value != '' && debouncedOpenBoxSearch && debouncedDataAddress && dataBoxSearch.length > 0 ?
                     <ScrollArea className='absolute top-full left-0 bg-white border w-full h-fit max-h-[300px] z-[999] pr-2 mt-2 rounded-2xl'>
-                        <div className='flex flex-col '>
+                        <div className='flex flex-col z-[999]'>
                             {dataBoxSearch.slice(0, 10).map((item, index) => (
                                 <div
                                     key={item.id}
