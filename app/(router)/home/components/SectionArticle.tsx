@@ -77,7 +77,7 @@ const SectionArticle = (props: Props) => {
                             className='custom-swiper-article w-full mt-4 md:h-[420px] h-[300px]'
                         >
                             {
-                                dataArticle && dataArticle.map((item, index) => (
+                                dataArticle && dataArticle?.map((item, index) => (
                                     <SwiperSlide key={item.id}>
                                         <Link
                                             href="#"
@@ -119,144 +119,72 @@ const SectionArticle = (props: Props) => {
                         </Swiper>
                         :
                         <div className='xl:mt-10 mt-6 grid grid-cols-3 3xl:gap-8 xl:gap-6 gap-4 w-full'>
-                            {
-                                dataArticle?.length > 0 ?
-                                    <div className='w-full lg:col-span-2 col-span-3'>
-                                        <Link
-                                            href="/blogs/2322"
-                                            className='relative group'
-                                        >
-                                            <div className='w-full 3xl:h-[532px] 2xl:h-[532px] xxl:h-[524px] xl:h-[464px] lg:h-[416px] md:h-[320px] h-[200px] group overflow-hidden rounded-2xl'>
+                            {dataArticle?.length > 0 && (
+                                <div className='w-full lg:col-span-2 col-span-3'>
+                                    <Link href={`/news-events/${dataArticle[0].id}`} className='relative group'>
+                                        <div className='w-full 3xl:h-[532px] 2xl:h-[532px] xxl:h-[524px] xl:h-[464px] lg:h-[416px] md:h-[320px] h-[200px] group overflow-hidden rounded-2xl'>
+                                            <BlurImage
+                                                image={dataArticle[0].image || '/default/default.png'}
+                                                alt="image_card"
+                                                width={1200}
+                                                height={600}
+                                                className="rounded-2xl"
+                                                zoomIn={true}
+                                            />
+                                        </div>
+                                        <div className='flex flex-col 2xl:gap-4 gap-2 absolute md:left-[50px] left-[40px] md:top-[50px] top-[40px] 2xl:pr-4 pr-6'>
+                                            <div className='lg:text-sm md:text-base text-lg uppercase font-medium font-[inter] text-[#61F7F7] line-clamp-2'>
+                                                {dataArticle[0].type || ""}
+                                            </div>
+                                            <div className='3xl:text-2xl 2xl:text-xl xxl:text-xl xl:text-lg lg:text-lg md:text-sm text-base text-white font-semibold line-clamp-2 xxl:max-w-[75%] xl:max-w-[85%] max-w-full'>
+                                                {dataArticle[0].description || ""}
+                                            </div>
+                                        </div>
+                                        <div className='absolute md:left-[50px] left-[40px] md:bottom-[50px] bottom-[40px]'>
+                                            <Button
+                                                size="readMore"
+                                                className='2xl:px-8 2xl:py-3 xl:px-6 xl:py-3 px-4 py-2 flex items-center gap-2 font-bold text-[#000000] bg-[#9DF2EE] group-hover:bg-[#9DF2EE]/90 group-hover:translate-x-2'
+                                            >
+                                                <span className='xl:text-base lg:text-sm md:text-base text-lg'>Xem thêm</span>
+                                                <IoArrowForwardOutline className='xl:text-xl text-lg -rotate-45' />
+                                            </Button>
+                                        </div>
+                                    </Link>
+                                </div>
+                            )}
 
-                                                <BlurImage
-                                                    image={dataArticle[0].image ? dataArticle[0].image : '/default/default.png'}
-                                                    // image={"/other/car/car1.png" ? "/other/car/car1.png" : '/default/default.png'}
-                                                    alt="image_card"
-                                                    width={1200}
-                                                    height={600}
-                                                    className="rounded-2xl"
-                                                    zoomIn={true}
-                                                />
-                                            </div>
-                                            <div className='flex flex-col 2xl:gap-4 gap-2 absolute md:left-[50px] left-[40px] md:top-[50px] top-[40px] 2xl:pr-4 pr-6'>
-                                                <div className='lg:text-sm md:text-base text-lg uppercase font-medium font-[inter] text-[#61F7F7] line-clamp-2'>
-                                                    {dataArticle[0].type ? dataArticle[0].type : ""}
-                                                </div>
-                                                <div className='3xl:text-2xl 2xl:text-xl xxl:text-xl xl:text-lg lg:text-lg md:text-sm text-base text-white font-semibold line-clamp-2 xxl:max-w-[75%] xl:max-w-[85%] max-w-full'>
-                                                    {dataArticle[0].description ? dataArticle[0].description : ""}
-                                                </div>
-                                            </div>
-                                            <div className='absolute md:left-[50px] left-[40px] md:bottom-[50px] bottom-[40px]'>
-                                                <Button
-                                                    size="readMore"
-                                                    className='2xl:px-8 2xl:py-3 xl:px-6 xl:py-3 px-4 py-2 flex items-center gap-2 font-bold text-[#000000] bg-[#9DF2EE] group-hover:bg-[#9DF2EE]/90 group-hover:translate-x-2'
-                                                >
-                                                    <span className='xl:text-base lg:text-sm md:text-base text-lg'>Xem thêm</span>
-                                                    <IoArrowForwardOutline className='xl:text-xl text-lg -rotate-45' />
-                                                </Button>
-                                            </div>
-                                        </Link>
-                                    </div>
-                                    :
-                                    null
-                            }
                             <div className='w-full lg:col-span-1 col-span-3 flex flex-col 3xl:gap-8 xl:gap-6 gap-4 xxl:max-h-[500px] xl:max-h-[440px] lg:max-h-[400px] md:max-h-[640px] max-h-[200px]'>
-                                {
-                                    dataArticle?.length > 1 ?
-                                        <Link
-                                            href="#"
-                                            className='relative group'
-                                        >
-                                            <div className='w-full 3xl:h-[250px] 2xl:h-[250px] xxl:h-[250px] xl:h-[220px] lg:h-[200px] md:h-[320px] h-[200px] group overflow-hidden rounded-2xl'>
-                                                {/* <Image
-                                    width={1920}
-                                    height={1080}
-                                    loading='lazy'
-                                    alt='image'
-                                    src="/other/car/car1.png"
-                                    className='w-full h-full object-cover rounded-2xl group-hover:scale-105 duration-500 transition ease-in-out'
-                                /> */}
-                                                <BlurImage
-                                                    // image={"/other/car/car1.png" ? "/other/car/car1.png" : '/default/default.png'}
-                                                    image={dataArticle[1].image ? dataArticle[1].image : '/default/default.png'}
-                                                    alt="image_card"
-                                                    width={1200}
-                                                    height={600}
-                                                    className="rounded-2xl"
-                                                    zoomIn={true}
-                                                />
+                                {dataArticle?.length > 1 && dataArticle?.slice(1, 3)?.map((article, index) => (
+                                    <Link key={index} href={`/news-events/${article.id}`} className='relative group'>
+                                        <div className='w-full 3xl:h-[250px] 2xl:h-[250px] xxl:h-[250px] xl:h-[220px] lg:h-[200px] md:h-[320px] h-[200px] group overflow-hidden rounded-2xl'>
+                                            <BlurImage
+                                                image={article.image || '/default/default.png'}
+                                                alt="image_card"
+                                                width={1200}
+                                                height={600}
+                                                className="rounded-2xl"
+                                                zoomIn={true}
+                                            />
+                                        </div>
+                                        <div className='flex flex-col gap-2 absolute md:left-[30px] left-[20px] md:top-[30px] top-[20px] 2xl:pr-4 pr-6'>
+                                            <div className='lg:text-sm md:text-base text-lg uppercase font-medium font-[inter] text-[#61F7F7] line-clamp-2'>
+                                                {article.type || ""}
                                             </div>
-                                            <div className='flex flex-col gap-2 absolute md:left-[30px] left-[20px] md:top-[30px] top-[20px] 2xl:pr-4 pr-6'>
-                                                <div className='lg:text-sm md:text-base text-lg uppercase font-medium font-[inter] text-[#61F7F7] line-clamp-2'>
-                                                    {/* Thông báo */}
-                                                    {dataArticle[1].type ? dataArticle[1].type : ""}
-                                                </div>
-                                                <div className='3xl:text-xl 2xl:text-xl xxl:text-xl xl:text-lg lg:text-lg md:text-sm text-base text-white font-semibold line-clamp-2 xxl:max-w-[75%] xl:max-w-[85%] max-w-full'>
-                                                    {/* Một số lưu ý cho chủ xe khi lần đầu cho thuê xe tại KANOW */}
-                                                    {dataArticle[1].description ? dataArticle[1].description : ""}
-                                                </div>
+                                            <div className='3xl:text-xl 2xl:text-xl xxl:text-xl xl:text-lg lg:text-lg md:text-sm text-base text-white font-semibold line-clamp-2 xxl:max-w-[75%] xl:max-w-[85%] max-w-full'>
+                                                {article.description || ""}
                                             </div>
-                                            <div className='absolute md:left-[30px] left-[20px] md:bottom-[30px] bottom-[20px]'>
-                                                <Button
-                                                    size="readMore"
-                                                    className='2xl:px-8 2xl:py-3 xl:px-6 xl:py-3 px-4 py-2 flex items-center gap-2 font-bold text-[#000000] bg-[#9DF2EE] group-hover:bg-[#9DF2EE]/90 group-hover:translate-x-2'
-                                                >
-                                                    <span className='xl:text-base lg:text-sm md:text-base text-lg'>Xem thêm</span>
-                                                    <IoArrowForwardOutline className='xl:text-xl text-lg -rotate-45' />
-                                                </Button>
-                                            </div>
-                                        </Link>
-                                        :
-                                        null
-                                }
-                                {
-                                    dataArticle?.length > 2 ?
-                                        <Link
-                                            href="#"
-                                            className='relative group'
-                                        >
-                                            <div className='w-full 3xl:max-h-[250px] 2xl:max-h-[250px] xxl:h-[250px] xl:h-[220px] lg:h-[200px] md:h-[320px] h-[200px] group overflow-hidden rounded-2xl'>
-                                                {/* <Image
-                                    width={1920}
-                                    height={1080}
-                                    loading='lazy'
-                                    alt='image'
-                                    src="/other/car/car1.png"
-                                    className='w-full h-full object-cover rounded-2xl group-hover:scale-105 duration-500 transition ease-in-out'
-                                /> */}
-                                                <BlurImage
-                                                    // image={"/other/car/car1.png" ? "/other/car/car1.png" : '/default/default.png'}
-                                                    image={dataArticle[2].image ? dataArticle[2].image : '/default/default.png'}
-                                                    alt="image_card"
-                                                    width={1200}
-                                                    height={600}
-                                                    className="rounded-2xl"
-                                                    zoomIn={true}
-                                                />
-                                            </div>
-                                            <div className='flex flex-col gap-2 absolute md:left-[30px] left-[20px] md:top-[30px] top-[20px] 2xl:pr-4 pr-6'>
-                                                <div className='lg:text-sm md:text-base text-lg uppercase font-medium font-[inter] text-[#61F7F7] line-clamp-2'>
-                                                    {/* Thông báo */}
-                                                    {dataArticle[2].type ? dataArticle[2].type : ""}
-                                                </div>
-                                                <div className='3xl:text-xl 2xl:text-xl xxl:text-xl xl:text-lg lg:text-lg md:text-sm text-base text-white font-semibold line-clamp-2 xxl:max-w-[75%] xl:max-w-[85%] max-w-full'>
-                                                    {/* Một số lưu ý cho chủ xe khi lần đầu cho thuê xe tại KANOW */}
-                                                    {dataArticle[2].description ? dataArticle[2].description : ""}
-                                                </div>
-                                            </div>
-                                            <div className='absolute md:left-[30px] left-[20px] md:bottom-[30px] bottom-[20px]'>
-                                                <Button
-                                                    size="readMore"
-                                                    className='2xl:px-8 2xl:py-3 xl:px-6 xl:py-3 px-4 py-2 flex items-center gap-2 font-bold text-[#000000] bg-[#9DF2EE] group-hover:bg-[#9DF2EE]/90 group-hover:translate-x-2'
-                                                >
-                                                    <span className='xl:text-base lg:text-sm md:text-base text-lg'>Xem thêm</span>
-                                                    <IoArrowForwardOutline className='xl:text-xl text-lg -rotate-45' />
-                                                </Button>
-                                            </div>
-                                        </Link>
-                                        :
-                                        null
-                                }
+                                        </div>
+                                        <div className='absolute md:left-[30px] left-[20px] md:bottom-[30px] bottom-[20px]'>
+                                            <Button
+                                                size="readMore"
+                                                className='2xl:px-8 2xl:py-3 xl:px-6 xl:py-3 px-4 py-2 flex items-center gap-2 font-bold text-[#000000] bg-[#9DF2EE] group-hover:bg-[#9DF2EE]/90 group-hover:translate-x-2'
+                                            >
+                                                <span className='xl:text-base lg:text-sm md:text-base text-lg'>Xem thêm</span>
+                                                <IoArrowForwardOutline className='xl:text-xl text-lg -rotate-45' />
+                                            </Button>
+                                        </div>
+                                    </Link>
+                                ))}
                             </div>
                         </div>
                 }

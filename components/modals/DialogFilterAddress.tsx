@@ -167,7 +167,6 @@ const DialogFilterAddress = memo(({ }: Props) => {
                 latTo: coordinates.latTo,
                 lngTo: coordinates.lngTo,
             })
-
         }
 
         if (openDialogAddress) {

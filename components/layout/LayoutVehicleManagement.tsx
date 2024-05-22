@@ -55,7 +55,7 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
                 {
                     id: 1,
                     name: 'Thông tin',
-                    link: `/vehicle-management/infomation?key=${id}&t=0`,
+                    link: `/vehicle-management/information?key=${id}&t=0`,
                     icon: 'infomation.png',
                 },
                 {

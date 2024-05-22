@@ -110,6 +110,17 @@
     @apply 3xl:mr-44 2xl:mr-32 xl:mr-28 lg:mr-12 md:mr-10 mr-6;
 }
 
+.custom-swiper {
+    .swiper-pagination {
+        @apply md:text-start text-center 3xl:-bottom-[5px] 2xl:bottom-6 xl:bottom-8 lg:bottom-10 bottom-12;
+        .swiper-pagination-bullet {
+            @apply bg-[#FF9900]/80;
+        }
+        .swiper-pagination-bullet-active {
+            @apply w-8 rounded-sm bg-[#FF9900];
+        }
+    }
+}
 .custom-swiper-intro {
     .swiper-pagination {
         @apply text-center 3xl:-bottom-[5px] 2xl:bottom-6 xl:bottom-8 lg:bottom-10 bottom-0;

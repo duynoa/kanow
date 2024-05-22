@@ -66,9 +66,6 @@ export default function Home() {
         fetchListCarsForYou()
     }, [])
 
-    console.log('isStateDataHome', isStateDataHome);
-
-
     if (!isMounted) {
         return null;
     }

@@ -619,7 +619,6 @@ const LayoutContainer = ({
                         theme="light"
                     />
                 </Suspense>
-
             </body>
         </GoogleOAuthProvider>
     )

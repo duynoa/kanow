@@ -102,12 +102,12 @@ const Footer = () => {
                 {
                     id: uuidv4(),
                     name: 'Tuyển dụng',
-                    link: '/dispute-resolution'
+                    link: '/career'
                 },
                 {
                     id: uuidv4(),
                     name: 'Tin tức và hoạt động',
-                    link: '/dispute-resolution'
+                    link: '/news-events'
                 },
                 // {
                 //     id: uuidv4(),
