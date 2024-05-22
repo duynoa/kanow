@@ -108,6 +108,10 @@ const NewsEvents = (props: Props) => {
 
     return (
         <div className='custom-container flex flex-col gap-8 xl:py-10 py-6'>
+            <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-3xl text-[26px] leading-tight capitalize font-bold md:max-w-[85%] max-w-full text-[#101010]'>
+                Tin tức & Hoạt động
+            </div>
+
             <div className='grid grid-cols-3 3xl:gap-8 xl:gap-6 gap-4 w-full h-full'>
                 {dataCarRelated?.length > 0 && (
                     <div className='w-full lg:col-span-2 col-span-3 3xl:h-[532px] 2xl:h-[480px] xxl:h-[480px] xl:h-[464px] lg:h-[416px] md:h-[320px] h-[200px]'>

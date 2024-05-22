@@ -2,7 +2,6 @@ import axios from "axios";
 import Cookie from "js-cookie";
 
 const baseUrl = process.env.NEXT_PUBLIC_URL_API;
-// const baseUrl = "https://system.kanow.vn/api/";
 
 const instance = axios.create({
     baseURL: baseUrl,
@@ -11,19 +10,47 @@ const instance = axios.create({
 });
 
 instance.defaults.headers.common = {
-    // Authorization: `Bearer MjR8fHx8fHwyMDI0LTAzLTA2IDEwOjExOjQ2fHx8fHx8Z29vZ2xlfHx8MTA0ODkzODczOTA1Njc1MTM2MTQ5`,
     Authorization: `Bearer ${Cookie.get("token_kanow") === undefined ? "kanow" : Cookie.get("token_kanow")}`,
+};
+
+// Function to get client IP using ipify
+const getClientIp = async () => {
+    try {
+        const response = await axios.get('https://api.ipify.org?format=json');
+        console.log('response', response);
+
+        return response.data.ip;
+    } catch (error) {
+        console.error('Failed to fetch IP', error);
+        return null;
+    }
 };
 
 // Add a request interceptor
 instance.interceptors.request.use(
-    function (config) {
+    async function (config) {
         // Attach the token from the cookie to the request headers
         const myCookie = Cookie.get("token_kanow");
-        // const myCookie = "MjR8fHx8fHwyMDI0LTAzLTA2IDEwOjExOjQ2fHx8fHx8Z29vZ2xlfHx8MTA0ODkzODczOTA1Njc1MTM2MTQ5";
         if (myCookie) {
             config.headers.Authorization = `Bearer ${myCookie ? myCookie : "kanow"}`;
         }
+
+        // Fetch client IP and attach to headers
+        const clientIp = await getClientIp();
+        if (clientIp) {
+            config.headers['X-Client-IP'] = clientIp;
+
+            console.log('clientIp', clientIp);
+
+
+            // Send IP to Next.js API route
+            // await axios.post('/api/log-ip', null, {
+            //     headers: {
+            //         'X-Client-IP': clientIp,
+            //     },
+            // });
+        }
+
         return config;
     },
     function (error) {
