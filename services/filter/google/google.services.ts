@@ -29,6 +29,16 @@ const useGoogleApi = () => {
             `${process.env.NEXT_PUBLIC_URL_API_MAP4D}/sdk/place/viewbox-search`, config
         )
     }
+    const apiTextSearch = (param?: any) => {
+        let config: AxiosRequestConfig = {
+            params: {
+                ...param, // Nối các tham số trong param object
+            },
+        };
+        return axios.get(
+            `${process.env.NEXT_PUBLIC_URL_API_MAP4D}/sdk/place/text-search`, config
+        )
+    }
 
     const apiRouteMatrixAddress = (param?: any) => {
         let config: AxiosRequestConfig = {
@@ -46,6 +56,7 @@ const useGoogleApi = () => {
         apiViewboxSearch,
         apiGetCurrentPosition,
         apiRouteMatrixAddress,
+        apiTextSearch,
     };
 };
 

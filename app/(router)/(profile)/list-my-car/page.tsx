@@ -57,11 +57,9 @@ const ListMyCar = (props: Props) => {
 
     const { setDataFilter, setValueFilter, valueFilter, setOpenDialogFilterCar } = useDialogFilterMyCar()
 
-
     const { isVisibleMobile, isVisibleTablet } = useResize()
 
     const lastContainerRef = useRef<HTMLDivElement | null>(null);
-
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
     const { apiListCar, apiListStatusFilter } = apiMyCar()

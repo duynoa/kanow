@@ -1,5 +1,6 @@
 'use client'
 
+import Cookies from 'js-cookie';
 import { useEffect, useState } from "react";
 import IntroSection from "./components/IntroSection";
 import SectionCardCar from "./components/SectionCardCar";
@@ -15,6 +16,11 @@ import { CustomDataListCars } from "@/custom/CustomData";
 
 export default function Home() {
     const [isMounted, setIsMounted] = useState<boolean>(false)
+
+    // Lấy thời điểm hiện tại
+    const currentTime = new Date();
+    // Tính thời điểm hết hạn của cookie là 60 giây sau thời điểm hiện tại
+    const expirationTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
 
     const { isStateDataHome, queryKeyIsStateDataHome } = useDataHome()
 

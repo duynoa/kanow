@@ -317,6 +317,8 @@ const CustomDataMyCar = (data: any) => {
             fullname: item?.customer?.fullname,
             id: item?.customer?.id,
         },
+        car: item.car,
+        car_talent: item.car_talent,
         status: item?.status,
         name_car: item?.name,
         point_star: item?.star,
