@@ -30,7 +30,7 @@ const VehicleRegistration = ({ }: Props) => {
     const dataSteps: ISteps[] = [
         {
             name: "Thông tin",
-            value: "infomation"
+            value: "information"
         },
         {
             name: "Cho thuê",
@@ -253,10 +253,10 @@ const VehicleRegistration = ({ }: Props) => {
                 defaultValue={isStateChild.step}
                 onValueChange={(step) => {
 
-                    // form.handleSubmit((values) => onSubmit(values, 'infomation'))()
-                    // queryStateChild({ step: 'infomation' })
+                    // form.handleSubmit((values) => onSubmit(values, 'information'))()
+                    // queryStateChild({ step: 'information' })
                     if (isStateChild.step != 'lease' && isStateChild.step != 'images') {
-                        queryStateChild({ step: 'infomation' })
+                        queryStateChild({ step: 'information' })
                     }
                 }}
                 value={isStateChild.step}
@@ -296,8 +296,8 @@ const VehicleRegistration = ({ }: Props) => {
                 }
                 <TabsContent value="register" className="lg:mt-10 mt-8 flex flex-col gap-4 ">
                     {isStateChild.step == 'register' &&
-                        <TabsList id="infomation" className=" items-center w-full bg-transparent">
-                            <TabsTrigger value="infomation"
+                        <TabsList id="information" className=" items-center w-full bg-transparent">
+                            <TabsTrigger value="information"
                                 className={`col-span-11 w-fit text-white border-[#2FB9BD] rounded-xl
                                     border-2 px-8 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
                                 Đăng ký xe tự lái
@@ -312,7 +312,7 @@ const VehicleRegistration = ({ }: Props) => {
                         </div>
                     </div>
                 </TabsContent>
-                <TabsContent value={"infomation"} className="lg:mt-4 mt-5 flex flex-col gap-4">
+                <TabsContent value={"information"} className="lg:mt-4 mt-5 flex flex-col gap-4">
                     <StepInfoMation {...shareProps}>
                         <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
                             <Button
