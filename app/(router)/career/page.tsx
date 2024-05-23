@@ -115,6 +115,10 @@ const Career = (props: Props) => {
 
     return (
         <div className='custom-container flex flex-col gap-8 xl:py-10 py-6'>
+            <div className='3xl:text-4xl 2xl:text-3xl xl:text-3xl lg:text-3xl md:text-3xl text-[26px] leading-tight capitalize font-bold md:max-w-[85%] max-w-full text-[#101010]'>
+                Tuyển dụng
+            </div>
+
             <div className='grid xxl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 3xl:gap-6 gap-4 justify-start h-full w-full'>
                 {
                     dataCarRelated.length > 0 && dataCarRelated?.map((item) => (
