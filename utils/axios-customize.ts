@@ -17,8 +17,6 @@ instance.defaults.headers.common = {
 const getClientIp = async () => {
     try {
         const response = await axios.get('https://api.ipify.org?format=json');
-        console.log('response', response);
-
         return response.data.ip;
     } catch (error) {
         console.error('Failed to fetch IP', error);
@@ -50,6 +48,9 @@ instance.interceptors.request.use(
             //     },
             // });
         }
+
+        console.log('config :', config);
+
 
         return config;
     },
