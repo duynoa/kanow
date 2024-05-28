@@ -15,6 +15,9 @@ interface StatePageAccount {
     page: number;
     limit: number;
     type: string;
+    tabRatings: string;
+    nextPage: string;
+    loadingData: boolean;
 }
 
 interface IInfomationUser {

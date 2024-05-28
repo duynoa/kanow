@@ -18,6 +18,7 @@ import apiAccount from '@/services/profile/account/account.services'
 import BackgroundUiProfile from '@/themes/profile/BackgroundUiProfile'
 import { ActionTooltip } from '@/components/tooltip/ActionTooltip'
 import { useDataPolicy } from '@/hooks/useDataQueryKey'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 type Props = {}
 
 
@@ -34,7 +35,10 @@ const Account = (props: Props) => {
         totalReview: 0,
         ///phan trang danh gia
         page: 1,
-        limit: 10
+        limit: 5,
+        tabRatings: "1",
+        nextPage: "",
+        loadingData: false
     }
 
     const { apiInfoUser } = useAuthenticationAPI()
@@ -43,7 +47,7 @@ const Account = (props: Props) => {
 
     const { informationUser, setInformationUser } = useAuth()
 
-    const { apiUpdateInfo, apiPaginationStartingUser } = apiAccount()
+    const { apiUpdateInfo, apiPaginationStartingUser, apiListRatings } = apiAccount()
 
     const [isState, sIsState] = useState<StatePageAccount>(initialSate)
 
@@ -120,9 +124,9 @@ const Account = (props: Props) => {
         const data = array.map((item: any) => {
             return {
                 id: item?.id,
-                avatar: item?.customer?.avatar ? item?.customer?.avatar : '/avatar/avatar1.png',
-                name: item?.customer?.fullname,
-                date: item?.created_at,
+                avatar: item?.avatar ? item?.avatar : '/avatar/avatar1.png',
+                name: item?.customer_name,
+                date: item?.date,
                 content: item?.content,
                 star: item?.star
             }
@@ -130,17 +134,6 @@ const Account = (props: Props) => {
         return data
     }
 
-    useEffect(() => {
-        if (informationUser) {
-            onSetValue(informationUser, 'all')
-            const newData = dataStarRatings(informationUser?.review?.data)
-            queryState({
-                dataStarRatings: newData || [],
-                totalReview: informationUser?.total_review,
-                totalStar: informationUser?.star_avg
-            })
-        }
-    }, [informationUser])
 
     const handleClickButtonEdit = (type: string) => {
         form.clearErrors()
@@ -183,32 +176,52 @@ const Account = (props: Props) => {
         }
         toastCore.error(message)
     }
-    const handlePage = async () => {
+
+    const fetChDataRatings = async (page: any) => {
+        let form: any = new FormData();
+        form.append('current_page', page)
+        form.append('per_page', isState.limit)
+        form.append('type_review', isState.tabRatings)
+        queryState({ loadingData: true })
+        const { data } = await apiListRatings(form)
+        if (data?.data) {
+            const newData = dataStarRatings(data?.data)
+            queryState({
+                dataStarRatings: newData,
+                totalReview: data?.total_review,
+                totalStar: data?.star_avg,
+                nextPage: data?.links?.next,
+            })
+            queryState({ loadingData: false })
+            return
+        }
+    }
+    const handleNextPage = async () => {
         let form: any = new FormData();
         form.append('current_page', isState.page)
         form.append('per_page', isState.limit)
+        form.append('type_review', isState.tabRatings)
+        const { data } = await apiListRatings(form)
 
-        const { data } = await apiPaginationStartingUser(form)
-
-        if (data?.result) {
-            const newData = dataStarRatings(data?.info?.review?.data)
-            const dataDB = {
-                ...informationUser,
-                review: {
-                    ...informationUser?.review,
-                    data: [...informationUser?.review.data, ...data?.info?.review?.data],
-                    next_page_url: data?.info?.review?.next_page_url,
-                }
-            }
-            queryState({ dataStarRatings: [...isState.dataStarRatings, ...newData] })
-            setInformationUser(dataDB)
+        if (data?.data) {
+            const newData = dataStarRatings(data?.data)
+            queryState({
+                dataStarRatings: [...isState.dataStarRatings, ...newData],
+                nextPage: data?.links?.next,
+            })
             return
         }
-        console.log('error');
     }
+
     useEffect(() => {
-        isState.page != 1 && handlePage()
-    }, [isState.page])
+        if (isState.page != 1) {
+            handleNextPage()
+        }
+        if (isState.page == 1) {
+            fetChDataRatings(1)
+        }
+    }, [isState.page, isState.tabRatings])
+
 
 
     const handleClickOptionsButton = async (type: string) => {
@@ -315,8 +328,8 @@ const Account = (props: Props) => {
                 </div>
             </BackgroundUiProfile>
             <BackgroundUiProfile>
-                <SessionStarRating isState={isState} />
-                {informationUser?.review?.next_page_url &&
+                <SessionStarRating isState={isState} queryState={queryState} />
+                {!isState.loadingData && isState?.nextPage &&
                     <div className="flex justify-center items-center my-4">
                         <Button
                             onClick={() => queryState({ page: isState.page + 1 })}
