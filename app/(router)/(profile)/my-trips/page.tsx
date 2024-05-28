@@ -65,15 +65,17 @@ const MyTrips = (props: Props) => {
                     dataMyTrips: customDataMyTripCar,
                     pageMyTrips: isState.pageMyTrips === 1 ? isState.pageMyTrips + 1 : 2,
                     nextMyTrips: dataMyTrips?.links?.next,
-                    totalDrivingCar: dataMyTrips?.meta?.total ?? 0
+                    totalDrivingCar: dataMyTrips?.meta?.total ?? 0,
+                    isLoadingCar: false
                 })
+
             }
         }
         catch (err) {
             throw err
         }
         finally {
-            queryState({ isLoadingCar: false })
+            // queryState({ isLoadingCar: false })
         }
     }
 
@@ -90,7 +92,8 @@ const MyTrips = (props: Props) => {
                     dataMyTripsTalented: customDataMyTripCar,
                     pageMyTripsTalented: isState.tab == "1" ? 2 : isState.pageMyTripsTalented + 1,
                     nextMyTripsTalented: dataMyTripsTalented?.links?.next,
-                    totalTalentedCar: dataMyTripsTalented?.meta?.total ?? 0
+                    totalTalentedCar: dataMyTripsTalented?.meta?.total ?? 0,
+                    isLoadingCar: false
                 })
             }
         }
@@ -98,7 +101,7 @@ const MyTrips = (props: Props) => {
             throw err
         }
         finally {
-            queryState({ isLoadingCar: false })
+            // queryState({ isLoadingCar: false })
         }
     }
 

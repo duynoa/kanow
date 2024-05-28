@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from "axios";
 import axios from "../../../utils/axios-customize";
 
 const apiAccount = () => {
@@ -9,7 +10,11 @@ const apiAccount = () => {
         return axios.post(`/get_info_account`, data);
     };
 
-    return { apiUpdateInfo, apiPaginationStartingUser };
+    const apiListRatings = (data: any) => {
+        return axios.post(`/getListReview`, data);
+    };
+
+    return { apiUpdateInfo, apiPaginationStartingUser, apiListRatings };
 };
 
 export default apiAccount;
