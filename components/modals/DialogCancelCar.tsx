@@ -25,10 +25,13 @@ import {
 } from "../ui/form";
 
 import { useForm } from "react-hook-form";
-import { getListReasonsCancel, postReasonCancelCar } from "@/services/cars/cancelCar.services";
+import { getListReasonsCancel } from "@/services/cars/cancelCar.services";
 import { Badge } from "../ui/badge";
 import { toastCore } from "@/lib/toast";
 import SkeletonDialogCancelCar from "../skeleton/SkeletonDialogCancelCar";
+import { postChangeStatusRentalCar } from "@/services/cars/cars.services";
+import { useAuth } from "@/hooks/useAuth";
+import { useDataInfoRentalCar } from "@/hooks/useDataQueryKey";
 type Props = {}
 
 export function DialogCancelCar({ }: Props) {
@@ -43,7 +46,13 @@ export function DialogCancelCar({ }: Props) {
         setIsLoadingDialogCancelCar,
     } = useDialogCancelCar()
 
+    const { informationUser } = useAuth()
+    const { isStateInfoRentalCar } = useDataInfoRentalCar()
+
     const [contentReason, setContentReason] = useState<string>("");
+
+    console.log('informationUser', informationUser);
+    console.log('isStateInfoRentalCar', isStateInfoRentalCar);
 
     const form = useForm({
         defaultValues: {
@@ -86,19 +95,29 @@ export function DialogCancelCar({ }: Props) {
     const onSubmit = async (values: any) => {
         try {
             if (contentReason) {
+                let status;
+                if (informationUser?.id === isStateInfoRentalCar?.detailRentalCar?.customer?.id) {
+                    status = 6
+                } else {
+                    status = 5
+                }
+
                 let dataReport = {
-                    status: 5,
+                    status: status,
                     note: contentReason,
                     transaction_id: dataInfo?.car_id
                 }
 
-                const { data } = await postReasonCancelCar(dataReport)
+                console.log('dataReport', dataReport);
+
+
+                const { data } = await postChangeStatusRentalCar(dataReport)
 
                 if (data?.result) {
                     toastCore?.success(data?.message)
                     setContentReason("")
                     form.reset()
-                    setTimeout(() => {
+                    setTimeout(() => {  
                         setOpenDialogCancelCar(false)
                     }, 100);
                 } else {

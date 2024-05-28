@@ -61,6 +61,7 @@ import { DialogNotification } from '../modals/DialogNotification';
 import { useAuth } from '@/hooks/useAuth';
 import { useNotification } from '@/hooks/useNotification';
 import { DialogSubmit } from '../modals/DialogSubmit';
+import { DialogReviewCar } from '../modals/DialogReviewCar';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -604,6 +605,7 @@ const LayoutContainer = ({
                         <DialogFilterListCars />
 
                         <DialogNotification />
+                        <DialogReviewCar />
                     </main>
                     {pathname !== "/list-cars-autonomous" && pathname !== "/list-cars-driver" && <Footer />}
                     <ToastContainer

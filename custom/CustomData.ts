@@ -262,6 +262,8 @@ const CustomDataInfoRentalCar = (res: any) => {
             mortgage: res?.data?.car?.mortgage === 0,
             transmission_search: res?.data?.transmission,
         },
+        review:res?.data?.review,
+        review_owner:res?.data?.review_owner,
     };
     return { customDataInfoRentalCar };
 };

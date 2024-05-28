@@ -5,6 +5,7 @@ import {
     useDialogAnswerPolicy,
     useDialogCalendar,
     useDialogCancelCar,
+    useDialogReviewCar,
     useDialogPromotion
 } from '@/hooks/useOpenDialog'
 
@@ -22,6 +23,8 @@ import { FaDeleteLeft } from 'react-icons/fa6'
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
 import { useSearchParams } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
+import { postChangeStatusRentalCar } from '@/services/cars/cars.services'
+import { toastCore } from '@/lib/toast'
 
 type Props = {
     params: {
@@ -35,26 +38,66 @@ const PriceList = ({
     const searchParams = useSearchParams()
     const typeCarDetail = searchParams.get('type')
 
+    const { setOpenDialogReviewCar } = useDialogReviewCar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { setOpenAlertCancel } = useAlertCancel()
     const { setOpenDialogCancelCar, setDataInfo } = useDialogCancelCar()
     const { isVisibleTablet } = useResize()
-    const { isStateInfoRentalCar } = useDataInfoRentalCar()
     const { isStatePolicy } = useDataPolicy()
+    const { isStateInfoRentalCar } = useDataInfoRentalCar()
     const { informationUser } = useAuth()
 
-    const handleOpenAlertCancel = () => {
+    const handleOpenModal = (type: string) => {
         if (typeCarDetail) {
-            setOpenDialogCancelCar(true, typeCarDetail)
-            setDataInfo({
-                car_id: isStateInfoRentalCar?.detailRentalCar?.id,
-                status: isStateInfoRentalCar?.detailRentalCar?.status?.status
-            })
+            if (type === "cancel_car") {
+                setOpenDialogCancelCar(true, typeCarDetail)
+                setDataInfo({
+                    car_id: isStateInfoRentalCar?.detailRentalCar?.id,
+                    status: isStateInfoRentalCar?.detailRentalCar?.status?.status
+                })
+            } else if (type === "complete_trip") {
+                setOpenDialogReviewCar(true)
+            } else if (type === "status_finish") {
+                handleChangeStatus(type)
+                setTimeout(() => {
+                    setOpenDialogReviewCar(true)
+                }, 500);
+            }
         }
     }
 
-    console.log('isStateInfoRentalCar :', isStateInfoRentalCar);
-    console.log('isStatePolicy :', isStatePolicy);
+    const handleChangeStatus = async (type: string) => {
+        // lấy status của trạng thái +1 là ra status truyền lên 
+        console.log('type type : ', type);
+        try {
+            let status;
+            if (type === "status-0") {
+                status = 1
+            } else if (type === "status-2") {
+                status = 3
+            } else if (type === "status_finish") {
+                status = 4
+            }
+
+            const dataSubmit = {
+                status: status,
+                transaction_id: isStateInfoRentalCar?.detailRentalCar?.id,
+                type: typeCarDetail,
+            }
+
+            const { data } = await postChangeStatusRentalCar(dataSubmit)
+            console.log('data data:', data);
+
+            if (data && data.result) {
+                toastCore.success(data.message)
+            } else {
+                toastCore.error(data.message)
+            }
+
+        } catch (err) {
+            throw err
+        }
+    }
 
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
@@ -312,8 +355,7 @@ const PriceList = ({
 
                 {/* button */}
                 {
-                    informationUser?.fullname !== isStateInfoRentalCar?.detailRentalCar?.customer?.fullname &&
-                        informationUser?.phone !== isStateInfoRentalCar?.detailRentalCar?.customer?.phone &&
+                    informationUser?.id !== isStateInfoRentalCar?.detailRentalCar?.customer?.id &&
                         isStateInfoRentalCar?.detailRentalCar?.status &&
                         isStateInfoRentalCar?.detailRentalCar?.status?.status !== 3
                         ?
@@ -341,7 +383,7 @@ const PriceList = ({
                                 isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status < 3 &&
                                 <Button
                                     type="button"
-                                    onClick={handleOpenAlertCancel}
+                                    onClick={() => handleOpenModal("cancel_car")}
                                     className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-red-500 bg-white border-2 border-red-500 hover:bg-red-100 transition-all duration-300 font-semibold rounded-xl caret-transparent'
                                 >
                                     Huỷ chuyến
@@ -355,8 +397,7 @@ const PriceList = ({
 
             {/* Hiển thị khi là chủ xe vào xem xe của mình được thuê */}
             {
-                informationUser?.fullname === isStateInfoRentalCar?.detailRentalCar?.customer?.fullname &&
-                informationUser?.phone === isStateInfoRentalCar?.detailRentalCar?.customer?.phone &&
+                informationUser?.id === isStateInfoRentalCar?.detailRentalCar?.customer?.id &&
                 <div className='flex flex-col gap-4 3xl:p-6 p-6 border rounded-xl bg-white'>
                     <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                         Bảng tính thu nhập chủ xe
@@ -523,8 +564,61 @@ const PriceList = ({
                         </div>
                     </div>
 
+                    <div className='flex flex-col gap-2'>
+                        {
+                            isStateInfoRentalCar?.detailRentalCar?.status?.status === 0 &&
+                            <Button
+                                type="button"
+                                className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                onClick={() => handleChangeStatus("status-0")}
+                            >
+                                Duyệt yêu cầu
+                            </Button>
+                        }
+                        {
+                            (isStateInfoRentalCar?.detailRentalCar?.status?.status === 1 || isStateInfoRentalCar?.detailRentalCar?.status?.status === 2) &&
+                            <Button
+                                type="button"
+                                onClick={() => handleChangeStatus(isStateInfoRentalCar?.detailRentalCar?.status?.status === 2 ? "status-2" : "")}
+                                disabled={isStateInfoRentalCar?.detailRentalCar?.status?.status === 1 ? true : false}
+                                className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                            >
+                                Giao xe
+                            </Button>
+                        }
+                        {
+                            isStateInfoRentalCar?.detailRentalCar?.status?.status === 3 &&
+                            <Button
+                                type="button"
+                                onClick={() => handleOpenModal("status_finish")}
+                                // onClick={() => handleChangeStatus("status-3")}
+                                className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                            >
+                                Nhận xe
+                            </Button>
+                        }
+                        {
+                            isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status < 3 &&
+                            <Button
+                                type="button"
+                                onClick={() => handleOpenModal("cancel_car")}
+                                className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-red-500 bg-white border-2 border-red-500 hover:bg-red-100 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                            >
+                                Huỷ chuyến
+                            </Button>
+                        }
+                    </div>
                 </div>
             }
+
+            {/* <Button
+                type="button"
+                onClick={() => handleOpenModal("done_car")}
+                // className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-red-500 bg-white border-2 border-red-500 hover:bg-red-100 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+            >
+                Hoàn thành
+            </Button> */}
         </div>
     )
 }
