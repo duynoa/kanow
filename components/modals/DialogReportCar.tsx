@@ -147,7 +147,6 @@ export function DialogReportCar({ }: Props) {
                                 </Select>
                             </div>
                             <div className='flex flex-col gap-2'>
-                                <Label className='text-base text-[#000000] font-semibold'>Nội dung</Label>
                                 <FormField
                                     control={form.control}
                                     name="content"

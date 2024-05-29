@@ -339,7 +339,7 @@ interface IOpenDialogSubmit {
     typeDialogSubmit: string;
     typeCar: string;
     dataItem: any;
-    setOpenDialogSubmit: (key: any, type?: string) => void;
+    setOpenDialogSubmit: (key: any) => void;
     setTypeDialogSubmit: (type: string) => void;
     setTypeCar: (typeCar: string) => void;
     setDataItem: (dataItem: string) => void;
@@ -354,4 +354,23 @@ export const useDialogSubmit = create<IOpenDialogSubmit>((set) => ({
     setTypeDialogSubmit: (typeDialogSubmit: string) => set((state) => ({ typeDialogSubmit: typeDialogSubmit })),
     setTypeCar: (typeCar: string) => set((state) => ({ typeCar: typeCar })),
     setDataItem: (dataItem: any) => set((state) => ({ dataItem: dataItem })),
+}));
+
+// dialog review car (Chủ xe || Khách thuê xe)
+interface IOpenDialogReviewCar {
+    openDialogReviewCar: boolean;
+    typeDialogReviewCar: string;
+    dataItemReviewCar: any;
+    setOpenDialogReviewCar: (key: any) => void;
+    setTypeDialogReviewCar: (typeDialogReviewCar: string) => void;
+    setDataItemReviewCar: (dataItemReviewCar: string) => void;
+}
+
+export const useDialogReviewCar = create<IOpenDialogReviewCar>((set) => ({
+    openDialogReviewCar: false,
+    typeDialogReviewCar: "",
+    dataItemReviewCar: undefined,
+    setOpenDialogReviewCar: (key: any) => set((state) => ({ openDialogReviewCar: key })),
+    setTypeDialogReviewCar: (typeDialogReviewCar: string) => set((state) => ({ typeDialogReviewCar: typeDialogReviewCar })),
+    setDataItemReviewCar: (dataItemReviewCar: any) => set((state) => ({ dataItemReviewCar: dataItemReviewCar })),
 }));

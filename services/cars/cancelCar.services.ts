@@ -11,11 +11,8 @@ const getListReasonsCancel = () => {
 
     return axios.get("/category/getListNoteCancel")
 }
-const postReasonCancelCar = (data: any) => {
-    return axios.post("/transaction/changeStatus", data)
-}
+
 
 export {
-    getListReasonsCancel,
-    postReasonCancelCar
+    getListReasonsCancel,   
 }

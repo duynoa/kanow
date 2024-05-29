@@ -35,7 +35,8 @@ const PaymentMethods = ({ }: Props) => {
             const dataPayment = {
                 payment_mode_id: isStatePaymentRental?.payment?.idActivePaymentMethod,
                 total: isStatePaymentRental?.detailRentalCar?.price?.price_depoist,
-                transaction_id: isStatePaymentRental?.detailRentalCar?.id
+                transaction_id: isStatePaymentRental?.detailRentalCar?.id,
+                type: typeCarDetail
             }
             const { data } = await postPaymentRentalCar(dataPayment)
             console.log('data :', data);

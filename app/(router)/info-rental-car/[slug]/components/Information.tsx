@@ -228,14 +228,10 @@ const Information = ({
             {
                 isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status === 4 &&
                 <div className='flex flex-col gap-4 3xl:pb-6 pb-4 border-b'>
-                    <div className='flex items-center justify-between'>
-                        <div className='flex flex-col gap-1'>
-                            <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
-                                Đánh giá
-                            </div>
-                        </div>
+                    <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
+                        Đánh giá
                     </div>
-                    {
+                    {/* {
                         listComment?.map((item, index) => (
                             <div key={item.id} className={`${index !== listComment?.length - 1 ? "border-b pb-3" : ""} flex flex-col`}>
                                 <div className='flex items-center gap-3'>
@@ -253,12 +249,11 @@ const Information = ({
                                             Trần Thị Minh Phượng
                                         </div>
                                         <div className='3xl:text-sm text-xs text-[#8C93A3]'>
-                                            {/* {
+                                            {
                                                 moment().subtract(1, "days").isSame(moment(item?.date, "DD/MM/YYYY"), "day")
                                                     ? `Hôm qua lúc ${moment(item?.date).format("HH:mm")}`
                                                     : moment(item?.date).fromNow()
-                                            } */}
-                                            2 tuần trước
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -293,6 +288,138 @@ const Information = ({
                                 </div>
                             </div>
                         ))
+                    } */}
+                    {
+                        isStateInfoRentalCar?.detailRentalCar?.review_owner !== null ?
+                            (
+                                <div className={`${isStateInfoRentalCar?.detailRentalCar?.review !== null ? "border-b pb-3" : ""} flex flex-col `}>
+                                    <div className='flex items-center gap-3'>
+                                        <div className='3xl:w-14 3xl:h-14 3xl:max-w-14 w-12 h-12 max-w-12 rounded-full drop-shadow'>
+                                            <Image
+                                                src={`${isStateInfoRentalCar?.detailRentalCar?.review_owner?.avatar ? isStateInfoRentalCar?.detailRentalCar?.review_owner?.avatar : "/avatar/avatar_default.png"}`}
+                                                alt="avatar"
+                                                width={100}
+                                                height={100}
+                                                className='w-full h-full object-contain rounded-full'
+                                            />
+                                        </div>
+
+                                        <div className='flex flex-col gap-1'>
+                                            <div className='capitalize 3xl:text-base lg:text-sm md:text-base text-sm text-[#484D5C] font-semibold'>
+                                                {isStateInfoRentalCar?.detailRentalCar?.review_owner?.fullname ? isStateInfoRentalCar?.detailRentalCar?.review_owner?.fullname : ""}
+                                            </div>
+
+                                            <Badge className='bg-[#FF9900] text-white text-xs w-fit' >Chủ xe</Badge>
+                                        </div>
+                                    </div>
+
+                                    <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#585F71] mt-2'>
+                                        {isStateInfoRentalCar?.detailRentalCar?.review_owner?.content ? isStateInfoRentalCar?.detailRentalCar?.review_owner?.content : ""}
+                                    </div>
+                                    <div className='flex items-center justify-between'>
+                                        {
+                                            isVisibleMobile ?
+                                                <StarRatings
+                                                    rating={isStateInfoRentalCar?.detailRentalCar?.review_owner?.star ? isStateInfoRentalCar?.detailRentalCar?.review_owner?.star : 0}
+                                                    // rating={item.star ? item.star : 0}
+                                                    starRatedColor="#FCC43E"
+                                                    starHoverColor='#FCC43E'
+                                                    starDimension='14px'
+                                                    starSpacing='0px'
+                                                    numberOfStars={5}
+                                                    name='rating'
+                                                />
+                                                :
+                                                <StarRatings
+                                                    rating={isStateInfoRentalCar?.detailRentalCar?.review_owner?.star ? isStateInfoRentalCar?.detailRentalCar?.review_owner?.star : 0}
+                                                    // rating={item.star ? item.star : 0}s
+                                                    starRatedColor="#FCC43E"
+                                                    starHoverColor='#FCC43E'
+                                                    starDimension='14px'
+                                                    starSpacing='2px'
+                                                    numberOfStars={5}
+                                                    name='rating'
+                                                />
+                                        }
+
+                                        <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                            {
+                                                moment().subtract(1, "days").isSame(moment(isStateInfoRentalCar?.detailRentalCar?.review_owner?.created_at, "DD/MM/YYYY"), "day")
+                                                    ? `Hôm qua lúc ${moment(isStateInfoRentalCar?.detailRentalCar?.review_owner?.created_at).format("HH:mm")}`
+                                                    : moment(isStateInfoRentalCar?.detailRentalCar?.review_owner?.created_at).fromNow()
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                            :
+                            null
+                    }
+                    {
+                        isStateInfoRentalCar?.detailRentalCar?.review !== null ?
+                            (
+                                <div className={`flex flex-col`}>
+                                    <div className='flex items-center gap-3'>
+                                        <div className='3xl:w-14 3xl:h-14 3xl:max-w-14 w-12 h-12 max-w-12 rounded-full drop-shadow'>
+                                            <Image
+                                                src={`${isStateInfoRentalCar?.detailRentalCar?.review?.avatar ? isStateInfoRentalCar?.detailRentalCar?.review?.avatar : "/avatar/avatar_default.png"}`}
+                                                alt="avatar"
+                                                width={100}
+                                                height={100}
+                                                className='w-full h-full object-contain rounded-full'
+                                            />
+                                        </div>
+
+                                        <div className='flex flex-col gap-1'>
+                                            <div className='capitalize 3xl:text-base lg:text-sm md:text-base text-sm text-[#484D5C] font-semibold'>
+                                                {isStateInfoRentalCar?.detailRentalCar?.review?.fullname ? isStateInfoRentalCar?.detailRentalCar?.review?.fullname : ""}
+                                            </div>
+
+                                            <Badge className='bg-[#2FB9BD] text-white text-xs w-fit' >Bạn</Badge>
+                                        </div>
+                                    </div>
+
+                                    <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#585F71] mt-2'>
+                                        {isStateInfoRentalCar?.detailRentalCar?.review?.content ? isStateInfoRentalCar?.detailRentalCar?.review?.content : ""}
+                                    </div>
+                                    <div className='flex items-center justify-between'>
+                                        {
+                                            isVisibleMobile ?
+                                                <StarRatings
+                                                    rating={isStateInfoRentalCar?.detailRentalCar?.review?.star ? isStateInfoRentalCar?.detailRentalCar?.review?.star : 0}
+                                                    // rating={item.star ? item.star : 0}
+                                                    starRatedColor="#FCC43E"
+                                                    starHoverColor='#FCC43E'
+                                                    starDimension='14px'
+                                                    starSpacing='0px'
+                                                    numberOfStars={5}
+                                                    name='rating'
+                                                />
+                                                :
+                                                <StarRatings
+                                                    rating={isStateInfoRentalCar?.detailRentalCar?.review?.star ? isStateInfoRentalCar?.detailRentalCar?.review?.star : 0}
+                                                    // rating={item.star ? item.star : 0}s
+                                                    starRatedColor="#FCC43E"
+                                                    starHoverColor='#FCC43E'
+                                                    starDimension='14px'
+                                                    starSpacing='2px'
+                                                    numberOfStars={5}
+                                                    name='rating'
+                                                />
+                                        }
+
+                                        <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                            {
+                                                moment().subtract(1, "days").isSame(moment(isStateInfoRentalCar?.detailRentalCar?.review?.created_at, "DD/MM/YYYY"), "day")
+                                                    ? `Hôm qua lúc ${moment(isStateInfoRentalCar?.detailRentalCar?.review?.created_at).format("HH:mm")}`
+                                                    : moment(isStateInfoRentalCar?.detailRentalCar?.review?.created_at).fromNow()
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                            :
+                            null
                     }
                 </div>
             }

@@ -293,7 +293,23 @@ interface IDetailRentalCar {
         // thế chấp bị ngược với các tag bình thường thế chấp là 0 còn lại là 1
         mortgage: boolean;
         transmission_search: string;
-    }
+    },
+    review: {
+        id: number,
+        content: string,
+        star: number,
+        fullname: string,
+        avatar: string,
+        created_at: string
+    },
+    review_owner: {
+        id: number,
+        content: string,
+        star: number,
+        fullname: string,
+        avatar: string,
+        created_at: string
+    },
 }
 
 export type {
