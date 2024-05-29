@@ -106,10 +106,12 @@ const isStateDetailCar: IInitialStateDetailCar = {
         address: "",
         full_address: "",
         image_car: [],
-        car_owner: {
+        customer: {
             avatar: "",
             fullname: "",
-            id: "",
+            id: 0,
+            star_avg: 0,
+            total_trip: 0,
         },
         type: {
             delivery_car: false,
@@ -276,6 +278,10 @@ interface IStateRentalCar {
 export const useDataInfoRentalCar = create<IStateRentalCar>((set) => ({
     isStateInfoRentalCar: {
         detailRentalCar: undefined,
+        loading: {
+            isLoadingSubmitReview: false,
+            isLoadingButton: false
+        }
     },
     isLoadingSkeletonIntroRentalCar: false,
     queryKeyIsStateInfoRentalCar: (key: any) => set((state) => ({
@@ -319,7 +325,7 @@ export const useDataPaymentRental = create<IStatePaymentRental>((set) => ({
         payment: {
             idActivePaymentMethod: 0,
             indexPaymentMethod: 0
-        }
+        },
     },
     queryKeyIsStatePaymentRental: (key: any) => set((state) => ({
         ...state,

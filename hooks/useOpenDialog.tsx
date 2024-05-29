@@ -143,18 +143,22 @@ export const useDialogReportCar = create<IOpenDialogReportCar>((set) => ({
 
 // dialog request car rental (dialog xác nhận gửi xe)
 interface IOpenDialogRequestCarRental {
-    openDialogRequestCarRental: boolean;
     type?: string;
+    openDialogRequestCarRental: boolean;
+    isLoadingButtonRequest: boolean
     dataListRequestCarRental?: IInitialStateDetailCar;
-    setOpenDialogRequestCarRental: (key: any, type?: string) => void;
+    setOpenDialogRequestCarRental: (key: boolean, type?: string) => void;
+    setIsLoadingButtonRequest: (key: any) => void;
     setDataListRequestCarRental: (dataListRequestCarRental?: IInitialStateDetailCar) => void
 }
 
 export const useDialogRequestCarRental = create<IOpenDialogRequestCarRental>((set) => ({
-    openDialogRequestCarRental: false,
     type: "",
+    openDialogRequestCarRental: false,
+    isLoadingButtonRequest: false,
     dataListRequestCarRental: undefined,
-    setOpenDialogRequestCarRental: (key: any, type?: string) => set((state) => ({ openDialogRequestCarRental: key, type: type })),
+    setOpenDialogRequestCarRental: (key: boolean, type?: string) => set((state) => ({ openDialogRequestCarRental: key, type: type })),
+    setIsLoadingButtonRequest: (isLoadingButtonRequest: boolean) => set((state) => ({ isLoadingButtonRequest: isLoadingButtonRequest })),
     setDataListRequestCarRental: (key: any) => set((state) => ({ dataListRequestCarRental: key })),
 }));
 
@@ -182,10 +186,12 @@ interface IOpenDialogCancelCar {
     dataListReasonsCancel: any[];
     openDialogCancelCar: boolean;
     isLoadingDialogCancelCar: boolean;
+    isLoadingButtonSubmit: boolean;
     setDataInfo: (dataInfo?: any) => void;
     setOpenDialogCancelCar: (key: boolean, type?: string) => void;
     setDataListReasonsCancel: (dataListReasonsCancel: any[]) => void;
     setIsLoadingDialogCancelCar: (key: boolean) => void;
+    setIsLoadingButtonSubmit: (isLoadingButtonSubmit: boolean) => void;
 }
 
 export const useDialogCancelCar = create<IOpenDialogCancelCar>((set) => ({
@@ -194,10 +200,12 @@ export const useDialogCancelCar = create<IOpenDialogCancelCar>((set) => ({
     dataListReasonsCancel: [],
     openDialogCancelCar: false,
     isLoadingDialogCancelCar: false,
+    isLoadingButtonSubmit: false,
     setDataInfo: (key: any) => set((state) => ({ dataInfo: key })),
     setOpenDialogCancelCar: (key: boolean, type?: string) => set((state) => ({ openDialogCancelCar: key, type: type })),
     setDataListReasonsCancel: (key: any[]) => set((state) => ({ dataListReasonsCancel: key })),
     setIsLoadingDialogCancelCar: (key: boolean) => set((state) => ({ isLoadingDialogCancelCar: key })),
+    setIsLoadingButtonSubmit: (isLoadingButtonSubmit: boolean) => set((state) => ({ isLoadingButtonSubmit: isLoadingButtonSubmit })),
 }));
 
 // dialog address filter
@@ -359,18 +367,22 @@ export const useDialogSubmit = create<IOpenDialogSubmit>((set) => ({
 // dialog review car (Chủ xe || Khách thuê xe)
 interface IOpenDialogReviewCar {
     openDialogReviewCar: boolean;
+    isLoadingDialogReviewCar: boolean;
     typeDialogReviewCar: string;
-    dataItemReviewCar: any;
-    setOpenDialogReviewCar: (key: any) => void;
+    listContentReview?: any[];
+    setOpenDialogReviewCar: (key: boolean) => void;
+    setIsLoadingDialogReviewCar: (key: boolean) => void;
     setTypeDialogReviewCar: (typeDialogReviewCar: string) => void;
-    setDataItemReviewCar: (dataItemReviewCar: string) => void;
+    setListContentReview: (listContentReview: string) => void;
 }
 
 export const useDialogReviewCar = create<IOpenDialogReviewCar>((set) => ({
     openDialogReviewCar: false,
+    isLoadingDialogReviewCar: false,
     typeDialogReviewCar: "",
-    dataItemReviewCar: undefined,
-    setOpenDialogReviewCar: (key: any) => set((state) => ({ openDialogReviewCar: key })),
+    listContentReview: [],
+    setOpenDialogReviewCar: (key: boolean) => set((state) => ({ openDialogReviewCar: key })),
+    setIsLoadingDialogReviewCar: (key: boolean) => set((state) => ({ isLoadingDialogReviewCar: key })),
     setTypeDialogReviewCar: (typeDialogReviewCar: string) => set((state) => ({ typeDialogReviewCar: typeDialogReviewCar })),
-    setDataItemReviewCar: (dataItemReviewCar: any) => set((state) => ({ dataItemReviewCar: dataItemReviewCar })),
+    setListContentReview: (listContentReview: any) => set((state) => ({ listContentReview: listContentReview })),
 }));

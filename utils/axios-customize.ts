@@ -14,15 +14,15 @@ instance.defaults.headers.common = {
 };
 
 // Function to get client IP using ipify
-const getClientIp = async () => {
-    try {
-        const response = await axios.get('https://api.ipify.org?format=json');
-        return response.data.ip;
-    } catch (error) {
-        console.error('Failed to fetch IP', error);
-        return null;
-    }
-};
+// const getClientIp = async () => {
+//     try {
+//         const response = await axios.get('https://api.ipify.org?format=json');
+//         return response.data.ip;
+//     } catch (error) {
+//         console.error('Failed to fetch IP', error);
+//         return null;
+//     }
+// };
 
 // Add a request interceptor
 instance.interceptors.request.use(
@@ -34,22 +34,22 @@ instance.interceptors.request.use(
         }
 
         // Fetch client IP and attach to headers
-        const clientIp = await getClientIp();
-        if (clientIp) {
-            config.headers['X-Client-IP'] = clientIp;
+        // const clientIp = await getClientIp();
+        // if (clientIp) {
+        //     config.headers['X-Client-IP'] = clientIp;
 
-            console.log('clientIp', clientIp);
+        //     // console.log('clientIp', clientIp);
 
 
-            // Send IP to Next.js API route
-            // await axios.post('/api/log-ip', null, {
-            //     headers: {
-            //         'X-Client-IP': clientIp,
-            //     },
-            // });
-        }
+        //     // Send IP to Next.js API route
+        //     // await axios.post('/api/log-ip', null, {
+        //     //     headers: {
+        //     //         'X-Client-IP': clientIp,
+        //     //     },
+        //     // });
+        // }
 
-        console.log('config :', config);
+        // console.log('config :', config);
 
 
         return config;

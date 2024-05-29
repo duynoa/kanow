@@ -11,7 +11,7 @@ import Nodata from '@/components/image/Nodata'
 import { Button } from "@/components/ui/button"
 import FormPapers from './components/FormPapers'
 import FormInformation from './components/FormInfomation'
-import { StatePageAccount } from '@/types/Profile/IAccount'
+import { IStatePageAccount } from '@/types/Profile/IAccount'
 import SessionStarRating from './components/SessionStarRating'
 import useAuthenticationAPI from '@/services/auth/auth.services'
 import apiAccount from '@/services/profile/account/account.services'
@@ -25,7 +25,7 @@ type Props = {}
 const Account = (props: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
 
-    const initialSate: StatePageAccount = {
+    const initialSate: IStatePageAccount = {
         editInfo: false,
         editPapers: false,
         dataStarRatings: [],
@@ -49,9 +49,9 @@ const Account = (props: Props) => {
 
     const { apiUpdateInfo, apiPaginationStartingUser, apiListRatings } = apiAccount()
 
-    const [isState, sIsState] = useState<StatePageAccount>(initialSate)
+    const [isState, sIsState] = useState<IStatePageAccount>(initialSate)
 
-    const queryState = (key: any) => sIsState((prev: StatePageAccount) => ({ ...prev, ...key }))
+    const queryState = (key: any) => sIsState((prev: IStatePageAccount) => ({ ...prev, ...key }))
 
     useEffect(() => {
         setIsMounted(true)

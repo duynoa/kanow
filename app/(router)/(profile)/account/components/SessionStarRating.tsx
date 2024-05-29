@@ -2,12 +2,12 @@ import moment from "moment"
 import Image from "next/image"
 import StarRatings from "react-star-ratings"
 import { FormatNumberToDecimal } from "@/components/format/FormatNumber"
-import { StatePageAccount } from "@/types/Profile/IAccount"
+import { IStatePageAccount } from "@/types/Profile/IAccount"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Skeleton } from "@/components/ui/skeleton"
 
 type Props = {
-    isState: StatePageAccount,
+    isState: IStatePageAccount,
     queryState: (key: any) => void
 }
 const SessionStarRating = ({ isState, queryState }: Props) => {

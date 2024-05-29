@@ -291,8 +291,6 @@ const DetailCar = ({ params }: Props) => {
                 }
             }
             fetchDataRouteMatrixAddress()
-            console.log('check ??');
-            
         }
     }, [
         typeCarDetail,
@@ -354,7 +352,7 @@ const DetailCar = ({ params }: Props) => {
                 lon: coordinates.lng != 0 ? coordinates.lng : undefined,
             }
             const { data } = await getDataDetailCar(params.slug, dataParams)
-            console.log('data', data);
+            console.log('data detail :', data);
 
             if (data && data.data && data.base.base) {
                 let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
@@ -980,7 +978,7 @@ const DetailCar = ({ params }: Props) => {
                                                                 <div className='3xl:w-12 3xl:max-w-12 3xl:h-12 w-10 max-w-10 h-10 '>
                                                                     <Avatar className='w-full h-full shadow'>
                                                                         <AvatarImage
-                                                                            src={card?.car_owner?.avatar ? card?.car_owner?.avatar : '/avatar/avatar_default.png'}
+                                                                            src={card?.customer?.avatar ? card?.customer?.avatar : '/avatar/avatar_default.png'}
                                                                             alt="@kanow"
                                                                         />
                                                                         <AvatarFallback >
@@ -1136,7 +1134,7 @@ const DetailCar = ({ params }: Props) => {
                                                             <div className='3xl:w-12 3xl:max-w-12 3xl:h-12 w-10 max-w-10 h-10 '>
                                                                 <Avatar className='w-full h-full shadow'>
                                                                     <AvatarImage
-                                                                        src={card?.car_owner?.avatar ? card?.car_owner?.avatar : '/avatar/avatar_default.png'}
+                                                                        src={card?.customer?.avatar ? card?.customer?.avatar : '/avatar/avatar_default.png'}
                                                                         alt="@kanow"
                                                                     />
                                                                     <AvatarFallback >

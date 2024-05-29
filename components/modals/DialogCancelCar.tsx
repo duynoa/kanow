@@ -41,18 +41,17 @@ export function DialogCancelCar({ }: Props) {
         openDialogCancelCar,
         dataListReasonsCancel,
         isLoadingDialogCancelCar,
+        isLoadingButtonSubmit,
         setOpenDialogCancelCar,
         setDataListReasonsCancel,
         setIsLoadingDialogCancelCar,
+        setIsLoadingButtonSubmit,
     } = useDialogCancelCar()
 
     const { informationUser } = useAuth()
     const { isStateInfoRentalCar } = useDataInfoRentalCar()
 
     const [contentReason, setContentReason] = useState<string>("");
-
-    console.log('informationUser', informationUser);
-    console.log('isStateInfoRentalCar', isStateInfoRentalCar);
 
     const form = useForm({
         defaultValues: {
@@ -90,11 +89,15 @@ export function DialogCancelCar({ }: Props) {
     const handleChangeReason = (item: any) => {
         console.log('item : ', item);
         setContentReason(item.note)
+        form.setValue('content', item.note, { shouldValidate: true });
     }
 
     const onSubmit = async (values: any) => {
+        console.log('values', values);
+
         try {
             if (contentReason) {
+                setIsLoadingButtonSubmit(true)
                 let status;
                 if (informationUser?.id === isStateInfoRentalCar?.detailRentalCar?.customer?.id) {
                     status = 6
@@ -117,11 +120,12 @@ export function DialogCancelCar({ }: Props) {
                     toastCore?.success(data?.message)
                     setContentReason("")
                     form.reset()
-                    setTimeout(() => {  
+                    setTimeout(() => {
+                        setIsLoadingButtonSubmit(false)
                         setOpenDialogCancelCar(false)
                     }, 100);
                 } else {
-                    console.log(data?.message)
+                    setIsLoadingButtonSubmit(false)
                     toastCore.error(data.message)
                 }
             } else {
@@ -174,10 +178,16 @@ export function DialogCancelCar({ }: Props) {
                                         </div>
                                     </div>
                                     <div className='flex flex-col gap-2'>
-                                        <Label className='text-base text-[#000000] font-semibold'>Nội dung</Label>
+                                        <Label className='text-base text-[#000000] font-semibold'>Nội dung <span className="text-red-500">*</span></Label>
                                         <FormField
                                             control={form.control}
                                             name="content"
+                                            rules={{
+                                                required: {
+                                                    value: true,
+                                                    message: 'Vui lòng nhập nội dung!',
+                                                },
+                                            }}
                                             render={({ field, fieldState }) => {
                                                 const handleTextareaChange = (
                                                     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -185,19 +195,26 @@ export function DialogCancelCar({ }: Props) {
                                                     field.onChange(e);
                                                     setContentReason(e.target.value)
                                                 }
+                                                console.log('fieldState', fieldState);
 
                                                 return (
                                                     <FormItem>
-                                                        <div>
+                                                        <div className='flex flex-col gap-2'>
                                                             <FormControl>
                                                                 <Textarea
                                                                     disabled={form.formState.isSubmitting}
                                                                     placeholder="Nhập nội dung"
-                                                                    className={`3xl:h-40 h-36 resize border rounded-lg bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0`}
+                                                                    className={`${fieldState.error ? "border-[#FA3434]" : ""} 3xl:h-40 h-36 resize border rounded-lg bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0`}
                                                                     onChange={handleTextareaChange}
                                                                     value={contentReason}
                                                                 />
                                                             </FormControl>
+                                                            {
+                                                                fieldState.error ?
+                                                                    <div className='text-sm text-[#FA3434]'>{fieldState?.error?.message}</div>
+                                                                    :
+                                                                    null
+                                                            }
                                                         </div>
                                                     </FormItem>
                                                 );
@@ -209,6 +226,7 @@ export function DialogCancelCar({ }: Props) {
                                 <div className='pt-8 md:px-6 px-3 flex flex-row gap-2 justify-end bg-white caret-transparent'>
                                     <Button
                                         type="button"
+                                        disabled={isLoadingButtonSubmit ? true : false}
                                         onClick={handleOpenChangeModal}
                                         className='3xl:text-base text-sm w-fit py-3 px-6 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
                                     >
@@ -217,9 +235,14 @@ export function DialogCancelCar({ }: Props) {
 
                                     <Button
                                         type="submit"
-                                        className='3xl:text-base text-sm w-fit py-3 px-6 3xl:gap-2 gap-1 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-red-500/80 transition-all overflow-hidden bg-red-500 text-white'
+                                        disabled={isLoadingButtonSubmit ? true : false}
+                                        className='flex items-center gap-2 3xl:text-base text-sm w-fit py-3 px-6 3xl:gap-2 3xl:rounded-2xl rounded-xl cursor-pointer hover:scale-105 hover:bg-red-500/80 transition-all overflow-hidden bg-red-500 text-white'
                                     >
-                                        Huỷ chuyến
+                                        {
+                                            isLoadingButtonSubmit &&
+                                            <div className="text-white inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                                        }
+                                        <span>Huỷ chuyến</span>
                                     </Button>
                                 </div>
                             </form>

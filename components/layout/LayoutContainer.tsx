@@ -34,7 +34,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import "moment/locale/vi";
 
 import { useDataHome, useDataInfoRentalCar, useDataListCarAutonomous, useDataListCarsDriver, useDataPolicy } from '@/hooks/useDataQueryKey';
-import { useDialogAddress, useDialogRegisterOwnerDriver, useDialogRouteAddress } from '@/hooks/useOpenDialog';
+import { useDialogAddress, useDialogRegisterOwnerDriver, useDialogReviewCar, useDialogRouteAddress } from '@/hooks/useOpenDialog';
 
 import DialogFilterMyCar from '@/components/modals/DialogFilterMyCar';
 import DialogFilterListCars from '@/components/modals/DialogFilterListCars';
@@ -112,6 +112,7 @@ const LayoutContainer = ({
         onCloseResizeMobile,
         onCloseResizeTablet
     } = useResize()
+    const { openDialogReviewCar, setOpenDialogReviewCar } = useDialogReviewCar()
 
     const currentTime = new Date();
     const expirationTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
@@ -178,6 +179,10 @@ const LayoutContainer = ({
                 ...isStateListCarsDriver,
                 page: 1
             })
+        }
+
+        if (!pathname.startsWith("/info-rental-car")) {
+            setOpenDialogReviewCar(false)
         }
     }, [pathname])
 
@@ -362,82 +367,6 @@ const LayoutContainer = ({
                         }
                     }
                 } else if (pathname === "/" || pathname === "/home") {
-                    // if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
-                    //     const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
-                    //     const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
-
-                    //     // điểm đón
-                    //     if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
-                    //         const address = dataPickup.result[0].address
-                    //         const location = dataPickup.result[0].location
-
-                    //         setValueAddressPickup(address)
-                    //         setCoordinates({
-                    //             ...parseCoordinates,
-                    //             lat: location.lat,
-                    //             lng: location.lng,
-                    //         })
-
-                    //     }
-
-                    //     // điểm đến
-                    //     if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
-                    //         const address = dataDestination.result[0].address
-                    //         const location = dataDestination.result[0].location
-
-                    //         // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-                    //         const updatedAddressDestination = [...valueAddressDestination];
-                    //         updatedAddressDestination[indexAddressDestination] = {
-                    //             id: valueAddressDestination[indexAddressDestination].id,
-                    //             valueAddress: address ? address : ""
-                    //         };
-
-
-                    //         setValueAddressDestination(updatedAddressDestination)
-                    //         setCoordinates({
-                    //             ...parseCoordinates,
-                    //             latTo: location.lat,
-                    //             lngTo: location.lng,
-                    //         })
-
-                    //     }
-                    // } else if (parseCoordinates.lat && parseCoordinates.lng) {
-                    //     const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
-
-                    //     if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
-                    //         const address = dataPickup.result[0].address
-                    //         const location = dataPickup.result[0].location
-
-                    //         setValueAddressPickup(address)
-                    //         setCoordinates({
-                    //             ...parseCoordinates,
-                    //             lat: location.lat,
-                    //             lng: location.lng,
-                    //         })
-                    //     }
-                    // } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
-                    //     const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
-
-                    //     if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
-                    //         const address = dataDestination.result[0].address
-                    //         const location = dataDestination.result[0].location
-
-                    //         // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-                    //         const updatedAddressDestination = [...valueAddressDestination];
-                    //         updatedAddressDestination[indexAddressDestination] = {
-                    //             id: valueAddressDestination[indexAddressDestination].id,
-                    //             valueAddress: address ? address : ""
-                    //         };
-
-                    //         setValueAddressDestination(updatedAddressDestination)
-                    //         setCoordinates({
-                    //             ...parseCoordinates,
-                    //             latTo: location.lat,
-                    //             lngTo: location.lng,
-                    //         })
-                    //     }
-                    // }
-
                     const dataJson = {
                         lat: 0,
                         lng: 0,
@@ -605,7 +534,6 @@ const LayoutContainer = ({
                         <DialogFilterListCars />
 
                         <DialogNotification />
-                        <DialogReviewCar />
                     </main>
                     {pathname !== "/list-cars-autonomous" && pathname !== "/list-cars-driver" && <Footer />}
                     <ToastContainer

@@ -32,7 +32,6 @@ const MyCar = ({ }: Props) => {
     // Tính thời điểm hết hạn của cookie là 60 giây sau thời điểm hiện tại
     const expirationTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
 
-    console.log('isStateProfileMyCar', isStateProfileMyCar);
     const handleClickDetailCar = (item: any, type: number) => {
         try {
             if (type == 2) {
@@ -43,7 +42,7 @@ const MyCar = ({ }: Props) => {
                     }
 
                     const { data } = await apiTextSearch(dataParams)
-                    console.log('data', data);
+
                     if (data && data.code === "ok") {
                         const dataJson = {
                             lat: data.result[0].location.lat,

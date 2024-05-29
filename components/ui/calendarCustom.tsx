@@ -325,8 +325,6 @@ function CalendarCustom({
         }
     };
 
-    console.log('isStateDetailCar: ', isStateDetailCar);
-
     return (
         <>
             <Swiper

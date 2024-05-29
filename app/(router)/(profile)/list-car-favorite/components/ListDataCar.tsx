@@ -150,7 +150,7 @@ const ListDataCar = ({ isState, handleClickFavorite, arrData }: Props) => {
                                 <Avatar className='w-full h-full shadow'>
                                     <AvatarImage
                                         alt="@kanow"
-                                        src={card?.car_owner?.avatar ? card?.car_owner?.avatar : '/avatar/avatar_default.png'}
+                                        src={card?.customer?.avatar ? card?.customer?.avatar : '/avatar/avatar_default.png'}
                                     />
                                     <AvatarFallback >
                                         <Image
