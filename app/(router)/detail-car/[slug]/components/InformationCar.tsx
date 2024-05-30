@@ -55,6 +55,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
         setIsMounted(true)
     }, [])
 
+    console.log("isStateDetailCar?.dataDetailCar :", isStateDetailCar?.dataDetailCar);
 
 
     if (!isMounted) {
@@ -97,11 +98,11 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                         </div>
 
                         {
-                            isStateDetailCar?.dataDetailCar?.total_trip ?
+                            isStateDetailCar?.dataDetailCar?.customer?.total_trip ?
                                 <div className='flex items-center gap-1'>
                                     <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
                                     <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
-                                        {isStateDetailCar?.dataDetailCar?.total_trip ? FormatNumberHundred(isStateDetailCar?.dataDetailCar?.total_trip, 100) : 0} Chuyến
+                                        {isStateDetailCar?.dataDetailCar?.customer?.total_trip ? FormatNumberHundred(isStateDetailCar?.dataDetailCar?.customer?.total_trip, 100) : 0} Chuyến
                                     </div>
                                 </div>
                                 :
@@ -269,7 +270,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                         <div className='3xl:w-16 3xl:h-16 3xl:min-w-16 w-14 min-w-14 h-14 rounded-full border-[3px] border-[#ffffff] drop-shadow'>
                             <Avatar className='w-full h-full shadow'>
                                 <AvatarImage
-                                    src={isStateDetailCar?.dataDetailCar?.car_owner?.avatar ? isStateDetailCar?.dataDetailCar?.car_owner?.avatar : '/avatar/avatar_default.png'}
+                                    src={isStateDetailCar?.dataDetailCar?.customer?.avatar ? isStateDetailCar?.dataDetailCar?.customer?.avatar : '/avatar/avatar_default.png'}
                                     alt="@kanow"
                                 />
                                 <AvatarFallback >
@@ -286,15 +287,14 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
 
                         <div className='flex flex-col 3xl:gap-2 gap-1'>
                             <div className='uppercase text-[#16171B] font-semibold 3xl:text-base text-sm'>
-                                {isStateDetailCar?.dataDetailCar?.car_owner?.fullname ? isStateDetailCar?.dataDetailCar?.car_owner?.fullname : ""}
+                                {isStateDetailCar?.dataDetailCar?.customer?.fullname ? isStateDetailCar?.dataDetailCar?.customer?.fullname : ""}
                             </div>
                             {
-                                isStateDetailCar?.dataDetailCar?.point_star ?
+                                isStateDetailCar?.dataDetailCar?.customer?.star_avg ?
                                     <div className='flex items-center gap-1'>
                                         <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
                                         <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
-                                            {isStateDetailCar?.dataDetailCar?.point_star ? (FormatPointStar(isStateDetailCar?.dataDetailCar?.point_star, 1)) : 0}
-
+                                            {isStateDetailCar?.dataDetailCar?.customer?.star_avg ? (FormatPointStar(isStateDetailCar?.dataDetailCar?.customer?.star_avg, 1)) : 0}
                                         </div>
                                     </div>
                                     :

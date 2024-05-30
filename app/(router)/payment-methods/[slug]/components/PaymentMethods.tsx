@@ -1,7 +1,7 @@
 import { FormatNumberDot } from '@/components/format/FormatNumber'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
-import { useDataPaymentRental } from '@/hooks/useDataQueryKey'
+import { useDataInfoRentalCar, useDataPaymentRental } from '@/hooks/useDataQueryKey'
 import { toastCore } from '@/lib/toast'
 import { postPaymentRentalCar } from '@/services/cars/payment.services'
 import { IInitialStatePayment } from '@/types/Initial/IInitial'
@@ -12,6 +12,8 @@ import { BsArrow90DegLeft } from 'react-icons/bs'
 import { FaArrowLeftLong } from 'react-icons/fa6'
 import { PiCheckCircleFill } from 'react-icons/pi'
 
+import { motion } from 'framer-motion'
+
 type Props = {}
 
 const PaymentMethods = ({ }: Props) => {
@@ -20,6 +22,7 @@ const PaymentMethods = ({ }: Props) => {
     const typeCarDetail = searchParams.get('type')
 
     const { isStatePaymentRental, queryKeyIsStatePaymentRental } = useDataPaymentRental()
+    const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
 
     const handleChangePayment = (item: any, index: number) => {
         queryKeyIsStatePaymentRental({
@@ -32,6 +35,13 @@ const PaymentMethods = ({ }: Props) => {
 
     const handleSubmitPayment = async () => {
         try {
+            queryKeyIsStateInfoRentalCar({
+                loading: {
+                    ...isStateInfoRentalCar.loading,
+                    isLoadingButton: true
+                }
+            })
+
             const dataPayment = {
                 payment_mode_id: isStatePaymentRental?.payment?.idActivePaymentMethod,
                 total: isStatePaymentRental?.detailRentalCar?.price?.price_depoist,
@@ -42,8 +52,20 @@ const PaymentMethods = ({ }: Props) => {
             console.log('data :', data);
             if (data && data.result) {
                 toastCore.success("Thanh toán cọc thành công!")
+                queryKeyIsStateInfoRentalCar({
+                    loading: {
+                        ...isStateInfoRentalCar.loading,
+                        isLoadingButton: false
+                    }
+                })
                 router.push(`/info-rental-car/${isStatePaymentRental?.detailRentalCar?.id}?type=${typeCarDetail}`)
             } else {
+                queryKeyIsStateInfoRentalCar({
+                    loading: {
+                        ...isStateInfoRentalCar.loading,
+                        isLoadingButton: false
+                    }
+                })
                 toastCore.error(data.message)
             }
         } catch (err) {
@@ -192,13 +214,29 @@ const PaymentMethods = ({ }: Props) => {
                                     {isStatePaymentRental?.listPaymentMode[isStatePaymentRental.payment.indexPaymentMethod]?.name ? isStatePaymentRental?.listPaymentMode[isStatePaymentRental.payment.indexPaymentMethod]?.name : ""}
                                 </div>
                             </div>
-                            <Button
-                                type="button"
-                                className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
-                                onClick={handleSubmitPayment}
+                            <motion.div
+                                initial={false}
+                                animate={"rest"}
+                                whileTap="press"
+                                variants={{
+                                    rest: { scale: 1 },
+                                    press: { scale: 1.01 }
+                                }}
                             >
-                                Thanh toán
-                            </Button>
+                                <Button
+                                    type="button"
+                                    disabled={isStateInfoRentalCar?.loading?.isLoadingButton ? true : false}
+                                    className='py-4 w-full flex items-center gap-2 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                    onClick={handleSubmitPayment}
+                                >
+                                    {
+                                        isStateInfoRentalCar?.loading?.isLoadingButton &&
+                                        <div className="text-white inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                                    }
+
+                                    <span>Thanh toán</span>
+                                </Button>
+                            </motion.div>
                         </div>
 
                         <div className='space-y-2 3xl:text-sm text-xs text-[#6F7689] mt-6'>

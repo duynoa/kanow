@@ -37,6 +37,8 @@ import { toastCore } from '@/lib/toast'
 import Map from '@/components/map/Maps'
 import { useAuth } from '@/hooks/useAuth'
 
+import { motion } from 'framer-motion'
+
 type Props = {}
 
 const PaymentCar = ({ }: Props) => {
@@ -159,7 +161,7 @@ const PaymentCar = ({ }: Props) => {
         } else if (validateDateSubmit && getCookie !== "kanow" && getCookie !== undefined) {
             toastCore.error("Xe bận trong khoảng thời gian trên. Vui lòng đặt xe khác hoặc thay đổi lịch trình thích hợp!")
         } else if (
-            informationUser?.id === isStateDetailCar?.dataDetailCar?.car_owner?.id &&
+            informationUser?.id === isStateDetailCar?.dataDetailCar?.customer?.id &&
             getCookie !== "kanow" &&
             getCookie !== undefined
         ) {
@@ -173,9 +175,6 @@ const PaymentCar = ({ }: Props) => {
             setOpenDialogLogin(true)
         }
     }
-
-    console.log('isStateDetailCar', isStateDetailCar);
-
 
     const handleOpenDialogAddress = (type: string, index?: number) => {
         setOpenDialogAddress(true)
@@ -749,13 +748,23 @@ const PaymentCar = ({ }: Props) => {
                     </div>
                 </div>
 
-                <Button
-                    type="button"
-                    onClick={handleSubmitCar}
-                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                <motion.div
+                    initial={false}
+                    animate={"rest"}
+                    whileTap="press"
+                    variants={{
+                        rest: { scale: 1 },
+                        press: { scale: 1.01 }
+                    }}
                 >
-                    Chọn thuê
-                </Button>
+                    <Button
+                        type="button"
+                        onClick={handleSubmitCar}
+                        className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                    >
+                        Chọn thuê
+                    </Button>
+                </motion.div>
 
             </div>
 

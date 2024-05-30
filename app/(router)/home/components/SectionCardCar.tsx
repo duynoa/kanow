@@ -335,7 +335,7 @@ const SectionCardCar = () => {
                                                             <div className='3xl:w-12 3xl:max-w-12 3xl:h-12 w-10 max-w-10 h-10 '>
                                                                 <Avatar className='w-full h-full shadow'>
                                                                     <AvatarImage
-                                                                        src={card?.car_owner?.avatar ? card?.car_owner?.avatar : '/avatar/avatar_default.png'}
+                                                                        src={card?.customer?.avatar ? card?.customer?.avatar : '/avatar/avatar_default.png'}
                                                                         alt="@kanow"
                                                                     />
                                                                     <AvatarFallback >
@@ -495,7 +495,7 @@ const SectionCardCar = () => {
                                                 <div className='3xl:w-12 3xl:max-w-12 3xl:h-12 w-10 max-w-10 h-10 '>
                                                     <Avatar className='w-full h-full shadow'>
                                                         <AvatarImage
-                                                            src={card?.car_owner?.avatar ? card?.car_owner?.avatar : '/avatar/avatar_default.png'}
+                                                            src={card?.customer?.avatar ? card?.customer?.avatar : '/avatar/avatar_default.png'}
                                                             alt="@kanow"
                                                         />
                                                         <AvatarFallback >

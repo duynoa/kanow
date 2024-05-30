@@ -180,6 +180,11 @@ const DropdownHeaderNotification = ({ children }: any) => {
                             dataItemNotification: item,
                             dataListNotifications: newData
                         })
+
+
+                        setOpenDropdownNotification(false)
+                    } else {
+                        setOpenDropdownNotification(false)
                     }
                 } catch (err) {
                     throw err
@@ -204,6 +209,8 @@ const DropdownHeaderNotification = ({ children }: any) => {
             } else if (item.json_data.object === "driving_liscense_client") {
                 router.push(`/account`)
             }
+
+            setOpenDropdownNotification(false)
         }
     }
 
@@ -229,14 +236,11 @@ const DropdownHeaderNotification = ({ children }: any) => {
         }
     }
 
-    console.log('isStateNotification', isStateNotification);
-
-
     if (!isMounted) return null
 
     return (
         <DropdownMenu
-            // open={openDropdownNotification}
+            open={openDropdownNotification}
             modal={false}
             onOpenChange={handleOpenChange}
         >

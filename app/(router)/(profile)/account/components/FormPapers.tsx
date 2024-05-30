@@ -54,12 +54,12 @@ const FormPapers = ({ form, isState }: Props) => {
                                     message: 'Vui lòng nhập số GPLX',
                                 },
                                 minLength: {
-                                    value: 15,
-                                    message: 'Số GPLX tối thiểu 15 số',
+                                    value: 12,
+                                    message: 'Số GPLX tối thiểu 12 số',
                                 },
                                 maxLength: {
-                                    value: 20,
-                                    message: 'Số GPLX tối đa 20 số',
+                                    value: 12,
+                                    message: 'Số GPLX tối đa 12 số',
                                 },
                                 pattern: {
                                     value: /^[0-9]+$/,
@@ -77,8 +77,8 @@ const FormPapers = ({ form, isState }: Props) => {
                                             <Input
                                                 disabled={!isState.editPapers}
                                                 type="number"
-                                                minLength={15}
-                                                maxLength={20}
+                                                minLength={12}
+                                                maxLength={12}
                                                 className={`  disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs md:py-2 py-2 disabled:border-gray-300 disabled:border-2  focus:border-[#2FB9BD]
                                                 w-full border-[#E6E8EC] border-2 2xl:py-3 lg:py-2 rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                 placeholder="Số GPLX"

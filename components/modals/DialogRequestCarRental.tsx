@@ -39,6 +39,8 @@ import { postRequestRentalCar } from "@/services/cars/cars.services";
 import { toastCore } from "@/lib/toast";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+import { motion } from 'framer-motion'
+
 type Props = {};
 
 export const DialogRequestCarRental = memo(({ }: Props) => {
@@ -51,7 +53,13 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
     const { isVisibleTablet } = useResize()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isStatePolicy } = useDataPolicy()
-    const { openDialogRequestCarRental, dataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
+    const {
+        openDialogRequestCarRental,
+        dataListRequestCarRental,
+        setOpenDialogRequestCarRental,
+        isLoadingButtonRequest,
+        setIsLoadingButtonRequest,
+    } = useDialogRequestCarRental()
     const { dateReal, numberDay, dateTemp } = useDialogCalendar()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
@@ -81,6 +89,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
 
     const onSubmit = async (values: any) => {
         try {
+            setIsLoadingButtonRequest(true)
             const dataRequest: any = {
                 data: {
                     car_id: dataListRequestCarRental?.dataDetailCar?.id,
@@ -114,8 +123,10 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                 setOpenDialogRequestCarRental(false)
                 setCheckPolicy(true)
                 router.push(`/info-rental-car/${data.id}?type=${typeCarDetail}`)
+                setIsLoadingButtonRequest(false)
             } else {
                 toastCore.error(data.message)
+                setIsLoadingButtonRequest(false)
             }
 
         } catch (err) {
@@ -282,7 +293,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                             <div className='3xl:w-16 3xl:h-16 3xl:min-w-16 w-14 min-w-14 h-14 rounded-full border-[3px] border-[#ffffff] drop-shadow'>
                                                 <Avatar className='w-full h-full shadow'>
                                                     <AvatarImage
-                                                        src={dataListRequestCarRental?.dataDetailCar?.car_owner?.avatar ? dataListRequestCarRental?.dataDetailCar?.car_owner?.avatar : '/avatar/avatar_default.png'}
+                                                        src={dataListRequestCarRental?.dataDetailCar?.customer?.avatar ? dataListRequestCarRental?.dataDetailCar?.customer?.avatar : '/avatar/avatar_default.png'}
                                                         alt="@kanow"
                                                     />
                                                     <AvatarFallback >
@@ -299,7 +310,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
 
                                             <div className='flex flex-col 3xl:gap-2 gap-1'>
                                                 <div className='uppercase text-[#16171B] font-semibold 3xl:text-base text-sm'>
-                                                    {dataListRequestCarRental?.dataDetailCar?.car_owner?.fullname ? dataListRequestCarRental?.dataDetailCar?.car_owner?.fullname : ""}
+                                                    {dataListRequestCarRental?.dataDetailCar?.customer?.fullname ? dataListRequestCarRental?.dataDetailCar?.customer?.fullname : ""}
                                                 </div>
 
                                                 {
@@ -729,20 +740,45 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                     </div>
 
                                     <div className='flex items-center gap-4'>
-                                        <Button
-                                            type="button"
-                                            className="3xl:text-base text-sm text-[#2FB9BD] border border-[#2FB9BD] bg-white hover:bg-slate-200 w-full px-6 py-3 rounded-xl uppercase caret-transparent"
-                                            onClick={handleCloseModal}
+                                        <motion.div
+                                            initial={false}
+                                            animate={"rest"}
+                                            whileTap="press"
+                                            variants={{
+                                                rest: { scale: 1 },
+                                                press: { scale: 1.05 }
+                                            }}
                                         >
-                                            Huỷ
-                                        </Button>
-                                        <Button
-                                            type="submit"
-                                            disabled={checkPolicy ? false : true}
-                                            className="3xl:text-base text-sm text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full px-6 py-3 rounded-xl uppercase caret-transparent"
+                                            <Button
+                                                type="button"
+                                                disabled={isLoadingButtonRequest ? true : false}
+                                                className="3xl:text-base text-sm text-[#2FB9BD] border border-[#2FB9BD] bg-white hover:bg-slate-200 w-full px-6 py-3 rounded-xl uppercase caret-transparent"
+                                                onClick={handleCloseModal}
+                                            >
+                                                Huỷ
+                                            </Button>
+                                        </motion.div>
+                                        <motion.div
+                                            initial={false}
+                                            animate={"rest"}
+                                            whileTap="press"
+                                            variants={{
+                                                rest: { scale: 1 },
+                                                press: { scale: 1.05 }
+                                            }}
                                         >
-                                            Gửi yêu cầu thuê xe
-                                        </Button>
+                                            <Button
+                                                type="submit"
+                                                disabled={!checkPolicy || isLoadingButtonRequest ? true : false}
+                                                className="flex items-center gap-2 3xl:text-base text-sm text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full px-6 py-3 rounded-xl uppercase caret-transparent"
+                                            >
+                                                {
+                                                    isLoadingButtonRequest &&
+                                                    <div className="text-white inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                                                }
+                                                <span>Gửi yêu cầu thuê xe</span>
+                                            </Button>
+                                        </motion.div>
                                     </div>
                                 </div>
                             </div>

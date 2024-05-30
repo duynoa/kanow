@@ -12,7 +12,7 @@ const CustomDataListCars = (data: any) => {
             ...image,
             name: `${data?.base?.base}/${image.name}`,
         })),
-        car_owner: {
+        customer: {
             avatar: item?.customer?.avatar,
             fullname: item?.customer?.fullname,
             id: item?.customer?.id,
@@ -42,15 +42,17 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
         id: res?.data?.id,
         address: `${res?.data?.district}, ${res?.data?.province}`,
         full_address: res?.data?.address,
+        customer: {
+            id: res?.data?.customer?.id,
+            fullname: res?.data?.customer?.fullname,
+            avatar: res?.data?.customer?.avatar,
+            total_trip: res?.data?.customer?.total_trip,
+            star_avg: res?.data?.customer?.star_avg,
+        },
         image_car: res?.data?.image_car?.map((image: any) => ({
             ...image,
             name: `${res?.base?.base}/${image.name}`,
         })),
-        car_owner: {
-            avatar: res?.data?.customer?.avatar,
-            fullname: res?.data?.customer?.fullname,
-            id: res?.data?.customer?.id,
-        },
         type: {
             delivery_car: res?.data?.delivery_car === 1,
             book_car_flash: res?.data?.book_car_flash === 1,
@@ -262,8 +264,8 @@ const CustomDataInfoRentalCar = (res: any) => {
             mortgage: res?.data?.car?.mortgage === 0,
             transmission_search: res?.data?.transmission,
         },
-        review:res?.data?.review,
-        review_owner:res?.data?.review_owner,
+        review: res?.data?.review,
+        review_owner: res?.data?.review_owner,
     };
     return { customDataInfoRentalCar };
 };
@@ -314,7 +316,7 @@ const CustomDataMyCar = (data: any) => {
             ...image,
             name: `${data?.base?.base}/${image.name}`,
         })),
-        car_owner: {
+        customer: {
             avatar: item?.customer?.avatar,
             fullname: item?.customer?.fullname,
             id: item?.customer?.id,

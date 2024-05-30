@@ -8,35 +8,35 @@ import {
     DialogOverlay,
     DialogTitle,
 } from "@/components/ui/dialog";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-
-import { BadgeAlert, X } from "lucide-react";
-
-import { useDialogReportCar, useDialogReviewCar } from "@/hooks/useOpenDialog";
-
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+} from "@/components/ui/form";
+
+import { X } from "lucide-react";
+
+import { useDialogReviewCar } from "@/hooks/useOpenDialog";
+import { useDataDetailCar, useDataInfoRentalCar } from "@/hooks/useDataQueryKey";
+import { useAuth } from "@/hooks/useAuth";
 
 import { useForm } from "react-hook-form";
 
-import { useDataDetailCar, useDataInfoRentalCar } from "@/hooks/useDataQueryKey";
-import { useAuth } from "@/hooks/useAuth";
 import StarRatings from "react-star-ratings";
 import { uuidv4 } from "@/lib/uuid";
 import { Badge } from "../ui/badge";
 import { getListContentReview, postAddReviewCar } from "@/services/cars/cars.services";
 import { toastCore } from "@/lib/toast";
+import SkeletonDialogReviewCar from "../skeleton/SkeletonDialogReviewCar";
 
-type Props = {}
+import { motion } from "framer-motion"
+
+type Props = {
+    fetchStepTransaction: () => Promise<void>
+}
 
 const dataFake = [
     {
@@ -65,17 +65,24 @@ const dataFake = [
     },
 ]
 
-export function DialogReviewCar({ }: Props) {
-    const [rating, setRating] = useState<number>(4);
+export function DialogReviewCar({ fetchStepTransaction }: Props) {
+    const [rating, setRating] = useState<number>(5);
     const [selectedReasons, setSelectedReasons] = useState<any[]>([]);
 
-    const { openDialogReviewCar, setOpenDialogReviewCar } = useDialogReviewCar()
+    const {
+        isLoadingDialogReviewCar,
+        openDialogReviewCar,
+        listContentReview,
+        setIsLoadingDialogReviewCar,
+        setOpenDialogReviewCar,
+        setListContentReview,
+    } = useDialogReviewCar()
 
     const { informationUser } = useAuth()
-    const { isStateInfoRentalCar } = useDataInfoRentalCar()
-
-    console.log('informationUser', informationUser);
-    console.log('isStateInfoRentalCar', isStateInfoRentalCar);
+    const {
+        isStateInfoRentalCar,
+        queryKeyIsStateInfoRentalCar
+    } = useDataInfoRentalCar()
 
     const form = useForm({
         defaultValues: {
@@ -87,6 +94,7 @@ export function DialogReviewCar({ }: Props) {
         if (openDialogReviewCar) {
             const fetchListContentReview = async () => {
                 try {
+                    setIsLoadingDialogReviewCar(true)
                     let type_review;
                     if (informationUser?.id === isStateInfoRentalCar?.detailRentalCar?.customer?.id) {
                         type_review = 2
@@ -100,8 +108,10 @@ export function DialogReviewCar({ }: Props) {
 
                     const { data } = await getListContentReview(dataParams)
 
-                    console.log('data list content review', data);
-
+                    if (data && data.data && data.data.length > 0) {
+                        setListContentReview(data.data)
+                        setIsLoadingDialogReviewCar(false)
+                    }
                 } catch (err) {
                     throw err
                 }
@@ -121,18 +131,25 @@ export function DialogReviewCar({ }: Props) {
 
 
     const handleChangeReason = (item: any) => {
-        setSelectedReasons((prevSelectedReasons) => {
-            if (prevSelectedReasons.includes(item.id)) {
-                return prevSelectedReasons.filter((reasonId) => reasonId !== item.id);
-            } else {
-                return [...prevSelectedReasons, item.id];
-            }
-        });
+        let newSelectedReason: any[] = [];
+
+        if (selectedReasons.includes(item.content)) {
+            newSelectedReason = selectedReasons.filter((reasonContent) => reasonContent !== item.content);
+        } else {
+            newSelectedReason = [...selectedReasons, item.content];
+        }
+
+        setSelectedReasons(newSelectedReason);
     };
 
     const onSubmit = async (values: any) => {
         try {
-            console.log('values :', values);
+            queryKeyIsStateInfoRentalCar({
+                loading: {
+                    ...isStateInfoRentalCar.loading,
+                    isLoadingSubmitReview: true,
+                }
+            })
             let type_review;
             if (informationUser?.id === isStateInfoRentalCar?.detailRentalCar?.customer?.id) {
                 type_review = 2
@@ -146,18 +163,31 @@ export function DialogReviewCar({ }: Props) {
                 star: rating,
                 transaction_id: isStateInfoRentalCar?.detailRentalCar?.id,
                 type_review: type_review,
+                template_content: selectedReasons,
             }
 
             const { data } = await postAddReviewCar(dataSubmit)
 
-            console.log('data submit 123', data);
 
             if (data && data.result) {
                 toastCore.success("Đánh giá thành công!")
                 setOpenDialogReviewCar(false)
+                fetchStepTransaction()
+                queryKeyIsStateInfoRentalCar({
+                    loading: {
+                        ...isStateInfoRentalCar.loading,
+                        isLoadingSubmitReview: false,
+                    }
+                })
             } else {
-                toastCore.error(data.message)
-                setOpenDialogReviewCar(false)
+                toastCore.error(data.message[0])
+                // toastCore.error(data.message)
+                queryKeyIsStateInfoRentalCar({
+                    loading: {
+                        ...isStateInfoRentalCar.loading,
+                        isLoadingSubmitReview: false,
+                    }
+                })
             }
         } catch (err) {
             throw err
@@ -192,110 +222,133 @@ export function DialogReviewCar({ }: Props) {
                     }
                 </DialogHeader>
 
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit((values) => onSubmit(values))}>
-                        <div className='flex flex-col gap-4 md:px-6 px-3'>
-                            <div className='flex items-center justify-between font-semibold'>
-                                {
-                                    rating === 1 &&
-                                    <div className='3xl:text-lg text-base'>
-                                        Kém
-                                    </div>
-                                }
-                                {
-                                    rating === 2 &&
-                                    <div className='3xl:text-lg text-base'>
-                                        Trung Bình
-                                    </div>
-                                }
-                                {
-                                    rating === 3 &&
-                                    <div className='3xl:text-lg text-base'>
-                                        Khá
-                                    </div>
-                                }
-                                {
-                                    rating === 4 &&
-                                    <div className='3xl:text-lg text-base'>
-                                        Tốt
-                                    </div>
-                                }
-                                {
-                                    rating === 5 &&
-                                    <div className='3xl:text-lg text-base'>
-                                        Hoàn hảo
-                                    </div>
-                                }
-                                <StarRatings
-                                    rating={rating}
-                                    starRatedColor="#FCC43E"
-                                    starHoverColor='#FCC43E'
-                                    starDimension='24px'
-                                    starSpacing='0px'
-                                    numberOfStars={5}
-                                    name='rating'
-                                    changeRating={changeRating}
-                                />
-                            </div>
+                {
+                    isLoadingDialogReviewCar ?
+                        (
+                            <SkeletonDialogReviewCar />
+                        )
+                        :
+                        (
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit((values) => onSubmit(values))}>
+                                    <div className='flex flex-col gap-4 md:px-6 px-3'>
+                                        <div className='flex items-center justify-between font-semibold'>
+                                            {
+                                                rating === 1 &&
+                                                <div className='3xl:text-lg text-base'>
+                                                    Kém
+                                                </div>
+                                            }
+                                            {
+                                                rating === 2 &&
+                                                <div className='3xl:text-lg text-base'>
+                                                    Trung Bình
+                                                </div>
+                                            }
+                                            {
+                                                rating === 3 &&
+                                                <div className='3xl:text-lg text-base'>
+                                                    Khá
+                                                </div>
+                                            }
+                                            {
+                                                rating === 4 &&
+                                                <div className='3xl:text-lg text-base'>
+                                                    Tốt
+                                                </div>
+                                            }
+                                            {
+                                                rating === 5 &&
+                                                <div className='3xl:text-lg text-base'>
+                                                    Hoàn hảo
+                                                </div>
+                                            }
+                                            <StarRatings
+                                                rating={rating}
+                                                starRatedColor="#FCC43E"
+                                                starHoverColor='#FCC43E'
+                                                starDimension='24px'
+                                                starSpacing='0px'
+                                                numberOfStars={5}
+                                                name='rating'
+                                                changeRating={changeRating}
+                                            />
+                                        </div>
 
-                            <div className='flex flex-wrap gap-2'>
-                                {
-                                    dataFake && dataFake?.map((item) => (
-                                        <React.Fragment key={`reason-${item.id}`}>
-                                            <Badge
-                                                variant={"secondary"}
-                                                onClick={() => handleChangeReason(item)}
-                                                className={`px-4 py-2 text-sm w-fit cursor-pointer caret-transparent hover:bg-[#2FB9BD]/20 hover:border-[#2FB9BD] hover:text-[#2FB9BD] transition duration-200 
-                                                ${selectedReasons.includes(item.id)
-                                                        ? 'bg-white border-[#2FB9BD] bg-[#2FB9BD]/20 text-[#2FB9BD] '
-                                                        : ''
-                                                    }`}
+                                        <div className='flex flex-wrap gap-2'>
+                                            {
+                                                listContentReview && listContentReview?.map((item) => (
+                                                    <React.Fragment key={`content-${item.id}`}>
+                                                        <Badge
+                                                            variant={"secondary"}
+                                                            onClick={() => handleChangeReason(item)}
+                                                            className={`px-4 py-2 text-sm w-fit cursor-pointer caret-transparent hover:bg-[#2FB9BD]/20 hover:border-[#2FB9BD] hover:text-[#2FB9BD] transition duration-200 
+                                                ${selectedReasons.includes(item.content)
+                                                                    ? 'bg-white border-[#2FB9BD] bg-[#2FB9BD]/20 text-[#2FB9BD] '
+                                                                    : ''
+                                                                }`}
+                                                        >
+                                                            {item.content}
+                                                        </Badge>
+                                                    </React.Fragment>
+                                                ))
+                                            }
+                                        </div>
+
+                                        <FormField
+                                            control={form.control}
+                                            name="content"
+                                            render={({ field, fieldState }) => {
+                                                const handleTextareaChange = (
+                                                    e: React.ChangeEvent<HTMLTextAreaElement>
+                                                ) => {
+                                                    field.onChange(e);
+                                                }
+
+                                                return (
+                                                    <FormItem>
+                                                        <div>
+                                                            <FormControl>
+                                                                <Textarea
+                                                                    disabled={form.formState.isSubmitting}
+                                                                    placeholder="Nhập nội dung (nếu có)"
+                                                                    className={`3xl:h-40 h-36 resize border rounded-lg bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0`}
+                                                                    onChange={handleTextareaChange}
+                                                                />
+                                                            </FormControl>
+                                                        </div>
+                                                    </FormItem>
+                                                );
+                                            }}
+                                        />
+
+                                        <motion.div
+                                            initial={false}
+                                            animate={"rest"}
+                                            whileTap="press"
+                                            variants={{
+                                                rest: { scale: 1 },
+                                                press: { scale: 1.01 }
+                                            }}
+                                        >
+                                            <Button
+                                                type="submit"
+                                                disabled={isStateInfoRentalCar?.loading?.isLoadingSubmitReview ? true : false}
+                                                className='flex items-center gap-2 xl:px-6 xl:py-3 px-4 py-2 xl:text-base text-sm rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full'
                                             >
-                                                {item.name}
-                                            </Badge>
-                                        </React.Fragment>
-                                    ))
-                                }
-                            </div>
+                                                {
+                                                    isStateInfoRentalCar?.loading?.isLoadingSubmitReview &&
+                                                    <div className="text-white inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                                                }
 
-                            <FormField
-                                control={form.control}
-                                name="content"
-                                render={({ field, fieldState }) => {
-                                    const handleTextareaChange = (
-                                        e: React.ChangeEvent<HTMLTextAreaElement>
-                                    ) => {
-                                        field.onChange(e);
-                                    }
-
-                                    return (
-                                        <FormItem>
-                                            <div>
-                                                <FormControl>
-                                                    <Textarea
-                                                        disabled={form.formState.isSubmitting}
-                                                        placeholder="Nhập nội dung"
-                                                        className={`3xl:h-40 h-36 resize border rounded-lg bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0`}
-                                                        onChange={handleTextareaChange}
-                                                    />
-                                                </FormControl>
-                                            </div>
-                                        </FormItem>
-                                    );
-                                }}
-                            />
-
-                            <Button
-                                type="submit"
-                                className='xl:px-6 xl:py-3 px-4 py-2 xl:text-base text-sm rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full'
-                            >
-                                Áp dụng
-                            </Button>
-                            {/* <div className='pt-8 pb-4 bg-white'>
-                            </div> */}
-                        </div>
-                    </form>
-                </Form>
+                                                <span>Áp dụng</span>
+                                            </Button>
+                                        </motion.div>
+                                    </div>
+                                </form>
+                            </Form>
+                        )
+                }
             </DialogContent>
         </Dialog>
     )

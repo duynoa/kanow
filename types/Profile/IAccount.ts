@@ -1,4 +1,4 @@
-type Rating = {
+type IRating = {
     id: any;
     avatar: string;
     name: string;
@@ -6,10 +6,10 @@ type Rating = {
     content: string;
     star: number;
 };
-interface StatePageAccount {
+interface IStatePageAccount {
     editInfo: boolean;
     editPapers: boolean;
-    dataStarRatings: Rating[];
+    dataStarRatings: IRating[];
     totalStar: number;
     totalReview: number;
     page: number;
@@ -40,4 +40,4 @@ interface IInfomationUser {
     drivingLiscense: any;
     review: any;
 }
-export type { StatePageAccount, IInfomationUser };
+export type { IStatePageAccount, IInfomationUser };

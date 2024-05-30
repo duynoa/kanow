@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FaRegQuestionCircle } from 'react-icons/fa'
 
 import {
@@ -26,6 +26,8 @@ import { useAuth } from '@/hooks/useAuth'
 import { postChangeStatusRentalCar } from '@/services/cars/cars.services'
 import { toastCore } from '@/lib/toast'
 
+import { motion } from "framer-motion"
+
 type Props = {
     params: {
         slug: string
@@ -44,7 +46,7 @@ const PriceList = ({
     const { setOpenDialogCancelCar, setDataInfo } = useDialogCancelCar()
     const { isVisibleTablet } = useResize()
     const { isStatePolicy } = useDataPolicy()
-    const { isStateInfoRentalCar } = useDataInfoRentalCar()
+    const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
     const { informationUser } = useAuth()
 
     const handleOpenModal = (type: string) => {
@@ -70,6 +72,13 @@ const PriceList = ({
         // lấy status của trạng thái +1 là ra status truyền lên 
         console.log('type type : ', type);
         try {
+            queryKeyIsStateInfoRentalCar({
+                loading: {
+                    ...isStateInfoRentalCar.loading,
+                    isLoadingButton: true
+                }
+            })
+
             let status;
             if (type === "status-0") {
                 status = 1
@@ -90,8 +99,20 @@ const PriceList = ({
 
             if (data && data.result) {
                 toastCore.success(data.message)
+                queryKeyIsStateInfoRentalCar({
+                    loading: {
+                        ...isStateInfoRentalCar.loading,
+                        isLoadingButton: false
+                    }
+                })
             } else {
                 toastCore.error(data.message)
+                queryKeyIsStateInfoRentalCar({
+                    loading: {
+                        ...isStateInfoRentalCar.loading,
+                        isLoadingButton: false
+                    }
+                })
             }
 
         } catch (err) {
@@ -362,32 +383,62 @@ const PriceList = ({
                         <div className='flex flex-col gap-2'>
                             {
                                 isStateInfoRentalCar?.detailRentalCar?.status?.status === 1 &&
-                                <Link
-                                    href={`/payment-methods/${params.slug}?type=${typeCarDetail}`}
-                                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
-                                    prefetch={false}
+                                <motion.div
+                                    initial={false}
+                                    animate={"rest"}
+                                    whileTap="press"
+                                    variants={{
+                                        rest: { scale: 1 },
+                                        press: { scale: 1.01 }
+                                    }}
                                 >
-                                    Thanh toán cọc
-                                </Link>
+                                    <Link
+                                        href={`/payment-methods/${params.slug}?type=${typeCarDetail}`}
+                                        className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                        prefetch={false}
+                                    >
+                                        Thanh toán cọc
+                                    </Link>
+                                </motion.div>
                             }
                             {
                                 isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status >= 4 &&
-                                <Link
-                                    href={`/detail-car/${isStateInfoRentalCar?.detailRentalCar?.car?.id}?type=${typeCarDetail}&${ConvertToSlug(isStateInfoRentalCar?.detailRentalCar?.car?.name)}`}
-                                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                <motion.div
+                                    initial={false}
+                                    animate={"rest"}
+                                    whileTap="press"
+                                    variants={{
+                                        rest: { scale: 1 },
+                                        press: { scale: 1.01 }
+                                    }}
                                 >
-                                    Đặt lại
-                                </Link>
+                                    <Link
+                                        href={`/detail-car/${isStateInfoRentalCar?.detailRentalCar?.car?.id}?type=${typeCarDetail}&${ConvertToSlug(isStateInfoRentalCar?.detailRentalCar?.car?.name)}`}
+                                        className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                    >
+                                        Đặt lại
+                                    </Link>
+                                </motion.div>
                             }
                             {
                                 isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status < 3 &&
-                                <Button
-                                    type="button"
-                                    onClick={() => handleOpenModal("cancel_car")}
-                                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-red-500 bg-white border-2 border-red-500 hover:bg-red-100 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                <motion.div
+                                    initial={false}
+                                    animate={"rest"}
+                                    whileTap="press"
+                                    variants={{
+                                        rest: { scale: 1 },
+                                        press: { scale: 1.01 }
+                                    }}
                                 >
-                                    Huỷ chuyến
-                                </Button>
+                                    <Button
+                                        type="button"
+                                        onClick={() => handleOpenModal("cancel_car")}
+                                        className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-red-500 bg-white border-2 border-red-500 hover:bg-red-100 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                    >
+                                        Huỷ chuyến
+                                    </Button>
+                                </motion.div>
                             }
                         </div>
                         :
@@ -567,58 +618,105 @@ const PriceList = ({
                     <div className='flex flex-col gap-2'>
                         {
                             isStateInfoRentalCar?.detailRentalCar?.status?.status === 0 &&
-                            <Button
-                                type="button"
-                                className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
-                                onClick={() => handleChangeStatus("status-0")}
+                            <motion.div
+                                initial={false}
+                                animate={"rest"}
+                                whileTap="press"
+                                variants={{
+                                    rest: { scale: 1 },
+                                    press: { scale: 1.01 }
+                                }}
                             >
-                                Duyệt yêu cầu
-                            </Button>
+                                <Button
+                                    type="button"
+                                    disabled={isStateInfoRentalCar?.loading?.isLoadingButton ? true : false}
+                                    className='py-4 w-full flex items-center gap-2 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                    onClick={() => handleChangeStatus("status-0")}
+                                >
+                                    {
+                                        isStateInfoRentalCar?.loading?.isLoadingButton &&
+                                        <div className="text-white inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                                    }
+
+                                    <div>Duyệt yêu cầu</div>
+                                </Button>
+                            </motion.div>
                         }
                         {
                             (isStateInfoRentalCar?.detailRentalCar?.status?.status === 1 || isStateInfoRentalCar?.detailRentalCar?.status?.status === 2) &&
-                            <Button
-                                type="button"
-                                onClick={() => handleChangeStatus(isStateInfoRentalCar?.detailRentalCar?.status?.status === 2 ? "status-2" : "")}
-                                disabled={isStateInfoRentalCar?.detailRentalCar?.status?.status === 1 ? true : false}
-                                className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+
+
+                            <motion.div
+                                initial={false}
+                                animate={"rest"}
+                                whileTap="press"
+                                variants={{
+                                    rest: { scale: 1 },
+                                    press: { scale: 1.01 }
+                                }}
                             >
-                                Giao xe
-                            </Button>
+                                <Button
+                                    type="button"
+                                    onClick={() => handleChangeStatus(isStateInfoRentalCar?.detailRentalCar?.status?.status === 2 ? "status-2" : "")}
+                                    disabled={isStateInfoRentalCar?.detailRentalCar?.status?.status === 1 || isStateInfoRentalCar?.loading?.isLoadingButton ? true : false}
+                                    className={` py-4 w-full flex items-center gap-2 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent`}
+                                >
+                                    {
+                                        isStateInfoRentalCar?.loading?.isLoadingButton &&
+                                        <div className="text-white inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                                    }
+                                    <span>Giao xe</span>
+                                </Button>
+                            </motion.div>
                         }
                         {
                             isStateInfoRentalCar?.detailRentalCar?.status?.status === 3 &&
-                            <Button
-                                type="button"
-                                onClick={() => handleOpenModal("status_finish")}
-                                // onClick={() => handleChangeStatus("status-3")}
-                                className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                            <motion.div
+                                initial={false}
+                                animate={"rest"}
+                                whileTap="press"
+                                variants={{
+                                    rest: { scale: 1 },
+                                    press: { scale: 1.01 }
+                                }}
                             >
-                                Nhận xe
-                            </Button>
+                                <Button
+                                    type="button"
+                                    onClick={() => handleOpenModal("status_finish")}
+                                    disabled={isStateInfoRentalCar?.loading?.isLoadingButton ? true : false}
+                                    className='py-4 w-full flex items-center gap-2 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                >
+                                    {
+                                        isStateInfoRentalCar?.loading?.isLoadingButton &&
+                                        <div className="text-white inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                                    }
+                                    <span>Nhận xe</span>
+                                </Button>
+                            </motion.div>
                         }
                         {
                             isStateInfoRentalCar?.detailRentalCar?.status && isStateInfoRentalCar?.detailRentalCar?.status?.status < 3 &&
-                            <Button
-                                type="button"
-                                onClick={() => handleOpenModal("cancel_car")}
-                                className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-red-500 bg-white border-2 border-red-500 hover:bg-red-100 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                            <motion.div
+                                initial={false}
+                                animate={"rest"}
+                                whileTap="press"
+                                variants={{
+                                    rest: { scale: 1 },
+                                    press: { scale: 1.01 }
+                                }}
                             >
-                                Huỷ chuyến
-                            </Button>
+                                <Button
+                                    type="button"
+                                    onClick={() => handleOpenModal("cancel_car")}
+                                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-red-500 bg-white border-2 border-red-500 hover:bg-red-100 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                >
+                                    Huỷ chuyến
+                                </Button>
+                            </motion.div>
                         }
                     </div>
                 </div>
             }
-
-            {/* <Button
-                type="button"
-                onClick={() => handleOpenModal("done_car")}
-                // className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-red-500 bg-white border-2 border-red-500 hover:bg-red-100 transition-all duration-300 font-semibold rounded-xl caret-transparent'
-                className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
-            >
-                Hoàn thành
-            </Button> */}
         </div>
     )
 }

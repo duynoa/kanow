@@ -1,6 +1,6 @@
 // data card car
 interface IDataCardCar {
-    car_owner: {
+    customer: {
         avatar: string;
         fullname: string;
         id: string;
@@ -14,11 +14,6 @@ interface IDataCardCar {
         name: string;
         updated_at: string;
     }[];
-    customer: {
-        avatar: string;
-        fullname: string;
-        id: string;
-    };
     type: {
         delivery_car: boolean;
         book_car_flash: boolean;
@@ -76,10 +71,12 @@ interface IDataDetailCar {
         name: string;
         updated_at: string;
     }[];
-    car_owner: {
-        avatar: string;
-        fullname: string;
-        id: string;
+    customer: {
+        id: number,
+        fullname: string,
+        avatar: string,
+        total_trip: number,
+        star_avg: number
     };
     type: {
         delivery_car: boolean;
@@ -300,7 +297,12 @@ interface IDetailRentalCar {
         star: number,
         fullname: string,
         avatar: string,
-        created_at: string
+        created_at: string,
+        template_content: {
+            id: number,
+            review_car_id: number,
+            content: string
+        }[]
     },
     review_owner: {
         id: number,
@@ -308,7 +310,12 @@ interface IDetailRentalCar {
         star: number,
         fullname: string,
         avatar: string,
-        created_at: string
+        created_at: string,
+        template_content: {
+            id: number,
+            review_car_id: number,
+            content: string
+        }[]
     },
 }
 

@@ -128,6 +128,11 @@ interface IInitialStateDetailCar {
 // initial rental car
 interface IInitialStateInfoRentalCar {
     detailRentalCar?: IDetailRentalCar;
+
+    loading: {
+        isLoadingSubmitReview: boolean,
+        isLoadingButton: boolean
+    }
 }
 
 // initial payment car

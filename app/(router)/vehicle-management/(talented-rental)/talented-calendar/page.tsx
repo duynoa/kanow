@@ -216,7 +216,6 @@ export default function TalentedCalender(props: Props) {
 
             const { data } = await putPriceBusyDay(dataSubmit)
 
-            console.log('data res:', data);
             if (data && data.result) {
                 queryKeyIsStateLoadSuccess({
                     loading: {
@@ -235,8 +234,6 @@ export default function TalentedCalender(props: Props) {
     }
 
     const handleChangeMonthCalendar = (e: any) => {
-        console.log('data change:', e);
-
         // Lấy số lượng tháng muốn thêm vào từ giá trị của trường "Cho đến"
         const additionalMonths = parseInt(e);
 
@@ -305,11 +302,9 @@ export default function TalentedCalender(props: Props) {
         // setDataCalendar(monthInfoArray)
         setDataCalendarComponent(monthInfoArray)
 
-        console.log('monthInfoArray', monthInfoArray);
     };
 
     const onSubmit = async (value: any) => {
-        console.log('value:', value);
         try {
             let dataSubmit = new FormData();
             dataSubmit.append('car_id', id);
@@ -350,9 +345,6 @@ export default function TalentedCalender(props: Props) {
                 });
             }
 
-            console.log('dataSubmit : ', dataSubmit);
-
-
             if (value.month.endMonth !== 0) {
                 queryKeyIsStateLoadSuccess({
                     loading: {
@@ -362,7 +354,6 @@ export default function TalentedCalender(props: Props) {
                 })
 
                 const { data } = await postChangeQuantityMonths(dataSubmit)
-                console.log('data : ', data);
 
                 if (data && data.result) {
                     setDataCalendarComponent([])
@@ -393,9 +384,6 @@ export default function TalentedCalender(props: Props) {
             throw err
         }
     }
-
-    console.log('dataCalendar', dataCalendar);
-    console.log('isStateLoadSuccess', isStateLoadSuccess);
 
     return (
         <BackgroundUiVehicle className={"min-h-[90vh]"}>

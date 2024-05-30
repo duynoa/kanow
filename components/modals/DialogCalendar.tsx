@@ -520,7 +520,6 @@ export function DialogCalendar({ }: Props) {
                 setDateTimeComponent(dateReal)
             }
         } else if (typeCarDetail == "2") {
-            console.log('dateTemp', dateTemp);
             if (pathname.startsWith('/detail-car/')) {
 
                 setDateTimeComponent(dateTemp)
@@ -632,7 +631,6 @@ export function DialogCalendar({ }: Props) {
                 }))
             }
         } else if (type === 'calendar_car_driver') {
-            console.log('check newDate: ', newDate);
             if (newDate) {
                 // Tạo một đối tượng Date mới từ newDate
                 const newFromDate = new Date(newDate);

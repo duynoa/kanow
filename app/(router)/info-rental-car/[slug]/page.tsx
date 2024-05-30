@@ -28,6 +28,8 @@ import { useGeneralKey } from '@/hooks/useGeneralKey'
 import { useAuth } from '@/hooks/useAuth'
 
 import Pusher from "pusher-js";
+import { useDialogReviewCar } from '@/hooks/useOpenDialog'
+import { DialogReviewCar } from '@/components/modals/DialogReviewCar'
 
 type Props = {
     params: {
@@ -37,6 +39,8 @@ type Props = {
 
 const InfoRentalCar = ({ params }: Props) => {
     const [isMounted, setIsMounted] = useState<boolean>(false)
+
+    const [onFetchingDataTransaction, setOnFetchingDataTransaction] = useState<boolean>(false)
 
     const searchParams = useSearchParams()
     const typeCarDetail = searchParams.get('type')
@@ -51,6 +55,8 @@ const InfoRentalCar = ({ params }: Props) => {
         queryKeyIsStateInfoRentalCar,
         setIsLoadingSkeletonIntroRentalCar
     } = useDataInfoRentalCar()
+
+    const { openDialogReviewCar, setOpenDialogReviewCar } = useDialogReviewCar()
 
     const { queryKeyIsStatePolicy } = useDataPolicy()
     const { isVisibleMobile } = useResize()
@@ -93,38 +99,63 @@ const InfoRentalCar = ({ params }: Props) => {
         },
     ]
 
+    const fetchStepTransaction = async () => {
+        try {
+            setIsLoadingSkeletonIntroRentalCar(true)
+
+            const dataParams = {
+                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null
+            }
+
+            const { data } = await getInfoDetailCarTransaction(params?.slug, dataParams);
+            console.log('data data data:', data);
+
+            if (data && data.data && data.base) {
+                let { customDataInfoRentalCar } = CustomDataInfoRentalCar(data)
+
+                queryKeyIsStateInfoRentalCar({
+                    detailRentalCar: customDataInfoRentalCar
+                })
+
+                if (informationUser) {
+                    if (data?.data?.status?.status === 4) {
+                        const isOwner = informationUser?.id === data?.data?.customer?.id;
+                        const isRenter = informationUser?.id !== data?.data?.customer?.id;
+
+                        if (isOwner && !isRenter && !data?.data?.review_owner) {
+                            setOpenDialogReviewCar(true);
+                        } else if (!isOwner && isRenter && !data?.data?.review) {
+                            setOpenDialogReviewCar(true);
+                        }
+                    } else {
+                        setOpenDialogReviewCar(false)
+                    }
+                }
+                setIsLoadingSkeletonIntroRentalCar(false)
+            } else {
+                setIsLoadingSkeletonIntroRentalCar(false)
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
     useEffect(() => {
         setIsMounted(true)
+        // lấy data thanh step các bước thanh toán xe
     }, [])
 
     useEffect(() => {
-        const fetchStepTransaction = async () => {
-            try {
-                setIsLoadingSkeletonIntroRentalCar(true)
-
-                const dataParams = {
-                    type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null
-                }
-
-                const { data } = await getInfoDetailCarTransaction(params?.slug, dataParams);
-                console.log('data data data:', data);
-
-                if (data && data.data && data.base) {
-                    let { customDataInfoRentalCar } = CustomDataInfoRentalCar(data)
-
-                    queryKeyIsStateInfoRentalCar({
-                        detailRentalCar: customDataInfoRentalCar
-                    })
-                    setIsLoadingSkeletonIntroRentalCar(false)
-                } else {
-                    setIsLoadingSkeletonIntroRentalCar(false)
-                }
-            } catch (err) {
-                throw err
-            }
-        }
         fetchStepTransaction()
-    }, [])
+    }, [params?.slug, informationUser])
+
+
+
+    // useEffect(() => {
+
+    // }, [informationUser, isStateInfoRentalCar.detailRentalCar?.status?.status])
+
+    console.log('openDialogReviewCar: ', openDialogReviewCar);
 
 
     useEffect(() => {
@@ -157,9 +188,12 @@ const InfoRentalCar = ({ params }: Props) => {
                                 statusCustom: +data.status,
                                 note: data.note_status
                             }
+                        },
+                        loading: {
+                            ...isStateInfoRentalCar.loading,
+                            isLoadingButton: false
                         }
                     })
-
                 }
             });
 
@@ -273,6 +307,7 @@ const InfoRentalCar = ({ params }: Props) => {
                         }
                     </div>
             }
+            <DialogReviewCar fetchStepTransaction={fetchStepTransaction} />
         </>
     )
 }
