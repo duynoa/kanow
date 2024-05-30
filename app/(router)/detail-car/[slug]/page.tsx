@@ -354,7 +354,7 @@ const DetailCar = ({ params }: Props) => {
             const { data } = await getDataDetailCar(params.slug, dataParams)
             console.log('data detail :', data);
 
-            if (data && data.data && data.base.base) {
+            if (data && data.data && data.base && data.base.base) {
                 let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
 
                 if (typeCarDetail === "1" && dateReal?.from && dateReal?.to) {

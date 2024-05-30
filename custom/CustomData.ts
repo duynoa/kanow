@@ -154,11 +154,7 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
             ...image,
             image: `${res?.base?.base}/${image.image}`,
         })),
-        info_review_car: {
-            review_car: res?.data?.review_car,
-            star: res?.data?.star,
-            total_review_car: res?.data?.total_review_car,
-        },
+        review_car: res?.data?.review_car,
         collateral_car: {
             mortgage: res?.data?.mortgage,
             mortgage_policy_car: res?.data?.mortgage_policy_car,
@@ -169,6 +165,7 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
         // giờ nhận xe và giờ trả xe
         hour_back_car: res?.data?.hour_back_car,
         hour_receive_car: res?.data?.hour_receive_car,
+        total_review_car: res?.data?.total_review_car,
     };
     return { customDataDetailCar };
 };

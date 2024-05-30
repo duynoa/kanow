@@ -152,11 +152,8 @@ const isStateDetailCar: IInitialStateDetailCar = {
         },
         describe_car: "",
         other_amenities_car: [],
-        info_review_car: {
-            review_car: [],
-            star: 0,
-            total_review_car: 0,
-        },
+        review_car: [],
+        total_review_car: 0,
         collateral_car: {
             mortgage: 0,
             mortgage_policy_car: "",

@@ -21,6 +21,7 @@ import { useDialogAnswerPolicy } from '@/hooks/useOpenDialog';
 import { IInitialStateDetailCar } from '@/types/Initial/IInitial';
 import { useDataDetailCar, useDataPolicy } from '@/hooks/useDataQueryKey';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { DrawerReview } from '@/components/drawer/DrawerReview';
 
 type Props = {
     handleClickFavorite: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
@@ -98,11 +99,25 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                         </div>
 
                         {
-                            isStateDetailCar?.dataDetailCar?.customer?.total_trip ?
+                            isStateDetailCar?.dataDetailCar?.point_star ?
+                                <div className='flex items-center gap-1'>
+                                    <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
+                                    <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
+                                        {isStateDetailCar?.dataDetailCar?.point_star ? (FormatPointStar(isStateDetailCar?.dataDetailCar?.point_star, 1)) : 0}
+                                    </div>
+                                </div>
+                                :
+                                <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                    Chưa có đánh giá
+                                </div>
+                        }
+
+                        {
+                            isStateDetailCar?.dataDetailCar?.total_trip ?
                                 <div className='flex items-center gap-1'>
                                     <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
                                     <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
-                                        {isStateDetailCar?.dataDetailCar?.customer?.total_trip ? FormatNumberHundred(isStateDetailCar?.dataDetailCar?.customer?.total_trip, 100) : 0} Chuyến
+                                        {isStateDetailCar?.dataDetailCar?.total_trip ? FormatNumberHundred(isStateDetailCar?.dataDetailCar?.total_trip, 100) : 0} Chuyến
                                     </div>
                                 </div>
                                 :
@@ -289,19 +304,35 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                             <div className='uppercase text-[#16171B] font-semibold 3xl:text-base text-sm'>
                                 {isStateDetailCar?.dataDetailCar?.customer?.fullname ? isStateDetailCar?.dataDetailCar?.customer?.fullname : ""}
                             </div>
-                            {
-                                isStateDetailCar?.dataDetailCar?.customer?.star_avg ?
-                                    <div className='flex items-center gap-1'>
-                                        <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
-                                        <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
-                                            {isStateDetailCar?.dataDetailCar?.customer?.star_avg ? (FormatPointStar(isStateDetailCar?.dataDetailCar?.customer?.star_avg, 1)) : 0}
+                            <div className='flex items-center gap-2'>
+                                {
+                                    isStateDetailCar?.dataDetailCar?.customer?.star_avg ?
+                                        <div className='flex items-center gap-1'>
+                                            <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
+                                            <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
+                                                {isStateDetailCar?.dataDetailCar?.customer?.star_avg ? (FormatPointStar(isStateDetailCar?.dataDetailCar?.customer?.star_avg, 1)) : 0}
+                                            </div>
                                         </div>
-                                    </div>
-                                    :
-                                    <div className='3xl:text-sm text-xs text-[#8C93A3]'>
-                                        Chưa có đánh giá
-                                    </div>
-                            }
+                                        :
+                                        <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                            Chưa có đánh giá
+                                        </div>
+                                }
+
+                                {
+                                    isStateDetailCar?.dataDetailCar?.customer?.total_trip ?
+                                        <div className='flex items-center gap-1'>
+                                            <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
+                                            <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                                {isStateDetailCar?.dataDetailCar?.customer?.total_trip ? FormatNumberHundred(isStateDetailCar?.dataDetailCar?.customer?.total_trip, 100) : 0} Chuyến
+                                            </div>
+                                        </div>
+                                        :
+                                        <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                            Chưa có chuyến
+                                        </div>
+                                }
+                            </div>
                         </div>
                     </div>
 
@@ -363,7 +394,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                             {
                                 isVisibleMobile ?
                                     <StarRatings
-                                        rating={isStateDetailCar?.dataDetailCar?.info_review_car?.star ? isStateDetailCar?.dataDetailCar?.info_review_car?.star : 0}
+                                        rating={isStateDetailCar?.dataDetailCar?.customer?.star_avg ? isStateDetailCar?.dataDetailCar?.customer?.star_avg : 0}
                                         starRatedColor="#FCC43E"
                                         starHoverColor='#FCC43E'
                                         starDimension='16px'
@@ -373,7 +404,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                                     />
                                     :
                                     <StarRatings
-                                        rating={isStateDetailCar?.dataDetailCar?.info_review_car?.star ? isStateDetailCar?.dataDetailCar?.info_review_car?.star : 0}
+                                        rating={isStateDetailCar?.dataDetailCar?.customer?.star_avg ? isStateDetailCar?.dataDetailCar?.customer?.star_avg : 0}
                                         starRatedColor="#FCC43E"
                                         starHoverColor='#FCC43E'
                                         starDimension='16px'
@@ -383,12 +414,12 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                                     />
                             }
                             <div className='3xl:text-base text-sm text-[#FF9900] font-semibold'>
-                                {isStateDetailCar?.dataDetailCar?.info_review_car?.star ? (FormatNumberToDecimal(isStateDetailCar?.dataDetailCar?.info_review_car?.star, 1)) : 0}/5
+                                {isStateDetailCar?.dataDetailCar?.customer?.star_avg ? (FormatNumberToDecimal(isStateDetailCar?.dataDetailCar?.customer?.star_avg, 1)) : 0}/5
                             </div>
                             {
-                                isStateDetailCar?.dataDetailCar?.info_review_car?.total_review_car !== 0 ?
+                                isStateDetailCar?.dataDetailCar?.total_review_car !== 0 ?
                                     <div className='3xl:text-base text-sm text-[#6F7689]'>
-                                        ({isStateDetailCar?.dataDetailCar?.info_review_car?.total_review_car ? isStateDetailCar?.dataDetailCar?.info_review_car?.total_review_car : 0} đánh giá)
+                                        ({isStateDetailCar?.dataDetailCar?.total_review_car ? isStateDetailCar?.dataDetailCar?.total_review_car : 0} đánh giá)
                                     </div>
                                     :
                                     <div className='3xl:text-base text-sm text-[#6F7689]'>
@@ -398,19 +429,21 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                         </div>
                     </div>
                     {
-                        isStateDetailCar?.dataDetailCar?.info_review_car?.review_car?.length > 5 &&
-                        <div className='3xl:text-lg md:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
-                            Xem tất cả
-                        </div>
+                        isStateDetailCar?.dataDetailCar?.total_review_car > 5 &&
+                        <DrawerReview>
+                            <div className='3xl:text-lg md:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-semibold cursor-pointer duration-300 transition ease-in-out'>
+                                Xem tất cả
+                            </div>
+                        </DrawerReview>
                     }
                 </div>
                 {
-                    isStateDetailCar?.dataDetailCar?.info_review_car?.review_car && isStateDetailCar?.dataDetailCar?.info_review_car?.review_car?.slice(0, 5)?.map((item, index) => (
-                        <div key={item.id} className={`${index !== isStateDetailCar?.dataDetailCar?.info_review_car?.review_car?.length - 1 ? "border-b pb-3" : ""} flex flex-col`}>
+                    isStateDetailCar?.dataDetailCar?.review_car && isStateDetailCar?.dataDetailCar?.review_car?.map((item, index) => (
+                        <div key={item.id} className={`${index !== isStateDetailCar?.dataDetailCar?.review_car?.length - 1 ? "border-b pb-3" : ""} flex flex-col`}>
                             <div className='flex items-center gap-3'>
                                 <div className='3xl:w-14 3xl:h-14 3xl:max-w-14 w-12 h-12 max-w-12 rounded-full drop-shadow'>
                                     <Image
-                                        src="/avatar/avatar1.png"
+                                        src={item.avatar ? item.avatar : "/avatar/avatar_default.png"}
                                         alt="avatar"
                                         width={100}
                                         height={100}
@@ -433,6 +466,29 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                             <div className='3xl:text-base text-sm text-[#585F71] mt-2'>
                                 {item.content ? item.content : ''}
                             </div>
+
+                            {
+                                item?.template_content?.length > 0
+                                    ?
+                                    (
+                                        <div className='flex flex-wrap gap-2'>
+                                            {
+                                                item?.template_content?.map((badge) => (
+                                                    <React.Fragment key={`content-${badge.id}`}>
+                                                        <Badge
+                                                            variant={"secondary"}
+                                                            className={`px-3 py-1 text-xs w-fit cursor-default caret-transparent hover:bg-[#2FB9BD]/20 border-[#2FB9BD] text-[#2FB9BD] transition duration-200 `}
+                                                        >
+                                                            {badge.content}
+                                                        </Badge>
+                                                    </React.Fragment>
+                                                ))
+                                            }
+                                        </div>
+                                    )
+                                    :
+                                    (null)
+                            }
                             <div className='flex items-center'>
                                 {
                                     isVisibleMobile ?

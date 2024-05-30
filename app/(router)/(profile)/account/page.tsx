@@ -18,7 +18,9 @@ import apiAccount from '@/services/profile/account/account.services'
 import BackgroundUiProfile from '@/themes/profile/BackgroundUiProfile'
 import { ActionTooltip } from '@/components/tooltip/ActionTooltip'
 import { useDataPolicy } from '@/hooks/useDataQueryKey'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { motion } from 'framer-motion'
+import ButtonLoading from '@/components/button/ButtonLoading'
+
 type Props = {}
 
 
@@ -38,7 +40,8 @@ const Account = (props: Props) => {
         limit: 5,
         tabRatings: "1",
         nextPage: "",
-        loadingData: false
+        loadingData: false,
+        loadingButton: false,
     }
 
     const { apiInfoUser } = useAuthenticationAPI()
@@ -71,6 +74,8 @@ const Account = (props: Props) => {
             filePapers: informationUser?.drivingLiscense?.image ?? null
         },
     });
+
+    console.log('informationUser', informationUser);
 
 
     const onSetValue = (informationUser: any, type: string) => {
@@ -134,7 +139,6 @@ const Account = (props: Props) => {
         return data
     }
 
-
     const handleClickButtonEdit = (type: string) => {
         form.clearErrors()
         queryState({ type: type })
@@ -189,6 +193,7 @@ const Account = (props: Props) => {
             queryState({
                 dataStarRatings: newData,
                 totalReview: data?.total_review,
+                page: isState.page + 1,
                 totalStar: data?.star_avg,
                 nextPage: data?.links?.next,
             })
@@ -196,32 +201,47 @@ const Account = (props: Props) => {
             return
         }
     }
-    const handleNextPage = async () => {
-        let form: any = new FormData();
-        form.append('current_page', isState.page)
-        form.append('per_page', isState.limit)
-        form.append('type_review', isState.tabRatings)
-        const { data } = await apiListRatings(form)
 
-        if (data?.data) {
-            const newData = dataStarRatings(data?.data)
+    const handleNextPage = async () => {
+        if (isState.nextPage !== null) {
             queryState({
-                dataStarRatings: [...isState.dataStarRatings, ...newData],
-                nextPage: data?.links?.next,
+                loadingButton: true
             })
-            return
+
+            let form: any = new FormData();
+            form.append('current_page', isState.page)
+            form.append('per_page', isState.limit)
+            form.append('type_review', isState.tabRatings)
+            const { data } = await apiListRatings(form)
+
+            if (data?.data) {
+                const newData = dataStarRatings(data?.data)
+                queryState({
+                    dataStarRatings: [...isState.dataStarRatings, ...newData],
+                    page: isState.page + 1,
+                    nextPage: data?.links?.next,
+                    loadingButton: false
+                })
+                return
+            } else {
+                queryState({
+                    loadingButton: false
+                })
+            }
+
         }
     }
 
     useEffect(() => {
-        if (isState.page != 1) {
-            handleNextPage()
-        }
+        // if (isState.page != 1) {
+        //     handleNextPage()
+        // }
         if (isState.page == 1) {
             fetChDataRatings(1)
         }
     }, [isState.page, isState.tabRatings])
 
+    console.log('isState', isState);
 
 
     const handleClickOptionsButton = async (type: string) => {
@@ -239,6 +259,13 @@ const Account = (props: Props) => {
         handleClickButtonEdit(`${type}`)
         form.clearErrors()
     }
+
+    useEffect(() => {
+        if (informationUser) {
+            onSetValue(informationUser, 'all')
+        }
+    }, [informationUser])
+
 
     if (!isMounted) {
         return null;
@@ -258,7 +285,8 @@ const Account = (props: Props) => {
                                  px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
                             {isState.editInfo ? 'Cập nhật' : "Chỉnh sửa"}
                         </Button>
-                        {isState.editInfo &&
+                        {
+                            isState.editInfo &&
                             <Button
                                 type='button'
                                 onClick={() => handleClickButtonEdit('editInfo')} className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full 
@@ -331,15 +359,27 @@ const Account = (props: Props) => {
                 <SessionStarRating isState={isState} queryState={queryState} />
                 {!isState.loadingData && isState?.nextPage &&
                     <div className="flex justify-center items-center my-4">
-                        <Button
-                            onClick={() => queryState({ page: isState.page + 1 })}
-                            type='button'
-                            className={`hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] text-sm lg:px-8 px-10 py-2 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}>
-                            Xem thêm
-                        </Button>
+                        <motion.div
+                            initial={false}
+                            animate={"rest"}
+                            whileTap="press"
+                            variants={{
+                                rest: { scale: 1 },
+                                press: { scale: 1.03 }
+                            }}
+                        >
+                            <ButtonLoading
+                                type='button'
+                                title={"Xem thêm"}
+                                onClick={() => handleNextPage()}
+                                isStateloading={isState?.loadingButton}
+                                disabled={isState.loadingButton ? true : false}
+                                className={`flex items-center gap-2 px-4 py-2 3xl:text-base text-sm bg-[#2FB9DB] text-white rounded-lg cursor-pointer hover:bg-[#2FB9DB]/80`}
+                            />
+                        </motion.div>
                     </div>
                 }
-            </BackgroundUiProfile>
+            </BackgroundUiProfile >
         </div >
     )
 }
