@@ -190,6 +190,21 @@ interface IInitialStateLoadSuccess {
     success: any;
 }
 
+// initial Data ALL Review (quản lí draw review)
+interface IInitialStateAllReview {
+    listAllReviewCar: any[],
+    loading: {
+        isLoadingListReview: boolean,
+        isLoadingButton: boolean
+    },
+    params: {
+        page: number,
+        limit: number,
+        next: null | string
+        total_review: number,
+    }
+}
+
 export type {
     IInitialStateDataHome,
     IInitialStateListCarAutonomous,
@@ -201,4 +216,5 @@ export type {
     IInitialStateProfileMyCar,
     IInitialStateNotification,
     IInitialStateLoadSuccess,
+    IInitialStateAllReview
 };

@@ -105,6 +105,16 @@ const postChangeStatusRentalCar = (data: any) => {
     return axios.post("/transaction/changeStatus", data)
 }
 
+// get List all Review 
+const getListAllReview = (param?: any) => {
+    let config: AxiosRequestConfig = {
+        params: {
+            ...param, // Nối các tham số trong param object
+        },
+    };
+    return axios.get("/car/getListReview", config)
+}
+
 // get list content review car (type 1: khách thuê đánh giá, type2: chủ xe đánh giá)
 const getListContentReview = (param?: any) => {
     let config: AxiosRequestConfig = {
@@ -116,7 +126,7 @@ const getListContentReview = (param?: any) => {
 }
 
 // post add revieww car(type 1: khách thuê đánh giá, type2: chủ xe đánh giá)
-const postAddReviewCar = (data:any) => {
+const postAddReviewCar = (data: any) => {
     return axios.post("/transaction/addReview", data)
 }
 
@@ -133,5 +143,6 @@ export {
     postDriverAppointment,
     postChangeStatusRentalCar,
     getListContentReview,
-    postAddReviewCar
+    postAddReviewCar,
+    getListAllReview
 };

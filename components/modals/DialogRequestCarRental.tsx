@@ -186,23 +186,22 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                     {dataListRequestCarRental?.dataDetailCar?.trait_car?.number_car ? dataListRequestCarRental?.dataDetailCar?.trait_car?.number_car : ""}
                                                 </span>
                                             </div>
-                                            {/* <div className='flex items-center gap-4'>
-                                                <div className='flex items-center gap-1'>
-                                                    <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
-                                                    <div className='3xl:text-sm text-xs text-[#484D5C] font-medium'>
-                                                        4.9
-                                                    </div>
-                                                </div>
-
-                                                <div className='flex items-center gap-1'>
-                                                    <FaCircleCheck className='3xl:text-base text-sm text-[#3AC996]' />
-                                                    <div className='3xl:text-sm text-xs text-[#484D5C] font-semibold'>
-                                                        {FormatNumberHundred(19, 100)} Chuyến
-                                                    </div>
-                                                </div>
-                                            </div> */}
 
                                             <div className='flex gap-3 md:items-center items-start caret-transparent'>
+                                                {
+                                                    dataListRequestCarRental?.dataDetailCar?.point_star ?
+                                                        <div className='flex items-center gap-1'>
+                                                            <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
+                                                            <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
+                                                                {dataListRequestCarRental?.dataDetailCar?.point_star ? (FormatPointStar(dataListRequestCarRental?.dataDetailCar?.point_star, 1)) : 0}
+                                                            </div>
+                                                        </div>
+                                                        :
+                                                        <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                                            Chưa có đánh giá
+                                                        </div>
+                                                }
+
                                                 {
                                                     dataListRequestCarRental?.dataDetailCar?.total_trip ?
                                                         <div className='flex items-center gap-1'>
@@ -313,19 +312,35 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                     {dataListRequestCarRental?.dataDetailCar?.customer?.fullname ? dataListRequestCarRental?.dataDetailCar?.customer?.fullname : ""}
                                                 </div>
 
-                                                {
-                                                    dataListRequestCarRental?.dataDetailCar?.point_star ?
-                                                        <div className='flex items-center gap-1'>
-                                                            <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
-                                                            <div className='3xl:text-sm text-xs text-[#484D5C] font-medium'>
-                                                                {dataListRequestCarRental?.dataDetailCar?.point_star ? (FormatPointStar(dataListRequestCarRental?.dataDetailCar?.point_star, 1)) : 0}
+                                                <div className='flex items-center gap-2'>
+                                                    {
+                                                        dataListRequestCarRental?.dataDetailCar?.customer?.star_avg ?
+                                                            <div className='flex items-center gap-1'>
+                                                                <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
+                                                                <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
+                                                                    {dataListRequestCarRental?.dataDetailCar?.customer?.star_avg ? (FormatPointStar(dataListRequestCarRental?.dataDetailCar?.customer?.star_avg, 1)) : 0}
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        :
-                                                        <div className='3xl:text-sm text-xs text-[#8C93A3]'>
-                                                            Chưa có đánh giá
-                                                        </div>
-                                                }
+                                                            :
+                                                            <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                                                Chưa có đánh giá
+                                                            </div>
+                                                    }
+
+                                                    {
+                                                        dataListRequestCarRental?.dataDetailCar?.customer?.total_trip ?
+                                                            <div className='flex items-center gap-1'>
+                                                                <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
+                                                                <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                                                    {dataListRequestCarRental?.dataDetailCar?.customer?.total_trip ? FormatNumberHundred(dataListRequestCarRental?.dataDetailCar?.customer?.total_trip, 100) : 0} Chuyến
+                                                                </div>
+                                                            </div>
+                                                            :
+                                                            <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                                                Chưa có chuyến
+                                                            </div>
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
 

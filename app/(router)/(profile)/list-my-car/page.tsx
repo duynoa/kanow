@@ -69,7 +69,7 @@ const ListMyCar = (props: Props) => {
         queryKeyIsStateProfileMyCar({ isLoadingCar: true })
         try {
             const dataParams = {
-                customer: 1,
+                car_owner: 1,
                 status_car: valueFilter,
                 web: 1,
             }
@@ -116,7 +116,7 @@ const ListMyCar = (props: Props) => {
                         try {
                             await new Promise(resolve => setTimeout(resolve, 1500));
 
-                            const { data } = await apiListCar(isStateProfileMyCar.page, isStateProfileMyCar.limit, { customer: 1, status_car: valueFilter });
+                            const { data } = await apiListCar(isStateProfileMyCar.page, isStateProfileMyCar.limit, { car_owner: 1, status_car: valueFilter });
 
                             if (data && data?.links && data?.data && data?.base) {
                                 let { customDataMyCar } = CustomDataMyCar(data)

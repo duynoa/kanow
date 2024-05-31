@@ -18,6 +18,7 @@ interface IStatePageAccount {
     tabRatings: string;
     nextPage: string;
     loadingData: boolean;
+    loadingButton:boolean;
 }
 
 interface IInfomationUser {

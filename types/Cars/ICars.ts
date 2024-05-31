@@ -143,18 +143,20 @@ interface IDataDetailCar {
             other_amenities_car_id: number;
         };
     }[];
-    info_review_car: {
-        review_car: {
-            id: number;
-            star: number;
-            avatar: string;
-            content: string;
-            customer_name: string;
-            date: string;
-        }[];
+    review_car: {
+        id: number;
         star: number;
-        total_review_car: number;
-    };
+        avatar: string;
+        content: string;
+        customer_name: string;
+        date: string;
+        template_content: {
+            id: number,
+            content: string,
+            review_car_id: number,
+        }[]
+    }[];
+    total_review_car: number;
     collateral_car: {
         mortgage: number;
         mortgage_policy_car: string;
