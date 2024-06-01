@@ -3,7 +3,9 @@ import {
     IInitialStateDetailCar,
     IInitialStateInfoRentalCar,
     IInitialStateListCarAutonomous,
+    IInitialStateListCarrer,
     IInitialStateListCarsDriver,
+    IInitialStateNewsEvent,
     IInitialStatePayment,
     IInitialStatePolicy,
     IInitialStateProfileMyCar
@@ -354,6 +356,65 @@ export const useDataProfileMyCar = create<IStateProfileMyCar>((set) => ({
         ...state,
         isStateProfileMyCar: {
             ...state.isStateProfileMyCar,
+            ...key,
+        },
+    })),
+}));
+
+
+// data event & news
+interface IStateNewsEvents {
+    isStateNewsEvents: IInitialStateNewsEvent;
+    queryKeyIsStateNewsEvents: (key: any) => void;
+}
+
+export const useDataNewsEvents = create<IStateNewsEvents>((set) => ({
+    isStateNewsEvents: {
+        listNewsEvents: [],
+        loading: {
+            isLoadingListNewsEvent: false,
+            isLoadingButton: false
+        },
+        params: {
+            page: 1,
+            limit: 11,
+            next: null,
+            total_blog: 0,
+        },
+    },
+    queryKeyIsStateNewsEvents: (key: any) => set((state) => ({
+        ...state,
+        isStateNewsEvents: {
+            ...state.isStateNewsEvents,
+            ...key,
+        },
+    })),
+}));
+
+// data listCarrer
+interface IStateListCarrer {
+    isStateListCarrer: IInitialStateListCarrer;
+    queryKeyIsStateListCarrer: (key: any) => void;
+}
+
+export const useDataListCarrer = create<IStateListCarrer>((set) => ({
+    isStateListCarrer: {
+        listCarrer: [],
+        loading: {
+            isLoadingListCarrer: false,
+            isLoadingButton: false
+        },
+        params: {
+            page: 1,
+            limit: 8,
+            next: null,
+            total_blog: 0,
+        },
+    },
+    queryKeyIsStateListCarrer: (key: any) => set((state) => ({
+        ...state,
+        isStateListCarrer: {
+            ...state.isStateListCarrer,
             ...key,
         },
     })),
