@@ -398,7 +398,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                     side="bottom"
                                                     align="center"
                                                     label={(
-                                                        <div className='flex flex-col gap-1 text-center justify-center max-w-[240px]'>
+                                                        <div className='flex flex-col gap-1 max-w-[240px]'>
                                                             <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.documentation_policy_car ? isStatePolicy?.dataPolicy?.documentation_policy_car : ''}` }} />
                                                         </div>
                                                     )}

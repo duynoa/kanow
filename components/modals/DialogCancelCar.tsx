@@ -68,8 +68,12 @@ export function DialogCancelCar({ }: Props) {
         if (openDialogCancelCar && dataListReasonsCancel.length === 0) {
             const fetchListReasonsCancel = async () => {
                 try {
+                    const dataParams = {
+                        type_owner: informationUser?.id === isStateInfoRentalCar?.detailRentalCar?.customer?.id ? 2 : 1
+                    }
+
                     setIsLoadingDialogCancelCar(true)
-                    const { data } = await getListReasonsCancel()
+                    const { data } = await getListReasonsCancel(dataParams)
                     console.log('data data Dtaa:', data);
 
                     if (data && data.data) {

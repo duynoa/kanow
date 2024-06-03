@@ -315,3 +315,8 @@
     width: 150px !important;
     white-space: nowrap;
 }
+
+ul {
+    // list-style-type: disc;
+    @apply list-disc list-inside;
+}

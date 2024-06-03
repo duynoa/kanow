@@ -1,3 +1,4 @@
+import { IDetailCareer, IDetailNewsEvents, IListCareer, IListNewsEvents } from "../Blog/IBlog";
 import { IAutomaker, IDataCardCar, IDataDetailCar, IDetailRentalCar, ITypesCar } from "../Cars/ICars";
 import { IInfoPromotion } from "../Cars/IPromotions";
 import { IReportCar } from "../Cars/IReportCar";
@@ -207,14 +208,7 @@ interface IInitialStateAllReview {
 
 // initial news event (trang tin tức & hoạt động)
 interface IInitialStateNewsEvent {
-    listNewsEvents: {
-        id: number,
-        title: string,
-        descption: string,
-        content: string,
-        image: string,
-        created_at: string
-    }[],
+    listNewsEvents: IListNewsEvents,
     loading: {
         isLoadingListNewsEvent: boolean,
         isLoadingButton: boolean
@@ -240,6 +234,26 @@ interface IInitialStateListCarrer {
     }
 }
 
+// interface detail new & event
+interface IInitialStateDetailNewsEvents {
+    dataDetail: IDetailNewsEvents,
+    listNewsEventsRelated: IListNewsEvents,
+    loading: {
+        isLoadingDataDetail: boolean,
+        isLoadingListNewsEventsRelated: boolean,
+        isLoadingButton: boolean,
+    },
+}
+interface IInitialStateDetailCareer {
+    dataDetail: IDetailCareer,
+    listCareerRelated: IListCareer,
+    loading: {
+        isLoadingDataDetail: boolean,
+        isLoadingListCareerRelated: boolean,
+        isLoadingButton: boolean,
+    },
+}
+
 export type {
     IInitialStateDataHome,
     IInitialStateListCarAutonomous,
@@ -253,5 +267,7 @@ export type {
     IInitialStateLoadSuccess,
     IInitialStateAllReview,
     IInitialStateNewsEvent,
-    IInitialStateListCarrer
+    IInitialStateListCarrer,
+    IInitialStateDetailNewsEvents,
+    IInitialStateDetailCareer
 };
