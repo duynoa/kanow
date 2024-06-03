@@ -109,8 +109,6 @@ const DetailBlogCarrer = (props: Props) => {
         }
     }, [isMounted, idCareer])
 
-    console.log('generalKey', generalKey);
-
     const handlePrev = (e: any) => {
         if (swiperRefBlogs.current && !sliderStart) {
             swiperRefBlogs?.current?.slidePrev();
@@ -207,7 +205,7 @@ const DetailBlogCarrer = (props: Props) => {
                                         }
 
                                         {
-                                            isStateDetailCareer?.dataDetail?.infomation?.experience &&
+                                            isStateDetailCareer?.dataDetail?.infomation?.degree &&
                                             <div className='col-span-1 flex items-center 3xl:gap-4 gap-3 w-full'>
                                                 <div className='max-w-[10%]'>
                                                     <IoBook className='size-6 max-w-6 text-[#868686]' />
@@ -217,7 +215,7 @@ const DetailBlogCarrer = (props: Props) => {
                                                         Bằng đại học
                                                     </div>
                                                     <div className='3xl:text-base text-sm'>
-                                                        {isStateDetailCareer?.dataDetail?.infomation?.experience}
+                                                        {isStateDetailCareer?.dataDetail?.infomation?.degree}
                                                     </div>
                                                 </div>
                                             </div>
@@ -368,11 +366,11 @@ const DetailBlogCarrer = (props: Props) => {
                                                 slidesPerView: 4,
                                             }
                                         }}
-                                        className='custom-swiper'
+                                        className='custom-swiper grid grid-cols-4'
                                     >
                                         {
                                             isStateDetailCareer?.listCareerRelated.map((item) => (
-                                                <SwiperSlide key={`carRelated-${item.id}`}>
+                                                <SwiperSlide key={`carRelated-${item.id}`} className='col-span-1'>
                                                     <motion.div
                                                         key={`news-${item.id}`}
                                                         initial={false}
@@ -382,56 +380,54 @@ const DetailBlogCarrer = (props: Props) => {
                                                             rest: { scale: 1 },
                                                             press: { scale: 1.01 }
                                                         }}
-                                                        className='col-span-1 bg-white border h-full w-full rounded-xl'
+                                                        className='bg-white border w-full h-full rounded-xl'
                                                     >
                                                         <Link
-                                                            className='w-full h-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 group transition duration-200 ease-in-out'
+                                                            className='w-full h-full p-4 flex flex-col gap-2 rounded-xl relative z-0 group transition duration-200 ease-in-out'
                                                             href={`/career/${item.id}?${ConvertToSlug(item?.title)}`}
                                                             prefetch={false}
                                                         >
-                                                            <div className='flex flex-col gap-2'>
-                                                                <div className='3xl:text-xl 2xl:text-[17px] xxl:text-[17px] xl:text-base lg:text-base md:text-xl text-xl  text-[#272D37] font-semibold group-hover:text-[#272D37]/70 duration-500 transition ease-in-out line-clamp-2 capitalize'>
-                                                                    {item.title}
+                                                            <div className='3xl:text-xl 2xl:text-[17px] xxl:text-[17px] xl:text-base lg:text-base md:text-xl text-xl  text-[#272D37] font-semibold group-hover:text-[#272D37]/70 duration-500 transition ease-in-out line-clamp-1 capitalize'>
+                                                                {item.title}
+                                                            </div>
+                                                            <div className='flex items-center gap-2 3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out'>
+                                                                <div className='max-w-[10%]'>
+                                                                    <FaUsers className='size-4 max-w-4' />
                                                                 </div>
-                                                                <div className='flex items-center gap-2 3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out'>
-                                                                    <div className='max-w-[10%]'>
-                                                                        <FaUsers className='size-4 max-w-4' />
-                                                                    </div>
-                                                                    <div className='space-x-2'>
-                                                                        <span>Số lượng:</span><span className='font-bold'>{item.infomation.quantity}</span><span>người</span>
-                                                                    </div>
+                                                                <div className='space-x-2'>
+                                                                    <span>Số lượng:</span><span className='font-bold'>{item.infomation.quantity}</span><span>người</span>
                                                                 </div>
-                                                                <div className='flex items-center gap-2 3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out'>
-                                                                    <div className='max-w-[10%]'>
-                                                                        <FaSackDollar className='size-4 max-w-4' />
-                                                                    </div>
-                                                                    <div className='space-x-2'>
-                                                                        <span>Thu nhập:</span><span className='font-bold'>{item.infomation.salary}</span>
-                                                                    </div>
+                                                            </div>
+                                                            <div className='flex items-center gap-2 3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out'>
+                                                                <div className='max-w-[10%]'>
+                                                                    <FaSackDollar className='size-4 max-w-4' />
                                                                 </div>
-                                                                <div className='flex items-center gap-2 3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out'>
-                                                                    <div className='max-w-[10%]'>
-                                                                        <FaLocationDot className='size-4 max-w-4' />
-                                                                    </div>
-                                                                    <div className='space-x-2'>
-                                                                        <span>Địa điểm làm việc:</span><span className='font-bold'>{item.infomation.address}</span>
-                                                                    </div>
+                                                                <div className='space-x-2'>
+                                                                    <span>Thu nhập:</span><span className='font-bold'>{item.infomation.salary}</span>
                                                                 </div>
-                                                                <div className='flex items-center gap-2 3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out'>
-                                                                    <div className='max-w-[10%]'>
-                                                                        <RiPassValidLine className='size-4 max-w-4' />
-                                                                    </div>
-                                                                    <div className='space-x-2'>
-                                                                        <span>Kinh nghiệm:</span><span className='font-bold'>{item.infomation.experience}</span>
-                                                                    </div>
+                                                            </div>
+                                                            <div className='flex items-center gap-2 3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out'>
+                                                                <div className='max-w-[10%]'>
+                                                                    <FaLocationDot className='size-4 max-w-4' />
                                                                 </div>
-                                                                <div className='flex items-center gap-2 3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out'>
-                                                                    <div className='max-w-[10%]'>
-                                                                        <PiGenderIntersexBold className='size-4 max-w-4' />
-                                                                    </div>
-                                                                    <div className='space-x-2'>
-                                                                        <span>Giới tính:</span><span className='font-bold'>{item.infomation.gender}</span>
-                                                                    </div>
+                                                                <div className='space-x-2'>
+                                                                    <span>Địa điểm làm việc:</span><span className='font-bold'>{item.infomation.address}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className='flex items-center gap-2 3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out'>
+                                                                <div className='max-w-[10%]'>
+                                                                    <RiPassValidLine className='size-4 max-w-4' />
+                                                                </div>
+                                                                <div className='space-x-2'>
+                                                                    <span>Kinh nghiệm:</span><span className='font-bold'>{item.infomation.experience}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className='flex items-center gap-2 3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out'>
+                                                                <div className='max-w-[10%]'>
+                                                                    <PiGenderIntersexBold className='size-4 max-w-4' />
+                                                                </div>
+                                                                <div className='space-x-2'>
+                                                                    <span>Giới tính:</span><span className='font-bold'>{item.infomation.gender}</span>
                                                                 </div>
                                                             </div>
                                                         </Link>
@@ -468,10 +464,6 @@ const DetailBlogCarrer = (props: Props) => {
                         (null)
                 }
             </div>
-            {/* <div className='bg-[#2FB9BD]/20'>
-                <div className='custom-container py-10'>
-                </div>
-            </div> */}
         </>
     )
 }
