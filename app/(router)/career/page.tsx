@@ -16,13 +16,14 @@ import { useDataListCarrer, useDataNewsEvents } from '@/hooks/useDataQueryKey'
 import { ReadonlyURLSearchParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { getListCarrer } from '@/services/blog/blog.services'
 import { FaUsers } from 'react-icons/fa'
-import { FaSackDollar } from 'react-icons/fa6'
+import { FaLocationDot, FaSackDollar } from 'react-icons/fa6'
 import { MdLocationOn } from 'react-icons/md'
 import { RiPassValidLine, RiShieldCheckFill } from 'react-icons/ri'
 import { PiGenderIntersexBold } from 'react-icons/pi'
 import SkeletonCarrer from '@/components/skeleton/SkeletonCarrer'
 
 import { motion } from 'framer-motion'
+import { HiLocationMarker } from 'react-icons/hi'
 
 type Props = {}
 
@@ -299,7 +300,7 @@ const Career = (props: Props) => {
                                     >
                                         <Link
                                             className='border w-full h-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 group transition duration-200 ease-in-out'
-                                            href={`/news-events/${item.id}?${ConvertToSlug(item?.title)}`}
+                                            href={`/career/${item.id}?${ConvertToSlug(item?.title)}`}
                                             prefetch={false}
                                         >
                                             <div className='flex flex-col gap-2'>
@@ -324,7 +325,7 @@ const Career = (props: Props) => {
                                                 </div>
                                                 <div className='flex items-center gap-2 3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out'>
                                                     <div className='max-w-[10%]'>
-                                                        <MdLocationOn className='size-4 max-w-4' />
+                                                        <FaLocationDot className='size-4 max-w-4' />
                                                     </div>
                                                     <div className='space-x-2'>
                                                         <span>Địa điểm làm việc:</span><span className='font-bold'>{item.infomation.address}</span>

@@ -1,6 +1,8 @@
 import {
     IInitialStateDataHome,
     IInitialStateDetailCar,
+    IInitialStateDetailCareer,
+    IInitialStateDetailNewsEvents,
     IInitialStateInfoRentalCar,
     IInitialStateListCarAutonomous,
     IInitialStateListCarrer,
@@ -415,6 +417,78 @@ export const useDataListCarrer = create<IStateListCarrer>((set) => ({
         ...state,
         isStateListCarrer: {
             ...state.isStateListCarrer,
+            ...key,
+        },
+    })),
+}));
+// data Detail New & Event
+interface IStateDetailNewsEvents {
+    isStateDetailNewsEvents: IInitialStateDetailNewsEvents;
+    queryKeyIsStateDetailNewsEvents: (key: any) => void;
+}
+
+export const useDataDetailNewsEvents = create<IStateDetailNewsEvents>((set) => ({
+    isStateDetailNewsEvents: {
+        dataDetail: {
+            id: 0,
+            title: "",
+            descption: "",
+            content: "",
+            image: "",
+            created_at: "",
+        },
+        listNewsEventsRelated: [],
+        loading: {
+            isLoadingDataDetail: false,
+            isLoadingListNewsEventsRelated: false,
+            isLoadingButton: false,
+        },
+    },
+    queryKeyIsStateDetailNewsEvents: (key: any) => set((state) => ({
+        ...state,
+        isStateDetailNewsEvents: {
+            ...state.isStateDetailNewsEvents,
+            ...key,
+        },
+    })),
+}));
+// data Detail Career
+interface IStateDetailCareer {
+    isStateDetailCareer: IInitialStateDetailCareer;
+    queryKeyIsStateDetailCareer: (key: any) => void;
+}
+
+export const useDataDetailCareer = create<IStateDetailCareer>((set) => ({
+    isStateDetailCareer: {
+        dataDetail: {
+            id: 0,
+            title: "",
+            infomation: {
+                salary: "",
+                experience: "",
+                working_form: "",
+                degree: "",
+                gender: "",
+                quantity: "",
+                address: ""
+            },
+            descption: "",
+            content: "",
+            job_requirement: "",
+            your_benefit: "",
+            created_at: "",
+        },
+        listCareerRelated: [],
+        loading: {
+            isLoadingDataDetail: false,
+            isLoadingListCareerRelated: false,
+            isLoadingButton: false,
+        },
+    },
+    queryKeyIsStateDetailCareer: (key: any) => set((state) => ({
+        ...state,
+        isStateDetailCareer: {
+            ...state.isStateDetailCareer,
             ...key,
         },
     })),
