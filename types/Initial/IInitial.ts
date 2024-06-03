@@ -205,6 +205,41 @@ interface IInitialStateAllReview {
     }
 }
 
+// initial news event (trang tin tức & hoạt động)
+interface IInitialStateNewsEvent {
+    listNewsEvents: {
+        id: number,
+        title: string,
+        descption: string,
+        content: string,
+        image: string,
+        created_at: string
+    }[],
+    loading: {
+        isLoadingListNewsEvent: boolean,
+        isLoadingButton: boolean
+    },
+    params: {
+        page: number,
+        limit: number,
+        next: null | string,
+        total_blog: number,
+    }
+}
+interface IInitialStateListCarrer {
+    listCarrer: any[],
+    loading: {
+        isLoadingListCarrer: boolean,
+        isLoadingButton: boolean
+    },
+    params: {
+        page: number,
+        limit: number,
+        next: null | string,
+        total_blog: number,
+    }
+}
+
 export type {
     IInitialStateDataHome,
     IInitialStateListCarAutonomous,
@@ -216,5 +251,7 @@ export type {
     IInitialStateProfileMyCar,
     IInitialStateNotification,
     IInitialStateLoadSuccess,
-    IInitialStateAllReview
+    IInitialStateAllReview,
+    IInitialStateNewsEvent,
+    IInitialStateListCarrer
 };

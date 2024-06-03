@@ -27,6 +27,7 @@ import { postChangeStatusRentalCar } from '@/services/cars/cars.services'
 import { toastCore } from '@/lib/toast'
 
 import { motion } from "framer-motion"
+import ButtonLoading from '@/components/button/ButtonLoading'
 
 type Props = {
     params: {
@@ -655,7 +656,7 @@ const PriceList = ({
                                     press: { scale: 1.01 }
                                 }}
                             >
-                                <Button
+                                {/* <Button
                                     type="button"
                                     onClick={() => handleChangeStatus(isStateInfoRentalCar?.detailRentalCar?.status?.status === 2 ? "status-2" : "")}
                                     disabled={isStateInfoRentalCar?.detailRentalCar?.status?.status === 1 || isStateInfoRentalCar?.loading?.isLoadingButton ? true : false}
@@ -666,7 +667,16 @@ const PriceList = ({
                                         <div className="text-white inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
                                     }
                                     <span>Giao xe</span>
-                                </Button>
+                                </Button> */}
+                                <ButtonLoading
+                                    type='button'
+                                    title={"Giao xe"}
+                                    onClick={() => handleChangeStatus(isStateInfoRentalCar?.detailRentalCar?.status?.status === 2 ? "status-2" : "")}
+                                    disabled={isStateInfoRentalCar?.detailRentalCar?.status?.status === 1 || isStateInfoRentalCar?.loading?.isLoadingButton ? true : false}
+
+                                    isStateloading={isStateInfoRentalCar?.loading?.isLoadingButton}
+                                    className={` py-4 w-full flex items-center gap-2 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent`}
+                                />
                             </motion.div>
                         }
                         {
