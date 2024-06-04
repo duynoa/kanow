@@ -62,6 +62,11 @@ const Footer = () => {
                     name: 'Giải quyết tranh chấp',
                     link: '/dispute-resolution'
                 },
+                {
+                    id: uuidv4(),
+                    name: 'Chính sách huỷ chuyến',
+                    link: '/cancel-policy'
+                },
             ]
         },
         {
@@ -70,8 +75,8 @@ const Footer = () => {
             list: [
                 {
                     id: uuidv4(),
-                    name: 'Chính sách huỷ chuyến',
-                    link: '/cancel-policy'
+                    name: 'Hướng dẫn chung',
+                    link: '/general-guide'
                 },
                 {
                     id: uuidv4(),

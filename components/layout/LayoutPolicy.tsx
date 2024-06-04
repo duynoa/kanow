@@ -42,6 +42,11 @@ const LayoutPolicy = ({
             title: "Giải quyết tranh chấp",
             link: "/dispute-resolution"
         },
+        {
+            id: '5',
+            title: "Chính sách huỷ chuyến",
+            link: "/cancel-policy"
+        },
     ]
 
     const handleChangeTab = (value: string) => {
