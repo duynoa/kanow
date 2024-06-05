@@ -31,8 +31,8 @@ const LayoutLearnMore = ({
     const tabsNavigation = [
         {
             id: '1',
-            title: "Chính sách huỷ chuyến",
-            link: "/cancel-policy"
+            title: "Hướng dẫn chung",
+            link: "/general-guide"
         },
         {
             id: '2',
