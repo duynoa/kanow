@@ -180,6 +180,7 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
         const { data: db } = await apiDetailCar(id, { type: -1, car_owner: 1 })
         // const { data: db } = await apiDetailCar(id, { type: 1, car_owner: 1 })
         const { data: { other, dtFee, other_talent } } = await apiListOtherAmenitiesCar()
+        
         if (other || dtFee || other_talent) {
             setDataOther({ other, dtFee, other_talent })
         }

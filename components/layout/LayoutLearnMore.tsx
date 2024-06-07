@@ -98,7 +98,6 @@ const LayoutLearnMore = ({
                                 </SelectContentNocheck>
                             </SelectNocheck>
                             :
-
                             tabsNavigation && tabsNavigation.map((tab) => (
                                 <div key={tab.id} className='w-full flex flex-col gap-1'>
                                     <Link
@@ -109,9 +108,7 @@ const LayoutLearnMore = ({
                                     </Link>
                                 </div>
                             ))
-
                     }
-
                 </div>
                 <div className='lg:col-span-4 col-span-5 w-full h=full'>
                     {children}
