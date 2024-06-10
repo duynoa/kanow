@@ -236,31 +236,31 @@ export function DialogReviewCar({ fetchStepTransaction }: Props) {
                                             {
                                                 rating === 1 &&
                                                 <div className='3xl:text-lg text-base'>
-                                                    Kém
+                                                    😱 Kém
                                                 </div>
                                             }
                                             {
                                                 rating === 2 &&
                                                 <div className='3xl:text-lg text-base'>
-                                                    Trung Bình
+                                                    😰 Trung Bình
                                                 </div>
                                             }
                                             {
                                                 rating === 3 &&
                                                 <div className='3xl:text-lg text-base'>
-                                                    Khá
+                                                    😀 Khá
                                                 </div>
                                             }
                                             {
                                                 rating === 4 &&
                                                 <div className='3xl:text-lg text-base'>
-                                                    Tốt
+                                                    😆 Tốt
                                                 </div>
                                             }
                                             {
                                                 rating === 5 &&
                                                 <div className='3xl:text-lg text-base'>
-                                                    Hoàn hảo
+                                                    🤪 Hoàn hảo
                                                 </div>
                                             }
                                             <StarRatings

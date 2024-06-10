@@ -30,6 +30,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@react-google-maps/api": "^2.19.3",
     "@react-oauth/google": "^0.12.1",
+    "@tanstack/react-table": "^8.17.3",
     "@types/googlemaps": "^3.43.3",
     "@types/quill": "^2.0.14",
     "@types/react-star-ratings": "^2.3.3",
