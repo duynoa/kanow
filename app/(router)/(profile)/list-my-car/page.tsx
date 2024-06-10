@@ -226,6 +226,7 @@ const ListMyCar = (props: Props) => {
                         ))
                     }
                 </TabsList>
+                
                 <TabsContent value="1" className='lg:mt-4 mt-5'>
                     {
                         isVisibleMobile &&
@@ -253,14 +254,17 @@ const ListMyCar = (props: Props) => {
                         <div ref={lastContainerRef} />
                     </ScrollArea>
                 </TabsContent>
+
                 <TabsContent value="2">
                     <div className="h-[550px] flex justify-center items-center">
                         <Contract />
                     </div>
                 </TabsContent>
+
                 <TabsContent value="3">
                     <MyWallet />
                 </TabsContent>
+
                 <TabsContent value="4">
                     <VehicleRegistration />
                 </TabsContent>

@@ -508,7 +508,10 @@ const LayoutContainer = ({
         <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>
             <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
                 <Suspense>
-                    <Header />
+                    {
+                        !pathname.startsWith("/vehicle-management-mobile") &&
+                        <Header />
+                    }
                     <main className='overflow-hidden w-full h-full'>
                         {children}
                         <ButtonToTop />
@@ -535,7 +538,12 @@ const LayoutContainer = ({
 
                         <DialogNotification />
                     </main>
-                    {pathname !== "/list-cars-autonomous" && pathname !== "/list-cars-driver" && <Footer />}
+                    {
+                        pathname !== "/list-cars-autonomous" &&
+                        pathname !== "/list-cars-driver" &&
+                        !pathname.startsWith("/vehicle-management-mobile") &&
+                        <Footer />
+                    }
                     <ToastContainer
                         position="top-right"
                         autoClose={5000}

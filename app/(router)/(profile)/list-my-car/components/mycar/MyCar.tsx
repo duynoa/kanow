@@ -159,6 +159,13 @@ const MyCar = ({ }: Props) => {
                                     </div>
                                 </div>
                                 <div className='3xl:w-[20%] xxl:w-[20%] 2xl:w-[20%] xl:w-[20%] lg:w-[15%] w-full flex lg:flex-col flex-row justify-center items-center gap-4 my-auto'>
+                                    {/* <Link
+                                        href={`/vehicle-management-mobile/menu-mobile?key=${e.id}&t=0`}
+                                        className={`bg-[#2FB9BD]/80 hover:bg-[#2FB9BD]/80 text-white border-[#2FB9BD] w-full xl:text-sm lg:text-[9px] text-sm text-center
+                                2xl:py-3 xl:py-2.5 lg:py-1.5 py-2.5  rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  lg:border border-[1.5px] uppercases`}
+                                    >
+                                        Quản lý xe
+                                    </Link> */}
                                     <Link
                                         href={`/vehicle-management/information?key=${e.id}&t=0`}
                                         className={`bg-[#2FB9BD]/80 hover:bg-[#2FB9BD]/80 text-white border-[#2FB9BD] w-full xl:text-sm lg:text-[9px] text-sm text-center
