@@ -514,7 +514,10 @@ const LayoutContainer = ({
                     }
                     <main className='overflow-hidden w-full h-full'>
                         {children}
-                        <ButtonToTop />
+                        {
+                            !pathname.startsWith("/vehicle-management-mobile") &&
+                            <ButtonToTop />
+                        }
                         <AlertDialogLogout />
                         <DialogLogin />
                         <DialogCalendar />

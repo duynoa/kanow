@@ -168,77 +168,76 @@ export default function VehicleTripManagement(props: Props) {
 
     return (
         <BackgroundUiVehicle className="flex flex-col gap-4">
-            <div className="flex flex-col gap-6">
-                <div className="flex md:flex-row flex-col justify-between">
-                    <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Quản lý chuyến</h1>
-                </div>
-                <ScrollArea
-                    ref={scrollContainerRef}
-                    className={`${isState.dataTrips?.length > 0 &&
-                        isVisibleMobile ? isState.dataTrips?.length > 4 ? 'h-[680px]' : 'h-auto' :
-                        isVisibleTablet ? isState.dataTrips?.length > 4 ? 'h-[980px]' : 'h-auto' : isState.dataTrips?.length >= 3 ? 'h-[780px]' : 'h-[670px]'} lg:pr-6 pr-3`}
-                >
-                    <div className='flex flex-col gap-4'>
-                        {isState.isLoadingCar ?
-                            [...Array(4)].map((_, index) => {
-                                return (
-                                    <div key={index} className="flex flex-col rounded-lg border divide-y">
-                                        <div className="flex md:flex-row flex-col md:gap-4 gap-6 items-center justify-between md:p-8 p-4">
-                                            <div className="flex flex-col gap-6 md:w-[75%] w-full md:order-none order-2">
-                                                <Skeleton className="h-8 w-full" />
-                                                <Skeleton className="h-8 w-full" />
-                                                <Skeleton className="h-8 w-full" />
-                                            </div>
-                                            <div className="flex md:flex-col flex-row items-center gap-2 md:w-[25%] w-full">
-                                                <Skeleton className="md:size-20 size-10 rounded-full" />
-                                                <Skeleton className="h-8 lg:w-1/2 w-full" />
-                                            </div>
+            <h1 className='text-[#3E424E] text-xl uppercase font-bold'>Quản lý chuyến</h1>
+            <ScrollArea
+                ref={scrollContainerRef}
+                className={`${isState.dataTrips?.length > 0 &&
+                    isVisibleMobile ? isState.dataTrips?.length > 4 ? 'h-[680px]' : 'h-auto' :
+                    isVisibleTablet ? isState.dataTrips?.length > 4 ? 'h-[980px]' : 'h-auto' : isState.dataTrips?.length >= 3 ? 'h-[780px]' : 'h-[670px]'} lg:pr-6 pr-3`}
+            >
+                <div className='flex flex-col gap-4'>
+                    {isState.isLoadingCar ?
+                        [...Array(4)].map((_, index) => {
+                            return (
+                                <div key={index} className="flex flex-col rounded-lg border divide-y">
+                                    <div className="flex md:flex-row flex-col md:gap-4 gap-6 items-center justify-between md:p-8 p-4">
+                                        <div className="flex flex-col gap-6 md:w-[75%] w-full md:order-none order-2">
+                                            <Skeleton className="h-8 w-full" />
+                                            <Skeleton className="h-8 w-full" />
+                                            <Skeleton className="h-8 w-full" />
                                         </div>
-                                        <div className="flex md:flex-row items-center justify-between md:px-8 px-4 md:pt-4 pt-2 md:pb-8 pb-4 gap-2">
-                                            <div className="md:w-[75%] w-full">
-                                                <Skeleton className="h-8 w-1/2" />
-                                            </div>
-                                            <Skeleton className="h-8 w-1/2" />
+                                        <div className="flex md:flex-col flex-row items-center gap-2 md:w-[25%] w-full">
+                                            <Skeleton className="md:size-20 size-10 rounded-full" />
+                                            <Skeleton className="h-8 lg:w-1/2 w-full" />
                                         </div>
                                     </div>
-                                )
-                            })
-                            :
-                            isState.dataTrips?.length > 0 ? isState.dataTrips.map((e: any, index: number) => {
+                                    <div className="flex md:flex-row items-center justify-between md:px-8 px-4 md:pt-4 pt-2 md:pb-8 pb-4 gap-2">
+                                        <div className="md:w-[75%] w-full">
+                                            <Skeleton className="h-8 w-1/2" />
+                                        </div>
+                                        <Skeleton className="h-8 w-1/2" />
+                                    </div>
+                                </div>
+                            )
+                        })
+                        :
+                        isState.dataTrips?.length > 0 ?
+                            isState.dataTrips.map((e: any, index: number) => {
                                 return (
                                     <div key={e.id} className="flex flex-col  rounded-lg border divide-y">
                                         <div className="flex md:flex-row flex-col md:gap-0 gap-6 items-center justify-between md:p-8 p-4">
                                             <div className="flex flex-col gap-6 md:w-[75%] w-full md:order-none order-2">
-                                                <div className="flex items-center gap-2">
-                                                    <h1 className='text-[#8C93A3] font-medium lg:text-base text-sm leading-4'>
+                                                <div className="space-x-2">
+                                                    <span className='text-[#8C93A3] font-medium text-base leading-4'>
                                                         Bắt đầu:
-                                                    </h1>
-                                                    <h1 className='text-[#3E424E] font-medium lg:text-base text-sm leading-5'>
+                                                    </span>
+                                                    <span className='text-[#3E424E] font-medium text-base leading-5'>
                                                         {e.starTime && moment(e.starTime).format("HH:mm, ")}<span className="capitalize">{moment(e.starTime).format("dddd, DD/MM/YYYY")}</span>
-                                                    </h1>
+                                                    </span>
                                                 </div>
-                                                <div className="flex items-center gap-2">
-                                                    <h1 className='text-[#8C93A3] font-medium lg:text-base text-sm leading-4'>
+                                                <div className="space-x-2">
+                                                    {/* <div className="flex items-center gap-2"> */}
+                                                    <span className='text-[#8C93A3] font-medium text-base leading-4'>
                                                         Kết thúc:
-                                                    </h1>
-                                                    <h1 className='text-[#3E424E] font-medium lg:text-base text-sm leading-5'>
+                                                    </span>
+                                                    <span className='text-[#3E424E] font-medium text-base leading-5'>
                                                         {e.endTime && moment(e.endTime).format("HH:mm, ")}<span className="capitalize">{moment(e.endTime).format("dddd, DD/MM/YYYY")}</span>
-                                                    </h1>
+                                                    </span>
                                                 </div>
-                                                <div className="flex items-center gap-2">
-                                                    <h1 className='text-[#8C93A3] font-medium lg:text-base text-sm leading-4'>
+                                                <div className="space-x-2">
+                                                    <span className='text-[#8C93A3] font-medium text-base leading-4'>
                                                         Tổng tiền:
-                                                    </h1>
-                                                    <h1 className='text-[#2FB9BD] font-[700] lg:text-xl text-lg leading-5'>
+                                                    </span>
+                                                    <span className='text-[#2FB9BD] font-[700] lg:text-xl text-lg leading-5'>
                                                         {e.total && FormatNumberToThousands(e.total)}
-                                                    </h1>
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div className="flex md:flex-col flex-row items-center gap-2 md:w-[25%] w-full">
-                                                <Avatar className="md:size-20 size-10">
+                                                <Avatar className="md:size-20 size-14">
                                                     <AvatarImage src={e.user?.avatar} alt="@shadcn" className="size-full " />
                                                 </Avatar>
-                                                <h1 className="text-center uppercase text-[#2FB9BD] font-[700] lg:text-base md:text-sm text-xs">{e.user?.name}</h1>
+                                                <h1 className="text-center uppercase text-[#2FB9BD] font-[700] text-base">{e.user?.name}</h1>
                                             </div>
                                         </div>
                                         <div className="flex md:flex-row items-center justify-between md:px-8 px-4 py-4">
@@ -247,27 +246,32 @@ export default function VehicleTripManagement(props: Props) {
                                                     style={{
                                                         backgroundColor: e.status.color
                                                     }}
-                                                    className="py-2 px-4 w-fit rounded-full text-xs text-white font-semibold "
-                                                >{e.status.name}
+                                                    className="py-2 px-4 w-fit rounded-full text-base text-white font-semibold "
+                                                >
+                                                    {e.status.name}
                                                 </div>
                                             </div>
-                                            <h1 className='text-[#3E424E] font-medium lg:text-base text-sm leading-5  md:w-[25%] w-full text-center'>
-                                                <span className="capitalize px-1">{moment(e.time).fromNow().split(' ').slice(0, 1).join(' ')}</span>
-                                                {moment(e.time).fromNow().split(' ').slice(1).join(' ')}
+                                            <h1 className='text-[#3E424E] font-medium text-base leading-5  md:w-[25%] w-full text-center'>
+                                                <span className="capitalize px-1">
+                                                    {moment(e.time).fromNow().split(' ').slice(0, 1).join(' ')}
+                                                </span>
+                                                <span>
+                                                    {moment(e.time).fromNow().split(' ').slice(1).join(' ')}
+                                                </span>
                                             </h1>
                                         </div>
                                     </div>
                                 )
-                            }) :
-                                <Nodata type='mytrip' />
-                        }
-                    </div>
-                    {
-                        isState?.isLoadingScroll && <LoadingData />
+                            })
+                            :
+                            <Nodata type='mytrip' />
                     }
-                    <div ref={lastContainerRef} />
-                </ScrollArea>
-            </div >
-        </BackgroundUiVehicle >
+                </div>
+                {
+                    isState?.isLoadingScroll && <LoadingData />
+                }
+                <div ref={lastContainerRef} />
+            </ScrollArea>
+        </BackgroundUiVehicle>
     )
 }

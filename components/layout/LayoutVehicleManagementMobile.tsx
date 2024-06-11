@@ -19,6 +19,8 @@ import { Switch } from '../ui/switch'
 import { toastCore } from '@/lib/toast'
 import { useDialogCalendar } from '@/hooks/useOpenDialog'
 import { FaArrowLeft } from 'react-icons/fa6'
+import { useLoadSuccess } from '@/hooks/useLoadSuccess'
+import { Skeleton } from '../ui/skeleton'
 
 const LayoutVehicleManagementMobile = ({ children }: { children: React.ReactNode }) => {
     const href = usePathname()
@@ -173,14 +175,24 @@ const LayoutVehicleManagementMobile = ({ children }: { children: React.ReactNode
         }
     })
 
-    const { apiDetailCar, apiListOtherAmenitiesCar, apiOpenSwitchLayout, apiRentCostPropose } = apiVehicleCommon()
+    const { apiDetailCar, apiListOtherAmenitiesCar, apiRentCostPropose } = apiVehicleCommon()
 
     const { dataDetail, setIdCar, setDataDetail, setDataOther, dataOther } = useVehicleManage()
 
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
+
     const fetchData = async () => {
+        queryKeyIsStateLoadSuccess({
+            loading: {
+                ...isStateLoadSuccess.loading,
+                isSuccessFetchApi: true,
+            }
+        })
+
         const { data: db } = await apiDetailCar(id, { type: -1, car_owner: 1 })
         // const { data: db } = await apiDetailCar(id, { type: 1, car_owner: 1 })
         const { data: { other, dtFee, other_talent } } = await apiListOtherAmenitiesCar()
+
 
         if (other || dtFee || other_talent) {
             setDataOther({ other, dtFee, other_talent })
@@ -192,31 +204,52 @@ const LayoutVehicleManagementMobile = ({ children }: { children: React.ReactNode
             if (['1', '2'].includes(type)) {
                 await fetchRentCost(db)
             }
-            return
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isSuccessFetchApi: false,
+                }
+            })
+
+        } else {
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isSuccessFetchApi: false,
+                }
+            })
         }
+
         if (db?.data?.length == 0) {
             router.back()
             toastCore.error('Không có dữ liệu xe')
         }
+
     }
 
     const fetchRentCost = async (db: any) => {
-        let formData = new FormData()
-        // "type" : 1, 1 xe tự lái, 2 xe có tài
-        // "year":2018, năm sản xuất
-        // "company_car":1, hãng xe
-        // "model_car":1 ,mẫu xe
-        formData.append('type', type)
-        formData.append('year', db?.data?.year_manu)
-        formData.append('company_car', db?.data?.model_car?.company_car_id)
-        formData.append('model_car', db?.data?.model_car?.id)
+        try {
+            let formData = new FormData()
+            // "type" : 1, 1 xe tự lái, 2 xe có tài
+            // "year":2018, năm sản xuất
+            // "company_car":1, hãng xe
+            // "model_car":1 ,mẫu xe
+            formData.append('type', type)
+            formData.append('year', db?.data?.year_manu)
+            formData.append('company_car', db?.data?.model_car?.company_car_id)
+            formData.append('model_car', db?.data?.model_car?.id)
 
-        const { data } = await apiRentCostPropose(formData)
+            const { data } = await apiRentCostPropose(formData)
 
-        setDataOther(({
-            ...dataOther,
-            rent_cost_propose: data?.rent_cost_propose
-        }))
+            if (data && data.rent_cost_propose) {
+                setDataOther(({
+                    ...dataOther,
+                    rent_cost_propose: data?.rent_cost_propose
+                }))
+            }
+        } catch (err) {
+            throw err
+        }
     }
 
     useEffect(() => {
@@ -234,42 +267,43 @@ const LayoutVehicleManagementMobile = ({ children }: { children: React.ReactNode
         }, 500)
     }, [])
 
-    console.log('dataDetail: ', dataDetail);
-    console.log('informationUser: ', informationUser);
-
-
     if (!isMounted) {
         return null;
     }
 
     return (
-        <div className='bg-[#F6F6F8]'>
+        <div className='bg-[#F6F6F8]/40'>
             {
-                dataDetail?.base?.base && dataDetail.data.image_car && dataDetail.data.image_car.length > 0 ?
-                    <div className='w-full max-w-full h-[200px] bg-white/80 relative'>
-                        <Image
-                            src={`${dataDetail?.base?.base}/${dataDetail?.data?.image_car[0]?.name}`}
-                            alt="your_car"
-                            width={800}
-                            height={600}
-                            className="w-full h-full object-cover"
-                            loading='eager'
-                        />
-                        <div className='absolute top-0 w-full h-[200px] bg-[#000000]/30' />
-                        <div className='absolute left-5 bottom-4 w-full max-w-[80%] flex items-center   '>
-                            <div
-                                onClick={() => router.back()}
-                                className='size-5 w-[20%] max-w-[20%] h-full flex flex-col hover:translate-x-2 duration-300 transition'
-                            >
-                                <FaArrowLeft className='size-5 text-white' />
-                            </div>
-                            <div className='text-lg w-[80%] max-w-[80%] text-center text-white font-semibold line-clamp-4'>
-                                {dataDetail?.data?.name ? dataDetail?.data?.name : ""}
-                            </div>
-                        </div>
-                    </div>
+                isStateLoadSuccess?.loading?.isSuccessFetchApi ?
+                    <Skeleton className='w-full h-[200px]' />
                     :
-                    null
+                    (
+                        dataDetail?.base?.base && dataDetail.data.image_car && dataDetail.data.image_car.length > 0 ?
+                            <div className='w-full max-w-full h-[200px] bg-white/80 relative'>
+                                <Image
+                                    src={`${dataDetail?.base?.base}/${dataDetail?.data?.image_car[0]?.name}`}
+                                    alt="your_car"
+                                    width={800}
+                                    height={600}
+                                    className="w-full h-full object-cover"
+                                    loading='eager'
+                                />
+                                <div className='absolute top-0 w-full h-[200px] bg-[#000000]/30' />
+                                <div className='absolute left-5 bottom-4 w-full max-w-[80%] flex items-center   '>
+                                    <div
+                                        onClick={() => router.back()}
+                                        className='size-5 w-[20%] max-w-[20%] h-full flex flex-col hover:translate-x-2 duration-300 transition'
+                                    >
+                                        <FaArrowLeft className='size-5 text-white' />
+                                    </div>
+                                    <div className='text-lg w-[80%] max-w-[80%] text-center text-white font-semibold line-clamp-4'>
+                                        {dataDetail?.data?.name ? dataDetail?.data?.name : ""}
+                                    </div>
+                                </div>
+                            </div>
+                            :
+                            null
+                    )
             }
             <>
                 {children}

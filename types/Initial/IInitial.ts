@@ -189,6 +189,7 @@ interface IInitialStateLoadSuccess {
         isLoadingButton: boolean;
     };
     success: any;
+    onSuccess: boolean;
 }
 
 // initial Data ALL Review (quản lí draw review)

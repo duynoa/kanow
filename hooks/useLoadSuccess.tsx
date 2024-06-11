@@ -14,6 +14,7 @@ export const useLoadSuccess = create<IStateLoadSuccess>((set) => ({
             isLoadingButton:false,
         },
         success: undefined,
+        onSuccess: false,
     },
     queryKeyIsStateLoadSuccess: (key: any) => set((state) => ({
         ...state,

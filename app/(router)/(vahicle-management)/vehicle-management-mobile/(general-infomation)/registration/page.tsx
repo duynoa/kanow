@@ -1,9 +1,11 @@
 "use client"
+import ButtonLoading from "@/components/button/ButtonLoading";
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useLoadSuccess } from "@/hooks/useLoadSuccess";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import { uuidv4 } from "@/lib/uuid";
@@ -44,12 +46,13 @@ export default function VehicleRegistration(props: Props) {
 
     const { dataDetail: { data, base }, idCar } = useVehicleManage()
 
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
+
     const findValue = form.getValues()
 
     const { apiUpdateCar } = apiVehicleCommon()
 
     useEffect(() => {
-
         if (!Array.isArray(data) && data) {
             const converArray = (arr: any) => {
                 return arr.map((i: any) => {
@@ -74,32 +77,57 @@ export default function VehicleRegistration(props: Props) {
     }, [data])
 
     const onSubmit = async (value: any) => {
-        let formData = new FormData()
-        formData.append('car_id', idCar)
-        // //cà vẹt
-        value.imagesRegistration.forEach((i: any, index: number) => {
-            formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i.nameDefault || i.name)
-        })
-        // // đăng kiểm
-        value.imagesRegistry.forEach((i: any, index: number) => {
-            formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i.nameDefault || i.name)
-        })
-        // //         bảo hiểm
-        value.imagesInsurance.forEach((i: any, index: number) => {
-            formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i.nameDefault || i.name)
-        })
-        // hinh mặt trước
-        formData.append('image_car_position_before', value?.carPhoto?.before[0]?.nameDefault || value?.carPhoto?.before[0]?.name)
-        formData.append('image_car_position_affter', value?.carPhoto?.after[0]?.nameDefault || value?.carPhoto?.after[0]?.name)
-        formData.append('image_car_position_left', value?.carPhoto?.left[0]?.nameDefault || value?.carPhoto?.left[0]?.name)
-        formData.append('image_car_position_right', value?.carPhoto?.right[0]?.nameDefault || value?.carPhoto?.right[0]?.name)
+        try {
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isLoadingButton: true
+                }
+            })
 
-        const { data: db } = await apiUpdateCar(formData)
-        if (db.result) {
-            toastCore.success('Lưu thông tin thành công')
-            return
+            let formData = new FormData()
+            formData.append('car_id', idCar)
+            // //cà vẹt
+            value.imagesRegistration.forEach((i: any, index: number) => {
+                formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i.nameDefault || i.name)
+            })
+            // // đăng kiểm
+            value.imagesRegistry.forEach((i: any, index: number) => {
+                formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i.nameDefault || i.name)
+            })
+            // //         bảo hiểm
+            value.imagesInsurance.forEach((i: any, index: number) => {
+                formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i.nameDefault || i.name)
+            })
+            // hinh mặt trước
+            formData.append('image_car_position_before', value?.carPhoto?.before[0]?.nameDefault || value?.carPhoto?.before[0]?.name)
+            formData.append('image_car_position_affter', value?.carPhoto?.after[0]?.nameDefault || value?.carPhoto?.after[0]?.name)
+            formData.append('image_car_position_left', value?.carPhoto?.left[0]?.nameDefault || value?.carPhoto?.left[0]?.name)
+            formData.append('image_car_position_right', value?.carPhoto?.right[0]?.nameDefault || value?.carPhoto?.right[0]?.name)
+
+            const { data: db } = await apiUpdateCar(formData)
+            if (db.result) {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        ...isStateLoadSuccess.loading,
+                        isLoadingButton: false
+                    }
+                })
+                toastCore.success('Lưu thông tin thành công')
+
+            } else {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        ...isStateLoadSuccess.loading,
+                        isLoadingButton: false
+                    }
+                })
+                toastCore.error(db.message)
+            }
+
+        } catch (err) {
+            throw err
         }
-        toastCore.error(db.message)
     }
 
 
@@ -120,7 +148,7 @@ export default function VehicleRegistration(props: Props) {
                 <div className="flex flex-col gap-6">
                     <div className="my-2">
                         <div className="flex md:flex-row flex-col justify-between">
-                            <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Cà vẹt / Giấy đăng ký xe ô tô</h1>
+                            <h1 className='text-[#3E424E] text-xl uppercase font-bold'>Cà vẹt / Giấy đăng ký xe ô tô</h1>
                         </div>
                         <FormField
                             control={form.control}
@@ -135,16 +163,18 @@ export default function VehicleRegistration(props: Props) {
 
                                 return (
                                     <FormItem className="">
-                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                        <FormLabel className="text-base font-semibold text-[#16171B]">
                                             Chọn hình giấy tờ xe
                                         </FormLabel>
                                         <FormControl>
                                             <>
-                                                {fieldState?.invalid && fieldState?.error && (
-                                                    <FormMessage>
-                                                        {fieldState?.error?.message}
-                                                    </FormMessage>
-                                                )}
+                                                {
+                                                    fieldState?.invalid && fieldState?.error && (
+                                                        <FormMessage>
+                                                            {fieldState?.error?.message}
+                                                        </FormMessage>
+                                                    )
+                                                }
                                                 <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
                                                     <div className="col-span-1  h-[250px]">
                                                         <Input {...fieldProps}
@@ -212,7 +242,7 @@ export default function VehicleRegistration(props: Props) {
                     <Separator orientation='horizontal' />
                     <div className="my-2">
                         <div className="flex md:flex-row flex-col justify-between">
-                            <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Đăng kiểm</h1>
+                            <h1 className='text-[#3E424E] text-xl uppercase font-bold'>Đăng kiểm</h1>
                         </div>
                         <FormField
                             control={form.control}
@@ -226,7 +256,7 @@ export default function VehicleRegistration(props: Props) {
                             render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
                                 return (
                                     <FormItem className="">
-                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                        <FormLabel className="text-base font-semibold text-[#16171B]">
                                             Chọn hình đăng kiểm
                                         </FormLabel>
                                         <FormControl>
@@ -303,7 +333,7 @@ export default function VehicleRegistration(props: Props) {
                     <Separator orientation='horizontal' />
                     <div className="my-2">
                         <div className="flex md:flex-row flex-col justify-between">
-                            <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Bảo hiểm vật chất</h1>
+                            <h1 className='text-[#3E424E] text-xl uppercase font-bold'>Bảo hiểm vật chất</h1>
                         </div>
                         <FormField
                             control={form.control}
@@ -317,7 +347,7 @@ export default function VehicleRegistration(props: Props) {
                             render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
                                 return (
                                     <FormItem className="">
-                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                        <FormLabel className="text-base font-semibold text-[#16171B]">
                                             Chọn hình bảo hiểm vật chất
                                         </FormLabel>
                                         <FormControl>
@@ -394,7 +424,7 @@ export default function VehicleRegistration(props: Props) {
                     </div>
                     <Separator orientation='horizontal' />
                     <div className="flex md:flex-row flex-col justify-between">
-                        <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Ảnh chi tiết xe</h1>
+                        <h1 className='text-[#3E424E] text-xl uppercase font-bold'>Ảnh chi tiết xe</h1>
                     </div>
                     <div className="grid lg:grid-cols-2 col-span-1 gap-4">
                         <div className="my-2">
@@ -413,7 +443,7 @@ export default function VehicleRegistration(props: Props) {
                                 render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
                                     return (
                                         <FormItem className="">
-                                            <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                            <FormLabel className="text-base font-semibold text-[#16171B]">
                                                 {value?.length > 0 ? 'Ảnh trước xe' : 'Chọn ảnh trước xe'}
                                             </FormLabel>
                                             <FormControl>
@@ -506,7 +536,7 @@ export default function VehicleRegistration(props: Props) {
                                 render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
                                     return (
                                         <FormItem className="">
-                                            <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                            <FormLabel className="text-base font-semibold text-[#16171B]">
                                                 {value?.length > 0 ? 'Ảnh sau xe' : 'Chọn ảnh sau xe'}
                                             </FormLabel>
                                             <FormControl>
@@ -600,7 +630,7 @@ export default function VehicleRegistration(props: Props) {
                                 render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
                                     return (
                                         <FormItem className="">
-                                            <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                            <FormLabel className="text-base font-semibold text-[#16171B]">
                                                 {value?.length > 0 ? 'Ảnh bên trái xe' : 'Chọn ảnh bên trái xe'}
                                             </FormLabel>
                                             <FormControl>
@@ -691,7 +721,7 @@ export default function VehicleRegistration(props: Props) {
                                 render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
                                     return (
                                         <FormItem className="">
-                                            <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                            <FormLabel className="text-base font-semibold text-[#16171B]">
                                                 {value?.length > 0 ? 'Ảnh bên phải xe' : 'Chọn ảnh bên phải xe'}
                                             </FormLabel>
                                             <FormControl>
@@ -772,7 +802,16 @@ export default function VehicleRegistration(props: Props) {
                 </div>
             </Form>
             <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
-                <ButtonSaveForm title="Lưu giấy tờ xe" onClick={form.handleSubmit((values) => onSubmit(values))} />
+                {/* <ButtonSaveForm title="Lưu giấy tờ xe" onClick={form.handleSubmit((values) => onSubmit(values))} /> */}
+                <ButtonLoading
+                    title="Lưu giấy tờ xe"
+                    type="button"
+                    onClick={form.handleSubmit((values) => onSubmit(values))}
+                    className="flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
+                                border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                    disabled={isStateLoadSuccess.loading.isLoadingButton}
+                    isStateloading={isStateLoadSuccess.loading.isLoadingButton}
+                />
             </div>
         </BackgroundUiVehicle>
     )
