@@ -131,14 +131,15 @@ const Footer = () => {
         <footer className='bg-[#FFFFFF] pt-16 pb-10 w-full overflow-hidden border border-t border-x-0 border-b-0'>
             <div className='custom-container grid lg:grid-cols-12 grid-cols-1 lg:gap-2 gap-6 pb-10'>
                 <div className='lg:col-span-2 col-span-1 w-full flex flex-col 2xl:gap-5 gap-3'>
-                    <Image
-
-                        alt='logo'
-                        src="/logo/logo.svg"
-                        width={800}
-                        height={600}
-                        className='w-full h-auto object-contain'
-                    />
+                    <div className='lg:w-full md:w-[40%] w-full h-full'>
+                        <Image
+                            alt='logo'
+                            src="/logo/logo.svg"
+                            width={800}
+                            height={600}
+                            className='w-full h-full object-contain'
+                        />
+                    </div>
 
                     <div className='mt-1'>
                         <div className='text-[#B4B8C5] 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal'>

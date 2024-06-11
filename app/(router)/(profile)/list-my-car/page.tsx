@@ -191,20 +191,26 @@ const ListMyCar = (props: Props) => {
     }, [])
 
     return (
-        <BackgroundUiProfile className={'space-y-4  lg:pr-2 pr-3'}>
+        <BackgroundUiProfile className={'space-y-4 '}>
             <div className="flex justify-between items-center">
                 <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Xe của tôi</h1>
-                {isStateProfileMyCar.tab == 1 &&
+                {
+                    isStateProfileMyCar.tab == 1 &&
                     <Button
                         onClick={() => setOpenDialogFilterCar(true)}
-                        className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
-                             md:block hidden    px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}
+                        className={`bg-[#2FB9BD]/80 hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
+                             md:block hidden px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105 uppercase transition-all overflow-hidden border uppercases`}
                     >
                         Bộ lọc
                     </Button>
                 }
             </div>
-            <Tabs defaultValue="1" value={`${isStateProfileMyCar.tab}`} onValueChange={value => queryKeyIsStateProfileMyCar({ tab: value, page: 1, dataMyCar: [] })} className="w-full">
+            <Tabs
+                defaultValue="1"
+                value={`${isStateProfileMyCar.tab}`}
+                onValueChange={value => queryKeyIsStateProfileMyCar({ tab: value, page: 1, dataMyCar: [] })}
+                className="w-full"
+            >
                 <TabsList className='bg-transparent border-b border-b-[#F6F6F8] rounded-none w-full justify-start overflow-x-auto overflow-y-hidden gap-8 p-0'>
                     {
                         TAB.map((e) => (
@@ -212,13 +218,15 @@ const ListMyCar = (props: Props) => {
                                 key={e.id}
                                 value={e.id}
                                 className='data-[state=active]:text-[#2FB9BD] text-[#667085] data-[state=active]:border-b-[#2FB9BD]
-                                border-b-2 border-transparent rounded-none pb-[15px] px-0 font-semibold text-sm leading-[17px]'>
+                                border-b-2 border-transparent rounded-none pb-[15px] px-0 font-semibold text-sm leading-[17px]'
+                            >
                                 {e.name}
                             </TabsTrigger>
 
                         ))
                     }
                 </TabsList>
+                
                 <TabsContent value="1" className='lg:mt-4 mt-5'>
                     {
                         isVisibleMobile &&
@@ -246,14 +254,17 @@ const ListMyCar = (props: Props) => {
                         <div ref={lastContainerRef} />
                     </ScrollArea>
                 </TabsContent>
+
                 <TabsContent value="2">
                     <div className="h-[550px] flex justify-center items-center">
                         <Contract />
                     </div>
                 </TabsContent>
+
                 <TabsContent value="3">
                     <MyWallet />
                 </TabsContent>
+
                 <TabsContent value="4">
                     <VehicleRegistration />
                 </TabsContent>

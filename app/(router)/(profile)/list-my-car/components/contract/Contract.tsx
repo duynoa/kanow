@@ -43,8 +43,11 @@ const Contract = (props: Props) => {
                 <Link
                     href={data?.[0]?.file ?? ""}
                     download={data?.[0]?.name_file ?? ""}
-                    className="flex flex-col items-center justify-center lg:ml-auto mx-auto gap-5  shadow bg-gray-100 hover:bg-gray-200 transition-all duration-200 ease-linear w-fit p-4 rounded-xl cursor-pointer">
-                    <h1 className="lg:text-base text-sm font-medium uppercase leading-5">Hợp đồng cho thuê</h1>
+                    className="flex flex-col items-center justify-center lg:ml-auto mx-auto gap-5  shadow bg-gray-100 hover:bg-gray-200 transition-all duration-200 ease-linear w-fit p-4 rounded-xl cursor-pointer"
+                >
+                    <h1 className="lg:text-base text-sm font-medium uppercase leading-5">
+                        Hợp đồng cho thuê
+                    </h1>
                     <div className="flex items-center justify-center  mx-auto">
                         <LiaFileContractSolid className="text-6xl text-[#1EAAB1]" />
                     </div>
@@ -52,11 +55,13 @@ const Contract = (props: Props) => {
                 <Link
                     href={data?.[1]?.file ?? ""}
                     download={data?.[1]?.name_file ?? ""}
-                    className="flex flex-col items-center justify-center lg:ml-auto mx-auto gap-5  shadow bg-gray-100 hover:bg-gray-200 transition-all duration-200 ease-linear w-fit p-4 rounded-xl cursor-pointer">
-                    <h1 className="lg:text-base text-sm font-medium uppercase leading-5">Biên bản bàn giao xe</h1>
+                    className="flex flex-col items-center justify-center lg:ml-auto mx-auto gap-5  shadow bg-gray-100 hover:bg-gray-200 transition-all duration-200 ease-linear w-fit p-4 rounded-xl cursor-pointer"
+                >
+                    <h1 className="lg:text-base text-sm font-medium uppercase leading-5">
+                        Biên bản bàn giao xe
+                    </h1>
                     <div className="flex items-center justify-center  mx-auto">
                         <RiFileList3Line className="text-6xl text-[#1EAAB1]" />
-
                     </div>
                 </Link>
             </div>
