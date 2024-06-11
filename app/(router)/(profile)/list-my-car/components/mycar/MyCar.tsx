@@ -110,7 +110,7 @@ const MyCar = ({ }: Props) => {
                                         </div>
                                     </div>
                                     <div className='border-b lg:hidden block border-[#D7D9E0]/50 w-full col-span-12' />
-                                    <div className={`flex lg:flex-col xl:justify-start lg:justify-center md:justify-between ${e.total_trip ? 'justify-between ' : 'justify-between px-3'} lg:px-0 px-2  flex-row 3xl:gap-2 2xl:gap-2 xxl:gap-2.5 xl:gap-2 lg:gap-2 gap-2  lg:bg-transparent lg:py-0 lg:rounded-none
+                                    <div className={`flex lg:flex-col xl:justify-start lg:justify-center md:justify-between ${e.total_trip ? 'justify-between ' : 'justify-between px-3'} lg:px-0 px-2  ${(e.point_star) ? 'flex-col' : 'flex-row'} 3xl:gap-2 2xl:gap-2 xxl:gap-2.5 xl:gap-2 lg:gap-2 gap-2  lg:bg-transparent lg:py-0 lg:rounded-none
                                                      rounded-md py-3 bg-[#F2FCF7] `}>
                                         <div className='flex lg:flex-col flex-row lg:items-start items-center gap-2'>
                                             {
