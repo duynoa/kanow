@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useLoadSuccess } from "@/hooks/useLoadSuccess";
+import { useResize } from "@/hooks/useResize";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import { uuidv4 } from "@/lib/uuid";
@@ -32,6 +33,7 @@ export default function VehicleImages(props: Props) {
 
     const { dataDetail: { data, base }, idCar } = useVehicleManage()
 
+    const { isVisibleMobile, isVisibleTablet } = useResize()
     const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
 
     const findValue = form.getValues()
@@ -181,49 +183,97 @@ export default function VehicleImages(props: Props) {
                                                                         <IoMdAdd size={32} />
                                                                     </Label>
                                                                 </div>
-                                                                {value && value.map((i: any, index: any) => {
-                                                                    return (
-                                                                        <Draggable
-                                                                            key={i.id}
-                                                                            draggableId={`draggableId-${i.id}`}
-                                                                            index={index}
-                                                                            isDragDisabled={!findValue.onDrag}
-                                                                        >
-                                                                            {
-                                                                                (provided, snapshot) => (
-                                                                                    <div
-                                                                                        {...provided.dragHandleProps}
-                                                                                        {...provided.draggableProps}
-                                                                                        ref={provided.innerRef}
-                                                                                    >
-                                                                                        <div className={`${snapshot.isDragging && 'opacity-50'} relative w-full h-[250px]`}>
-                                                                                            <Image
-                                                                                                src={i.name instanceof File ? URL.createObjectURL(i.name) : i.name ?? ""}
-                                                                                                width={1280}
-                                                                                                height={1024}
-                                                                                                alt="image"
-                                                                                                className="w-full h-full object-cover rounded-md"
-                                                                                            />
-                                                                                            <div className={`bg-white rounded-full rounded-fit absolute top-0 right-3 translate-x-1/2 -translate-y-1/2 flex items-center justify-center`}>
-                                                                                                <MdClear
-                                                                                                    onClick={() => {
-                                                                                                        const inputValue = document.getElementById('vehicle-management-picture') as HTMLInputElement | null;
-
-                                                                                                        if (inputValue && typeof inputValue !== 'undefined') {
-                                                                                                            inputValue.value = '';
-                                                                                                        }
-                                                                                                        onChange(value?.filter((value: any) => value !== i))
-                                                                                                    }}
-                                                                                                    className="text-red-500 bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer md:text-[26px] text-xl"
+                                                                {
+                                                                    value && value.map((i: any, index: any) => {
+                                                                        return (
+                                                                            <Draggable
+                                                                                key={i.id}
+                                                                                draggableId={`draggableId-${i.id}`}
+                                                                                index={index}
+                                                                                isDragDisabled={!findValue.onDrag}
+                                                                                disableInteractiveElementBlocking={true}
+                                                                            >
+                                                                                {
+                                                                                    (provided, snapshot) => (
+                                                                                        <div
+                                                                                            {...provided.dragHandleProps}
+                                                                                            {...provided.draggableProps}
+                                                                                            ref={provided.innerRef}
+                                                                                        >
+                                                                                            <div className={`${snapshot.isDragging && 'opacity-50'} relative w-full h-[250px]`}>
+                                                                                                <Image
+                                                                                                    src={i.name instanceof File ? URL.createObjectURL(i.name) : i.name ?? ""}
+                                                                                                    width={1280}
+                                                                                                    height={1024}
+                                                                                                    alt="image"
+                                                                                                    className="w-full h-full object-cover rounded-md"
                                                                                                 />
+                                                                                                <div className={`bg-white rounded-full rounded-fit absolute top-0 right-3 translate-x-1/2 -translate-y-1/2 flex items-center justify-center`}>
+                                                                                                    {/* {
+                                                                                                        (isVisibleMobile || isVisibleTablet) ?
+                                                                                                            <MdClear
+                                                                                                                onTouchStart={(event) => {
+                                                                                                                    const inputValue = document.getElementById('vehicle-management-picture') as HTMLInputElement | null;
+
+                                                                                                                    if (inputValue && typeof inputValue !== 'undefined') {
+                                                                                                                        inputValue.value = '';
+                                                                                                                    }
+                                                                                                                    onChange(value?.filter((value: any) => value !== i))
+                                                                                                                }}
+                                                                                                                className="text-red-500 z-[1000] bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer  md:text-[26px] text-xl"
+                                                                                                            />
+                                                                                                            :
+                                                                                                            <MdClear
+                                                                                                                onClick={(event) => {
+                                                                                                                    const inputValue = document.getElementById('vehicle-management-picture') as HTMLInputElement | null;
+
+                                                                                                                    if (inputValue && typeof inputValue !== 'undefined') {
+                                                                                                                        inputValue.value = '';
+                                                                                                                    }
+                                                                                                                    onChange(value?.filter((value: any) => value !== i))
+                                                                                                                }}
+                                                                                                                className="text-red-500 z-[1000] bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer  md:text-[26px] text-xl"
+                                                                                                            />
+                                                                                                    } */}
+
+                                                                                                    <MdClear
+                                                                                                        onClick={
+                                                                                                            (isVisibleMobile || isVisibleTablet) ?
+                                                                                                                () => { }
+                                                                                                                :
+                                                                                                                () => {
+                                                                                                                    const inputValue = document.getElementById('vehicle-management-picture') as HTMLInputElement | null;
+
+                                                                                                                    if (inputValue && typeof inputValue !== 'undefined') {
+                                                                                                                        inputValue.value = '';
+                                                                                                                    }
+                                                                                                                    onChange(value?.filter((value: any) => value !== i))
+                                                                                                                }
+                                                                                                        }
+                                                                                                        onTouchStart={
+                                                                                                            (isVisibleMobile || isVisibleTablet) ?
+                                                                                                                () => {
+                                                                                                                    const inputValue = document.getElementById('vehicle-management-picture') as HTMLInputElement | null;
+
+                                                                                                                    if (inputValue && typeof inputValue !== 'undefined') {
+                                                                                                                        inputValue.value = '';
+                                                                                                                    }
+                                                                                                                    onChange(value?.filter((value: any) => value !== i))
+                                                                                                                }
+                                                                                                                :
+                                                                                                                () => { }
+                                                                                                        }
+                                                                                                        className="text-red-500 bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer md:text-[26px] text-xl"
+                                                                                                    />
+                                                                                                </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                    </div>
-                                                                                )
-                                                                            }
-                                                                        </Draggable>
-                                                                    )
-                                                                })}
+                                                                                    )
+                                                                                }
+                                                                            </Draggable>
+                                                                        )
+                                                                    })
+                                                                }
                                                                 {provided.placeholder}
                                                             </div>
                                                         )

@@ -1,8 +1,10 @@
 "use client"
+import ButtonLoading from "@/components/button/ButtonLoading";
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import { FormatNumberToThousands } from "@/components/format/FormatNumber";
 import { CustomSlider } from "@/components/ui/customSlider";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { useLoadSuccess } from "@/hooks/useLoadSuccess";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
@@ -59,6 +61,7 @@ export default function TalentedShuttle(props: Props) {
     const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
     const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
 
     const { apiUpdateCar } = apiVehicleCommon()
 
@@ -95,28 +98,50 @@ export default function TalentedShuttle(props: Props) {
 
 
     const onSubmit = async (value: any) => {
-        // đưa đón tận nơi: km_delivery_car_talent
-        // Phí đưa đón: fee_km_delivery_car_talent
-        // miễn phi đưa đón: free_km_delivery_car_talent
-        let formData = new FormData()
-        formData.append('car_id', idCar)
-        formData.append('km_delivery_car_talent', value.shuttle.within)
-        formData.append('fee_km_delivery_car_talent', value.shuttle.shuttleFee)
-        formData.append('free_km_delivery_car_talent', value.shuttle.freeShuttle)
+        try {
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isLoadingButton: true
+                }
+            })
+            // đưa đón tận nơi: km_delivery_car_talent
+            // Phí đưa đón: fee_km_delivery_car_talent
+            // miễn phi đưa đón: free_km_delivery_car_talent
+            let formData = new FormData()
+            formData.append('car_id', idCar)
+            formData.append('km_delivery_car_talent', value.shuttle.within)
+            formData.append('fee_km_delivery_car_talent', value.shuttle.shuttleFee)
+            formData.append('free_km_delivery_car_talent', value.shuttle.freeShuttle)
 
-        const { data: db } = await apiUpdateCar(formData)
-        if (db.result) {
-            toastCore.success('Lưu thông tin thành công')
-            return
+            const { data: db } = await apiUpdateCar(formData)
+            if (db.result) {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        ...isStateLoadSuccess.loading,
+                        isLoadingButton: false
+                    }
+                })
+                toastCore.success('Lưu thông tin thành công')
+            } else {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        ...isStateLoadSuccess.loading,
+                        isLoadingButton: false
+                    }
+                })
+                toastCore.error(db.message)
+            }
+        } catch (err) {
+            throw err
         }
-        toastCore.error(db.message)
     }
 
     if (!isMount) return null
     return (
         <BackgroundUiVehicle className="flex flex-col gap-4 ">
             <div className="flex flex-col gap-2">
-                <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Đưa đón tận nơi</h1>
+                <h1 className='text-[#3E424E] text-xl uppercase font-bold'>Đưa đón tận nơi</h1>
             </div>
             <Form  {...form}>
                 <FormField
@@ -125,7 +150,7 @@ export default function TalentedShuttle(props: Props) {
                     render={({ field, fieldState }) => {
                         return (
                             <FormItem>
-                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                <FormLabel className="text-base font-semibold text-[#16171B]">
                                     Đưa đón tận nơi trong vòng
                                 </FormLabel>
                                 <FormControl>
@@ -160,7 +185,7 @@ export default function TalentedShuttle(props: Props) {
                     render={({ field, fieldState }) => {
                         return (
                             <FormItem>
-                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                <FormLabel className="text-base font-semibold text-[#16171B]">
                                     Phí đưa đón cho mỗi Km
                                 </FormLabel>
                                 <FormControl>
@@ -195,7 +220,7 @@ export default function TalentedShuttle(props: Props) {
                     render={({ field, fieldState }) => {
                         return (
                             <FormItem>
-                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                <FormLabel className="text-base font-semibold text-[#16171B]">
                                     Miễn  phí đưa đón trong vòng
                                 </FormLabel>
                                 <FormControl>
@@ -226,7 +251,17 @@ export default function TalentedShuttle(props: Props) {
                     }}
                 />
                 <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
-                    <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} />
+                    {/* <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} /> */}
+
+                    <ButtonLoading
+                        title="Lưu thông tin"
+                        type="button"
+                        onClick={form.handleSubmit((values) => onSubmit(values))}
+                        className="flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
+                                border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                        disabled={isStateLoadSuccess.loading.isLoadingButton}
+                        isStateloading={isStateLoadSuccess.loading.isLoadingButton}
+                    />
                 </div>
             </Form>
         </BackgroundUiVehicle>

@@ -1,9 +1,11 @@
 "use client"
+import ButtonLoading from "@/components/button/ButtonLoading";
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import { FormatNumberToThousands } from "@/components/format/FormatNumber";
 import { CustomSlider } from "@/components/ui/customSlider";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
+import { useLoadSuccess } from "@/hooks/useLoadSuccess";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
@@ -34,7 +36,6 @@ export default function SelftVehicleHanding(props: Props) {
 
     const { apiUpdateCar } = apiVehicleCommon()
 
-
     const [isState, setIsState] = useState(initialState)
 
     const queryState = (key: any) => setIsState((prev: StateSelftVehicleHanding) => ({ ...prev, ...key }))
@@ -51,10 +52,9 @@ export default function SelftVehicleHanding(props: Props) {
     })
 
     const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
-
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
 
     const findValue = form.getValues()
-
 
     useEffect(() => {
         if (data) {
@@ -78,31 +78,58 @@ export default function SelftVehicleHanding(props: Props) {
             })
             return
         }
+
         form.reset()
     }, [data])
 
     const onSubmit = async (value: any) => {
-        let formData = new FormData()
-        formData.append('car_id', idCar)
-        // nut tắt mở
-        formData.append('delivery_car', `${value.vehicleHanding.open ? 1 : 0}`)
-        // quang duong giao xe tối đa
-        formData.append('km_delivery_car', value.vehicleHanding.intersectionSquare)
-        // phi giao nhan xe
-        formData.append("fee_km_delivery_car", value.vehicleHanding.deliveryFee)
-        // mien phi
-        formData.append("free_km_delivery_car", value.vehicleHanding.freeDelivery)
-        const { data: db } = await apiUpdateCar(formData)
-        if (db.result) {
-            toastCore.success('Lưu thông tin thành công')
-            return
+        try {
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isLoadingButton: true
+                }
+            })
+
+            let formData = new FormData()
+            formData.append('car_id', idCar)
+            // nut tắt mở
+            formData.append('delivery_car', `${value.vehicleHanding.open ? 1 : 0}`)
+            // quang duong giao xe tối đa
+            formData.append('km_delivery_car', value.vehicleHanding.intersectionSquare)
+            // phi giao nhan xe
+            formData.append("fee_km_delivery_car", value.vehicleHanding.deliveryFee)
+            // mien phi
+            formData.append("free_km_delivery_car", value.vehicleHanding.freeDelivery)
+
+            const { data: db } = await apiUpdateCar(formData)
+            if (db.result) {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        ...isStateLoadSuccess.loading,
+                        isLoadingButton: false
+                    }
+                })
+                toastCore.success('Lưu thông tin thành công')
+
+            } else {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        ...isStateLoadSuccess.loading,
+                        isLoadingButton: false
+                    }
+                })
+                toastCore.error(db.message)
+            }
+        } catch (err) {
+            throw err
         }
-        toastCore.error(db.message)
     }
+
     return (
         <BackgroundUiVehicle className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-                <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Giao xe tận nơi</h1>
+                <h1 className='text-[#3E424E] text-xl uppercase font-bold'>Giao xe tận nơi</h1>
             </div>
             <Form  {...form}>
                 <FormField
@@ -113,7 +140,7 @@ export default function SelftVehicleHanding(props: Props) {
                             <FormItem className="">
                                 <FormControl>
                                     <div className="flex items-center gap-2">
-                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                        <FormLabel className="text-base font-semibold text-[#16171B]">
                                             Giao xe tận nơi
                                         </FormLabel>
                                         <Switch
@@ -131,7 +158,7 @@ export default function SelftVehicleHanding(props: Props) {
                                             render={({ field }) => {
                                                 return (
                                                     <FormItem>
-                                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                                        <FormLabel className="text-base font-semibold text-[#16171B]">
                                                             Quãng đường giao xe tối đa
                                                         </FormLabel>
                                                         <FormControl>
@@ -166,7 +193,7 @@ export default function SelftVehicleHanding(props: Props) {
                                             render={({ field }) => {
                                                 return (
                                                     <FormItem>
-                                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                                        <FormLabel className="text-base font-semibold text-[#16171B]">
                                                             Phí giao nhận xe 2 chiều (Tính theo Km)
                                                         </FormLabel>
                                                         <FormControl>
@@ -188,9 +215,11 @@ export default function SelftVehicleHanding(props: Props) {
                                                                 {FormatNumberToThousands(+field.value)}
                                                             </FormDescription>
                                                         </div>
-                                                        {fieldState?.invalid && fieldState?.error && (
-                                                            <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                                        )}
+                                                        {
+                                                            fieldState?.invalid && fieldState?.error && (
+                                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                            )
+                                                        }
                                                     </FormItem>
                                                 );
                                             }}
@@ -201,7 +230,7 @@ export default function SelftVehicleHanding(props: Props) {
                                             render={({ field }) => {
                                                 return (
                                                     <FormItem>
-                                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                                        <FormLabel className="text-base font-semibold text-[#16171B]">
                                                             Miễn phí giao nhận xe trong vòng
                                                         </FormLabel>
                                                         <FormControl>
@@ -222,25 +251,40 @@ export default function SelftVehicleHanding(props: Props) {
                                                                 {field.value}Km
                                                             </FormDescription>
                                                         </div>
-                                                        {fieldState?.invalid && fieldState?.error && (
-                                                            <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                                        )}
+                                                        {
+                                                            fieldState?.invalid && fieldState?.error && (
+                                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                            )
+                                                        }
                                                     </FormItem>
                                                 );
                                             }}
                                         />
                                     </div>
                                 }
-                                {fieldState?.invalid && fieldState?.error && (
-                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                )}
+                                {
+                                    fieldState?.invalid && fieldState?.error && (
+                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                    )
+                                }
                             </FormItem>
                         );
                     }}
                 />
-                {findValue.vehicleHanding.open &&
+                {
+                    findValue.vehicleHanding.open &&
                     <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
-                        <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} />
+                        {/* <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} /> */}
+
+                        <ButtonLoading
+                            title="Lưu thông tin"
+                            type="button"
+                            onClick={form.handleSubmit((values) => onSubmit(values))}
+                            className="flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
+                                border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                            disabled={isStateLoadSuccess.loading.isLoadingButton}
+                            isStateloading={isStateLoadSuccess.loading.isLoadingButton}
+                        />
                     </div>
                 }
             </Form>
