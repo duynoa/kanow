@@ -1,6 +1,6 @@
 "use client"
 
-import { FormatCurrency, FormatNumberHundred, FormatPointStar } from "@/components/format/FormatNumber"
+import { FormatCurrency, FormatNumberDot, FormatNumberHundred, FormatPointStar } from "@/components/format/FormatNumber"
 import { ReusableTable } from "@/components/table/ReusableTable"
 import UnderDevelopment from "@/components/underDevelopment/UnderDevelopment"
 import moment from "moment"
@@ -195,20 +195,176 @@ const MyWallet = (props: Props) => {
         },
     ];
 
+    // Function to convert data
+    const convertData = (transactions: any[]): any[] => {
+        return transactions.map((transaction) => ({
+
+            codeTrip: transaction.trip.id,
+            carType: transaction.trip.serviceType === 1 ? "Xe tự lái" : "Xe có tài",
+            dateStart: moment(transaction.trip.tripDateFrom).format("DD/MM/YYYY"),
+            dateEnd: moment(transaction.trip.tripDateTo).format("DD/MM/YYYY"),
+            rentalPrice: `${FormatNumberDot(transaction.trip.price)}đ`,
+            ownerRevenue: `${FormatNumberDot(transaction.trip.price - transaction.trip.fee)}đ`,
+            receivedPrice: `${FormatNumberDot(transaction.amount)}đ`,
+            balanceChange: `${FormatNumberDot(transaction.trip.payAfter)}đ`,
+        }));
+
+    };
+
+    const convertDataCustom = convertData(data.transactionsFinished);
+
     const columnsDataCustom: ColumnDef<any>[] = [
         {
             id: "codeTrip",
             header: () => <div className='w-[120px] max-w-[120px] text-center'>Mã chuyến đi</div>,
-            // cell: ({ row }) => <div className={"row"}>{row.index + 1}</div>,
             cell: ({ row }) => {
-                let codeTrip = row?.getValue("codeTrip");
-                console.log('codeTrip: ', codeTrip);
-
+                // let codeTrip = row?.getValue("codeTrip");
+                let codeTrip = row?.original?.codeTrip;
 
                 if (codeTrip) {
                     return (
-                        <div className="flex gap-2 items-center">
-                            <div className="capitalize 3xl:text-base text-sm">{row.getValue("codeTrip")}</div>
+                        <div className="  3xl:text-sm text-sm text-[#2FB9BD] cursor-pointer transition duration-300 w-full text-center">
+                            {codeTrip}
+                        </div>
+                    );
+                }
+
+                return null;
+            },
+            enableSorting: false,
+            enableHiding: false,
+        },
+        {
+            id: "carType",
+            header: () => <div className='w-[120px] max-w-[120px] text-center'>Hình thức</div>,
+            cell: ({ row }) => {
+                // let codeTrip = row?.getValue("codeTrip");
+                let carType = row?.original?.carType;
+
+                if (carType) {
+                    return (
+                        <div className="  3xl:text-sm text-sm w-full text-center">
+                            {carType}
+                        </div>
+                    );
+                }
+
+                return null;
+            },
+            enableSorting: false,
+            enableHiding: false,
+        },
+        {
+            id: "dateStart",
+            header: () => <div className='w-[120px] max-w-[120px] text-center'>Ngày đi</div>,
+            cell: ({ row }) => {
+                // let codeTrip = row?.getValue("codeTrip");
+                let dateStart = row?.original?.dateStart;
+
+                if (dateStart) {
+                    return (
+                        <div className="  3xl:text-sm text-sm transition duration-300 w-full text-center">
+                            {dateStart}
+                        </div>
+                    );
+                }
+
+                return null;
+            },
+            enableSorting: false,
+            enableHiding: false,
+        },
+        {
+            id: "dateEnd",
+            header: () => <div className='w-[120px] max-w-[120px] text-center'>Ngày về</div>,
+            cell: ({ row }) => {
+                // let codeTrip = row?.getValue("codeTrip");
+                let dateEnd = row?.original?.dateEnd;
+
+                if (dateEnd) {
+                    return (
+                        <div className="  3xl:text-sm text-sm transition duration-300 w-full text-center">
+                            {dateEnd}
+                        </div>
+                    );
+                }
+
+                return null;
+            },
+            enableSorting: false,
+            enableHiding: false,
+        },
+        {
+            id: "rentalPrice",
+            header: () => <div className='w-[120px] max-w-[120px] text-center'>Đơn giá thuê</div>,
+            cell: ({ row }) => {
+                // let codeTrip = row?.getValue("codeTrip");
+                let rentalPrice = row?.original?.rentalPrice;
+
+                if (rentalPrice) {
+                    return (
+                        <div className="  3xl:text-sm text-sm transition duration-300 w-full text-center">
+                            {rentalPrice}
+                        </div>
+                    );
+                }
+
+                return null;
+            },
+            enableSorting: false,
+            enableHiding: false,
+        },
+        {
+            id: "ownerRevenue",
+            header: () => <div className='w-[120px] max-w-[120px] text-center'>Doanh thu chủ xe</div>,
+            cell: ({ row }) => {
+                // let codeTrip = row?.getValue("codeTrip");
+                let ownerRevenue = row?.original?.ownerRevenue;
+
+                if (ownerRevenue) {
+                    return (
+                        <div className="  3xl:text-sm text-sm transition duration-300 w-full text-center">
+                            {ownerRevenue}
+                        </div>
+                    );
+                }
+
+                return null;
+            },
+            enableSorting: false,
+            enableHiding: false,
+        },
+        {
+            id: "receivedPrice",
+            header: () => <div className='w-[120px] max-w-[120px] text-center'>Tiền đã nhận</div>,
+            cell: ({ row }) => {
+                // let codeTrip = row?.getValue("codeTrip");
+                let receivedPrice = row?.original?.receivedPrice;
+
+                if (receivedPrice) {
+                    return (
+                        <div className="  3xl:text-sm text-sm transition duration-300 w-full text-center">
+                            {receivedPrice}
+                        </div>
+                    );
+                }
+
+                return null;
+            },
+            enableSorting: false,
+            enableHiding: false,
+        },
+        {
+            id: "balanceChange",
+            header: () => <div className='w-[120px] max-w-[120px] text-center'>Thay đổi số dư</div>,
+            cell: ({ row }) => {
+                // let codeTrip = row?.getValue("codeTrip");
+                let balanceChange = row?.original?.balanceChange;
+
+                if (balanceChange) {
+                    return (
+                        <div className="  3xl:text-sm text-sm transition duration-300 w-full text-center">
+                            {balanceChange}
                         </div>
                     );
                 }
@@ -220,23 +376,6 @@ const MyWallet = (props: Props) => {
         },
     ];
 
-    // Function to convert data
-    const convertData = (transactions: any[]): any[] => {
-        return transactions.map((transaction) => ({
-
-            codeTrip: transaction.trip.id,
-            carType: transaction.trip.serviceType === 1 ? "Xe tự lái" : "Xe có tài",
-            dateStart: moment(transaction.trip.tripDateFrom).format("DD/MM/YYYY"),
-            dateEnd: moment(transaction.trip.tripDateTo).format("DD/MM/YYYY"),
-            rentalPrice: `$${(transaction.trip.price / 100).toFixed(2)}`,
-            ownerRevenue: `$${((transaction.trip.price - transaction.trip.fee) / 100).toFixed(2)}`,
-            receivedPrice: `$${(transaction.amount / 100).toFixed(2)}`,
-            balanceChange: `$${(transaction.trip.payAfter / 100).toFixed(2)}`,
-        }));
-
-    };
-
-    const convertDataCustom = convertData(data.transactionsFinished);
 
     console.log('convertDataCustom', convertDataCustom);
 
@@ -293,7 +432,7 @@ const MyWallet = (props: Props) => {
                     </div>
 
                     <div className='col-span-4 grid grid-cols-3 gap-2 px-6'>
-                        <div className='col-span-1 bg-[#F6F6F6] flex flex-col items-center gap-1 px-2 py-1 rounded-md'>
+                        <div className='col-span-1 bg-[#F6F6F6] flex flex-col items-center gap-1 px-2 py-2 rounded-md'>
                             <div className='3xl:text-2xl text-xl text-[#484D5C] font-medium      '>
                                 {data.responseRate ? data.responseRate : 0}
                             </div>
@@ -301,7 +440,7 @@ const MyWallet = (props: Props) => {
                                 Tỉ lệ phản hồi
                             </div>
                         </div>
-                        <div className='col-span-1 bg-[#F6F6F6] flex flex-col items-center gap-1 px-2 py-1 rounded-md'>
+                        <div className='col-span-1 bg-[#F6F6F6] flex flex-col items-center gap-1 px-2 py-2 rounded-md'>
                             <div className='3xl:text-2xl text-xl text-[#484D5C] font-medium      '>
                                 {data.responseTime ? data.responseTime : 0}
                             </div>
@@ -309,7 +448,7 @@ const MyWallet = (props: Props) => {
                                 Thời gian phản hồi
                             </div>
                         </div>
-                        <div className='col-span-1 bg-[#F6F6F6] flex flex-col items-center gap-1 px-2 py-1 rounded-md'>
+                        <div className='col-span-1 bg-[#F6F6F6] flex flex-col items-center gap-1 px-2 py-2 rounded-md'>
                             <div className='3xl:text-2xl text-xl text-[#484D5C] font-medium      '>
                                 {data.acceptRate ? data.acceptRate : 0}
                             </div>
@@ -331,6 +470,25 @@ const MyWallet = (props: Props) => {
                         data={convertDataCustom}
                         columns={columnsDataCustom}
                     />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <div className='flex items-center justify-between bg-[#F6F6F6] py-2 px-4 rounded-md'>
+                        <div className='text-base text-[#545454] font-medium'>
+                            Tổng thay đổi - Chuyến đi hoàn thành
+                        </div>
+                        <div className='text-base text-[#545454] font-medium'>
+                            {FormatNumberDot(448000)}đ
+                        </div>
+                    </div>
+                    <div className='flex items-center justify-between bg-[#F6F6F6] py-2 px-4 rounded-md'>
+                        <div className='text-base text-[#545454] font-medium'>
+                            Tổng thay đổi - Chuyến đi hoàn thành
+                        </div>
+                        <div className='text-base text-[#545454] font-medium'>
+                            {FormatNumberDot(448000)}đ
+                        </div>
+                    </div>
                 </div>
             </div>
             {/* <UnderDevelopment /> */}

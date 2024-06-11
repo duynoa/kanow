@@ -286,17 +286,22 @@ const LayoutVehicleManagementMobile = ({ children }: { children: React.ReactNode
                                     width={800}
                                     height={600}
                                     className="w-full h-full object-cover"
-                                    loading='eager'
+                                    priority
                                 />
                                 <div className='absolute top-0 w-full h-[200px] bg-[#000000]/30' />
                                 <div className='absolute left-5 bottom-4 w-full max-w-[80%] flex items-center   '>
-                                    <div
-                                        onClick={() => router.back()}
-                                        className='size-5 w-[20%] max-w-[20%] h-full flex flex-col hover:translate-x-2 duration-300 transition'
-                                    >
-                                        <FaArrowLeft className='size-5 text-white' />
-                                    </div>
-                                    <div className='text-lg w-[80%] max-w-[80%] text-center text-white font-semibold line-clamp-4'>
+                                    {
+                                        href === "/vehicle-management-mobile/menu-mobile" ?
+                                            null 
+                                            :
+                                            <div
+                                                onClick={() => router.back()}
+                                                className='size-5 w-[20%] max-w-[20%] h-full flex flex-col hover:translate-x-2 duration-300 transition'
+                                            >
+                                                <FaArrowLeft className='size-5 text-white' />
+                                            </div>
+                                    }
+                                    <div className={`${href === "/vehicle-management-mobile/menu-mobile" ? "w-full max-w-full" :"w-[80%] max-w-[80%]"} text-lg  text-center text-white font-semibold line-clamp-4`}>
                                         {dataDetail?.data?.name ? dataDetail?.data?.name : ""}
                                     </div>
                                 </div>
