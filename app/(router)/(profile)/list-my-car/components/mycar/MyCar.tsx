@@ -84,8 +84,7 @@ const MyCar = ({ }: Props) => {
                                     key={`e-${e.id}`}
                                     className={`flex lg:flex-nowrap flex-wrap group lg:gap-6 gap-3 xl:items-start lg:items-start items-start bg-white border-[#D7D9E0] border w-full p-4 rounded-xl relative z-0`}
                                 >
-                                    <div
-                                        className='3xl:w-[30%] xxl:w-[35%]  2xl:w-[35%] xl:w-[40%] lg:w-[45%] w-full 3xl:h-[210px] xxl:h-[185px] 2xl:h-[190px] xl:h-[175px] lg:h-[165px] md:h-[280px] h-[180px] overflow-hidden rounded-xl'>
+                                    <div className='3xl:w-[30%] xxl:w-[35%]  2xl:w-[35%] xl:w-[40%] lg:w-[45%] w-full 3xl:h-[210px] xxl:h-[185px] 2xl:h-[190px] xl:h-[175px] lg:h-[165px] md:h-[280px] h-[180px] overflow-hidden rounded-xl'>
                                         <Image
                                             src={e?.image_car?.length > 0 ? e?.image_car[0]?.name : '/default/default.png'}
                                             alt="image_e"
@@ -111,7 +110,7 @@ const MyCar = ({ }: Props) => {
                                             </div>
                                         </div>
                                         <div className='border-b lg:hidden block border-[#D7D9E0]/50 w-full col-span-12' />
-                                        <div className={`flex lg:flex-col xl:justify-start lg:justify-center md:justify-between ${e.total_trip ? 'justify-between ' : 'justify-between px-3'} lg:px-0 px-2  flex-row 3xl:gap-2 2xl:gap-2 xxl:gap-2.5 xl:gap-2 lg:gap-2 gap-2  lg:bg-transparent lg:py-0 lg:rounded-none
+                                        <div className={`flex lg:flex-col xl:justify-start lg:justify-center md:justify-between ${e.total_trip ? 'justify-between ' : 'justify-between px-3'} lg:px-0 px-2  ${(e.point_star) ? 'flex-col' : 'flex-row'} 3xl:gap-2 2xl:gap-2 xxl:gap-2.5 xl:gap-2 lg:gap-2 gap-2  lg:bg-transparent lg:py-0 lg:rounded-none
                                                      rounded-md py-3 bg-[#F2FCF7] `}>
                                             <div className='flex lg:flex-col flex-row lg:items-start items-center gap-2'>
                                                 {
