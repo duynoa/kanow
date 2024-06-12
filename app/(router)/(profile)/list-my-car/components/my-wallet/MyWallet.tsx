@@ -14,6 +14,7 @@ import { motion } from "framer-motion";
 import SelectCustom from "@/components/select/SelectCustom"
 import { uuidv4 } from "@/lib/uuid"
 import { useEffect, useState } from "react"
+import { useDialogPayment } from "@/hooks/useOpenDialog"
 
 type Props = {
 
@@ -33,6 +34,11 @@ export interface FooterCell {
 }
 
 const MyWallet = (props: Props) => {
+    const {
+        setOpenDialogPayment,
+        setTypeModal
+    } = useDialogPayment()
+
     const data = {
         startTime: 1717174800000,
         endTime: 1719766799999,
@@ -385,6 +391,11 @@ const MyWallet = (props: Props) => {
         }
     ]
 
+    const handleRequestPayment = () => {
+        setOpenDialogPayment(true)
+        setTypeModal("selected_method")
+    }
+
     return (
         <>
             <div className='flex flex-col gap-10 pt-6'>
@@ -572,7 +583,7 @@ const MyWallet = (props: Props) => {
                     >
                         <Button
                             type="button"
-                            // onClick={handleSubmitCar}
+                            onClick={handleRequestPayment}
                             className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
                         >
                             Gửi yêu cầu rút tiền

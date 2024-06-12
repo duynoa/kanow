@@ -39,7 +39,7 @@ import { postRequestRentalCar } from "@/services/cars/cars.services";
 import { toastCore } from "@/lib/toast";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 
 type Props = {};
 
@@ -138,9 +138,27 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
         return null
     }
 
+    const backdrop = {
+        visible: { opacity: 1 },
+        hidden: { opacity: 0 }
+    }
+
+    const modal = {
+        hidden: {
+            y: "-100vh",
+            opacity: 0
+        },
+        visible: {
+            y: "200px",
+            opacity: 1,
+            transition: { delay: 0.5 }
+        }
+    }
+
     return (
         <Dialog modal open={openDialogRequestCarRental} onOpenChange={handleCloseModal}>
             <DialogOverlay />
+
             <DialogContent className={`xl:max-w-[1024px] lg:max-w-[820px] max-w-[98%] w-full max-h-[98%] py-0 px-6 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
                 <DialogClose
                     onClick={handleCloseModal}

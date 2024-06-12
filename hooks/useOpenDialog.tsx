@@ -341,7 +341,7 @@ export const useDialogFilterMyCar = create<IOpenDialogFilterCar>((set) => ({
     setDataFilter: (key: any) => set((state) => ({ dataFilter: key })),
 }))
 
-// dialog Submit 
+// dialog Submit (calendar trong trang quản lí xe)
 interface IOpenDialogSubmit {
     openDialogSubmit: boolean;
     typeDialogSubmit: string;
@@ -385,4 +385,23 @@ export const useDialogReviewCar = create<IOpenDialogReviewCar>((set) => ({
     setIsLoadingDialogReviewCar: (key: boolean) => set((state) => ({ isLoadingDialogReviewCar: key })),
     setTypeDialogReviewCar: (typeDialogReviewCar: string) => set((state) => ({ typeDialogReviewCar: typeDialogReviewCar })),
     setListContentReview: (listContentReview: any) => set((state) => ({ listContentReview: listContentReview })),
+}));
+
+// modal thanh toán (y/c rút tiền,...)
+interface IOpenDialogPayment {
+    openDialogPayment: boolean;
+    typeDialogPayment: string;
+    typeModal: string;
+    setOpenDialogPayment: (key: any) => void;
+    setTypeDialogPayment: (type: string) => void;
+    setTypeModal: (typeModal: string) => void;
+}
+
+export const useDialogPayment = create<IOpenDialogPayment>((set) => ({
+    openDialogPayment: false,
+    typeDialogPayment: "",
+    typeModal: "",
+    setOpenDialogPayment: (key: any) => set((state) => ({ openDialogPayment: key })),
+    setTypeDialogPayment: (typeDialogPayment: string) => set((state) => ({ typeDialogPayment: typeDialogPayment })),
+    setTypeModal: (typeModal: string) => set((state) => ({ typeModal: typeModal })),
 }));
