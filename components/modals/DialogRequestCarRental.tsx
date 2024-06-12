@@ -82,11 +82,6 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
         },
     });
 
-    const openInNewTab = (url: string) => {
-        const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-        if (newWindow) newWindow.opener = null
-    }
-
     const onSubmit = async (values: any) => {
         try {
             setIsLoadingButtonRequest(true)
@@ -146,7 +141,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
     return (
         <Dialog modal open={openDialogRequestCarRental} onOpenChange={handleCloseModal}>
             <DialogOverlay />
-            <DialogContent className={`xl:max-w-[1024px] lg:max-w-[820px] max-w-[98%] w-full py-0 px-6 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
+            <DialogContent className={`xl:max-w-[1024px] lg:max-w-[820px] max-w-[98%] w-full max-h-[98%] py-0 px-6 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`}>
                 <DialogClose
                     onClick={handleCloseModal}
                     className="z-20 size-8 border flex items-center justify-center p-2 rounded-full absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"

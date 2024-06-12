@@ -18,7 +18,6 @@ import { useVehicleManage } from "@/hooks/useVehicleManage";
 
 import { getListCalendarPriceMonth, postChangeQuantityMonths, putPriceBusyDay } from "@/services/cars/calendar.services";
 
-
 import { isSameDay } from "date-fns";
 
 import { ReadonlyURLSearchParams, usePathname, useSearchParams } from "next/navigation";

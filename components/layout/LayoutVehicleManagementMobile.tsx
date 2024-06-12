@@ -289,10 +289,10 @@ const LayoutVehicleManagementMobile = ({ children }: { children: React.ReactNode
                                     priority
                                 />
                                 <div className='absolute top-0 w-full h-[200px] bg-[#000000]/30' />
-                                <div className='absolute left-5 bottom-4 w-full max-w-[80%] flex items-center   '>
+                                <div className={`${href === "/vehicle-management-mobile/menu-mobile" ? "w-[90%] max-w-[90%]" : "w-[80%] max-w-[80%]"} absolute left-5 bottom-4 w-full max-w-[80%] flex items-center `}>
                                     {
                                         href === "/vehicle-management-mobile/menu-mobile" ?
-                                            null 
+                                            null
                                             :
                                             <div
                                                 onClick={() => router.back()}
@@ -301,7 +301,7 @@ const LayoutVehicleManagementMobile = ({ children }: { children: React.ReactNode
                                                 <FaArrowLeft className='size-5 text-white' />
                                             </div>
                                     }
-                                    <div className={`${href === "/vehicle-management-mobile/menu-mobile" ? "w-full max-w-full" :"w-[80%] max-w-[80%]"} text-lg  text-center text-white font-semibold line-clamp-4`}>
+                                    <div className={`${href === "/vehicle-management-mobile/menu-mobile" ? "w-full max-w-full" : "w-[80%] max-w-[80%]"} text-lg  text-center text-white font-semibold line-clamp-4`}>
                                         {dataDetail?.data?.name ? dataDetail?.data?.name : ""}
                                     </div>
                                 </div>

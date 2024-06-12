@@ -96,6 +96,7 @@ export function DialogSubmit({ }: Props) {
                     isLoadingButton: true
                 }
             })
+            
             if (typeDialogSubmit === "price_single") {
                 const dataSubmit = {
                     type: type,
@@ -130,13 +131,6 @@ export function DialogSubmit({ }: Props) {
                 }
 
             } else if (typeDialogSubmit === "price_weekend") {
-                queryKeyIsStateLoadSuccess({
-                    loading: {
-                        ...isStateLoadSuccess.loading,
-                        isLoadingButton: true
-                    }
-                })
-
                 const dataSubmit = {
                     type: type,
                     car_id: car_id,

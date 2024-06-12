@@ -506,6 +506,10 @@ const LayoutContainer = ({
 
     return (
         <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>
+            {/* <Head>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+            </Head> */}
+
             <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
                 <Suspense>
                     {

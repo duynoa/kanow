@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 .disable-selection {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -11,8 +12,8 @@
 }
 
 ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+    width: 4px;
+    height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -99,6 +100,22 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* styles/globals.css */
+// @keyframes fadeIn {
+//     from {
+//         opacity: 0;
+//         transform: translateY(-20px);
+//     }
+//     to {
+//         opacity: 1;
+//         transform: translateY(0);
+//     }
+// }
+
+// .modal-animation {
+//     animation: fadeIn 0.3s ease-out;
+// }
 
 .custom-container {
     @apply 3xl:mx-44 2xl:mx-32 xl:mx-28 lg:mx-12 md:mx-10 mx-6;

@@ -376,6 +376,7 @@ export function DialogLogin({ }: Props) {
                                             </FormItem>
                                         )}
                                     />
+
                                     <div className="flex w-full justify-end">
                                         <div className="w-fit text-sm font-semibold cursor-pointer caret-transparent text-[#2FB9BD] hover:text-[#2FB9BD]/80 duration-200 transition-all">
                                             Quên mật khẩu?
@@ -393,7 +394,7 @@ export function DialogLogin({ }: Props) {
                                         </Button>
                                         <div className="flex items-center gap-2">
                                             <h1 className="lg:text-sm text-xs">
-                                                Đăng nhập bằng tài khoản <span className="font-semibold">Google</span>
+                                                <span>Đăng nhập bằng tài khoản</span> <span className="font-semibold">Google</span>
                                             </h1>
                                             <div className="hover:scale-105 transition-all duration-200 ease-linear">
                                                 <GoogleLogin
@@ -605,6 +606,7 @@ export function DialogLogin({ }: Props) {
                                             </FormItem>
                                         )}
                                     />
+
                                     <FormField
                                         control={form.control}
                                         name="promoCode"

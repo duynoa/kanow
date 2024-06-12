@@ -8,6 +8,12 @@ import { FaCar, FaStar } from "react-icons/fa"
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ReusableTable2 } from "@/components/table/ReusableTable2"
+import { Button } from "@/components/ui/button"
+
+import { motion } from "framer-motion";
+import SelectCustom from "@/components/select/SelectCustom"
+import { uuidv4 } from "@/lib/uuid"
+import { useEffect, useState } from "react"
 
 type Props = {
 
@@ -150,50 +156,6 @@ const MyWallet = (props: Props) => {
         bankProvince: "",
         bankBranch: ""
     }
-
-    // Define columns and data for the demo table
-    const columns: Column[] = [
-        {
-            label: "Mã chuyến đi",
-            accessor: "codeTrip",
-            className: "w-[120px] max-w-[120px] text-center"
-        },
-        {
-            label: "Hình thức",
-            accessor: "carType",
-            className: "text-center"
-        },
-        {
-            label: "Ngày đi",
-            accessor: "dateStart",
-            className: "text-center"
-        },
-        {
-            label: "Ngày về",
-            accessor: "dateEnd",
-            className: "text-center"
-        },
-        {
-            label: "Đơn giá thuê",
-            accessor: "rentalPrice",
-            className: "w-[120px] max-w-[120px] text-center"
-        },
-        {
-            label: "Doanh thu chủ xe",
-            accessor: "ownerRevenue",
-            className: "text-center"
-        },
-        {
-            label: "Tiền đã nhận",
-            accessor: "receivedPrice",
-            className: "text-center"
-        },
-        {
-            label: "Thay đổi số dư",
-            accessor: "balanceChange",
-            className: "text-center"
-        },
-    ];
 
     // Function to convert data
     const convertData = (transactions: any[]): any[] => {
@@ -376,9 +338,52 @@ const MyWallet = (props: Props) => {
         },
     ];
 
-
-    console.log('convertDataCustom', convertDataCustom);
-
+    const dataMonths = [
+        {
+            id: 1,
+            date: "06-2024"
+        },
+        {
+            id: 2,
+            date: "05-2024"
+        },
+        {
+            id: 3,
+            date: "04-2024"
+        },
+        {
+            id: 4,
+            date: "03-2024"
+        },
+        {
+            id: 5,
+            date: "02-2024"
+        },
+        {
+            id: 6,
+            date: "01-2024"
+        },
+        {
+            id: 7,
+            date: "12-2023"
+        },
+        {
+            id: 8,
+            date: "11-2023"
+        },
+        {
+            id: 9,
+            date: "10-2023"
+        },
+        {
+            id: 10,
+            date: "09-2023"
+        },
+        {
+            id: 11,
+            date: "08-2023"
+        }
+    ]
 
     return (
         <>
@@ -391,10 +396,7 @@ const MyWallet = (props: Props) => {
                     <div className='3xl:text-lg text-base uppercase font-semibold text-[#2FB9BD]'>
                         Bảng tổng hợp giao dịch
                     </div>
-
-                    <div className='text-[#2FB9BD]'>
-                        Select
-                    </div>
+                    <SelectCustom dataMonths={dataMonths} />
                 </div>
 
                 <div className="flex items-center gap-2 ">
@@ -472,7 +474,7 @@ const MyWallet = (props: Props) => {
                     />
                 </div>
 
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-3">
                     <div className='flex items-center justify-between bg-[#F6F6F6] py-2 px-4 rounded-md'>
                         <div className='text-base text-[#545454] font-medium'>
                             Tổng thay đổi - Chuyến đi hoàn thành
@@ -481,14 +483,101 @@ const MyWallet = (props: Props) => {
                             {FormatNumberDot(448000)}đ
                         </div>
                     </div>
+
                     <div className='flex items-center justify-between bg-[#F6F6F6] py-2 px-4 rounded-md'>
                         <div className='text-base text-[#545454] font-medium'>
-                            Tổng thay đổi - Chuyến đi hoàn thành
+                            Tổng thay đổi - Giao dịch rút/nộp tiền
                         </div>
                         <div className='text-base text-[#545454] font-medium'>
-                            {FormatNumberDot(448000)}đ
+                            -{FormatNumberDot(448000)}đ
                         </div>
                     </div>
+
+                    <div className='flex items-center justify-between bg-[#F6F6F6] py-2 px-4 rounded-md'>
+                        <div className='text-base text-[#545454] font-medium'>
+                            Tổng thay đổi - Giao dịch huỷ chuyến
+                        </div>
+                        <div className='text-base text-[#545454] font-medium'>
+                            {FormatNumberDot(0)}đ
+                        </div>
+                    </div>
+
+                    <div className='flex flex-col gap-2 bg-[#F6F6F6] py-2 px-4 rounded-md'>
+                        <div className='flex items-center justify-between'>
+                            <div className='text-base uppercase text-[#545454] font-medium'>
+                                Tổng cộng thay đổi trong kì
+                            </div>
+                            <div className='text-base text-[#545454] font-medium'>
+                                -{FormatNumberDot(1106841)}đ
+                            </div>
+                        </div>
+
+                        <div className='flex items-center justify-between'>
+                            <div className='text-base uppercase text-[#545454] font-medium'>
+                                Tiền đầu kì
+                            </div>
+                            <div className='text-base text-[#545454] font-medium'>
+                                {FormatNumberDot(1191341)}đ
+                            </div>
+                        </div>
+                        <div className='flex items-center justify-between'>
+                            <div className='text-base uppercase text-[#2FB9BD] font-medium'>
+                                Tiền cuối kì
+                            </div>
+                            <div className='text-base text-[#2FB9BD] font-medium'>
+                                {FormatNumberDot(84500)}đ
+                            </div>
+                        </div>
+                        <div className='flex items-center justify-between'>
+                            <div className='text-base uppercase text-[#f08080] font-medium'>
+                                Thu nhập chủ xe
+                            </div>
+                            <div className='text-base text-[#f08080] font-medium'>
+                                {FormatNumberDot(4556000)}đ
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Button */}
+                <div className='grid grid-cols-3 gap-4'>
+                    <div className='col-span-1 w-full' />
+                    <motion.div
+                        initial={false}
+                        animate={"rest"}
+                        whileTap="press"
+                        variants={{
+                            rest: { scale: 1 },
+                            press: { scale: 1.03, transition: { duration: 0.4 } }
+                        }}
+                        className='col-span-1 w-full'
+                    >
+                        <Button
+                            type="button"
+                            // onClick={handleSubmitCar}
+                            className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-[#2FB9BD] bg-white hover:bg-[#2FB9BD]/20 border border-[#2FB9BD] transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                        >
+                            Xem sao kê chi tiết giao dịch
+                        </Button>
+                    </motion.div>
+                    <motion.div
+                        initial={false}
+                        animate={"rest"}
+                        whileTap="press"
+                        variants={{
+                            rest: { scale: 1 },
+                            press: { scale: 1.03, transition: { duration: 0.4 } }
+                        }}
+                        className='col-span-1 w-full'
+                    >
+                        <Button
+                            type="button"
+                            // onClick={handleSubmitCar}
+                            className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                        >
+                            Gửi yêu cầu rút tiền
+                        </Button>
+                    </motion.div>
                 </div>
             </div>
             {/* <UnderDevelopment /> */}

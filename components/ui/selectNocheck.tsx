@@ -26,7 +26,7 @@ const SelectTriggerNocheck = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 opacity-50" />
+      <ChevronDown className="size-6" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ))
@@ -44,7 +44,7 @@ const SelectScrollUpButtonNocheck = React.forwardRef<
     )}
     {...props}
   >
-    <ChevronUp className="h-4 w-4" />
+    <ChevronUp className="size-6" />
   </SelectPrimitive.ScrollUpButton>
 ))
 SelectScrollUpButtonNocheck.displayName = SelectPrimitive.ScrollUpButton.displayName
@@ -61,7 +61,7 @@ const SelectScrollDownButtonNocheck = React.forwardRef<
     )}
     {...props}
   >
-    <ChevronDown className="h-4 w-4" />
+    <ChevronDown className="size-6" />
   </SelectPrimitive.ScrollDownButton>
 ))
 SelectScrollDownButtonNocheck.displayName =
