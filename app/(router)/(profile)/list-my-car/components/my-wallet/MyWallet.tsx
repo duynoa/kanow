@@ -15,6 +15,7 @@ import SelectCustom from "@/components/select/SelectCustom"
 import { uuidv4 } from "@/lib/uuid"
 import { useEffect, useState } from "react"
 import { useDialogPayment } from "@/hooks/useOpenDialog"
+import Link from "next/link"
 
 type Props = {
 
@@ -568,13 +569,14 @@ const MyWallet = (props: Props) => {
                         }}
                         className='col-span-1 w-full'
                     >
-                        <Button
+                        <Link
+                            href="/transaction-statement/434"
                             type="button"
                             // onClick={handleSubmitCar}
                             className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-[#2FB9BD] bg-white hover:bg-[#2FB9BD]/20 border border-[#2FB9BD] transition-all duration-300 font-semibold rounded-xl caret-transparent'
                         >
                             Xem sao kê chi tiết giao dịch
-                        </Button>
+                        </Link>
                     </motion.div>
 
                     <motion.div

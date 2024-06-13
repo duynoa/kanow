@@ -554,6 +554,7 @@ const LayoutContainer = ({
                         pathname !== "/list-cars-autonomous" &&
                         pathname !== "/list-cars-driver" &&
                         !pathname.startsWith("/vehicle-management-mobile") &&
+                        !pathname.startsWith("/transaction-statement") &&
                         <Footer />
                     }
                     <ToastContainer
