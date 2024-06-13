@@ -188,7 +188,7 @@ const TransactionStatement = ({ params }: Props) => {
     return (
         <div className='3xl:mx-44 mx-6 flex flex-col gap-6 my-6'>
             <div className='3xl:mx-44 2xl:mx-32 xl:mx-28 lg:mx-12 md:mx-10 flex flex-col items-center justify-center gap-6 relative'>
-                <div onClick={() => router.back()} className='md:absolute flex md:items-center items-start w-full gap-2 top-0 left-0 cursor-pointer text-[#2FB9BD] hover:text-[#2FB9BD]/80 hover:-translate-x-2 duration-300 transition'>
+                <div onClick={() => router.back()} className='md:absolute flex md:items-center items-start md:w-fit w-full gap-2 top-0 left-0 cursor-pointer text-[#2FB9BD] hover:text-[#2FB9BD]/80 hover:-translate-x-2 duration-300 transition'>
                     <div className='max-w-[20%] size-5'>
                         <TiArrowBackOutline className='size-5' />
                     </div>
@@ -621,28 +621,28 @@ const TransactionStatement = ({ params }: Props) => {
 
             <div className='flex flex-col gap-2 bg-[#F6F6F6] py-3 px-6 rounded-md'>
                 <div className='flex items-center justify-between'>
-                    <div className='text-sm uppercase text-[#545454] font-medium'>
+                    <div className='text-sm uppercase text-[#545454] font-bold'>
                         Tổng cộng thay đổi trong kì
                     </div>
-                    <div className='text-sm text-[#545454] font-medium'>
+                    <div className='text-sm text-[#545454] font-bold'>
                         {FormatNumberSpace(679891)}đ
                     </div>
                 </div>
 
                 <div className='flex items-center justify-between'>
-                    <div className='text-sm uppercase text-[#545454] font-medium'>
+                    <div className='text-sm uppercase text-[#545454] font-bold'>
                         Tiền đầu kì
                     </div>
-                    <div className='text-sm text-[#545454] font-medium'>
+                    <div className='text-sm text-[#545454] font-bold'>
                         {FormatNumberSpace(511450)}đ
                     </div>
                 </div>
 
                 <div className='flex items-center justify-between'>
-                    <div className='text-sm uppercase text-[#2FB9BD] font-medium'>
+                    <div className='text-sm uppercase text-[#2FB9BD] font-bold'>
                         Tiền cuối kì
                     </div>
-                    <div className='text-sm text-[#2FB9BD] font-medium'>
+                    <div className='text-sm text-[#2FB9BD] font-bold'>
                         {FormatNumberSpace(1191341)}đ
                     </div>
                 </div>
