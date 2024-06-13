@@ -184,14 +184,14 @@ const MyWallet = (props: Props) => {
     const columnsDataCustom: ColumnDef<any>[] = [
         {
             id: "codeTrip",
-            header: () => <div className='w-[120px] max-w-[120px] text-center'>Mã chuyến đi</div>,
+            header: () => <div className='flex items-center justify-center w-full h-full text-center '>Mã chuyến đi</div>,
             cell: ({ row }) => {
                 // let codeTrip = row?.getValue("codeTrip");
                 let codeTrip = row?.original?.codeTrip;
 
                 if (codeTrip) {
                     return (
-                        <div className="  3xl:text-sm text-sm text-[#2FB9BD] cursor-pointer transition duration-300 w-full text-center">
+                        <div className="3xl:text-sm text-[13px] text-[#2FB9BD] cursor-pointer transition duration-300 w-full text-center">
                             {codeTrip}
                         </div>
                     );
@@ -204,14 +204,14 @@ const MyWallet = (props: Props) => {
         },
         {
             id: "carType",
-            header: () => <div className='w-[120px] max-w-[120px] text-center'>Hình thức</div>,
+            header: () => <div className='flex items-center justify-center w-full h-full text-center'>Hình thức</div>,
             cell: ({ row }) => {
                 // let codeTrip = row?.getValue("codeTrip");
                 let carType = row?.original?.carType;
 
                 if (carType) {
                     return (
-                        <div className="  3xl:text-sm text-sm w-full text-center">
+                        <div className=" 3xl:text-sm text-[13px] w-full text-center">
                             {carType}
                         </div>
                     );
@@ -224,14 +224,14 @@ const MyWallet = (props: Props) => {
         },
         {
             id: "dateStart",
-            header: () => <div className='w-[120px] max-w-[120px] text-center'>Ngày đi</div>,
+            header: () => <div className='flex items-center justify-center w-full h-full text-center'>Ngày đi</div>,
             cell: ({ row }) => {
                 // let codeTrip = row?.getValue("codeTrip");
                 let dateStart = row?.original?.dateStart;
 
                 if (dateStart) {
                     return (
-                        <div className="  3xl:text-sm text-sm transition duration-300 w-full text-center">
+                        <div className="  3xl:text-sm text-[13px] transition duration-300 w-full text-center">
                             {dateStart}
                         </div>
                     );
@@ -244,14 +244,14 @@ const MyWallet = (props: Props) => {
         },
         {
             id: "dateEnd",
-            header: () => <div className='w-[120px] max-w-[120px] text-center'>Ngày về</div>,
+            header: () => <div className='flex items-center justify-center w-full h-full text-center'>Ngày về</div>,
             cell: ({ row }) => {
                 // let codeTrip = row?.getValue("codeTrip");
                 let dateEnd = row?.original?.dateEnd;
 
                 if (dateEnd) {
                     return (
-                        <div className="  3xl:text-sm text-sm transition duration-300 w-full text-center">
+                        <div className="  3xl:text-sm text-[13px] transition duration-300 w-full text-center">
                             {dateEnd}
                         </div>
                     );
@@ -264,14 +264,14 @@ const MyWallet = (props: Props) => {
         },
         {
             id: "rentalPrice",
-            header: () => <div className='w-[120px] max-w-[120px] text-center'>Đơn giá thuê</div>,
+            header: () => <div className='flex items-center justify-center w-full h-full text-center'>Đơn giá thuê</div>,
             cell: ({ row }) => {
                 // let codeTrip = row?.getValue("codeTrip");
                 let rentalPrice = row?.original?.rentalPrice;
 
                 if (rentalPrice) {
                     return (
-                        <div className="  3xl:text-sm text-sm transition duration-300 w-full text-center">
+                        <div className="  3xl:text-sm text-[13px] transition duration-300 w-full text-center">
                             {rentalPrice}
                         </div>
                     );
@@ -284,14 +284,14 @@ const MyWallet = (props: Props) => {
         },
         {
             id: "ownerRevenue",
-            header: () => <div className='w-[120px] max-w-[120px] text-center'>Doanh thu chủ xe</div>,
+            header: () => <div className='flex items-center justify-center w-full h-full text-center'>Doanh thu chủ xe</div>,
             cell: ({ row }) => {
                 // let codeTrip = row?.getValue("codeTrip");
                 let ownerRevenue = row?.original?.ownerRevenue;
 
                 if (ownerRevenue) {
                     return (
-                        <div className="  3xl:text-sm text-sm transition duration-300 w-full text-center">
+                        <div className="  3xl:text-sm text-[13px] transition duration-300 w-full text-center">
                             {ownerRevenue}
                         </div>
                     );
@@ -304,14 +304,14 @@ const MyWallet = (props: Props) => {
         },
         {
             id: "receivedPrice",
-            header: () => <div className='w-[120px] max-w-[120px] text-center'>Tiền đã nhận</div>,
+            header: () => <div className='flex items-center justify-center w-full h-full text-center'>Tiền đã nhận</div>,
             cell: ({ row }) => {
                 // let codeTrip = row?.getValue("codeTrip");
                 let receivedPrice = row?.original?.receivedPrice;
 
                 if (receivedPrice) {
                     return (
-                        <div className="  3xl:text-sm text-sm transition duration-300 w-full text-center">
+                        <div className="  3xl:text-sm text-[13px] transition duration-300 w-full text-center">
                             {receivedPrice}
                         </div>
                     );
@@ -324,14 +324,14 @@ const MyWallet = (props: Props) => {
         },
         {
             id: "balanceChange",
-            header: () => <div className='w-[120px] max-w-[120px] text-center'>Thay đổi số dư</div>,
+            header: () => <div className='flex items-center justify-center w-full h-full text-center'>Thay đổi số dư</div>,
             cell: ({ row }) => {
                 // let codeTrip = row?.getValue("codeTrip");
                 let balanceChange = row?.original?.balanceChange;
 
                 if (balanceChange) {
                     return (
-                        <div className="  3xl:text-sm text-sm transition duration-300 w-full text-center">
+                        <div className="  3xl:text-sm text-[13px] transition duration-300 w-full text-center">
                             {balanceChange}
                         </div>
                     );
@@ -398,12 +398,12 @@ const MyWallet = (props: Props) => {
 
     return (
         <>
-            <div className='flex flex-col gap-10 pt-6'>
+            <div className='flex flex-col 3xl:gap-10 gap-6 3xl:pt-6 pt-4'>
                 <div className='3xl:text-4xl text-3xl w-full text-center font-bold'>
                     Ví của tôi
                 </div>
 
-                <div className='flex items-center justify-between w-full bg-[#F1FCFC] px-6 py-3'>
+                <div className='flex items-center justify-between w-full bg-[#F1FCFC] rounded-lg 3xl:px-6 3xl:py-3 px-4 py-2'>
                     <div className='3xl:text-lg text-base uppercase font-semibold text-[#2FB9BD]'>
                         Bảng tổng hợp giao dịch
                     </div>
@@ -419,8 +419,8 @@ const MyWallet = (props: Props) => {
                     </div>
                 </div>
 
-                <div className='mx-20 grid grid-cols-8'>
-                    <div className='col-span-2 flex flex-col items-center gap-1 border-r-2 px-6'>
+                <div className='3xl:mx-20 xl:mx-14 grid 3xl:grid-cols-8 grid-cols-10 md:gap-0 gap-4'>
+                    <div className='md:col-span-2 col-span-5 flex flex-col items-center gap-1 border-r-2 xl:px-6 px-4'>
                         <div className='flex items-center gap-2'>
                             <FaStar className='3xl:text-lg text-base text-[#FF9900]' />
                             <div className='3xl:text-2xl text-xl text-[#484D5C] font-medium      '>
@@ -432,11 +432,11 @@ const MyWallet = (props: Props) => {
                         </div>
                     </div>
 
-                    <div className='col-span-2 flex flex-col items-center gap-1 border-r-2 px-6'>
+                    <div className='md:col-span-2 col-span-5 flex flex-col items-center gap-1 md:border-r-2 xl:px-6 px-4'>
                         <div className='flex items-center gap-2'>
                             <FaCar className='3xl:text-lg text-base text-[#2FB9BD]' />
                             <div className='3xl:text-2xl text-xl text-[#484D5C] font-medium      '>
-                                {data.totalTripFinished ? data.totalTripFinished : 0}
+                                {data.totalTripFinished ? FormatNumberHundred(data.totalTripFinished, 100) : 0}
                             </div>
                         </div>
                         <div className='3xl:text-base text-sm text-[#8C93A3] text-center'>
@@ -444,7 +444,7 @@ const MyWallet = (props: Props) => {
                         </div>
                     </div>
 
-                    <div className='col-span-4 grid grid-cols-3 gap-2 px-6'>
+                    <div className='3xl:col-span-4 md:col-span-6 col-span-10 grid grid-cols-3 gap-2 xl:px-6 px-4'>
                         <div className='col-span-1 bg-[#F6F6F6] flex flex-col items-center gap-1 px-2 py-2 rounded-md'>
                             <div className='3xl:text-2xl text-xl text-[#484D5C] font-medium      '>
                                 {data.responseRate ? data.responseRate : 0}
@@ -482,68 +482,72 @@ const MyWallet = (props: Props) => {
                     <ReusableTable2
                         data={convertDataCustom}
                         columns={columnsDataCustom}
+                        classNameRow="flex w-full"
+                        classNameCell="max-w-[200px]"
                     />
                 </div>
 
                 <div className="flex flex-col gap-3">
                     <div className='flex items-center justify-between bg-[#F6F6F6] py-2 px-4 rounded-md'>
-                        <div className='text-base text-[#545454] font-medium'>
+                        <div className='3xl:text-base text-sm text-[#545454] font-medium'>
                             Tổng thay đổi - Chuyến đi hoàn thành
                         </div>
-                        <div className='text-base text-[#545454] font-medium'>
+                        <div className='3xl:text-base text-sm text-[#545454] font-medium'>
                             {FormatNumberDot(448000)}đ
                         </div>
                     </div>
 
                     <div className='flex items-center justify-between bg-[#F6F6F6] py-2 px-4 rounded-md'>
-                        <div className='text-base text-[#545454] font-medium'>
+                        <div className='3xl:text-base text-sm text-[#545454] font-medium'>
                             Tổng thay đổi - Giao dịch rút/nộp tiền
                         </div>
-                        <div className='text-base text-[#545454] font-medium'>
+                        <div className='3xl:text-base text-sm text-[#545454] font-medium'>
                             -{FormatNumberDot(448000)}đ
                         </div>
                     </div>
 
                     <div className='flex items-center justify-between bg-[#F6F6F6] py-2 px-4 rounded-md'>
-                        <div className='text-base text-[#545454] font-medium'>
+                        <div className='3xl:text-base text-sm text-[#545454] font-medium'>
                             Tổng thay đổi - Giao dịch huỷ chuyến
                         </div>
-                        <div className='text-base text-[#545454] font-medium'>
+                        <div className='3xl:text-base text-sm text-[#545454] font-medium'>
                             {FormatNumberDot(0)}đ
                         </div>
                     </div>
 
                     <div className='flex flex-col gap-2 bg-[#F6F6F6] py-2 px-4 rounded-md'>
                         <div className='flex items-center justify-between'>
-                            <div className='text-base uppercase text-[#545454] font-medium'>
+                            <div className='3xl:text-base text-sm uppercase text-[#545454] font-medium'>
                                 Tổng cộng thay đổi trong kì
                             </div>
-                            <div className='text-base text-[#545454] font-medium'>
+                            <div className='3xl:text-base text-sm text-[#545454] font-medium'>
                                 -{FormatNumberDot(1106841)}đ
                             </div>
                         </div>
 
                         <div className='flex items-center justify-between'>
-                            <div className='text-base uppercase text-[#545454] font-medium'>
+                            <div className='3xl:text-base text-sm uppercase text-[#545454] font-medium'>
                                 Tiền đầu kì
                             </div>
-                            <div className='text-base text-[#545454] font-medium'>
+                            <div className='3xl:text-base text-sm text-[#545454] font-medium'>
                                 {FormatNumberDot(1191341)}đ
                             </div>
                         </div>
+
                         <div className='flex items-center justify-between'>
-                            <div className='text-base uppercase text-[#2FB9BD] font-medium'>
+                            <div className='3xl:text-base text-sm uppercase text-[#2FB9BD] font-medium'>
                                 Tiền cuối kì
                             </div>
-                            <div className='text-base text-[#2FB9BD] font-medium'>
+                            <div className='3xl:text-base text-sm text-[#2FB9BD] font-medium'>
                                 {FormatNumberDot(84500)}đ
                             </div>
                         </div>
+
                         <div className='flex items-center justify-between'>
-                            <div className='text-base uppercase text-[#f08080] font-medium'>
+                            <div className='3xl:text-base text-sm uppercase text-[#f08080] font-medium'>
                                 Thu nhập chủ xe
                             </div>
-                            <div className='text-base text-[#f08080] font-medium'>
+                            <div className='3xl:text-base text-sm text-[#f08080] font-medium'>
                                 {FormatNumberDot(4556000)}đ
                             </div>
                         </div>
@@ -551,8 +555,9 @@ const MyWallet = (props: Props) => {
                 </div>
 
                 {/* Button */}
-                <div className='grid grid-cols-3 gap-4'>
-                    <div className='col-span-1 w-full' />
+                <div className='grid xxl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4'>
+                    <div className='xxl:col-span-1 xxl:block hidden w-full' />
+
                     <motion.div
                         initial={false}
                         animate={"rest"}
@@ -571,6 +576,7 @@ const MyWallet = (props: Props) => {
                             Xem sao kê chi tiết giao dịch
                         </Button>
                     </motion.div>
+
                     <motion.div
                         initial={false}
                         animate={"rest"}

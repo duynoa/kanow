@@ -141,7 +141,7 @@ export default function SeflCalendar(props: Props) {
         } catch (err) {
             throw err
         }
-    }, [id, type, queryKeyIsStateLoadSuccess])
+    }, [id, type])
 
     useEffect(() => {
         if (id && type) {
@@ -205,12 +205,6 @@ export default function SeflCalendar(props: Props) {
 
     const onSubmitBusyDay = async (item: any) => {
         try {
-            queryKeyIsStateLoadSuccess({
-                loading: {
-                    isSuccessFetchApi: true
-                }
-            })
-
             const dataSubmit = {
                 type: type,
                 price_detail_id: item.id
@@ -219,6 +213,12 @@ export default function SeflCalendar(props: Props) {
             const { data } = await putPriceBusyDay(dataSubmit)
 
             if (data && data.result) {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        isSuccessFetchApi: true
+                    }
+                })
+
                 toastCore.success("Cập nhật ngày bận thành công!")
             } else {
                 toastCore.error(data.message)

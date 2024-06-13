@@ -187,6 +187,7 @@ interface IInitialStateLoadSuccess {
     loading: {
         isSuccessFetchApi: boolean;
         isLoadingButton: boolean;
+        isLoadingButtonSecond: boolean;
     };
     success: any;
     onSuccess: boolean;
