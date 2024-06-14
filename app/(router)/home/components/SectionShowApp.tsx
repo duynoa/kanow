@@ -1,5 +1,7 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
+import { motion } from 'framer-motion'
 
 type Props = {}
 
@@ -25,22 +27,33 @@ const SectionShowApp = (props: Props) => {
                         Trải nghiệm trọn vẹn đầy đủ tính năng trên ứng dụng KANOW và nhận được thật nhiều ưu đãi ngay hôm nay
                     </div>
                     <div className='flex items-center 2xl:gap-8 gap-6'>
-                        <Image
-                            alt="appStore"
-                            src="/icon/icon_appStore.svg"
-                            width={200}
-                            height={200}
-                            className='3xl:w-[180px] 2xl:w-[160px] lg:w-[140px] md:w-[120px] w-[150px] h-auto object-contain drop-shadow'
-                            loading="lazy"
-                        />
-                        <Image
-                            alt="googlePlay"
-                            src="/icon/icon_googlePlay.svg"
-                            width={200}
-                            height={200}
-                            className='3xl:w-[180px] 2xl:w-[160px] lg:w-[140px] md:w-[120px] w-[150px] h-auto object-contain drop-shadow'
-                            loading="lazy"
-                        />
+
+                        <Link
+                            className='3xl:w-[180px] 2xl:w-[160px] lg:w-[140px] md:w-[120px] w-[150px] h-auto'
+                            href="https://apps.apple.com/vn/app/kanow-thu%C3%AA-xe-t%C3%A0i-x%E1%BA%BF/id6503139402"
+                        >
+                            <Image
+                                alt="appStore"
+                                src="/icon/icon_appStore.svg"
+                                width={200}
+                                height={200}
+                                className='w-full h-full object-contain drop-shadow'
+                                loading="lazy"
+                            />
+                        </Link>
+                        <Link
+                            className='3xl:w-[180px] 2xl:w-[160px] lg:w-[140px] md:w-[120px] w-[150px] h-auto'
+                            href="https://play.google.com/store/apps/details?id=com.kanow&pcampaignid=web_share"
+                        >
+                            <Image
+                                alt="googlePlay"
+                                src="/icon/icon_googlePlay.svg"
+                                width={200}
+                                height={200}
+                                className='w-full h-full object-contain drop-shadow'
+                                loading="lazy"
+                            />
+                        </Link>
                     </div>
                 </div>
             </div>

@@ -178,8 +178,6 @@ export function DialogSubmit({ }: Props) {
         }
     }
 
-    console.log('isStateLoadSuccess', isStateLoadSuccess);
-
     return (
         <Dialog
             modal
@@ -204,217 +202,204 @@ export function DialogSubmit({ }: Props) {
                 </DialogHeader>
 
                 <Form  {...form} >
-                    {
-                        typeDialogSubmit === "price_single" &&
-                        <div className='flex flex-col gap-2'>
-                            <FormLabel>
-                                <h1 className="text-xs font-medium text-[#AAAAAA]">
-                                    Nhập giá truỳ chỉnh cho ngày này. Nhập 0 nếu muốn dùng giá mặc định
-                                </h1>
-                            </FormLabel>
-                            <FormField
-                                control={form.control}
-                                name="singlePrice"
-                                rules={{
-                                    required: {
-                                        value: true,
-                                        message: 'Vui lòng nhập đơn giá thuê',
-                                    },
-                                    validate: {
-                                        function: (value: any) => {
-                                            try {
-                                                let message = ''
-                                                if (value < 0) {
-                                                    message = 'Vui lòng không nhập số âm!'
+                    <form onSubmit={form.handleSubmit((values) => onSubmit(values))}>
+                        {
+                            typeDialogSubmit === "price_single" &&
+                            <div className='flex flex-col gap-2'>
+                                <FormLabel>
+                                    <h1 className="text-xs font-medium text-[#AAAAAA]">
+                                        Nhập giá truỳ chỉnh cho ngày này. Nhập 0 nếu muốn dùng giá mặc định
+                                    </h1>
+                                </FormLabel>
+                                <FormField
+                                    control={form.control}
+                                    name="singlePrice"
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: 'Vui lòng nhập đơn giá thuê',
+                                        },
+                                        validate: {
+                                            function: (value: any) => {
+                                                try {
+                                                    let message = ''
+                                                    if (value < 0) {
+                                                        message = 'Vui lòng không nhập số âm!'
+                                                    }
+                                                    return message || true;
+                                                } catch (error) {
+                                                    throw error;
                                                 }
-                                                return message || true;
-                                            } catch (error) {
-                                                throw error;
                                             }
                                         }
-                                    }
-                                }}
-                                render={({ field, fieldState }) => {
-                                    return (
-                                        <FormItem className="space-y-0 flex flex-col gap-2">
-                                            <FormControl>
-                                                <div className='flex gap-2 items-center'>
-                                                    <NumericFormatCore
-                                                        className={`w-[60%] max-w-[60%] disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2 focus:border-[#2FB9BD] outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-lg px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0`}
-                                                        placeholder="Nhập đơn giá thuê"
-                                                        thousandSeparator={','}
-                                                        maxLength={10}
-                                                        {...field}
-                                                    />
-                                                    <span>k</span>
-                                                </div>
-                                            </FormControl>
+                                    }}
+                                    render={({ field, fieldState }) => {
+                                        return (
+                                            <FormItem className="space-y-0 flex flex-col gap-2">
+                                                <FormControl>
+                                                    <div className='flex gap-2 items-center'>
+                                                        <NumericFormatCore
+                                                            className={`w-[60%] max-w-[60%] disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2 focus:border-[#2FB9BD] outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-lg px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0`}
+                                                            placeholder="Nhập đơn giá thuê"
+                                                            thousandSeparator={','}
+                                                            maxLength={10}
+                                                            {...field}
+                                                        />
+                                                        <span>k</span>
+                                                    </div>
+                                                </FormControl>
 
 
-                                            {fieldState?.invalid && fieldState?.error && (
-                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                            )}
-                                        </FormItem>
-                                    );
-                                }}
-                            />
-                            {
-                                dataOther?.rent_cost_propose > 0 &&
-                                <h1 className="text-xs font-medium text-[#AAAAAA]">
-                                    <span>Giá đề xuất</span>
-                                    <span className="px-1">{FormatNumberToThousands(dataOther?.rent_cost_propose)}</span>
-                                </h1>
-                            }
-                            {/* <Button
-                                type="button"
-                                className='text-white font-semibold bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 rounded-lg h-14 3xl:text-base text-sm'
-                                onClick={form.handleSubmit((values) => onSubmit(values))}
-                            >
-                                Xác nhận
-                            </Button> */}
-                            <ButtonLoading
-                                title="Xác nhận"
-                                type="button"
-                                onClick={form.handleSubmit((values) => onSubmit(values))}
-                                className="flex items-center gap-2 w-full text-white border-[#2FB9BD] rounded-xl
+                                                {fieldState?.invalid && fieldState?.error && (
+                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                )}
+                                            </FormItem>
+                                        );
+                                    }}
+                                />
+                                {
+                                    dataOther?.rent_cost_propose > 0 &&
+                                    <h1 className="text-xs font-medium text-[#AAAAAA]">
+                                        <span>Giá đề xuất</span>
+                                        <span className="px-1">{FormatNumberToThousands(dataOther?.rent_cost_propose)}</span>
+                                    </h1>
+                                }
+                                <ButtonLoading
+                                    title="Xác nhận"
+                                    type="submit"
+                                    onClick={() => { }}
+                                    className="flex items-center gap-2 w-full text-white border-[#2FB9BD] rounded-xl
                                 border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
-                                disabled={isStateLoadSuccess.loading.isLoadingButtonSecond}
-                                isStateloading={isStateLoadSuccess.loading.isLoadingButtonSecond}
-                            />
-                        </div>
-                    }
+                                    disabled={isStateLoadSuccess.loading.isLoadingButtonSecond}
+                                    isStateloading={isStateLoadSuccess.loading.isLoadingButtonSecond}
+                                />
+                            </div>
+                        }
 
-                    {
-                        typeDialogSubmit === "price_weekend" &&
-                        <div className='flex flex-col gap-2'>
-                            <FormLabel>
-                                <h1 className="text-xs font-medium text-[#AAAAAA]">
-                                    Nhập giá truỳ chỉnh cho ngày này. Nhập 0 nếu muốn dùng giá mặc định
-                                </h1>
-                            </FormLabel>
-                            <FormField
-                                control={form.control}
-                                name="saturdayPrice"
-                                rules={{
-                                    required: {
-                                        value: true,
-                                        message: 'Vui lòng nhập đơn giá thuê',
-                                    },
-                                    validate: {
-                                        function: (value: any) => {
-                                            try {
-                                                let message = ''
-                                                if (value < 0) {
-                                                    message = 'Vui lòng không nhập số âm!'
+                        {
+                            typeDialogSubmit === "price_weekend" &&
+                            <div className='flex flex-col gap-2'>
+                                <FormLabel>
+                                    <h1 className="text-xs font-medium text-[#AAAAAA]">
+                                        Nhập giá truỳ chỉnh cho ngày này. Nhập 0 nếu muốn dùng giá mặc định
+                                    </h1>
+                                </FormLabel>
+                                <FormField
+                                    control={form.control}
+                                    name="saturdayPrice"
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: 'Vui lòng nhập đơn giá thuê',
+                                        },
+                                        validate: {
+                                            function: (value: any) => {
+                                                try {
+                                                    let message = ''
+                                                    if (value < 0) {
+                                                        message = 'Vui lòng không nhập số âm!'
+                                                    }
+                                                    return message || true;
+                                                } catch (error) {
+                                                    throw error;
                                                 }
-                                                return message || true;
-                                            } catch (error) {
-                                                throw error;
                                             }
                                         }
-                                    }
-                                }}
-                                render={({ field, fieldState }) => {
-                                    return (
-                                        <FormItem className="space-y-0 flex flex-col">
-                                            <FormLabel className="text-xs font-medium text-[#000000]/80">
-                                                Thứ 7
-                                            </FormLabel>
-                                            <FormControl>
-                                                <div className='flex gap-2 items-center'>
-                                                    <NumericFormatCore
-                                                        className={`w-[60%] max-w-[60%] disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2 focus:border-[#2FB9BD] outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-lg px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0`}
-                                                        placeholder="Nhập đơn giá thuê"
-                                                        thousandSeparator={','}
-                                                        maxLength={10}
-                                                        {...field}
-                                                    />
-                                                    <span>k</span>
-                                                </div>
-                                            </FormControl>
+                                    }}
+                                    render={({ field, fieldState }) => {
+                                        return (
+                                            <FormItem className="space-y-0 flex flex-col">
+                                                <FormLabel className="text-xs font-medium text-[#000000]/80">
+                                                    Thứ 7
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <div className='flex gap-2 items-center'>
+                                                        <NumericFormatCore
+                                                            className={`w-[60%] max-w-[60%] disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2 focus:border-[#2FB9BD] outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-lg px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0`}
+                                                            placeholder="Nhập đơn giá thuê"
+                                                            thousandSeparator={','}
+                                                            maxLength={10}
+                                                            {...field}
+                                                        />
+                                                        <span>k</span>
+                                                    </div>
+                                                </FormControl>
 
-                                            {fieldState?.invalid && fieldState?.error && (
-                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                            )}
-                                        </FormItem>
-                                    );
-                                }}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="sundayPrice"
-                                rules={{
-                                    required: {
-                                        value: true,
-                                        message: 'Vui lòng nhập đơn giá thuê',
-                                    },
-                                    validate: {
-                                        function: (value: any) => {
-                                            try {
-                                                let message = ''
-                                                if (value < 0) {
-                                                    message = 'Vui lòng không nhập số âm!'
+                                                {fieldState?.invalid && fieldState?.error && (
+                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                )}
+                                            </FormItem>
+                                        );
+                                    }}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="sundayPrice"
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: 'Vui lòng nhập đơn giá thuê',
+                                        },
+                                        validate: {
+                                            function: (value: any) => {
+                                                try {
+                                                    let message = ''
+                                                    if (value < 0) {
+                                                        message = 'Vui lòng không nhập số âm!'
+                                                    }
+                                                    return message || true;
+                                                } catch (error) {
+                                                    throw error;
                                                 }
-                                                return message || true;
-                                            } catch (error) {
-                                                throw error;
                                             }
                                         }
-                                    }
-                                }}
-                                render={({ field, fieldState }) => {
-                                    return (
-                                        <FormItem className="space-y-0 flex flex-col">
-                                            <FormLabel className="text-xs font-medium text-[#000000]/80">
-                                                Chủ nhật
-                                            </FormLabel>
-                                            <FormControl>
-                                                <div className='flex gap-2 items-center'>
-                                                    <NumericFormatCore
-                                                        className={`w-[60%] max-w-[60%] disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2 focus:border-[#2FB9BD] outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-lg px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0`}
-                                                        placeholder="Nhập đơn giá thuê"
-                                                        thousandSeparator={','}
-                                                        maxLength={10}
-                                                        {...field}
-                                                    />
-                                                    <span>k</span>
-                                                </div>
-                                            </FormControl>
+                                    }}
+                                    render={({ field, fieldState }) => {
+                                        return (
+                                            <FormItem className="space-y-0 flex flex-col">
+                                                <FormLabel className="text-xs font-medium text-[#000000]/80">
+                                                    Chủ nhật
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <div className='flex gap-2 items-center'>
+                                                        <NumericFormatCore
+                                                            className={`w-[60%] max-w-[60%] disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2 focus:border-[#2FB9BD] outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-lg px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0`}
+                                                            placeholder="Nhập đơn giá thuê"
+                                                            thousandSeparator={','}
+                                                            maxLength={10}
+                                                            {...field}
+                                                        />
+                                                        <span>k</span>
+                                                    </div>
+                                                </FormControl>
 
-                                            {fieldState?.invalid && fieldState?.error && (
-                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                            )}
-                                        </FormItem>
-                                    );
-                                }}
-                            />
-                            {
-                                dataOther?.rent_cost_propose > 0 &&
-                                <h1 className="text-xs font-medium text-[#AAAAAA]">
-                                    <span>Giá đề xuất: </span>
-                                    <span className="px-1 font-bold">{FormatNumberToThousands(dataOther?.rent_cost_propose)}</span>
-                                </h1>
-                            }
-                            {/* <Button
-                                type="button"
-                                className='text-white font-semibold bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 rounded-lg h-14 3xl:text-base text-sm'
-                                onClick={form.handleSubmit((values) => onSubmit(values))}
-                            >
-                                
-                            </Button> */}
-                            <ButtonLoading
-                                title="Xác nhận"
-                                type="button"
-                                onClick={form.handleSubmit((values) => onSubmit(values))}
-                                className="flex items-center gap-2 w-full text-white border-[#2FB9BD] rounded-xl
+                                                {fieldState?.invalid && fieldState?.error && (
+                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                )}
+                                            </FormItem>
+                                        );
+                                    }}
+                                />
+                                {
+                                    dataOther?.rent_cost_propose > 0 &&
+                                    <h1 className="text-xs font-medium text-[#AAAAAA]">
+                                        <span>Giá đề xuất: </span>
+                                        <span className="px-1 font-bold">{FormatNumberToThousands(dataOther?.rent_cost_propose)}</span>
+                                    </h1>
+                                }
+                                <ButtonLoading
+                                    title="Xác nhận"
+                                    type="submit"
+                                    onClick={() => form.handleSubmit((values) => onSubmit(values))}
+                                    className="flex items-center gap-2 w-full text-white border-[#2FB9BD] rounded-xl
                                 border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
-                                disabled={isStateLoadSuccess.loading.isLoadingButtonSecond}
-                                isStateloading={isStateLoadSuccess.loading.isLoadingButtonSecond}
-                            />
-                        </div>
-                    }
+                                    disabled={isStateLoadSuccess.loading.isLoadingButtonSecond}
+                                    isStateloading={isStateLoadSuccess.loading.isLoadingButtonSecond}
+                                />
+                            </div>
+                        }
+                    </form>
                 </Form>
-
             </DialogContent>
         </Dialog>
     );

@@ -19,8 +19,10 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { FormatNumberHundred, FormatNumberSpace, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import moment from 'moment'
+import { getListDetailSyntheticTransaction } from '@/services/cars/historyPayment.services'
+import { useAuth } from '@/hooks/useAuth'
 
 type Props = {
     params: {
@@ -29,14 +31,31 @@ type Props = {
 }
 
 const TransactionStatement = ({ params }: Props) => {
+    const initialState = {
+        dataTableFinish: [],
+        totalPriceTableFinish: {
+            totalRevenueCustomer: 0,
+            totalPriceDone: 0,
+        },
+        dataTableCancel: [],
+        totalPriceTableCancel: {
+            // totalRevenueCustomer: 0,
+            totalPriceDone: 0,
+        },
+    }
+
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const typeCarDetail = searchParams.get('type')
 
     const router = useRouter()
     const { isVisibleMobile, isVisibleTablet } = useResize()
+    const { informationUser } = useAuth()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
+    const [isState, setIsState] = useState<any>(initialState)
+
+    const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
     const dataFake = {
         "startTime": 1706720400000,
@@ -180,6 +199,61 @@ const TransactionStatement = ({ params }: Props) => {
         setIsMounted(true)
     }, [])
 
+    console.log('params : ', params);
+
+
+    useEffect(() => {
+        const fetchListDetailSyntheticTransaction = async () => {
+            try {
+                const dataParamsFinish = {
+                    month_search: params?.slug ? params?.slug : "",
+                    status: "finish"
+                }
+                const dataParamsCancel = {
+                    month_search: params?.slug ? params?.slug : "",
+                    status: "cancel"
+                }
+
+                const { data: dataFinish } = await getListDetailSyntheticTransaction(dataParamsFinish)
+                const { data: dataCancel } = await getListDetailSyntheticTransaction(dataParamsCancel)
+
+                if (dataFinish && dataFinish.data) {
+                    const totalRevenueCustomer = dataFinish.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.revenue_customer }, 0)
+                    const totalPriceDone = dataFinish.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.account_balance }, 0)
+
+                    console.log('totalRevenueCustomer', totalRevenueCustomer);
+
+
+                    queryState({
+                        dataTableFinish: dataFinish.data,
+                        totalPriceTableFinish: {
+                            totalRevenueCustomer: totalRevenueCustomer,
+                            totalPriceDone: totalPriceDone,
+                        },
+                    })
+                }
+
+                if (dataCancel && dataCancel.data) {
+                    const totalPriceDone = dataCancel.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.account_balance }, 0)
+
+                    queryState({
+                        dataTableCancel: dataCancel.data,
+                        totalPriceTableCancel: {
+                            totalPriceDone: totalPriceDone,
+                        },
+                    })
+                }
+                console.log('data dataFinish:', dataFinish);
+                console.log('data dataCancel:', dataCancel);
+
+            } catch (err) {
+                throw err
+            }
+        }
+
+        fetchListDetailSyntheticTransaction()
+    }, [])
+
 
     if (!isMounted) {
         return null
@@ -222,7 +296,8 @@ const TransactionStatement = ({ params }: Props) => {
                             Chủ xe
                         </div>
                         <div className='w-[60%] max-w-[60%] text-[#545454] text-base font-medium bg-[#F6F6F6] px-4 py-1'>
-                            Nguyễn Đình Quang
+                            {/* Nguyễn Đình Quang */}
+                            {informationUser?.fullname ? informationUser?.fullname : ""}
                         </div>
                     </div>
                     <div className='flex items-center justify-between w-full'>
@@ -303,6 +378,83 @@ const TransactionStatement = ({ params }: Props) => {
                         {/* body */}
                         <div className='col-span-12 grid grid-cols-12 border-b border-r'>
                             {
+                                isState?.dataTableFinish && isState?.dataTableFinish?.length > 0 && isState?.dataTableFinish?.map((item: any, index: number) => (
+                                    <React.Fragment key={`id-${item.id}`}>
+                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-4 grid grid-cols-4 grid-rows-2`}>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <Link
+                                                    href=""
+                                                    className='3xl:text-sm text-[13px] text-[#2FB9BD] hover:text-[#2FB8BD]/80 cursor-pointer transition duration-300 w-full text-center'
+                                                >
+                                                    {item?.reference_no ? item?.reference_no : ""}
+                                                </Link>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {moment(item?.date_start).format("DD/MM/YYYY")}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {moment(item?.date_end).format("DD/MM/YYYY")}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {moment(item?.date_create).format("DD/MM/YYYY")}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-3 grid grid-cols-3 grid-rows-2`}>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {item?.customer?.fullname}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {item?.car?.name}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {FormatNumberSpace(item?.cost?.amount)}đ
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-2 grid grid-cols-2 grid-rows-2`}>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {FormatNumberSpace(item?.cost?.depoist)}đ
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {FormatNumberSpace(item?.cost?.payment_customer)}đ
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-3 grid grid-cols-3`}>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {FormatNumberSpace(item?.cost?.promotion)}đ
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {FormatNumberSpace(item?.cost?.service)}đ
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {FormatNumberSpace(item?.cost?.account_balance)}đ
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </React.Fragment>
+                                ))
+                            }
+                            {/* {
 
                                 dataFake.transactionsFinished.map((item, index) => (
                                     <React.Fragment key={item.trip.id}>
@@ -376,7 +528,7 @@ const TransactionStatement = ({ params }: Props) => {
                                         </div>
                                     </React.Fragment>
                                 ))
-                            }
+                            } */}
                         </div>
                     </div>
                 </div>
@@ -389,7 +541,7 @@ const TransactionStatement = ({ params }: Props) => {
                                 Tổng thay đổi - Chuyến đi hoàn thành
                             </div>
                             <div className='w-[40%] max-w-[40%] text-[#545454] text-[15px] text-end font-semibold'>
-                                {FormatNumberSpace(dataFake.endingBalance)} đ
+                                {FormatNumberSpace(isState?.totalPriceTableFinish?.totalPriceDone)} đ
                             </div>
                         </div>
                         <div className='flex items-center justify-between w-full'>
@@ -397,7 +549,7 @@ const TransactionStatement = ({ params }: Props) => {
                                 Thu nhập của chủ xe
                             </div>
                             <div className='w-[40%] max-w-[40%] text-[#2FB9BD] text-[15px] text-end font-bold'>
-                                {FormatNumberSpace(19387650)} đ
+                                {FormatNumberSpace(isState?.totalPriceTableFinish?.totalRevenueCustomer)} đ
                             </div>
                         </div>
                     </div>
@@ -531,7 +683,78 @@ const TransactionStatement = ({ params }: Props) => {
                         {/* body */}
                         <div className='col-span-12 grid grid-cols-12 border-b border-r'>
                             {
-
+                                isState?.dataTableCancel && isState?.dataTableCancel?.length > 0 && isState?.dataTableCancel?.map((item: any, index: number) => (
+                                    <React.Fragment key={`id_cancel_${item.id}`}>
+                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-4 grid grid-cols-4 grid-rows-2`}>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <Link
+                                                    href=""
+                                                    className='3xl:text-sm text-[13px] text-[#2FB9BD] hover:text-[#2FB8BD]/80 cursor-pointer transition duration-300 w-full text-center'
+                                                >
+                                                    {item?.reference_no}
+                                                </Link>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {moment(item?.date_start).format("DD/MM/YYYY")}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {moment(item?.date_end).format("DD/MM/YYYY")}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {moment(item?.date_create).format("DD/MM/YYYY")}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-4 grid grid-cols-3 grid-rows-2`}>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {item?.customer?.fullname}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {item?.car?.name}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {FormatNumberSpace(item?.cost?.amount)}đ
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-2 grid grid-cols-2 grid-rows-2`}>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {FormatNumberSpace(item?.cost?.depoist)}đ
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {FormatNumberSpace(item?.cost?.payment_customer)}đ
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-2 grid grid-cols-2`}>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {item?.note ? item?.note : ""}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {FormatNumberSpace(item?.cost?.account_balance)}đ
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </React.Fragment>
+                                ))
+                            }
+                            {/* {
                                 dataFake.transactionsCanceled.map((item, index) => (
                                     <React.Fragment key={item.trip.id}>
                                         <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-4 grid grid-cols-4 grid-rows-2`}>
@@ -599,7 +822,7 @@ const TransactionStatement = ({ params }: Props) => {
                                         </div>
                                     </React.Fragment>
                                 ))
-                            }
+                            } */}
                         </div>
                     </div>
                 </div>
@@ -612,7 +835,7 @@ const TransactionStatement = ({ params }: Props) => {
                                 Tổng thay đổi - Giao dịch hủy chuyến
                             </div>
                             <div className='w-[40%] max-w-[40%] text-[#545454] text-[15px] text-end font-semibold'>
-                                {FormatNumberSpace(327391)} đ
+                                {FormatNumberSpace(isState?.totalPriceTableCancel?.totalPriceDone)} đ
                             </div>
                         </div>
                     </div>

@@ -572,8 +572,10 @@ export default function TalentedCalender(props: Props) {
                                             const lastDayOfMonth = new Date(currentYear, month, 1);
 
                                             // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
-                                            const firstDayOfWeek = firstDayOfMonth?.getDay();
-                                            const lastDayOfWeek = lastDayOfMonth?.getDay();
+                                            const firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay();
+                                            const lastDayOfWeek = lastDayOfMonth.getDay() === 0 ? 7 : lastDayOfMonth.getDay();
+                                            // const firstDayOfWeek = firstDayOfMonth?.getDay();
+                                            // const lastDayOfWeek = lastDayOfMonth?.getDay();
 
                                             // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
                                             const startOfPreviousWeek = new Date(firstDayOfMonth);
@@ -699,8 +701,10 @@ export default function TalentedCalender(props: Props) {
                                                     const lastDayOfMonth = new Date(currentYear, month, 1);
 
                                                     // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
-                                                    const firstDayOfWeek = firstDayOfMonth?.getDay();
-                                                    const lastDayOfWeek = lastDayOfMonth?.getDay();
+                                                    const firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay();
+                                                    const lastDayOfWeek = lastDayOfMonth.getDay() === 0 ? 7 : lastDayOfMonth.getDay();
+                                                    // const firstDayOfWeek = firstDayOfMonth?.getDay();
+                                                    // const lastDayOfWeek = lastDayOfMonth?.getDay();
 
                                                     // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
                                                     const startOfPreviousWeek = new Date(firstDayOfMonth);

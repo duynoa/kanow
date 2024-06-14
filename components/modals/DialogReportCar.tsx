@@ -24,7 +24,7 @@ import { useDialogReportCar } from "@/hooks/useOpenDialog";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 
 import { useForm } from "react-hook-form";
 
@@ -33,12 +33,15 @@ import { toastCore } from "@/lib/toast";
 
 import { IInitialStateDetailCar } from "@/types/Initial/IInitial";
 import { useDataDetailCar } from "@/hooks/useDataQueryKey";
+import { useLoadSuccess } from "@/hooks/useLoadSuccess";
+import ButtonLoading from "../button/ButtonLoading";
 
 type Props = {}
 
 export function DialogReportCar({ }: Props) {
     const { openDialogReportCar, setOpenDialogReportCar } = useDialogReportCar()
     const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
 
     const form = useForm({
         defaultValues: {
@@ -69,7 +72,14 @@ export function DialogReportCar({ }: Props) {
     }
 
     const onSubmit = async (values: any) => {
+        console.log('check submit');
+
         try {
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    isLoadingButton: true,
+                }
+            })
             let dataReport = {
                 content: values?.content ? values?.content : "",
                 report_id: isStateDetailCar?.reportCar?.selectReportCar,
@@ -77,9 +87,10 @@ export function DialogReportCar({ }: Props) {
             }
 
             const { data } = await postReportCar(dataReport)
+            console.log('data data', data);
+
 
             if (data?.result) {
-                toastCore?.success(data?.message)
                 setOpenDialogReportCar(false)
                 form.reset()
                 queryKeyIsStateDetailCar({
@@ -88,14 +99,59 @@ export function DialogReportCar({ }: Props) {
                         selectReportCar: ""
                     }
                 })
+
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        ...isStateLoadSuccess.loading,
+                        isLoadingButton: false,
+                    }
+                })
+
+                toastCore.success("Báo cáo xe thành công")
             } else {
-                console.log(data?.message)
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        ...isStateLoadSuccess.loading,
+                        isLoadingButton: false,
+                    }
+                })
+
+                toastCore.error(data?.message)
             }
 
         } catch (err) {
             throw err
         }
     }
+
+    // vì Textarea bị xung đột nên bắt buộc...
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>, onForm: any) => {
+        if (e.key === "Enter" && e.ctrlKey) { // Kiểm tra Ctrl (Cmd) + Enter    
+            e.preventDefault(); // Ngăn form gửi đi
+            const textarea = e.currentTarget;
+            const value = textarea.value;
+            const selectionStart = textarea.selectionStart;
+            const selectionEnd = textarea.selectionEnd;
+
+            // Thêm ký tự xuống dòng (\n) vào vị trí con trỏ
+            const newValue = value.substring(0, selectionStart) + '\n' + value.substring(selectionEnd);
+
+            // Cập nhật giá trị của textarea
+            textarea.value = newValue;
+
+            // Đặt lại con trỏ vào vị trí mới
+            textarea.setSelectionRange(selectionStart + 1, selectionStart + 1);
+
+            // Gửi sự kiện change nếu cần
+            const event = new Event('input', { bubbles: true });
+            textarea.dispatchEvent(event);
+        } else if (e.key === "Enter" && e.ctrlKey === false) {
+            console.log('check enter');
+            onForm()
+            e.preventDefault(); // Ngăn form gửi đi
+            // form.handleSubmit((values) => onSubmit(values))
+        }
+    };
 
     return (
         <Dialog modal open={openDialogReportCar} onOpenChange={handleOpenChangeModal}>
@@ -116,10 +172,12 @@ export function DialogReportCar({ }: Props) {
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit((values) => onSubmit(values))}>
-                        <div className='flex flex-col gap-6 md:px-6 px-3'>
+                    <form onSubmit={form.handleSubmit((values) => onSubmit(values))} className='space-y-4'>
+                        <div className='flex flex-col gap-6'>
                             <div className='flex flex-col gap-2 pb-6 border border-b border-x-0 border-t-0'>
-                                <Label className='text-base text-[#000000] font-semibold'>Lý do báo xấu</Label>
+                                <Label className='text-base text-[#000000] font-semibold'>
+                                    Lý do báo xấu
+                                </Label>
                                 <Select
                                     value={isStateDetailCar?.reportCar?.selectReportCar}
                                     onValueChange={(value) => handleChangeSelectReport(value)}
@@ -150,25 +208,31 @@ export function DialogReportCar({ }: Props) {
                                 <FormField
                                     control={form.control}
                                     name="content"
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: 'Vui lòng nhập nội dung báo cáo',
+                                        },
+                                    }}
                                     render={({ field, fieldState }) => {
-                                        const handleTextareaChange = (
-                                            e: React.ChangeEvent<HTMLTextAreaElement>
-                                        ) => {
-                                            field.onChange(e);
-                                        }
-
                                         return (
                                             <FormItem>
-                                                <div>
-                                                    <FormControl>
-                                                        <Textarea
-                                                            disabled={form.formState.isSubmitting}
-                                                            placeholder="Nhập nội dung"
-                                                            className={`3xl:h-40 h-36 resize border rounded-lg bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0`}
-                                                            onChange={handleTextareaChange}
-                                                        />
-                                                    </FormControl>
-                                                </div>
+                                                <FormControl>
+                                                    <Textarea
+                                                        disabled={form.formState.isSubmitting}
+                                                        placeholder="Nhập nội dung"
+                                                        className={`${fieldState?.invalid && fieldState?.error ? "border border-[#FA3434]" : "border"} 3xl:h-40 h-36 resize  rounded-lg bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0`}
+                                                        onKeyDown={(event) => handleKeyDown(event, form.handleSubmit((values) => onSubmit(values)))}
+                                                        {...field}
+                                                    />
+
+                                                </FormControl>
+
+                                                {
+                                                    fieldState?.invalid && fieldState?.error && (
+                                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                    )
+                                                }
                                             </FormItem>
                                         );
                                     }}
@@ -176,16 +240,15 @@ export function DialogReportCar({ }: Props) {
                             </div>
                         </div>
 
-                        <div className='pt-8 pb-4 bg-white'>
-                            <div className='md:px-6 px-3'>
-                                <Button
-                                    type="submit"
-                                    className='xl:px-6 xl:py-3 px-4 py-2 xl:text-base text-sm rounded-lg bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 w-full'
-                                >
-                                    Áp dụng
-                                </Button>
-                            </div>
-                        </div>
+                        <ButtonLoading
+                            title="Áp dụng"
+                            type="submit"
+                            onClick={() => { }}
+                            className="flex items-center gap-2 w-full text-white border-[#2FB9BD] rounded-xl
+                                border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                            disabled={isStateLoadSuccess.loading.isLoadingButton}
+                            isStateloading={isStateLoadSuccess.loading.isLoadingButton}
+                        />
                     </form>
                 </Form>
             </DialogContent>

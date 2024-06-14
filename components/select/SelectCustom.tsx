@@ -13,14 +13,19 @@ import moment from "moment"
 import { SelectContentNocheck, SelectGroupNocheck, SelectItemNocheck, SelectNocheck, SelectTriggerNocheck, SelectValueNocheck } from "../ui/selectNocheck"
 
 type Props = {
-    dataMonths: any[]
+    dataMonths: any[],
+    selectedMonth: any,
+    handleChangeValue: (value: any) => void
 }
 
-const SelectCustom = ({ dataMonths }: Props) => {
+const SelectCustom = ({ dataMonths, selectedMonth, handleChangeValue }: Props) => {
 
     return (
-        <SelectNocheck>
-            <SelectTriggerNocheck className="w-[200px] border-0 bg-transparent 2xl:text-base text-sm text-[#2FB9BD] font-semibold focus:ring-0 focus:ring-offset-0">
+        <SelectNocheck
+            value={selectedMonth}
+            onValueChange={(value) => handleChangeValue(value)}
+        >
+            <SelectTriggerNocheck className="w-[240px] border-0 bg-transparent 2xl:text-base text-sm text-[#2FB9BD] font-semibold focus:ring-0 focus:ring-offset-0">
                 <SelectValueNocheck placeholder="Chọn tháng" />
             </SelectTriggerNocheck>
             <SelectContentNocheck>
@@ -28,8 +33,8 @@ const SelectCustom = ({ dataMonths }: Props) => {
                     {
                         dataMonths && dataMonths.map((date) => (
                             <SelectItemNocheck
-                                key={`date-${date.id}`}
-                                value={date.id}
+                                key={`date-${date.date}`}
+                                value={date.date}
                             >
                                 {moment(date.date, "MM-YYYY").format("[Tháng] MM-YYYY")}
                             </SelectItemNocheck>

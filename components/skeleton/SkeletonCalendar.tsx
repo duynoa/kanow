@@ -7,7 +7,7 @@ const SkeletonCalendar = (props: Props) => {
     return (
         <div className='flex flex-col 3xl:gap-10 gap-8'>
             {
-                [...Array(1)].map((item, index) => (
+                [...Array(2)].map((item, index) => (
                     <div key={`skeleton-${index}`} className='flex flex-col 3xl:gap-6 gap-4'>
                         <div className='w-full flex items-center justify-center text-xl font-semibold text-[#2FB9BD] uppercase'>
                             <Skeleton className='w-40 3xl:h-14 h-12' />
