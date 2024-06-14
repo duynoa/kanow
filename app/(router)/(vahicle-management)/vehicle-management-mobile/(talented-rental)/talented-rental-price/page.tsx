@@ -1,7 +1,9 @@
 "use client"
+import ButtonLoading from "@/components/button/ButtonLoading";
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import { FormatNumberToThousands } from "@/components/format/FormatNumber";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useLoadSuccess } from "@/hooks/useLoadSuccess";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { NumericFormatCore } from "@/lib/numericFormat";
 import { toastCore } from "@/lib/toast";
@@ -22,10 +24,9 @@ export default function TalentedRentalPrice(props: Props) {
     const { apiUpdateCar } = apiVehicleCommon()
 
     const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
-
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
 
     const findValue = form.getValues()
-
 
     useEffect(() => {
         if (!Array.isArray(data) && data) {
@@ -36,22 +37,47 @@ export default function TalentedRentalPrice(props: Props) {
     }, [data])
 
     const onSubmit = async (value: any) => {
-        let formData = new FormData()
-        formData.append('car_id', idCar)
-        formData.append('rent_cost_talent', value.unitPrice)
-        const { data: db } = await apiUpdateCar(formData)
-        if (db.result) {
-            toastCore.success('Lưu thông tin thành công')
-            return
+        try {
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isLoadingButton: true
+                }
+            })
+
+            let formData = new FormData()
+            formData.append('car_id', idCar)
+            formData.append('rent_cost_talent', value.unitPrice)
+            const { data: db } = await apiUpdateCar(formData)
+            if (db.result) {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        ...isStateLoadSuccess.loading,
+                        isLoadingButton: false
+                    }
+                })
+                toastCore.success('Lưu thông tin thành công')
+
+            } else {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        ...isStateLoadSuccess.loading,
+                        isLoadingButton: false
+                    }
+                })
+                toastCore.error(db.message)
+            }
+
+        } catch (err) {
+            throw err
         }
-        toastCore.error(db.message)
     }
 
 
     return (
         <BackgroundUiVehicle className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-                <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Giá cho thuê</h1>
+                <h1 className='text-[#3E424E] text-xl uppercase font-bold'>Giá cho thuê</h1>
             </div>
             <Form  {...form}>
                 <FormField
@@ -79,13 +105,14 @@ export default function TalentedRentalPrice(props: Props) {
                     render={({ field, fieldState }) => {
                         return (
                             <FormItem className="space-y-0 flex flex-col gap-2">
-                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                    Đơn giá thuê mặc định<span className="text-red-500">*</span>
-                                    <h1 className="text-xs text-gray-400">Đơn giá thuê mặc định được áp dụng nếu ngày đó không có tùy chỉnh khác về giá</h1>
+                                <FormLabel className="text-base font-semibold text-[#16171B]">
+                                    <span>Đơn giá thuê mặc định</span><span className="text-red-500">*</span>
+                                    <h1 className="text-sm text-gray-400">Đơn giá thuê mặc định được áp dụng nếu ngày đó không có tùy chỉnh khác về giá</h1>
                                     {
 
                                         dataOther?.rent_cost_propose > 0 &&
-                                        <h1 className="text-xs text-gray-400">Giá đề xuất
+                                        <h1 className="text-sm text-gray-400">
+                                            <span>Giá đề xuất</span>
                                             <span className="px-1">{FormatNumberToThousands(dataOther?.rent_cost_propose)}</span>
                                         </h1>
                                     }
@@ -100,15 +127,27 @@ export default function TalentedRentalPrice(props: Props) {
                                     />
                                 </FormControl>
 
-                                {fieldState?.invalid && fieldState?.error && (
-                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                )}
+                                {
+                                    fieldState?.invalid && fieldState?.error && (
+                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                    )
+                                }
                             </FormItem>
                         );
                     }}
                 />
                 <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
-                    <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} />
+                    {/* <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} /> */}
+
+                    <ButtonLoading
+                        title="Lưu thông tin"
+                        type="button"
+                        onClick={form.handleSubmit((values) => onSubmit(values))}
+                        className="flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
+                                border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                        disabled={isStateLoadSuccess.loading.isLoadingButton}
+                        isStateloading={isStateLoadSuccess.loading.isLoadingButton}
+                    />
                 </div>
             </Form>
         </BackgroundUiVehicle>

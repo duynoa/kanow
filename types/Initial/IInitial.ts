@@ -187,8 +187,10 @@ interface IInitialStateLoadSuccess {
     loading: {
         isSuccessFetchApi: boolean;
         isLoadingButton: boolean;
+        isLoadingButtonSecond: boolean;
     };
     success: any;
+    onSuccess: boolean;
 }
 
 // initial Data ALL Review (quản lí draw review)

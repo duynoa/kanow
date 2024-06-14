@@ -226,7 +226,7 @@ const ListMyCar = (props: Props) => {
                         ))
                     }
                 </TabsList>
-                
+
                 <TabsContent value="1" className='lg:mt-4 mt-5'>
                     {
                         isVisibleMobile &&
@@ -261,7 +261,7 @@ const ListMyCar = (props: Props) => {
                     </div>
                 </TabsContent>
 
-                <TabsContent value="3">
+                <TabsContent value="3" className="focus-visible:ring-0 focus-visible:ring-offset-0">
                     <MyWallet />
                 </TabsContent>
 

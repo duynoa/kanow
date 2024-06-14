@@ -15,7 +15,7 @@ const SecurityInfo = (props: Props) => {
                 <div className='2xl:text-base text-sm text-[#000000] font-light space-y-2'>
                     <div className='flex flex-col gap-2'>
                         <span>
-                            Chào mừng bạn đến với nền tảng Kanow.vn (bao gồm website và ứng dụng di động) được được vận hành bởi Công ty Cổ Phần Kanow Asia. Kanow thông báo đến bạn và cần sự đồng ý và cho phép của bạn để xử lý, thu thập và lưu trữ dữ liệu của bạn nhằm mục đích cung cấp các dịch vụ cho bạn trong suốt quá trình sử dụng Website và Ứng dụng di động, chúng tôi cam kết nghiêm túc thực hiện trách nhiệm của mình liên quan đến bảo mật thông tin cá nhân và tôn trọng quyền riêng tư của tất cả người dùng trên nền tảng.
+                            Chào mừng bạn đến với nền tảng Kanow.vn (bao gồm website và ứng dụng di động) được được vận hành bởi Công ty TNHH Kanow. Kanow thông báo đến bạn và cần sự đồng ý và cho phép của bạn để xử lý, thu thập và lưu trữ dữ liệu của bạn nhằm mục đích cung cấp các dịch vụ cho bạn trong suốt quá trình sử dụng Website và Ứng dụng di động, chúng tôi cam kết nghiêm túc thực hiện trách nhiệm của mình liên quan đến bảo mật thông tin cá nhân và tôn trọng quyền riêng tư của tất cả người dùng trên nền tảng.
                         </span>
 
                         <span>

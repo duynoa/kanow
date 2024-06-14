@@ -54,11 +54,9 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
 
     if (!isMounted) return null
 
-    // return <div className={`${className}  h-fit  flex flex-col items-center`}>
     return (
         <div className={`${className}  flex flex-col gap-2 items-center`}>
             <div className={` h-full w-full`}>
-                {/* <div className="lg:h-[472px] h-fit"> */}
                 <Image
                     src={data.image ? data.image : ""}
                     alt='nodata'
@@ -70,14 +68,14 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
                  ${type == 'list-car-favorite' && (isVisibleMobile ? "size-full" : 'size-[30%]')} 
                  ${type == 'vehicle-surcharge' && (isVisibleMobile ? "size-full" : 'size-[80%] h-[600px]')} 
                  ${type == 'account' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
-                 ${type == 'mytrip' && (isVisibleMobile ? "size-full" : 'size-[40%]')}
+                 ${type == 'mytrip' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
                  ${type == 'address' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
                  ${type == 'list-my-car' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
                  ${type == 'list-notifications' && (isVisibleMobile ? "size-full" : 'size-[80%]')}
                  ${type == 'list-calendar' && (isVisibleMobile ? "size-full" : 'size-[45%]')}
                  mx-auto`} />
             </div>
-            <h1 className="3xl:text-lg lg:text-sm text-xs font-medium">{data.title}</h1>
+            <h1 className="3xl:text-lg lg:text-sm text-base font-medium">{data.title}</h1>
         </div>
     )
 

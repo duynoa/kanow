@@ -22,6 +22,7 @@ import { NumericFormatCore } from "@/lib/numericFormat";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { putPriceSaturdayAndSunday, putPriceSingleDate } from "@/services/cars/calendar.services";
 import { useLoadSuccess } from "@/hooks/useLoadSuccess";
+import ButtonLoading from "../button/ButtonLoading";
 
 type Props = {};
 
@@ -75,7 +76,7 @@ export function DialogSubmit({ }: Props) {
             } else if (type == "2") {
                 form.setValue("saturdayPrice", dataDetail?.data?.car_talent?.rent_cost > 0 ? FormatOnlyNumberToThousands(dataDetail?.data?.car_talent?.rent_cost) : "")
                 form.setValue("sundayPrice", dataDetail?.data?.car_talent?.rent_cost > 0 ? FormatOnlyNumberToThousands(dataDetail?.data?.car_talent?.rent_cost) : "")
-                return  
+                return
             }
         } else {
             setTimeout(() => {
@@ -93,9 +94,10 @@ export function DialogSubmit({ }: Props) {
             queryKeyIsStateLoadSuccess({
                 loading: {
                     ...isStateLoadSuccess.loading,
-                    isLoadingButton: true
-                }
+                    isLoadingButtonSecond: true
+                },
             })
+
             if (typeDialogSubmit === "price_single") {
                 const dataSubmit = {
                     type: type,
@@ -108,35 +110,32 @@ export function DialogSubmit({ }: Props) {
                 console.log('data', data);
                 if (data && data.result) {
                     toastCore.success("Thay đổi giá thành công!")
-                    queryKeyIsStateLoadSuccess({
-                        loading: {
-                            ...isStateLoadSuccess.loading,
-                            isSuccessFetchApi: true,
-                            isLoadingButton: false
-                        }
-                    })
 
                     handleOpenChangeModal(false)
 
-
+                    setTimeout(() => {
+                        queryKeyIsStateLoadSuccess({
+                            loading: {
+                                ...isStateLoadSuccess.loading,
+                                isSuccessFetchApi: true,
+                                isLoadingButtonSecond: false
+                            }
+                        })
+                    }, 200);
                 } else {
-                    queryKeyIsStateLoadSuccess({
-                        loading: {
-                            ...isStateLoadSuccess.loading,
-                            isLoadingButton: false
-                        }
-                    })
                     toastCore.error(data.message)
+                    setTimeout(() => {
+                        queryKeyIsStateLoadSuccess({
+                            loading: {
+                                ...isStateLoadSuccess.loading,
+                                isSuccessFetchApi: true,
+                                isLoadingButtonSecond: false
+                            }
+                        })
+                    }, 200);
                 }
 
             } else if (typeDialogSubmit === "price_weekend") {
-                queryKeyIsStateLoadSuccess({
-                    loading: {
-                        ...isStateLoadSuccess.loading,
-                        isLoadingButton: true
-                    }
-                })
-
                 const dataSubmit = {
                     type: type,
                     car_id: car_id,
@@ -149,21 +148,27 @@ export function DialogSubmit({ }: Props) {
                 console.log('data', data);
                 if (data && data.result) {
                     toastCore.success("Thay đổi giá thành công!")
-                    queryKeyIsStateLoadSuccess({
-                        loading: {
-                            ...isStateLoadSuccess.loading,
-                            isSuccessFetchApi: true,
-                            isLoadingButton: false
-                        }
-                    })
                     handleOpenChangeModal(false)
+
+                    setTimeout(() => {
+                        queryKeyIsStateLoadSuccess({
+                            loading: {
+                                ...isStateLoadSuccess.loading,
+                                isSuccessFetchApi: true,
+                                isLoadingButtonSecond: false
+                            },
+                        })
+                    }, 200);
                 } else {
-                    queryKeyIsStateLoadSuccess({
-                        loading: {
-                            ...isStateLoadSuccess.loading,
-                            isLoadingButton: false
-                        }
-                    })
+                    setTimeout(() => {
+                        queryKeyIsStateLoadSuccess({
+                            loading: {
+                                ...isStateLoadSuccess.loading,
+                                isSuccessFetchApi: true,
+                                isLoadingButtonSecond: false
+                            },
+                        })
+                    }, 200);
                     toastCore.error(data.message)
                 }
             }
@@ -172,6 +177,8 @@ export function DialogSubmit({ }: Props) {
             throw err
         }
     }
+
+    console.log('isStateLoadSuccess', isStateLoadSuccess);
 
     return (
         <Dialog
@@ -258,13 +265,22 @@ export function DialogSubmit({ }: Props) {
                                     <span className="px-1">{FormatNumberToThousands(dataOther?.rent_cost_propose)}</span>
                                 </h1>
                             }
-                            <Button
+                            {/* <Button
                                 type="button"
                                 className='text-white font-semibold bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 rounded-lg h-14 3xl:text-base text-sm'
                                 onClick={form.handleSubmit((values) => onSubmit(values))}
                             >
                                 Xác nhận
-                            </Button>
+                            </Button> */}
+                            <ButtonLoading
+                                title="Xác nhận"
+                                type="button"
+                                onClick={form.handleSubmit((values) => onSubmit(values))}
+                                className="flex items-center gap-2 w-full text-white border-[#2FB9BD] rounded-xl
+                                border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                                disabled={isStateLoadSuccess.loading.isLoadingButtonSecond}
+                                isStateloading={isStateLoadSuccess.loading.isLoadingButtonSecond}
+                            />
                         </div>
                     }
 
@@ -379,13 +395,22 @@ export function DialogSubmit({ }: Props) {
                                     <span className="px-1 font-bold">{FormatNumberToThousands(dataOther?.rent_cost_propose)}</span>
                                 </h1>
                             }
-                            <Button
+                            {/* <Button
                                 type="button"
                                 className='text-white font-semibold bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 rounded-lg h-14 3xl:text-base text-sm'
                                 onClick={form.handleSubmit((values) => onSubmit(values))}
                             >
-                                Xác nhận
-                            </Button>
+                                
+                            </Button> */}
+                            <ButtonLoading
+                                title="Xác nhận"
+                                type="button"
+                                onClick={form.handleSubmit((values) => onSubmit(values))}
+                                className="flex items-center gap-2 w-full text-white border-[#2FB9BD] rounded-xl
+                                border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                                disabled={isStateLoadSuccess.loading.isLoadingButtonSecond}
+                                isStateloading={isStateLoadSuccess.loading.isLoadingButtonSecond}
+                            />
                         </div>
                     }
                 </Form>

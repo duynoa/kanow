@@ -1,10 +1,12 @@
 "use client"
+import ButtonLoading from "@/components/button/ButtonLoading";
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import SelectCombobox from "@/components/combobox/SelectCombobox";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
+import { useLoadSuccess } from "@/hooks/useLoadSuccess";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
@@ -103,7 +105,7 @@ export default function SelftSetTime(props: Props) {
     })
 
     const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
-
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
 
     const findValue = form.getValues()
 
@@ -127,24 +129,49 @@ export default function SelftSetTime(props: Props) {
     }, [data])
 
     const onSubmit = async (value: any) => {
-        let formData = new FormData()
-        formData.append('car_id', idCar)
-        formData.append('book_car_flash', `${value.bookCarQuickly.open ? 1 : 0}`)
-        formData.append('from_book_car_flash', value.bookCarQuickly.wordLimit)
-        formData.append('to_book_car_flash', value.bookCarQuickly.until)
-        // giao xe
-        formData.append('hour_start', value.deliver.from)
-        formData.append('hour_end', value.deliver.to)
-        // nhan xe
-        formData.append('hour_start_new', value.receive.from)
-        formData.append('hour_end_new', value.receive.to)
+        try {
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isLoadingButton: true
+                }
+            })
 
-        const { data: db } = await apiUpdateCar(formData)
-        if (db.result) {
-            toastCore.success('Lưu thông tin thành công')
-            return
+            let formData = new FormData()
+            formData.append('car_id', idCar)
+            formData.append('book_car_flash', `${value.bookCarQuickly.open ? 1 : 0}`)
+            formData.append('from_book_car_flash', value.bookCarQuickly.wordLimit)
+            formData.append('to_book_car_flash', value.bookCarQuickly.until)
+            // giao xe
+            formData.append('hour_start', value.deliver.from)
+            formData.append('hour_end', value.deliver.to)
+            // nhan xe
+            formData.append('hour_start_new', value.receive.from)
+            formData.append('hour_end_new', value.receive.to)
+
+            const { data: db } = await apiUpdateCar(formData)
+            if (db.result) {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        ...isStateLoadSuccess.loading,
+                        isLoadingButton: false
+                    }
+                })
+                toastCore.success('Lưu thông tin thành công')
+
+            } else {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        ...isStateLoadSuccess.loading,
+                        isLoadingButton: false
+                    }
+                })
+                toastCore.error(db.message)
+            }
+
+        } catch (err) {
+            throw err
         }
-        toastCore.error(db.message)
 
     }
 
@@ -176,7 +203,7 @@ export default function SelftSetTime(props: Props) {
     return (
         <BackgroundUiVehicle className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-                <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Thiết lập thời gian cho thuê</h1>
+                <h1 className='text-[#3E424E] text-xl uppercase font-bold'>Thiết lập thời gian cho thuê</h1>
             </div>
             <Form  {...form}>
                 <FormField
@@ -188,7 +215,7 @@ export default function SelftSetTime(props: Props) {
                                 <FormControl>
                                     <div className="flex flex-col gap-2">
                                         <div className="flex items-center gap-4">
-                                            <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                            <FormLabel className="text-base font-semibold text-[#16171B]">
                                                 Đặt xe nhanh
                                             </FormLabel>
                                             <Switch
@@ -198,15 +225,15 @@ export default function SelftSetTime(props: Props) {
                                                     field.onChange(e)
                                                     form.setValue('bookCarQuickly.wordLimit', 0)
                                                     form.setValue('bookCarQuickly.until', 0)
-
                                                 }}
                                             />
                                         </div>
-                                        <h1 className="text-xs text-gray-400">Tự động đồng ý đối với tất cả yêu cầu thuê xe trong khoảng thời gian cài đặt</h1>
+                                        <h1 className="text-sm text-gray-400">Tự động đồng ý đối với tất cả yêu cầu thuê xe trong khoảng thời gian cài đặt</h1>
 
                                     </div>
                                 </FormControl>
-                                {field.value &&
+                                {
+                                    field.value &&
                                     <div className="grid grid-cols-2 gap-4">
                                         <FormField
                                             control={form.control}
@@ -215,7 +242,7 @@ export default function SelftSetTime(props: Props) {
                                                 const checkValue = checkValueArray(isState.bookCarQuickly.wordLimit, field)
                                                 return (
                                                     <FormItem>
-                                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                                        <FormLabel className="text-base font-semibold text-[#16171B]">
                                                             Giới hạn từ
                                                         </FormLabel>
                                                         <FormControl>
@@ -226,7 +253,7 @@ export default function SelftSetTime(props: Props) {
                                                                         <Button
                                                                             variant="outline"
                                                                             role="combobox"
-                                                                            className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
+                                                                            className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 text-base  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                                         >
                                                                             {checkValue ? checkValue : " Giới hạn từ"}
                                                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -258,7 +285,7 @@ export default function SelftSetTime(props: Props) {
                                                 const checkValue = checkValueArray(isState.bookCarQuickly.until, field)
                                                 return (
                                                     <FormItem>
-                                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                                        <FormLabel className="text-base font-semibold text-[#16171B]">
                                                             Cho đến
                                                         </FormLabel>
                                                         <FormControl>
@@ -268,7 +295,7 @@ export default function SelftSetTime(props: Props) {
                                                                         <Button
                                                                             variant="outline"
                                                                             role="combobox"
-                                                                            className="2xl:py-3  w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
+                                                                            className="2xl:py-3  w-full lg:py-2 md:py-2 py-2 px-3 text-base  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                                         >
                                                                             {checkValue ? checkValue : "Cho đến"}
                                                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -296,14 +323,16 @@ export default function SelftSetTime(props: Props) {
                                         />
                                     </div>
                                 }
-                                {fieldState?.invalid && fieldState?.error && (
-                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                )}
+                                {
+                                    fieldState?.invalid && fieldState?.error && (
+                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                    )
+                                }
                             </FormItem>
                         );
                     }}
                 />
-                <h1 className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                <h1 className="text-base font-semibold text-[#16171B]">
                     Thời gian giao xe
                 </h1>
                 <div className="grid grid-cols-2 items-center gap-4">
@@ -325,8 +354,8 @@ export default function SelftSetTime(props: Props) {
                             const checkValue = checkValueArray(isState.deliver, field)
                             return (
                                 <FormItem className="space-y-0 flex flex-col gap-2">
-                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                        Giao xe từ<span className="text-red-500  px-1">*</span>
+                                    <FormLabel className="text-base font-semibold text-[#16171B]">
+                                        <span>Giao xe từ</span><span className="text-red-500  px-1">*</span>
                                     </FormLabel>
                                     <FormControl>
                                         <>
@@ -335,7 +364,7 @@ export default function SelftSetTime(props: Props) {
                                                     <Button
                                                         variant="outline"
                                                         role="combobox"
-                                                        className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
+                                                        className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 text-base  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                     >
                                                         {checkValue ? checkValue : "00:00"}
                                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -358,9 +387,11 @@ export default function SelftSetTime(props: Props) {
                                             </Popover>
                                         </>
                                     </FormControl>
-                                    {fieldState?.invalid && fieldState?.error && (
-                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                    )}
+                                    {
+                                        fieldState?.invalid && fieldState?.error && (
+                                            <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                        )
+                                    }
                                 </FormItem>
                             );
                         }}
@@ -383,7 +414,7 @@ export default function SelftSetTime(props: Props) {
                             const checkValue = checkValueArray(isState.receive, field)
                             return (
                                 <FormItem className="space-y-0 flex flex-col gap-2">
-                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                    <FormLabel className="text-base font-semibold text-[#16171B]">
                                         Cho đến<span className="text-red-500 px-1">*</span>
                                     </FormLabel>
                                     <FormControl>
@@ -393,7 +424,7 @@ export default function SelftSetTime(props: Props) {
                                                     <Button
                                                         variant="outline"
                                                         role="combobox"
-                                                        className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
+                                                        className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 text-base  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                     >
                                                         {checkValue ? checkValue : "00:00"}
                                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -422,7 +453,7 @@ export default function SelftSetTime(props: Props) {
                         }}
                     />
                 </div>
-                <h1 className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                <h1 className="text-base font-semibold text-[#16171B]">
                     Thời gian nhận xe
                 </h1>
                 <div className="grid grid-cols-2 items-center gap-4">
@@ -444,7 +475,7 @@ export default function SelftSetTime(props: Props) {
                             const checkValue = checkValueArray(isState.receive, field)
                             return (
                                 <FormItem className="space-y-0 flex flex-col gap-2">
-                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                    <FormLabel className="text-base font-semibold text-[#16171B]">
                                         Nhận xe từ<span className="text-red-500  px-1">*</span>
                                     </FormLabel>
                                     <FormControl>
@@ -454,7 +485,7 @@ export default function SelftSetTime(props: Props) {
                                                     <Button
                                                         variant="outline"
                                                         role="combobox"
-                                                        className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
+                                                        className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 text-base  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                     >
                                                         {checkValue ? checkValue : "00:00"}
                                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -500,7 +531,7 @@ export default function SelftSetTime(props: Props) {
                             const checkValue = checkValueArray(isState.receive, field)
                             return (
                                 <FormItem className="space-y-0 flex flex-col gap-2">
-                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                    <FormLabel className="text-base font-semibold text-[#16171B]">
                                         Cho đến<span className="text-red-500 px-1">*</span>
                                     </FormLabel>
                                     <FormControl>
@@ -510,7 +541,7 @@ export default function SelftSetTime(props: Props) {
                                                     <Button
                                                         variant="outline"
                                                         role="combobox"
-                                                        className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
+                                                        className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 text-base  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
                                                     >
                                                         {checkValue ? checkValue : "00:00"}
                                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -539,7 +570,17 @@ export default function SelftSetTime(props: Props) {
                     />
                 </div>
                 <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
-                    <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} />
+                    {/* <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} /> */}
+
+                    <ButtonLoading
+                        title="Lưu thông tin"
+                        type="button"
+                        onClick={form.handleSubmit((values) => onSubmit(values))}
+                        className="flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
+                                border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                        disabled={isStateLoadSuccess.loading.isLoadingButton}
+                        isStateloading={isStateLoadSuccess.loading.isLoadingButton}
+                    />
                 </div>
             </Form>
         </BackgroundUiVehicle>

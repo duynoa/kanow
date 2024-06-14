@@ -18,7 +18,6 @@ import { useVehicleManage } from "@/hooks/useVehicleManage";
 
 import { getListCalendarPriceMonth, postChangeQuantityMonths, putPriceBusyDay } from "@/services/cars/calendar.services";
 
-
 import { isSameDay } from "date-fns";
 
 import { ReadonlyURLSearchParams, usePathname, useSearchParams } from "next/navigation";
@@ -32,6 +31,7 @@ import { uuidv4 } from "@/lib/uuid";
 import moment from "moment";
 import SkeletonCalendar from "@/components/skeleton/SkeletonCalendar";
 import Nodata from "@/components/image/Nodata";
+import ButtonLoading from "@/components/button/ButtonLoading";
 
 type Props = {}
 
@@ -142,7 +142,7 @@ export default function SeflCalendar(props: Props) {
         } catch (err) {
             throw err
         }
-    }, [id, type, queryKeyIsStateLoadSuccess])
+    }, [id, type])
 
     useEffect(() => {
         if (id && type) {
@@ -206,11 +206,7 @@ export default function SeflCalendar(props: Props) {
 
     const onSubmitBusyDay = async (item: any) => {
         try {
-            queryKeyIsStateLoadSuccess({
-                loading: {
-                    isSuccessFetchApi: true
-                }
-            })
+
 
             const dataSubmit = {
                 type: type,
@@ -220,6 +216,11 @@ export default function SeflCalendar(props: Props) {
             const { data } = await putPriceBusyDay(dataSubmit)
 
             if (data && data.result) {
+                queryKeyIsStateLoadSuccess({
+                    loading: {
+                        isSuccessFetchApi: true
+                    }
+                })
                 toastCore.success("Cập nhật ngày bận thành công!")
             } else {
                 toastCore.error(data.message)
@@ -384,7 +385,7 @@ export default function SeflCalendar(props: Props) {
     return (
         <BackgroundUiVehicle className={"min-h-[90vh]"}>
             <div className='flex flex-col gap-4 pb-8 border-b'>
-                <div className='3xl:text-2xl text-xl font-semibold'>
+                <div className='text-xl uppercase font-bold'>
                     Thiết lập tháng
                 </div>
 
@@ -396,7 +397,7 @@ export default function SeflCalendar(props: Props) {
                             render={({ field, fieldState }) => {
                                 return (
                                     <FormItem className="space-y-0 flex flex-col gap-1">
-                                        <FormLabel className="3xl:text-sm lg:text-xs font-medium text-[#16171B]/60">
+                                        <FormLabel className="text-base font-medium text-[#16171B]/60">
                                             Bắt đầu từ
                                         </FormLabel>
                                         <FormControl>
@@ -408,7 +409,7 @@ export default function SeflCalendar(props: Props) {
                                                             role="combobox"
                                                             className="2xl:py-3 w-full 3xl:h-12 h-10 3xl:rounded-2xl rounded-lg lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 hover:bg-transparent"
                                                         >
-                                                            <span className='3xl:text-base text-sm text-[#A7A7A7]'>Hiện tại</span>
+                                                            <span className='text-base text-[#A7A7A7]'>Hiện tại</span>
                                                             <MdKeyboardArrowDown className="ml-2 text-xl shrink-0 opacity-50" />
                                                         </Button>
                                                     </PopoverTrigger>
@@ -433,7 +434,7 @@ export default function SeflCalendar(props: Props) {
 
                                 return (
                                     <FormItem className="space-y-0 flex flex-col gap-1">
-                                        <FormLabel className="3xl:text-sm lg:text-xs font-medium text-[#16171B]/60">
+                                        <FormLabel className="text-base font-medium text-[#16171B]/60">
                                             Cho đến <span className="text-red-500 px-1">*</span>
                                         </FormLabel>
                                         <FormControl>
@@ -448,7 +449,7 @@ export default function SeflCalendar(props: Props) {
                                                             role="combobox"
                                                             className={`${checkValue ? "justify-between" : "justify-end"} 2xl:py-3 w-full 3xl:h-12 h-10 3xl:rounded-2xl rounded-lg lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs border-[#E6E8EC] border-2 hover:bg-transparent`}
                                                         >
-                                                            <span className='3xl:text-base text-sm'>
+                                                            <span className='text-base'>
                                                                 {checkValue ? checkValue : ""}
                                                             </span>
                                                             <MdKeyboardArrowDown className="ml-2 text-xl shrink-0 opacity-50" />
@@ -478,17 +479,27 @@ export default function SeflCalendar(props: Props) {
                         />
                     </div>
                     <div className="flex items-center md:justify-end justify-between gap-2 mt-2">
-                        <ButtonSaveForm
+                        {/* <ButtonSaveForm
                             title="Cập Nhật Tháng"
                             onClick={form.handleSubmit((values) => onSubmit(values))}
                             disabled={isStateLoadSuccess.loading.isLoadingButton}
+                        /> */}
+
+                        <ButtonLoading
+                            title="Cập Nhật Tháng"
+                            type="button"
+                            onClick={form.handleSubmit((values) => onSubmit(values))}
+                            className="flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
+                                border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                            disabled={isStateLoadSuccess.loading.isLoadingButton}
+                            isStateloading={isStateLoadSuccess.loading.isLoadingButton}
                         />
                     </div>
                 </Form>
             </div>
 
             <div className='flex flex-col gap-4 pt-8'>
-                <div className='3xl:text-2xl text-xl font-semibold'>
+                <div className='text-xl uppercase font-bold'>
                     Lịch xe
                 </div>
 
@@ -510,7 +521,7 @@ export default function SeflCalendar(props: Props) {
                                 htmlFor={`customPriceSingleDay`}
                                 className="flex items-center gap-4 cursor-pointer"
                             >
-                                <div className='3xl:text-sm text-[13px] font-normal capitalize'>
+                                <div className='text-base font-normal capitalize'>
                                     Tuỳ chỉnh giá
                                 </div>
                             </Label>
@@ -529,20 +540,12 @@ export default function SeflCalendar(props: Props) {
                             htmlFor={`settingCalendarBusy`}
                             className="flex items-center gap-4 cursor-pointer"
                         >
-                            <div className='3xl:text-sm text-[13px] font-normal capitalize'>
+                            <div className='text-base font-normal capitalize'>
                                 Thiết lập lịch bận
                             </div>
                         </Label>
                     </div>
                 </RadioGroup>
-
-                {/* <div className='flex flex-col gap-2 px-6 py-2 bg-[#F7FBFF] rounded-lg'>
-                    <div className='grid grid-cols-4'>
-                        <div>
-
-                        </div>
-                    </div>
-                </div> */}
 
                 <div className='flex flex-col 2xl:gap-8 gap-6'>
                     {
@@ -561,7 +564,7 @@ export default function SeflCalendar(props: Props) {
                                             const month: any = item?.month;
                                             const formattedMonth = parseInt(month, 10)?.toString() // tháng format bỏ số 0
 
-                                            const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ Nhật'];
+                                            const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'];
                                             // Tìm ngày đầu tiên của tháng và ngày cuối của tháng
                                             // Lưu ý: month phải trừ đi 1 vì months trong JavaScript bắt đầu từ 0 (tháng 1 là tháng 0)
                                             const firstDayOfMonth = new Date(currentYear, month - 1, 1);
@@ -656,7 +659,7 @@ export default function SeflCalendar(props: Props) {
 
                                                     <div className='flex flex-col 3xl:gap-4 gap-2'>
                                                         {/* Render các thứ trong tuần */}
-                                                        <div className="grid grid-cols-7 text-center 3xl:text-sm text-[13px] font-light uppercase">
+                                                        <div className="grid grid-cols-7 text-center text-sm font-light uppercase">
                                                             {
                                                                 daysOfWeek.map((item, index) => (
                                                                     <div key={`index-week-${index}`}>
@@ -688,7 +691,7 @@ export default function SeflCalendar(props: Props) {
                                                     const month: any = item?.month;
                                                     const formattedMonth = parseInt(month, 10)?.toString() // tháng format bỏ số 0
 
-                                                    const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ Nhật'];
+                                                    const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'];
                                                     // Tìm ngày đầu tiên của tháng và ngày cuối của tháng
                                                     // Lưu ý: month phải trừ đi 1 vì months trong JavaScript bắt đầu từ 0 (tháng 1 là tháng 0)
                                                     const firstDayOfMonth = new Date(currentYear, month - 1, 1);
@@ -783,7 +786,7 @@ export default function SeflCalendar(props: Props) {
 
                                                             <div className='flex flex-col 3xl:gap-4 gap-2'>
                                                                 {/* Render các thứ trong tuần */}
-                                                                <div className="grid grid-cols-7 text-center 3xl:text-sm text-[13px] font-light uppercase">
+                                                                <div className="grid grid-cols-7 text-center text-sm font-light uppercase">
                                                                     {
                                                                         daysOfWeek.map((item, index) => (
                                                                             <div key={`index-week-${index}`}>

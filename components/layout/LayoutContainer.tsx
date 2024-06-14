@@ -34,7 +34,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import "moment/locale/vi";
 
 import { useDataHome, useDataInfoRentalCar, useDataListCarAutonomous, useDataListCarsDriver, useDataPolicy } from '@/hooks/useDataQueryKey';
-import { useDialogAddress, useDialogRegisterOwnerDriver, useDialogReviewCar, useDialogRouteAddress } from '@/hooks/useOpenDialog';
+import { useDialogAddress, useDialogPayment, useDialogRegisterOwnerDriver, useDialogRequestCarRental, useDialogReviewCar, useDialogRouteAddress } from '@/hooks/useOpenDialog';
 
 import DialogFilterMyCar from '@/components/modals/DialogFilterMyCar';
 import DialogFilterListCars from '@/components/modals/DialogFilterListCars';
@@ -62,6 +62,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useNotification } from '@/hooks/useNotification';
 import { DialogSubmit } from '../modals/DialogSubmit';
 import { DialogReviewCar } from '../modals/DialogReviewCar';
+import { DialogPayment } from '../modals/DialogPayment';
+import { AnimatePresence } from 'framer-motion';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -113,6 +115,9 @@ const LayoutContainer = ({
         onCloseResizeTablet
     } = useResize()
     const { openDialogReviewCar, setOpenDialogReviewCar } = useDialogReviewCar()
+
+    const { openDialogRequestCarRental } = useDialogRequestCarRental()
+    const { openDialogPayment } = useDialogPayment()
 
     const currentTime = new Date();
     const expirationTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
@@ -514,12 +519,17 @@ const LayoutContainer = ({
                     }
                     <main className='overflow-hidden w-full h-full'>
                         {children}
-                        <ButtonToTop />
+                        {
+                            !pathname.startsWith("/vehicle-management-mobile") &&
+                            <ButtonToTop />
+                        }
                         <AlertDialogLogout />
                         <DialogLogin />
                         <DialogCalendar />
                         <DialogReviewImage />
-                        <DialogRequestCarRental />
+
+                        {openDialogRequestCarRental && <DialogRequestCarRental />}
+
                         <DialogValidate />
                         <AlertCancel />
                         <DialogAnswerPolicy />
@@ -537,11 +547,14 @@ const LayoutContainer = ({
                         <DialogFilterListCars />
 
                         <DialogNotification />
+
+                        {openDialogPayment && <DialogPayment />}
                     </main>
                     {
                         pathname !== "/list-cars-autonomous" &&
                         pathname !== "/list-cars-driver" &&
                         !pathname.startsWith("/vehicle-management-mobile") &&
+                        !pathname.startsWith("/transaction-statement") &&
                         <Footer />
                     }
                     <ToastContainer

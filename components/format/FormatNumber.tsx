@@ -29,6 +29,11 @@ const FormatNumberDot = (number: number): string => {
     return Math.round(number)?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 }
 
+// format 3 số là có dấu " "
+const FormatNumberSpace = (number: number): string => {
+    return Math.round(number)?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+}
+
 // format đã có làm tròn (3 số -> .)
 const FormatNumberToDecimal = (number: number, decimalPlaces: number): string => {
     const roundedNumber = parseFloat(number.toFixed(decimalPlaces));
@@ -128,4 +133,5 @@ export {
     FormatDistance,
     FormatDistanceFullKm,
     FormatNumberComma,
+    FormatNumberSpace
 }

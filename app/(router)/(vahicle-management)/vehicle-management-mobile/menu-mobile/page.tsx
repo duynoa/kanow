@@ -10,7 +10,9 @@ import {
     FormMessage
 } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
+import { useLoadSuccess } from "@/hooks/useLoadSuccess";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
@@ -43,8 +45,10 @@ export default function MenuMobile(props: Props) {
     const pathname: string = `${href}?key=${id}&t=${type}`
 
     const router = useRouter()
+
     const { apiOpenSwitchLayout, apiListOtherAmenitiesCar, apiDetailCar, apiRentCostPropose } = apiVehicleCommon()
     const { dataDetail, setIdCar, setDataDetail, setDataOther, dataOther } = useVehicleManage()
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
 
     const form = useForm({
         defaultValues: {
@@ -262,36 +266,46 @@ export default function MenuMobile(props: Props) {
                     return (
                         <div key={`e-${e.id}`}>
                             {
-                                tabTypeId === e.id ?
-                                    <div className='mx-4 py-4 text-xs uppercase font-semibold text-[#6F7689] flex items-center justify-between'>
-                                        <h1>Trạng thái</h1>
-                                        <Form {...form}>
-                                            <FormField
-                                                control={form.control}
-                                                name={`${e.id == 2 ? "openSelf" : "openTalented"}`}
-                                                render={({ field }) => {
-                                                    return (
-                                                        <FormItem className="">
-                                                            <FormControl>
-                                                                <div className="">
-                                                                    <Switch
-                                                                        className="data-[state=checked]:bg-[#2FB9BD] "
-                                                                        checked={field.value}
-                                                                        onCheckedChange={(value) => {
-                                                                            field.onChange(value)
-                                                                            form.handleSubmit((value) => onSubmit(value, e?.id == 2 ? 1 : 2))()
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                            </FormControl>
-                                                        </FormItem>
-                                                    )
-                                                }}
-                                            />
-                                        </Form>
-                                    </div>
-                                    :
-                                    null
+                                (
+                                    tabTypeId === e.id ?
+                                        (
+                                            isStateLoadSuccess?.loading?.isSuccessFetchApi ?
+                                                <div className='w-full px-2 py-2 flex items-center justify-between'>
+                                                    <Skeleton className='w-[40%] h-5' />
+                                                    <Skeleton className='w-[20%] h-7' />
+                                                </div>
+                                                :
+                                                <div className='mx-4 py-4 text-sm uppercase font-semibold text-[#6F7689] flex items-center justify-between'>
+                                                    <h1>Trạng thái</h1>
+                                                    <Form {...form}>
+                                                        <FormField
+                                                            control={form.control}
+                                                            name={`${e.id == 2 ? "openSelf" : "openTalented"}`}
+                                                            render={({ field }) => {
+                                                                return (
+                                                                    <FormItem className="">
+                                                                        <FormControl>
+                                                                            <div className="">
+                                                                                <Switch
+                                                                                    className="data-[state=checked]:bg-[#2FB9BD] "
+                                                                                    checked={field.value}
+                                                                                    onCheckedChange={(value) => {
+                                                                                        field.onChange(value)
+                                                                                        form.handleSubmit((value) => onSubmit(value, e?.id == 2 ? 1 : 2))()
+                                                                                    }}
+                                                                                />
+                                                                            </div>
+                                                                        </FormControl>
+                                                                    </FormItem>
+                                                                )
+                                                            }}
+                                                        />
+                                                    </Form>
+                                                </div>
+                                        )
+                                        :
+                                        (null)
+                                )
                             }
 
                             {
@@ -315,7 +329,7 @@ export default function MenuMobile(props: Props) {
                                                                 src={`/vehicle/tab/${pathname === item.link ? 'active' : 'noactive'}/${item.icon}`}
                                                             />
                                                         </div>
-                                                        <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} text-sm font-bold`}>
+                                                        <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} text-base font-bold`}>
                                                             {item.name}
                                                         </div>
                                                     </div>
@@ -334,7 +348,7 @@ export default function MenuMobile(props: Props) {
                                         {tabData?.map((tab) => (
                                             <div
                                                 key={tab.id}
-                                                className={`${tabTypeId === tab.id ? "text-[#1EAAB1] border-b-2 border-[#1EAAB1]" : "text-[#545454]"} py-3.5 font-medium text-center text-sm`}
+                                                className={`${tabTypeId === tab.id ? "text-[#1EAAB1] border-b-2 border-[#1EAAB1]" : "text-[#545454]"} py-3.5 font-medium text-center text-base`}
                                                 onClick={() => handleChangeTab(tab)}
                                             >
                                                 {tab.name ? tab.name : ""}
@@ -366,7 +380,7 @@ export default function MenuMobile(props: Props) {
                                                                     src={`/vehicle/tab/${pathname === item.link ? 'active' : 'noactive'}/${item.icon}`}
                                                                 />
                                                             </div>
-                                                            <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} text-sm font-bold`}>
+                                                            <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} text-base font-bold`}>
                                                                 {item.name}
                                                             </div>
                                                         </div>
