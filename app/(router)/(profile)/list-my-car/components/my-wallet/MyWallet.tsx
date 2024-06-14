@@ -16,6 +16,7 @@ import { uuidv4 } from "@/lib/uuid"
 import { useEffect, useState } from "react"
 import { useDialogPayment } from "@/hooks/useOpenDialog"
 import Link from "next/link"
+import { useDataMyWallet } from "@/hooks/useDataQueryKey"
 
 type Props = {
 
@@ -35,10 +36,14 @@ export interface FooterCell {
 }
 
 const MyWallet = (props: Props) => {
+    const [dataMonths, setDataMonths] = useState<{ id: number; date: string }[]>([]);
+
     const {
         setOpenDialogPayment,
         setTypeModal
     } = useDialogPayment()
+
+    const { isStateMyWallet, queryKeyIsStateMyWallet } = useDataMyWallet()
 
     const data = {
         startTime: 1717174800000,
@@ -345,56 +350,95 @@ const MyWallet = (props: Props) => {
         },
     ];
 
-    const dataMonths = [
-        {
-            id: 1,
-            date: "06-2024"
-        },
-        {
-            id: 2,
-            date: "05-2024"
-        },
-        {
-            id: 3,
-            date: "04-2024"
-        },
-        {
-            id: 4,
-            date: "03-2024"
-        },
-        {
-            id: 5,
-            date: "02-2024"
-        },
-        {
-            id: 6,
-            date: "01-2024"
-        },
-        {
-            id: 7,
-            date: "12-2023"
-        },
-        {
-            id: 8,
-            date: "11-2023"
-        },
-        {
-            id: 9,
-            date: "10-2023"
-        },
-        {
-            id: 10,
-            date: "09-2023"
-        },
-        {
-            id: 11,
-            date: "08-2023"
+    // const dataMonths = [
+    //     {
+    //         id: 1,
+    //         date: "06-2024"
+    //     },
+    //     {
+    //         id: 2,
+    //         date: "05-2024"
+    //     },
+    //     {
+    //         id: 3,
+    //         date: "04-2024"
+    //     },
+    //     {
+    //         id: 4,
+    //         date: "03-2024"
+    //     },
+    //     {
+    //         id: 5,
+    //         date: "02-2024"
+    //     },
+    //     {
+    //         id: 6,
+    //         date: "01-2024"
+    //     },
+    //     {
+    //         id: 7,
+    //         date: "12-2023"
+    //     },
+    //     {
+    //         id: 8,
+    //         date: "11-2023"
+    //     },
+    //     {
+    //         id: 9,
+    //         date: "10-2023"
+    //     },
+    //     {
+    //         id: 10,
+    //         date: "09-2023"
+    //     },
+    //     {
+    //         id: 11,
+    //         date: "08-2023"
+    //     }
+    // ]
+
+    useEffect(() => {
+        const currentDate = new Date(); // Lấy ngày hiện tại
+        const monthsToFetch = 12; // Số tháng cần lấy từ tháng hiện tại lùi về
+
+        const newDataMonths = [];
+
+        // Lặp từ tháng hiện tại lùi về monthsToFetch tháng
+        for (let i = 0; i < monthsToFetch; i++) {
+            const date = new Date();
+            date.setMonth(currentDate.getMonth() - i);
+
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+
+            const formattedDate = `${month.toString().padStart(2, '0')}_${year}`;
+
+            newDataMonths.push({
+                id: i + 1,
+                date: formattedDate,
+            });
         }
-    ]
+
+        // Cập nhật state dataMonths
+        setDataMonths(newDataMonths);
+
+        queryKeyIsStateMyWallet({
+            selectedMonth: newDataMonths[0].date,
+        })
+    }, []);
 
     const handleRequestPayment = () => {
         setOpenDialogPayment(true)
         setTypeModal("selected_method")
+    }
+
+    console.log("isStateMyWallet :", isStateMyWallet);
+
+    const handleChangeValue = (values: any) => {
+        console.log('valuessss:', values);
+        queryKeyIsStateMyWallet({
+            selectedMonth: values
+        })
     }
 
     return (
@@ -408,7 +452,11 @@ const MyWallet = (props: Props) => {
                     <div className='3xl:text-lg text-base uppercase font-semibold text-[#2FB9BD]'>
                         Bảng tổng hợp giao dịch
                     </div>
-                    <SelectCustom dataMonths={dataMonths} />
+                    <SelectCustom
+                        dataMonths={dataMonths}
+                        selectedMonth={isStateMyWallet.selectedMonth}
+                        handleChangeValue={handleChangeValue}
+                    />
                 </div>
 
                 <div className="flex items-center gap-2 ">
@@ -570,7 +618,7 @@ const MyWallet = (props: Props) => {
                         className='col-span-1 w-full'
                     >
                         <Link
-                            href="/transaction-statement/434"
+                            href={`/transaction-statement/${isStateMyWallet?.selectedMonth ? isStateMyWallet?.selectedMonth : ""}`}
                             type="button"
                             // onClick={handleSubmitCar}
                             className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-[#2FB9BD] bg-white hover:bg-[#2FB9BD]/20 border border-[#2FB9BD] transition-all duration-300 font-semibold rounded-xl caret-transparent'

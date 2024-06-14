@@ -493,3 +493,23 @@ export const useDataDetailCareer = create<IStateDetailCareer>((set) => ({
         },
     })),
 }));
+
+// data my wallet
+interface IStateMyWallet {
+    isStateMyWallet: any;
+    // isStateMyWallet: IInitialStateMyWallet;
+    queryKeyIsStateMyWallet: (key: any) => void;
+}
+
+export const useDataMyWallet = create<IStateMyWallet>((set) => ({
+    isStateMyWallet: {
+        selectedMonth: ""
+    },
+    queryKeyIsStateMyWallet: (key: any) => set((state) => ({
+        ...state,
+        isStateMyWallet: {
+            ...state.isStateMyWallet,
+            ...key,
+        },
+    })),
+}));

@@ -178,8 +178,6 @@ export function DialogSubmit({ }: Props) {
         }
     }
 
-    console.log('isStateLoadSuccess', isStateLoadSuccess);
-
     return (
         <Dialog
             modal
