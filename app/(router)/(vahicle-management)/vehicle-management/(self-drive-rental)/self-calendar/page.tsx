@@ -238,6 +238,8 @@ export default function SeflCalendar(props: Props) {
         let currentMonth = currentDate.getMonth() + 1; // Lấy tháng hiện tại (từ 1 đến 12)
         let currentYear = currentDate.getFullYear(); // Lấy năm hiện tại
 
+        console.log('currentMonth', currentMonth);
+
         let car = {
             id: dataDetail.data.id,
             name: dataDetail.data.name
@@ -265,8 +267,7 @@ export default function SeflCalendar(props: Props) {
                 const date = new Date(Date.UTC(year, month - 1, day));;
 
                 const dateString = date.toISOString().split('T')[0];
-                const dateWord = date.toLocaleDateString('en-US', { weekday: 'short' });
-
+                const dateWord = date.toLocaleDateString('vi-VN', { weekday: 'short' });
 
                 price_detail = [
                     ...price_detail,
@@ -566,9 +567,12 @@ export default function SeflCalendar(props: Props) {
                                             const firstDayOfMonth = new Date(currentYear, month - 1, 1);
                                             const lastDayOfMonth = new Date(currentYear, month, 1);
 
+
                                             // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
-                                            const firstDayOfWeek = firstDayOfMonth?.getDay();
-                                            const lastDayOfWeek = lastDayOfMonth?.getDay();
+                                            const firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay();
+                                            const lastDayOfWeek = lastDayOfMonth.getDay() === 0 ? 7 : lastDayOfMonth.getDay();
+                                            // const firstDayOfWeek = firstDayOfMonth?.getDay();
+                                            // const lastDayOfWeek = lastDayOfMonth?.getDay();
 
                                             // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
                                             const startOfPreviousWeek = new Date(firstDayOfMonth);
@@ -576,6 +580,7 @@ export default function SeflCalendar(props: Props) {
 
                                             const endOfNextWeek = new Date(lastDayOfMonth);
                                             endOfNextWeek?.setDate(endOfNextWeek?.getDate() + (7 - lastDayOfWeek));
+
 
                                             const previousMonthDays = [];
                                             for (let d = new Date(startOfPreviousWeek); d < firstDayOfMonth; d.setDate(d.getDate() + 1)) {
@@ -585,6 +590,8 @@ export default function SeflCalendar(props: Props) {
                                                     isPreviousMonthDay: true,
                                                 });
                                             }
+
+                                            console.log('previousMonthDays: ', previousMonthDays);
 
                                             const currentMonthDays = item.price_detail.map((dayDataApi: any) => {
                                                 const currentDate = new Date(dayDataApi.date);
@@ -694,8 +701,11 @@ export default function SeflCalendar(props: Props) {
                                                     const lastDayOfMonth = new Date(currentYear, month, 1);
 
                                                     // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
-                                                    const firstDayOfWeek = firstDayOfMonth?.getDay();
-                                                    const lastDayOfWeek = lastDayOfMonth?.getDay();
+                                                    // const firstDayOfWeek = firstDayOfMonth?.getDay();
+                                                    // const lastDayOfWeek = lastDayOfMonth?.getDay();
+
+                                                    const firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay();
+                                                    const lastDayOfWeek = lastDayOfMonth.getDay() === 0 ? 7 : lastDayOfMonth.getDay();
 
                                                     // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
                                                     const startOfPreviousWeek = new Date(firstDayOfMonth);
