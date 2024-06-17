@@ -23,6 +23,8 @@ import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigat
 import moment from 'moment'
 import { getListDetailSyntheticTransaction } from '@/services/cars/historyPayment.services'
 import { useAuth } from '@/hooks/useAuth'
+import { endOfMonth, isSameMonth, isThisMonth, parse, startOfMonth } from 'date-fns'
+import { IInitialTransactionStatement } from '@/types/Payment/IPaymentCar'
 
 type Props = {
     params: {
@@ -31,7 +33,7 @@ type Props = {
 }
 
 const TransactionStatement = ({ params }: Props) => {
-    const initialState = {
+    const initialState: IInitialTransactionStatement = {
         dataTableFinish: [],
         totalPriceTableFinish: {
             totalRevenueCustomer: 0,
@@ -42,6 +44,10 @@ const TransactionStatement = ({ params }: Props) => {
             // totalRevenueCustomer: 0,
             totalPriceDone: 0,
         },
+        date: {
+            startDate: "",
+            endDate: "",
+        }
     }
 
     const pathname = usePathname()
@@ -54,6 +60,7 @@ const TransactionStatement = ({ params }: Props) => {
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [isState, setIsState] = useState<any>(initialState)
+    // const [dateRange, setDateRange] = useState<string>('');
 
     const queryState = (key: any) => setIsState((prev: any) => ({ ...prev, ...key }))
 
@@ -199,8 +206,34 @@ const TransactionStatement = ({ params }: Props) => {
         setIsMounted(true)
     }, [])
 
-    console.log('params : ', params);
+    useEffect(() => {
+        const getDateRange = (monthYear: string): string => {
+            const date = parse(monthYear, 'MM_yyyy', new Date());
+            const startDate = startOfMonth(date);
+            const currentDate = new Date();
+            let endDate;
 
+            if (isSameMonth(date, currentDate)) {
+                endDate = currentDate;
+            } else {
+                endDate = endOfMonth(date);
+            }
+
+            queryState({
+                date: {
+                    startDate: startDate,
+                    endDate: endDate
+                }
+            })
+
+            return `From ${moment(startDate).format('DD-MM-yyyy')} to ${moment(endDate).format('DD-MM-yyyy')}`;
+        };
+
+        const data = getDateRange(params.slug)
+
+    }, [params.slug])
+
+    console.log('params : ', params);
 
     useEffect(() => {
         const fetchListDetailSyntheticTransaction = async () => {
@@ -221,9 +254,6 @@ const TransactionStatement = ({ params }: Props) => {
                     const totalRevenueCustomer = dataFinish.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.revenue_customer }, 0)
                     const totalPriceDone = dataFinish.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.account_balance }, 0)
 
-                    console.log('totalRevenueCustomer', totalRevenueCustomer);
-
-
                     queryState({
                         dataTableFinish: dataFinish.data,
                         totalPriceTableFinish: {
@@ -243,9 +273,6 @@ const TransactionStatement = ({ params }: Props) => {
                         },
                     })
                 }
-                console.log('data dataFinish:', dataFinish);
-                console.log('data dataCancel:', dataCancel);
-
             } catch (err) {
                 throw err
             }
@@ -253,7 +280,6 @@ const TransactionStatement = ({ params }: Props) => {
 
         fetchListDetailSyntheticTransaction()
     }, [])
-
 
     if (!isMounted) {
         return null
@@ -277,13 +303,13 @@ const TransactionStatement = ({ params }: Props) => {
                     <div className='space-x-2'>
                         <span className='text-sm'>Từ ngày</span>
                         <span className='px-3 py-1 bg-[#F6F6F6] font-medium 2xl:text-base text-sm'>
-                            {moment("02-01-2024").format("DD-MM-YYYY")}
+                            {moment(isState?.date?.startDate).format("DD-MM-yyyy")}
                         </span>
                     </div>
                     <div className='space-x-2'>
                         <span className='text-sm'>Đến ngày</span>
                         <span className='px-3 py-1 bg-[#F6F6F6] font-medium 2xl:text-base text-sm'>
-                            {moment("02-29-2024").format("DD-MM-YYYY")}
+                            {moment(isState?.date?.endDate).format("DD-MM-yyyy")}
                         </span>
                     </div>
                 </div>
@@ -295,19 +321,20 @@ const TransactionStatement = ({ params }: Props) => {
                         <div className='w-[40%] max-w-[40%] text-base font-semibold'>
                             Chủ xe
                         </div>
-                        <div className='w-[60%] max-w-[60%] text-[#545454] text-base font-medium bg-[#F6F6F6] px-4 py-1'>
-                            {/* Nguyễn Đình Quang */}
-                            {informationUser?.fullname ? informationUser?.fullname : ""}
+                        <div className='w-[60%] max-w-[60%] '>
+                            <span className='bg-[#F6F6F6] px-4 py-1 w-fit text-[#545454] text-base font-medium'>
+                                {informationUser?.fullname ? informationUser?.fullname : ""}
+                            </span>
                         </div>
                     </div>
-                    <div className='flex items-center justify-between w-full'>
+                    {/* <div className='flex items-center justify-between w-full'>
                         <div className='w-[40%] max-w-[40%] text-base font-semibold'>
                             Mã số
                         </div>
                         <div className='w-[60%] max-w-[60%] text-[#545454] text-base font-medium bg-[#F6F6F6] px-4 py-1'>
                             UQ7FVL
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className='lg:col-span-3 hidden' />
             </div>
@@ -320,8 +347,8 @@ const TransactionStatement = ({ params }: Props) => {
                 <div className='overflow-x-auto pb-2'>
                     <div className=' xl:min-w-full xl:max-w-full min-w-[1280px] max-w-[1280px] grid grid-cols-12'>
                         {/* header */}
-                        <div className='col-span-12 grid grid-cols-12  w-full bg-[#7DF9FF]/30 border-r'>
-                            <div className='col-span-4 grid grid-cols-4 grid-rows-3 '>
+                        <div className='col-span-12 grid grid-cols-12  w-full bg-[#7DF9FF]/30 border-r rounded-t-xl'>
+                            <div className='col-span-4 grid grid-cols-4 grid-rows-3 rounded-tl-xl'>
                                 <div className='col-span-4 row-span-1 text-[#545454]/80 font-medium flex items-center justify-center text-center text-[15px] border border-r-0 border-b-0 py-1'>
                                     Thời gian
                                 </div>
@@ -370,7 +397,7 @@ const TransactionStatement = ({ params }: Props) => {
                                 <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                     Phí vận hành
                                 </div>
-                                <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2  rounded-tr-xl">
                                     Thay đổi số dư
                                 </div>
                             </div>

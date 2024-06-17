@@ -432,10 +432,7 @@ const MyWallet = (props: Props) => {
         setTypeModal("selected_method")
     }
 
-    console.log("isStateMyWallet :", isStateMyWallet);
-
     const handleChangeValue = (values: any) => {
-        console.log('valuessss:', values);
         queryKeyIsStateMyWallet({
             selectedMonth: values
         })
