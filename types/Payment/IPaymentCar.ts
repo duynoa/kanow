@@ -8,6 +8,15 @@ interface IInitialTransactionStatement {
     totalPriceTableCancel: {
         totalPriceDone: number,
     },
+    dataTableRequestWithdrawMoney: any[],
+    totalPriceTableRequestWithdrawMoney: {
+        totalPriceDone: number,
+    },
+    amountPrice: {
+        opening_balance: number,
+        ending_balance: number,
+        balance_period: number,
+    }
     date: {
         startDate: string,
         endDate: string,

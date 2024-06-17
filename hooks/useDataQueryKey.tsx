@@ -503,7 +503,8 @@ interface IStateMyWallet {
 
 export const useDataMyWallet = create<IStateMyWallet>((set) => ({
     isStateMyWallet: {
-        selectedMonth: ""
+        selectedMonth: "",
+        listSyntheticTransaction: undefined
     },
     queryKeyIsStateMyWallet: (key: any) => set((state) => ({
         ...state,

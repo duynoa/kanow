@@ -17,6 +17,7 @@ import { useEffect, useState } from "react"
 import { useDialogPayment } from "@/hooks/useOpenDialog"
 import Link from "next/link"
 import { useDataMyWallet } from "@/hooks/useDataQueryKey"
+import { getListSyntheticTransaction } from "@/services/cars/historyPayment.services"
 
 type Props = {
 
@@ -169,23 +170,123 @@ const MyWallet = (props: Props) => {
         bankBranch: ""
     }
 
-    // Function to convert data
-    const convertData = (transactions: any[]): any[] => {
-        return transactions.map((transaction) => ({
+    // const dataMonths = [
+    //     {
+    //         id: 1,
+    //         date: "06-2024"
+    //     },
+    //     {
+    //         id: 2,
+    //         date: "05-2024"
+    //     },
+    //     {
+    //         id: 3,
+    //         date: "04-2024"
+    //     },
+    //     {
+    //         id: 4,
+    //         date: "03-2024"
+    //     },
+    //     {
+    //         id: 5,
+    //         date: "02-2024"
+    //     },
+    //     {
+    //         id: 6,
+    //         date: "01-2024"
+    //     },
+    //     {
+    //         id: 7,
+    //         date: "12-2023"
+    //     },
+    //     {
+    //         id: 8,
+    //         date: "11-2023"
+    //     },
+    //     {
+    //         id: 9,
+    //         date: "10-2023"
+    //     },
+    //     {
+    //         id: 10,
+    //         date: "09-2023"
+    //     },
+    //     {
+    //         id: 11,
+    //         date: "08-2023"
+    //     }
+    // ]
 
-            codeTrip: transaction.trip.id,
-            carType: transaction.trip.serviceType === 1 ? "Xe tự lái" : "Xe có tài",
-            dateStart: moment(transaction.trip.tripDateFrom).format("DD/MM/YYYY"),
-            dateEnd: moment(transaction.trip.tripDateTo).format("DD/MM/YYYY"),
-            rentalPrice: `${FormatNumberDot(transaction.trip.price)}đ`,
-            ownerRevenue: `${FormatNumberDot(transaction.trip.price - transaction.trip.fee)}đ`,
-            receivedPrice: `${FormatNumberDot(transaction.amount)}đ`,
-            balanceChange: `${FormatNumberDot(transaction.trip.payAfter)}đ`,
+    useEffect(() => {
+        const currentDate = new Date(); // Lấy ngày hiện tại
+        const monthsToFetch = 12; // Số tháng cần lấy từ tháng hiện tại lùi về
+
+        const newDataMonths = [];
+
+        // Lặp từ tháng hiện tại lùi về monthsToFetch tháng
+        for (let i = 0; i < monthsToFetch; i++) {
+            const date = new Date();
+            date.setMonth(currentDate.getMonth() - i);
+
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+
+            const formattedDate = `${month.toString().padStart(2, '0')}_${year}`;
+
+            newDataMonths.push({
+                id: i + 1,
+                date: formattedDate,
+            });
+        }
+
+        // Cập nhật state dataMonths
+        setDataMonths(newDataMonths);
+
+        queryKeyIsStateMyWallet({
+            selectedMonth: newDataMonths[0].date,
+        })
+    }, []);
+
+    useEffect(() => {
+        if (isStateMyWallet.selectedMonth !== "") {
+            const fetchListSyntheticTransaction = async () => {
+                const dataParams = {
+                    month_search: isStateMyWallet.selectedMonth
+                }
+                const { data } = await getListSyntheticTransaction(dataParams)
+
+                console.log('data ví của tôi: ', data);
+                if (data) {
+                    queryKeyIsStateMyWallet({
+                        listSyntheticTransaction: data,
+                    })
+                }
+            }
+
+            fetchListSyntheticTransaction()
+        }
+    }, [isStateMyWallet.selectedMonth])
+
+    // Function to convert data
+    const convertData = (transactions: any[]) => {
+        console.log('transactions', transactions);
+
+        return transactions?.map((transaction) => ({
+            idCar: transaction.id,
+            type: transaction.type,
+            codeTrip: transaction.reference_no,
+            carType: transaction.type === 1 ? "Xe tự lái" : "Xe có tài",
+            dateStart: moment(transaction.date_start).format("DD/MM/YYYY"),
+            dateEnd: moment(transaction.date_end).format("DD/MM/YYYY"),
+            rentalPrice: `${FormatNumberDot(transaction.cost.amount)}đ`,
+            ownerRevenue: `${FormatNumberDot(transaction.cost.revenue_customer)}đ`,
+            receivedPrice: `${FormatNumberDot(transaction.cost.payment_customer)}đ`,
+            balanceChange: `${FormatNumberDot(transaction.cost.account_balance)}đ`,
         }));
 
     };
 
-    const convertDataCustom = convertData(data.transactionsFinished);
+    const convertDataCustom = convertData(isStateMyWallet?.listSyntheticTransaction?.transactionFinish?.data ? isStateMyWallet?.listSyntheticTransaction?.transactionFinish?.data : []);
 
     const columnsDataCustom: ColumnDef<any>[] = [
         {
@@ -194,12 +295,19 @@ const MyWallet = (props: Props) => {
             cell: ({ row }) => {
                 // let codeTrip = row?.getValue("codeTrip");
                 let codeTrip = row?.original?.codeTrip;
+                let idCar = row?.original?.idCar;
+                let type = row?.original?.type;
+                console.log('row: ', row);
+
 
                 if (codeTrip) {
                     return (
-                        <div className="3xl:text-sm text-[13px] text-[#2FB9BD] cursor-pointer transition duration-300 w-full text-center">
-                            {codeTrip}
-                        </div>
+                        <Link
+                            href={`/info-rental-car/${idCar}?type=${type}`}
+                            className="3xl:text-sm text-[13px] text-[#2FB9BD] cursor-pointer transition duration-300 w-full text-center"
+                        >
+                            {codeTrip ? codeTrip : ""}
+                        </Link>
                     );
                 }
 
@@ -350,83 +458,6 @@ const MyWallet = (props: Props) => {
         },
     ];
 
-    // const dataMonths = [
-    //     {
-    //         id: 1,
-    //         date: "06-2024"
-    //     },
-    //     {
-    //         id: 2,
-    //         date: "05-2024"
-    //     },
-    //     {
-    //         id: 3,
-    //         date: "04-2024"
-    //     },
-    //     {
-    //         id: 4,
-    //         date: "03-2024"
-    //     },
-    //     {
-    //         id: 5,
-    //         date: "02-2024"
-    //     },
-    //     {
-    //         id: 6,
-    //         date: "01-2024"
-    //     },
-    //     {
-    //         id: 7,
-    //         date: "12-2023"
-    //     },
-    //     {
-    //         id: 8,
-    //         date: "11-2023"
-    //     },
-    //     {
-    //         id: 9,
-    //         date: "10-2023"
-    //     },
-    //     {
-    //         id: 10,
-    //         date: "09-2023"
-    //     },
-    //     {
-    //         id: 11,
-    //         date: "08-2023"
-    //     }
-    // ]
-
-    useEffect(() => {
-        const currentDate = new Date(); // Lấy ngày hiện tại
-        const monthsToFetch = 12; // Số tháng cần lấy từ tháng hiện tại lùi về
-
-        const newDataMonths = [];
-
-        // Lặp từ tháng hiện tại lùi về monthsToFetch tháng
-        for (let i = 0; i < monthsToFetch; i++) {
-            const date = new Date();
-            date.setMonth(currentDate.getMonth() - i);
-
-            const year = date.getFullYear();
-            const month = date.getMonth() + 1;
-
-            const formattedDate = `${month.toString().padStart(2, '0')}_${year}`;
-
-            newDataMonths.push({
-                id: i + 1,
-                date: formattedDate,
-            });
-        }
-
-        // Cập nhật state dataMonths
-        setDataMonths(newDataMonths);
-
-        queryKeyIsStateMyWallet({
-            selectedMonth: newDataMonths[0].date,
-        })
-    }, []);
-
     const handleRequestPayment = () => {
         setOpenDialogPayment(true)
         setTypeModal("selected_method")
@@ -461,7 +492,7 @@ const MyWallet = (props: Props) => {
                         Số dư hiện tại:
                     </div>
                     <div className='3xl:text-3xl text-2xl font-bold text-[#2FB9BD]'>
-                        {FormatCurrency(3287482)}
+                        {FormatCurrency(isStateMyWallet?.listSyntheticTransaction?.balance ? isStateMyWallet?.listSyntheticTransaction?.balance : 0)}
                     </div>
                 </div>
 
@@ -470,7 +501,7 @@ const MyWallet = (props: Props) => {
                         <div className='flex items-center gap-2'>
                             <FaStar className='3xl:text-lg text-base text-[#FF9900]' />
                             <div className='3xl:text-2xl text-xl text-[#484D5C] font-medium      '>
-                                {data.rating ? (FormatPointStar(data.rating, 1)) : 0}
+                                {isStateMyWallet?.listSyntheticTransaction?.infoTrip?.star_avg ? (FormatPointStar(isStateMyWallet?.listSyntheticTransaction?.infoTrip?.star_avg, 1)) : 0}
                             </div>
                         </div>
                         <div className='3xl:text-base text-sm text-[#8C93A3] text-center'>
@@ -482,7 +513,7 @@ const MyWallet = (props: Props) => {
                         <div className='flex items-center gap-2'>
                             <FaCar className='3xl:text-lg text-base text-[#2FB9BD]' />
                             <div className='3xl:text-2xl text-xl text-[#484D5C] font-medium      '>
-                                {data.totalTripFinished ? FormatNumberHundred(data.totalTripFinished, 100) : 0}
+                                {isStateMyWallet?.listSyntheticTransaction?.infoTrip?.total ? FormatNumberHundred(isStateMyWallet?.listSyntheticTransaction?.infoTrip?.total, 100) : 0}
                             </div>
                         </div>
                         <div className='3xl:text-base text-sm text-[#8C93A3] text-center'>
@@ -518,20 +549,25 @@ const MyWallet = (props: Props) => {
                     </div>
                 </div>
 
-                <div>
-                    {/* <ReusableTable
+                {
+                    isStateMyWallet?.listSyntheticTransaction?.transactionFinish?.data && isStateMyWallet?.listSyntheticTransaction?.transactionFinish?.data?.length > 0 ?
+                        <div>
+                            {/* <ReusableTable
                         columns={columns}
                         data={columnsDataCustom}
                         // data={convertDataCustom}
                         caption="A list of your recent invoices."
                     /> */}
-                    <ReusableTable2
-                        data={convertDataCustom}
-                        columns={columnsDataCustom}
-                        classNameRow="flex w-full"
-                        classNameCell="max-w-[200px]"
-                    />
-                </div>
+                            <ReusableTable2
+                                data={convertDataCustom}
+                                columns={columnsDataCustom}
+                                classNameRow="flex w-full"
+                                classNameCell="max-w-[200px]"
+                            />
+                        </div>
+                        :
+                        (null)
+                }
 
                 <div className="flex flex-col gap-3">
                     <div className='flex items-center justify-between bg-[#F6F6F6] py-2 px-4 rounded-md'>
@@ -539,7 +575,7 @@ const MyWallet = (props: Props) => {
                             Tổng thay đổi - Chuyến đi hoàn thành
                         </div>
                         <div className='3xl:text-base text-sm text-[#545454] font-medium'>
-                            {FormatNumberDot(448000)}đ
+                            {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.totalTransactionFinish ? isStateMyWallet?.listSyntheticTransaction?.totalTransactionFinish : 0)}đ
                         </div>
                     </div>
 
@@ -548,7 +584,7 @@ const MyWallet = (props: Props) => {
                             Tổng thay đổi - Giao dịch rút/nộp tiền
                         </div>
                         <div className='3xl:text-base text-sm text-[#545454] font-medium'>
-                            -{FormatNumberDot(448000)}đ
+                            {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.totalTransactionCancel ? isStateMyWallet?.listSyntheticTransaction?.totalRequestWithdrawMoney : 0)}đ
                         </div>
                     </div>
 
@@ -557,7 +593,7 @@ const MyWallet = (props: Props) => {
                             Tổng thay đổi - Giao dịch huỷ chuyến
                         </div>
                         <div className='3xl:text-base text-sm text-[#545454] font-medium'>
-                            {FormatNumberDot(0)}đ
+                            {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.totalTransactionCancel ? isStateMyWallet?.listSyntheticTransaction?.totalTransactionCancel : 0)}đ
                         </div>
                     </div>
 
@@ -567,7 +603,7 @@ const MyWallet = (props: Props) => {
                                 Tổng cộng thay đổi trong kì
                             </div>
                             <div className='3xl:text-base text-sm text-[#545454] font-medium'>
-                                -{FormatNumberDot(1106841)}đ
+                                {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.balance_period ? isStateMyWallet?.listSyntheticTransaction?.balance_period : 0)}đ
                             </div>
                         </div>
 
@@ -576,7 +612,7 @@ const MyWallet = (props: Props) => {
                                 Tiền đầu kì
                             </div>
                             <div className='3xl:text-base text-sm text-[#545454] font-medium'>
-                                {FormatNumberDot(1191341)}đ
+                                {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.opening_balance ? isStateMyWallet?.listSyntheticTransaction?.opening_balance : 0)}đ
                             </div>
                         </div>
 
@@ -585,7 +621,7 @@ const MyWallet = (props: Props) => {
                                 Tiền cuối kì
                             </div>
                             <div className='3xl:text-base text-sm text-[#2FB9BD] font-medium'>
-                                {FormatNumberDot(84500)}đ
+                                {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.ending_balance ? isStateMyWallet?.listSyntheticTransaction?.ending_balance : 0)}đ
                             </div>
                         </div>
 
@@ -594,7 +630,7 @@ const MyWallet = (props: Props) => {
                                 Thu nhập chủ xe
                             </div>
                             <div className='3xl:text-base text-sm text-[#f08080] font-medium'>
-                                {FormatNumberDot(4556000)}đ
+                                {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.balance ? isStateMyWallet?.listSyntheticTransaction?.balance : 0)}đ
                             </div>
                         </div>
                     </div>
