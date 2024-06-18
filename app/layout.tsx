@@ -15,7 +15,8 @@ export default function RootLayout({
         <html lang="en">
             <head>
                 <meta name="google-site-verification" content="ig4H1SE4hArs-pmvzmAmlMSVutXaQoJ3yB5UfRUiO_s" />
-                <meta name="viewport" content="width=device-width, user-scalable=no" />
+                {/* <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" /> */}
+
             </head>
 
             <LayoutContainer>

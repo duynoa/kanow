@@ -299,7 +299,6 @@ const MyWallet = (props: Props) => {
                 let type = row?.original?.type;
                 console.log('row: ', row);
 
-
                 if (codeTrip) {
                     return (
                         <Link
@@ -630,7 +629,7 @@ const MyWallet = (props: Props) => {
                                 Thu nhập chủ xe
                             </div>
                             <div className='3xl:text-base text-sm text-[#f08080] font-medium'>
-                                {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.balance ? isStateMyWallet?.listSyntheticTransaction?.balance : 0)}đ
+                                {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.revenue_customer ? isStateMyWallet?.listSyntheticTransaction?.revenue_customer : 0)}đ
                             </div>
                         </div>
                     </div>
