@@ -875,7 +875,7 @@ export function DialogCalendar({ }: Props) {
                 <DialogOverlay className='z-40' />
                 <DialogContent className={`
                 ${pathname.startsWith('/detail-car/') ? "h-[95vh]" : "w-fit"} 
-                ${typeCarCalendar === "calendar_car_autonomous" ? "lg:max-w-[840px] md:max-w-[640px] max-w-[380px]" : "max-w-[400px]"}
+                ${typeCarCalendar === "calendar_car_autonomous" ? "lg:max-w-[840px] md:max-w-[640px] max-w-[380px]" : "2xl:max-w-[480px] max-w-[420px]"}
                 p-0 max-h-[95vh] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`
                 }>
                     <DialogClose
@@ -897,11 +897,11 @@ export function DialogCalendar({ }: Props) {
                                 <div className='flex flex-col gap-2 overflow-auto'>
                                     {
                                         pathname.startsWith('/detail-car/') ?
-                                            <div className='px-2 border m-2 rounded-lg'>
+                                            <div className='border my-2 p-2 rounded-lg'>
                                                 <CalendarCustom />
                                             </div>
                                             :
-                                            <div className='px-2 border m-2 rounded-lg'>
+                                            <div className='border my-2 rounded-lg'>
                                                 <Calendar
                                                     initialFocus
                                                     mode="range"
@@ -917,7 +917,7 @@ export function DialogCalendar({ }: Props) {
                                     }
                                     {
                                         pathname.startsWith('/detail-car/') ?
-                                            <div className='flex flex-row items-center gap-2 px-2 w-full'>
+                                            <div className='flex flex-row items-center gap-2 w-full'>
                                                 <div className='flex flex-col gap-1 w-[50%]'>
                                                     <Label>Giờ nhận xe</Label>
                                                     <Select
@@ -978,7 +978,7 @@ export function DialogCalendar({ }: Props) {
                                                 </div>
                                             </div>
                                             :
-                                            <div className='flex flex-row items-center gap-2 px-2 w-full'>
+                                            <div className='flex flex-row items-center gap-2 w-full'>
                                                 <div className='flex flex-col gap-1 w-[50%]'>
                                                     <Label>Giờ nhận xe</Label>
                                                     <Select
@@ -1100,7 +1100,7 @@ export function DialogCalendar({ }: Props) {
                                     }
                                 </div>
 
-                                <div className='flex items-center justify-between border-t drop-shadow-md py-6 px-4 bg-white rounded-b-lg'>
+                                <div className={`${pathname.startsWith('/detail-car/') ? "" : "py-6"} flex items-center justify-between shadow-md border px-4 bg-white rounded-lg`}>
                                     <div className='flex flex-col'>
                                         {
                                             pathname.startsWith('/detail-car/') ?
@@ -1143,11 +1143,11 @@ export function DialogCalendar({ }: Props) {
                                 <div className='flex flex-col gap-2 overflow-auto'>
                                     {
                                         pathname.startsWith('/detail-car/') ?
-                                            <div className='px-2 border m-2 rounded-lg'>
+                                            <div className='px-2 border my-2 p-2 rounded-lg'>
                                                 <CalendarCustom />
                                             </div>
                                             :
-                                            <div className='px-2 border m-2 rounded-lg drop-shadow-md'>
+                                            <div className='px-2 border my-2 rounded-lg drop-shadow-md'>
                                                 <Calendar
                                                     initialFocus
                                                     mode="single"
@@ -1162,7 +1162,7 @@ export function DialogCalendar({ }: Props) {
                                     }
                                     {
                                         pathname.startsWith('/detail-car/') ?
-                                            <div className='flex flex-col gap-1 px-2 w-full'>
+                                            <div className='flex flex-col gap-1 w-full'>
                                                 <Label>Giờ nhận xe</Label>
                                                 <Select
                                                     value={(dateStart ? format(dateStart, 'HH:mm') : '')}
@@ -1192,7 +1192,7 @@ export function DialogCalendar({ }: Props) {
                                                 </Select>
                                             </div>
                                             :
-                                            <div className='flex flex-col gap-1 px-2 w-full'>
+                                            <div className='flex flex-col gap-1 w-full'>
                                                 <Label>Giờ nhận xe</Label>
                                                 <Select
                                                     value={(dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm') : '')}
@@ -1226,7 +1226,7 @@ export function DialogCalendar({ }: Props) {
                                     {
                                         pathname.startsWith('/detail-car/') && isStateDetailCar?.dataDetailCar?.hour_receive_car && isStateDetailCar?.dataDetailCar?.hour_receive_car.length > 0 &&
                                             isStateDetailCar?.dataDetailCar?.hour_back_car && isStateDetailCar?.dataDetailCar?.hour_back_car.length > 0 ?
-                                            <div className='px-2 mt-4'>
+                                            <div className='mt-4'>
                                                 <div className='bg-[#EDEDED]/40 flex flex-col p-3 rounded-lg'>
                                                     <div className='flex items-center justify-between w-full'>
                                                         <div className='3xl:text-base text-sm text-[#000000] font-light'>
@@ -1253,7 +1253,7 @@ export function DialogCalendar({ }: Props) {
                                     {
                                         pathname.startsWith('/detail-car/') && validateDateSubmit ?
                                             // validateDateSubmit || statusDate == 2 || statusDate == 3 ?
-                                            <div className='px-2 mt-4'>
+                                            <div className='mt-4'>
                                                 <div className='3xl:text-base text-sm font-normal text-[#FF0000]'>
                                                     * Xe bận trong khoảng thời gian trên. Vui lòng đặt xe khác hoặc thay đổi lịch trình thích hợp.
                                                 </div>
@@ -1263,15 +1263,17 @@ export function DialogCalendar({ }: Props) {
                                     }
                                 </div>
 
-                                <div className='flex items-center justify-between border-t drop-shadow-md py-6 px-4 bg-white rounded-b-lg'>
+                                {/* <div className='flex items-center justify-between shadow-md px-4 rounded-b-lg'> */}
+                                <div className={`${pathname.startsWith('/detail-car/') ? "" : "py-2"} flex items-center justify-between shadow-md border px-4 bg-white rounded-lg`}>
+
                                     <div className='flex flex-col'>
                                         {
                                             pathname.startsWith('/detail-car/') ?
-                                                <div className='text-base font-semibold'>
+                                                <div className='text-base font-semibold max-w-[95%]'>
                                                     {dateStart ? format(dateStart, 'HH:mm, dd/MM') : ""}{dateEnd ? ` - ${format(dateEnd, 'HH:mm, dd/MM')}` : ''}
                                                 </div>
                                                 :
-                                                <div className='text-base font-semibold'>
+                                                <div className='text-base font-semibold max-w-[95%]'>
                                                     {dateTimeComponent?.from ? format(dateTimeComponent?.from, 'HH:mm, dd/MM') : ""}{dateTimeComponent?.to ? ` - ${format(dateTimeComponent?.to, 'HH:mm, dd/MM')}` : ''}
                                                 </div>
                                         }

@@ -14,11 +14,15 @@ export const useLoadSuccess = create<IStateLoadSuccess>((set) => ({
             isLoadingButton: false,
             isLoadingButtonSecond: false,
         },
+        loadingSecond: {
+            isSuccessFetchApiSecond: false,
+            isLoadingButtonSecond: false,
+        },
         success: undefined,
         onSuccess: false,
     },
     queryKeyIsStateLoadSuccess: (key: any) => set((state) => ({
-        ...state,
+        // ...state,
         isStateLoadSuccess: {
             ...state.isStateLoadSuccess,
             ...key,

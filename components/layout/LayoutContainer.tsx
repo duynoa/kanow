@@ -509,6 +509,7 @@ const LayoutContainer = ({
         isStateNotification.dataListNotifications,
     ]);
 
+    // Hàm xử lí sự kiện khoá zoom trên giao diện mobile
     useEffect(() => {
         const metaViewport = document.querySelector('meta[name=viewport]');
         if (metaViewport) {

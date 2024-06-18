@@ -497,8 +497,6 @@ const DialogFilterAddress = memo(({ }: Props) => {
         }
     }
 
-
-
     // handle close modal
     const handleCloseModal = () => {
         setOpenDialogAddress(false)
@@ -534,7 +532,7 @@ const DialogFilterAddress = memo(({ }: Props) => {
                             </DialogTitle>
                         </DialogHeader>
 
-                        <div className="flex flex-col gap-4 px-4 justify-between h-full min-h-[calc(60vh_-_60px)]">
+                        <div className="flex flex-col gap-4 justify-between h-full min-h-[calc(60vh_-_60px)]">
                             <div className='flex flex-col gap-4 h-full'>
                                 <div className="relative">
                                     <TiLocation className="size-5 text-[#1EAAB1] absolute top-1/2 -translate-y-1/2 left-2" />

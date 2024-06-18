@@ -74,7 +74,6 @@ export function DialogCancelCar({ }: Props) {
 
                     setIsLoadingDialogCancelCar(true)
                     const { data } = await getListReasonsCancel(dataParams)
-                    console.log('data data Dtaa:', data);
 
                     if (data && data.data) {
                         setDataListReasonsCancel(data.data)
@@ -91,14 +90,11 @@ export function DialogCancelCar({ }: Props) {
     }, [type, openDialogCancelCar])
 
     const handleChangeReason = (item: any) => {
-        console.log('item : ', item);
         setContentReason(item.note)
         form.setValue('content', item.note, { shouldValidate: true });
     }
 
     const onSubmit = async (values: any) => {
-        console.log('values', values);
-
         try {
             if (contentReason) {
                 setIsLoadingButtonSubmit(true)
@@ -114,9 +110,6 @@ export function DialogCancelCar({ }: Props) {
                     note: contentReason,
                     transaction_id: dataInfo?.car_id
                 }
-
-                console.log('dataReport', dataReport);
-
 
                 const { data } = await postChangeStatusRentalCar(dataReport)
 
@@ -165,7 +158,7 @@ export function DialogCancelCar({ }: Props) {
                         :
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit((values) => onSubmit(values))}>
-                                <div className='flex flex-col gap-6 md:px-6 px-3'>
+                                <div className='flex flex-col gap-6'>
                                     <div className='flex flex-col gap-2'>
                                         <Label className='text-base text-[#000000] font-semibold'>Lí do huỷ chuyến:</Label>
 
@@ -227,7 +220,7 @@ export function DialogCancelCar({ }: Props) {
                                     </div>
                                 </div>
 
-                                <div className='pt-8 md:px-6 px-3 flex flex-row gap-2 justify-end bg-white caret-transparent'>
+                                <div className='pt-8 flex flex-row gap-2 justify-end bg-white caret-transparent'>
                                     <Button
                                         type="button"
                                         disabled={isLoadingButtonSubmit ? true : false}
