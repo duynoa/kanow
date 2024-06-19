@@ -509,6 +509,19 @@ const LayoutContainer = ({
         isStateNotification.dataListNotifications,
     ]);
 
+    // Hàm xử lí sự kiện khoá zoom trên giao diện mobile
+    useEffect(() => {
+        const metaViewport = document.querySelector('meta[name=viewport]');
+        if (metaViewport) {
+            metaViewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
+        } else {
+            const meta = document.createElement('meta');
+            meta.name = 'viewport';
+            meta.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no';
+            document.head.appendChild(meta);
+        }
+    }, [pathname]);
+
     return (
         <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>
             <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
@@ -536,8 +549,7 @@ const LayoutContainer = ({
                         <DialogCancelCar />
                         <DialogPromotions />
                         <DialogReportCar />
-
-                        <DialogFilterAddress />
+                        {openDialogAddress && <DialogFilterAddress />}
                         <DialogRouteAddress />
 
                         <AlertDialogCustom />

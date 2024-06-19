@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from "axios";
 import axios from "../../utils/axios-customize";
 
-// lấy danh sách cars
+// Chi tiết sao kê giao dịch của chủ xe
 const getListDetailSyntheticTransaction = (
     param?: any
 ) => {
@@ -15,6 +15,21 @@ const getListDetailSyntheticTransaction = (
     return axios.get(`/synthetic_report/getListDetailSyntheticTransaction`, config);
 };
 
+// Đanh sách tổng hợp ví của tôi
+const getListSyntheticTransaction = (
+    param?: any
+) => {
+    // Chuyển đổi mảng thành chuỗi query string
+    let config: AxiosRequestConfig = {
+        params: {
+            ...param, // Nối các tham số trong param object
+        },
+    };
+
+    return axios.get(`/synthetic_report/getListSyntheticTransaction`, config);
+};
+
 export {
-    getListDetailSyntheticTransaction
+    getListDetailSyntheticTransaction,
+    getListSyntheticTransaction
 }

@@ -1,6 +1,6 @@
 import { IInfoPromotion } from "@/types/Cars/IPromotions";
 import { IInitialStateDetailCar } from "@/types/Initial/IInitial";
-import { addDays, setHours, setMinutes } from "date-fns";
+import { addDays, getHours, setHours, setMinutes } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { create } from "zustand";
 
@@ -67,7 +67,8 @@ interface IOpenDialogCalendar {
 }
 
 const defaultDateRange: DateRange = {
-    from: setMinutes(setHours(new Date(), 8), 0),
+    from: setMinutes(setHours(new Date(), getHours(new Date()) + 2), 0),
+    // from: setMinutes(setHours(new Date(), 8), 0),
     to: setMinutes(setHours(addDays(new Date(), 1), 8), 0),
 };
 

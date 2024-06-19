@@ -1,18 +1,18 @@
 import { FormatNumberDot } from '@/components/format/FormatNumber'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
-import { useDataInfoRentalCar, useDataPaymentRental } from '@/hooks/useDataQueryKey'
+import { useDataPaymentRental } from '@/hooks/useDataQueryKey'
 import { toastCore } from '@/lib/toast'
 import { postPaymentRentalCar } from '@/services/cars/payment.services'
-import { IInitialStatePayment } from '@/types/Initial/IInitial'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
-import { BsArrow90DegLeft } from 'react-icons/bs'
 import { FaArrowLeftLong } from 'react-icons/fa6'
 import { PiCheckCircleFill } from 'react-icons/pi'
 
 import { motion } from 'framer-motion'
+import { useLoadSuccess } from '@/hooks/useLoadSuccess'
+import SkeletonPayment from '@/components/skeleton/SkeletonPayment'
 
 type Props = {}
 
@@ -22,7 +22,7 @@ const PaymentMethods = ({ }: Props) => {
     const typeCarDetail = searchParams.get('type')
 
     const { isStatePaymentRental, queryKeyIsStatePaymentRental } = useDataPaymentRental()
-    const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
 
     const handleChangePayment = (item: any, index: number) => {
         queryKeyIsStatePaymentRental({
@@ -34,14 +34,13 @@ const PaymentMethods = ({ }: Props) => {
     }
 
     const handleSubmitPayment = async () => {
+        queryKeyIsStateLoadSuccess({
+            loading: {
+                ...isStateLoadSuccess.loading,
+                isLoadingButton: true
+            }
+        })
         try {
-            queryKeyIsStateInfoRentalCar({
-                loading: {
-                    ...isStateInfoRentalCar.loading,
-                    isLoadingButton: true
-                }
-            })
-
             const dataPayment = {
                 payment_mode_id: isStatePaymentRental?.payment?.idActivePaymentMethod,
                 total: isStatePaymentRental?.detailRentalCar?.price?.price_depoist,
@@ -49,27 +48,22 @@ const PaymentMethods = ({ }: Props) => {
                 type: typeCarDetail
             }
             const { data } = await postPaymentRentalCar(dataPayment)
-            console.log('data :', data);
+
             if (data && data.result) {
                 toastCore.success("Thanh toán cọc thành công!")
-                queryKeyIsStateInfoRentalCar({
-                    loading: {
-                        ...isStateInfoRentalCar.loading,
-                        isLoadingButton: false
-                    }
-                })
                 router.push(`/info-rental-car/${isStatePaymentRental?.detailRentalCar?.id}?type=${typeCarDetail}`)
             } else {
-                queryKeyIsStateInfoRentalCar({
-                    loading: {
-                        ...isStateInfoRentalCar.loading,
-                        isLoadingButton: false
-                    }
-                })
                 toastCore.error(data.message)
             }
         } catch (err) {
             throw err
+        } finally {
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isLoadingButton: false
+                }
+            })
         }
     }
 
@@ -94,81 +88,87 @@ const PaymentMethods = ({ }: Props) => {
                         Vui lòng chọn phương thức thanh toán
                     </div>
 
-                    <div className='flex flex-col gap-3'>
-                        {
-                            isStatePaymentRental?.listPaymentMode && isStatePaymentRental?.listPaymentMode?.map((item, index) => (
-                                <React.Fragment key={`payment-${item.id}`} >
-                                    {
-                                        item.type === 1 ?
-                                            <div
-                                                className={`${isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id ? "bg-[#F1FCFC] border-2 border-[#2FB9BD]" : "bg-white"} flex-flex-col px-4 py-3 rounded-xl caret-transparent cursor-pointer relative`}
-                                                onClick={() => handleChangePayment(item, index)}
-                                            >
-                                                <div className='flex items-center gap-4'>
-                                                    <div className='w-12 h-12'>
-                                                        <Image
-                                                            alt="logo_payment"
-                                                            src={item?.image ? item?.image : "/default/default.png"}
-                                                            width={100}
-                                                            height={100}
-                                                            className='w-full h-full object-contain'
-                                                        />
-                                                    </div>
-                                                    <div className='3xl:text-base text-sm font-semibold text-[#3E424E]'>
-                                                        {item?.name ? item?.name : ""}
-                                                    </div>
-                                                </div>
-                                                {
-                                                    isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id && item?.type !== 1 &&
-                                                    <div className='flex flex-col gap-4'>
-                                                        <div className='flex items-center justify-between pb-3 border-b ml-16'>
-                                                            <div className='flex flex-col gap-1 max-w-[80%]'>
-                                                                <div className='3xl:text-base text-sm text-[#585F71] font-semibold'>
-                                                                    Lưu thông tin thẻ
-                                                                </div>
-                                                                <div className='3xl:text-base text-sm text-[#50777E] font-medium space-x-1'>
-                                                                    <span>Lưu ý: Một số Ngân hàng sẽ</span>
-                                                                    <span className='text-red-500'>không cho phép</span>
-                                                                    <span>lưu thông tin thẻ ATM</span>
-                                                                </div>
+                    {
+                        isStateLoadSuccess.loading.isSuccessFetchApi ?
+                            <SkeletonPayment type="list" />
+                            :
+                            <div className='flex flex-col gap-3'>
+                                {
+                                    isStatePaymentRental?.listPaymentMode && isStatePaymentRental?.listPaymentMode?.map((item, index) => (
+                                        <React.Fragment key={`payment-${item.id}`} >
+                                            {
+                                                item.type === 1 ?
+                                                    <div
+                                                        className={`${isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id ? "bg-[#F1FCFC] border-2 border-[#2FB9BD]" : "bg-white"} flex-flex-col px-4 py-3 rounded-xl caret-transparent cursor-pointer relative`}
+                                                        onClick={() => handleChangePayment(item, index)}
+                                                    >
+                                                        <div className='flex items-center gap-4'>
+                                                            <div className='w-12 h-12'>
+                                                                <Image
+                                                                    alt="logo_payment"
+                                                                    src={item?.image ? item?.image : "/default/default.png"}
+                                                                    width={100}
+                                                                    height={100}
+                                                                    className='w-full h-full object-contain'
+                                                                />
                                                             </div>
-                                                            <div className='max-w-[20%]'>
-                                                                <Switch id="airplane-mode" className='data-[state=checked]:bg-[#2FB9BD]' />
+                                                            <div className='3xl:text-base text-sm font-semibold text-[#3E424E]'>
+                                                                {item?.name ? item?.name : ""}
                                                             </div>
                                                         </div>
+                                                        {
+                                                            isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id && item?.type !== 1 &&
+                                                            <div className='flex flex-col gap-4'>
+                                                                <div className='flex items-center justify-between pb-3 border-b ml-16'>
+                                                                    <div className='flex flex-col gap-1 max-w-[80%]'>
+                                                                        <div className='3xl:text-base text-sm text-[#585F71] font-semibold'>
+                                                                            Lưu thông tin thẻ
+                                                                        </div>
+                                                                        <div className='3xl:text-base text-sm text-[#50777E] font-medium space-x-1'>
+                                                                            <span>Lưu ý: Một số Ngân hàng sẽ</span>
+                                                                            <span className='text-red-500'>không cho phép</span>
+                                                                            <span>lưu thông tin thẻ ATM</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className='max-w-[20%]'>
+                                                                        <Switch id="airplane-mode" className='data-[state=checked]:bg-[#2FB9BD]' />
+                                                                    </div>
+                                                                </div>
 
-                                                        <div className='flex items-center justify-between ml-16'>
-                                                            <div className='max-w-[50%]'>
-                                                                <div className='3xl:text-base text-sm text-[#50777E] font-medium space-x-1'>
-                                                                    Thêm thông tin thẻ của bạn
+                                                                <div className='flex items-center justify-between ml-16'>
+                                                                    <div className='max-w-[50%]'>
+                                                                        <div className='3xl:text-base text-sm text-[#50777E] font-medium space-x-1'>
+                                                                            Thêm thông tin thẻ của bạn
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className='max-w-[50%] w-full'>
+                                                                        <Button
+                                                                            type="button"
+                                                                            className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-[#1D1D1D] bg-[#9DF2EE] hover:bg-[#9DF2EE]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
+                                                                        >
+                                                                            Thêm thẻ
+                                                                        </Button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-
-                                                            <div className='max-w-[50%] w-full'>
-                                                                <Button
-                                                                    type="button"
-                                                                    className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-[#1D1D1D] bg-[#9DF2EE] hover:bg-[#9DF2EE]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
-                                                                >
-                                                                    Thêm thẻ
-                                                                </Button>
+                                                        }
+                                                        {
+                                                            isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id &&
+                                                            <div className='absolute right-3 top-3'>
+                                                                <PiCheckCircleFill className='size-6 text-[#2FB9BD]' />
                                                             </div>
-                                                        </div>
+                                                        }
                                                     </div>
-                                                }
-                                                {
-                                                    isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id &&
-                                                    <div className='absolute right-3 top-3'>
-                                                        <PiCheckCircleFill className='size-6 text-[#2FB9BD]' />
-                                                    </div>
-                                                }
-                                            </div>
-                                            :
-                                            null
-                                    }
-                                </React.Fragment>
-                            ))
-                        }
-                    </div>
+                                                    :
+                                                    null
+                                            }
+                                        </React.Fragment>
+                                    ))
+                                }
+                            </div>
+
+                    }
                 </div >
 
                 <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-2'>
@@ -179,9 +179,14 @@ const PaymentMethods = ({ }: Props) => {
                                     Tổng tiền:
                                 </div>
 
-                                <div className='3xl:text-3xl text-2xl text-[#1EAAB1] font-semibold'>
-                                    {FormatNumberDot(isStatePaymentRental?.detailRentalCar?.price?.price_depoist ? +isStatePaymentRental?.detailRentalCar?.price?.price_depoist : 0)}đ
-                                </div>
+                                {
+                                    isStateLoadSuccess.loadingSecond.isSuccessFetchApiSecond ?
+                                        <SkeletonPayment type="money" />
+                                        :
+                                        <div className='3xl:text-3xl text-2xl text-[#1EAAB1] font-semibold'>
+                                            {FormatNumberDot(isStatePaymentRental?.detailRentalCar?.price?.price_depoist ? +isStatePaymentRental?.detailRentalCar?.price?.price_depoist : 0)}đ
+                                        </div>
+                                }
                             </div>
 
                             {/* <div className='flex items-center justify-between'>
@@ -199,21 +204,25 @@ const PaymentMethods = ({ }: Props) => {
                             <div className='3xl:text-base text-sm text-[#8C93A3]'>
                                 Phương thức thanh toán
                             </div>
-                            <div className='flex items-center gap-2 mb-4'>
-                                <div className='w-12 h-12'>
-                                    <Image
-                                        src={isStatePaymentRental?.listPaymentMode?.[isStatePaymentRental.payment.indexPaymentMethod]?.image ? isStatePaymentRental?.listPaymentMode[isStatePaymentRental.payment.indexPaymentMethod]?.image : "/default/default.png"}
-                                        alt="method"
-                                        width={200}
-                                        height={200}
-                                        className='w-full h-full object-contain'
-                                    />
-                                </div>
-                                <div className='3xl:text-base text-sm font-bold'>
-                                    {/* Thanh toán qua Momo */}
-                                    {isStatePaymentRental?.listPaymentMode[isStatePaymentRental.payment.indexPaymentMethod]?.name ? isStatePaymentRental?.listPaymentMode[isStatePaymentRental.payment.indexPaymentMethod]?.name : ""}
-                                </div>
-                            </div>
+                            {
+                                isStateLoadSuccess.loading.isSuccessFetchApi ?
+                                    <SkeletonPayment type="method" />
+                                    :
+                                    <div className='flex items-center gap-2 mb-4'>
+                                        <div className='w-12 h-12'>
+                                            <Image
+                                                src={isStatePaymentRental?.listPaymentMode[isStatePaymentRental.payment.indexPaymentMethod]?.image ? isStatePaymentRental?.listPaymentMode[isStatePaymentRental.payment.indexPaymentMethod]?.image : "/default/default.png"}
+                                                alt="method"
+                                                width={200}
+                                                height={200}
+                                                className='w-full h-full object-contain'
+                                            />
+                                        </div>
+                                        <div className='3xl:text-base text-sm font-bold'>
+                                            {isStatePaymentRental?.listPaymentMode[isStatePaymentRental.payment.indexPaymentMethod]?.name ? isStatePaymentRental?.listPaymentMode[isStatePaymentRental.payment.indexPaymentMethod]?.name : ""}
+                                        </div>
+                                    </div>
+                            }
                             <motion.div
                                 initial={false}
                                 animate={"rest"}
@@ -225,12 +234,12 @@ const PaymentMethods = ({ }: Props) => {
                             >
                                 <Button
                                     type="button"
-                                    disabled={isStateInfoRentalCar?.loading?.isLoadingButton ? true : false}
+                                    disabled={isStateLoadSuccess?.loading?.isLoadingButton || isStateLoadSuccess.loadingSecond.isSuccessFetchApiSecond ? true : false}
                                     className='py-4 w-full flex items-center gap-2 3xl:text-lg text-base text-white bg-[#2FB9BD] hover:bg-[#2FB9BD]/80 transition-all duration-300 font-semibold rounded-xl caret-transparent'
                                     onClick={handleSubmitPayment}
                                 >
                                     {
-                                        isStateInfoRentalCar?.loading?.isLoadingButton &&
+                                        isStateLoadSuccess?.loading?.isLoadingButton &&
                                         <div className="text-white inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
                                     }
 

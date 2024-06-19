@@ -23,6 +23,8 @@ import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigat
 import moment from 'moment'
 import { getListDetailSyntheticTransaction } from '@/services/cars/historyPayment.services'
 import { useAuth } from '@/hooks/useAuth'
+import { endOfMonth, isSameMonth, isThisMonth, parse, startOfMonth } from 'date-fns'
+import { IInitialTransactionStatement } from '@/types/Payment/IPaymentCar'
 
 type Props = {
     params: {
@@ -31,17 +33,32 @@ type Props = {
 }
 
 const TransactionStatement = ({ params }: Props) => {
-    const initialState = {
+    const initialState: IInitialTransactionStatement = {
+        //    table giao dịch hoàn thành chuyến trong kỳ
         dataTableFinish: [],
         totalPriceTableFinish: {
             totalRevenueCustomer: 0,
             totalPriceDone: 0,
         },
+        //    table giao dịch huỷ trong kỳ
         dataTableCancel: [],
         totalPriceTableCancel: {
-            // totalRevenueCustomer: 0,
             totalPriceDone: 0,
         },
+        // table giao dịch rút/nộp tiền trong kỳ
+        dataTableRequestWithdrawMoney: [],
+        totalPriceTableRequestWithdrawMoney: {
+            totalPriceDone: 0,
+        },
+        amountPrice: {
+            opening_balance: 0,
+            ending_balance: 0,
+            balance_period: 0,
+        },
+        date: {
+            startDate: "",
+            endDate: "",
+        }
     }
 
     const pathname = usePathname()
@@ -199,52 +216,105 @@ const TransactionStatement = ({ params }: Props) => {
         setIsMounted(true)
     }, [])
 
-    console.log('params : ', params);
+    useEffect(() => {
+        const getDateRange = (monthYear: string): string => {
+            const date = parse(monthYear, 'MM_yyyy', new Date());
+            const startDate = startOfMonth(date);
+            const currentDate = new Date();
+            let endDate;
 
+            if (isSameMonth(date, currentDate)) {
+                endDate = currentDate;
+            } else {
+                endDate = endOfMonth(date);
+            }
+
+            queryState({
+                date: {
+                    startDate: startDate,
+                    endDate: endDate
+                }
+            })
+
+            return `From ${moment(startDate).format('DD-MM-yyyy')} to ${moment(endDate).format('DD-MM-yyyy')}`;
+        };
+
+        const data = getDateRange(params.slug)
+
+    }, [params.slug])
+
+    console.log('isState : ', isState);
 
     useEffect(() => {
         const fetchListDetailSyntheticTransaction = async () => {
             try {
-                const dataParamsFinish = {
+                const dataParams = {
                     month_search: params?.slug ? params?.slug : "",
-                    status: "finish"
-                }
-                const dataParamsCancel = {
-                    month_search: params?.slug ? params?.slug : "",
-                    status: "cancel"
                 }
 
-                const { data: dataFinish } = await getListDetailSyntheticTransaction(dataParamsFinish)
-                const { data: dataCancel } = await getListDetailSyntheticTransaction(dataParamsCancel)
+                const { data } = await getListDetailSyntheticTransaction(dataParams)
+                console.log('data', data);
 
-                if (dataFinish && dataFinish.data) {
-                    const totalRevenueCustomer = dataFinish.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.revenue_customer }, 0)
-                    const totalPriceDone = dataFinish.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.account_balance }, 0)
-
-                    console.log('totalRevenueCustomer', totalRevenueCustomer);
-
+                if (data) {
+                    const totalRevenueCustomer = data.transactionFinish.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.revenue_customer }, 0)
+                    const totalPriceDoneFinish = data.transactionFinish.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.account_balance }, 0)
+                    const totalPriceDoneCancel = data.transactionCancel.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.account_balance }, 0)
 
                     queryState({
-                        dataTableFinish: dataFinish.data,
+                        dataTableFinish: data.transactionFinish.data,
                         totalPriceTableFinish: {
                             totalRevenueCustomer: totalRevenueCustomer,
-                            totalPriceDone: totalPriceDone,
+                            totalPriceDone: totalPriceDoneFinish,
                         },
-                    })
-                }
-
-                if (dataCancel && dataCancel.data) {
-                    const totalPriceDone = dataCancel.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.account_balance }, 0)
-
-                    queryState({
-                        dataTableCancel: dataCancel.data,
+                        dataTableCancel: data.transactionCancel.data,
                         totalPriceTableCancel: {
-                            totalPriceDone: totalPriceDone,
+                            totalPriceDone: totalPriceDoneCancel,
                         },
+                        amountPrice: {
+                            opening_balance: data.opening_balance,
+                            ending_balance: data.ending_balance,
+                            balance_period: data.balance_period,
+                        }
                     })
                 }
-                console.log('data dataFinish:', dataFinish);
-                console.log('data dataCancel:', dataCancel);
+
+                // if (data && data.transactionFinish && data.transactionFinish.data) {
+                //     const totalRevenueCustomer = data.transactionFinish.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.revenue_customer }, 0)
+                //     const totalPriceDone = data.transactionFinish.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.account_balance }, 0)
+
+                //     queryState({
+                //         dataTableFinish: data.transactionFinish.data,
+                //         totalPriceTableFinish: {
+                //             totalRevenueCustomer: totalRevenueCustomer,
+                //             totalPriceDone: totalPriceDone,
+                //         }
+                //     })
+                // }
+
+                // if (data && data.transactionCancel && data.transactionCancel.data) {
+                //     const totalPriceDone = data.transactionCancel.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.account_balance }, 0)
+
+                //     queryState({
+                //         dataTableCancel: data.transactionCancel.data,
+                //         totalPriceTableCancel: {
+                //             totalPriceDone: totalPriceDone,
+                //         }
+                //     })
+                // }
+
+                // if (data && data.requestWithdrawMoney && data.requestWithdrawMoney.data) {
+
+                // }
+
+                // if (data && data.balance_period && data.ending_balance && data.opening_balance) {
+                //     queryState({
+                //         amountPrice: {
+                //             opening_balance: data.opening_balance,
+                //             ending_balance: data.ending_balance,
+                //             balance_period: data.balance_period,
+                //         }
+                //     })
+                // }
 
             } catch (err) {
                 throw err
@@ -253,7 +323,6 @@ const TransactionStatement = ({ params }: Props) => {
 
         fetchListDetailSyntheticTransaction()
     }, [])
-
 
     if (!isMounted) {
         return null
@@ -277,13 +346,13 @@ const TransactionStatement = ({ params }: Props) => {
                     <div className='space-x-2'>
                         <span className='text-sm'>Từ ngày</span>
                         <span className='px-3 py-1 bg-[#F6F6F6] font-medium 2xl:text-base text-sm'>
-                            {moment("02-01-2024").format("DD-MM-YYYY")}
+                            {moment(isState?.date?.startDate).format("DD-MM-yyyy")}
                         </span>
                     </div>
                     <div className='space-x-2'>
                         <span className='text-sm'>Đến ngày</span>
                         <span className='px-3 py-1 bg-[#F6F6F6] font-medium 2xl:text-base text-sm'>
-                            {moment("02-29-2024").format("DD-MM-YYYY")}
+                            {moment(isState?.date?.endDate).format("DD-MM-yyyy")}
                         </span>
                     </div>
                 </div>
@@ -295,19 +364,20 @@ const TransactionStatement = ({ params }: Props) => {
                         <div className='w-[40%] max-w-[40%] text-base font-semibold'>
                             Chủ xe
                         </div>
-                        <div className='w-[60%] max-w-[60%] text-[#545454] text-base font-medium bg-[#F6F6F6] px-4 py-1'>
-                            {/* Nguyễn Đình Quang */}
-                            {informationUser?.fullname ? informationUser?.fullname : ""}
+                        <div className='w-[60%] max-w-[60%] '>
+                            <span className='bg-[#F6F6F6] px-4 py-1 w-fit text-[#545454] text-base font-medium'>
+                                {informationUser?.fullname ? informationUser?.fullname : ""}
+                            </span>
                         </div>
                     </div>
-                    <div className='flex items-center justify-between w-full'>
+                    {/* <div className='flex items-center justify-between w-full'>
                         <div className='w-[40%] max-w-[40%] text-base font-semibold'>
                             Mã số
                         </div>
                         <div className='w-[60%] max-w-[60%] text-[#545454] text-base font-medium bg-[#F6F6F6] px-4 py-1'>
                             UQ7FVL
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className='lg:col-span-3 hidden' />
             </div>
@@ -320,9 +390,9 @@ const TransactionStatement = ({ params }: Props) => {
                 <div className='overflow-x-auto pb-2'>
                     <div className=' xl:min-w-full xl:max-w-full min-w-[1280px] max-w-[1280px] grid grid-cols-12'>
                         {/* header */}
-                        <div className='col-span-12 grid grid-cols-12  w-full bg-[#7DF9FF]/30 border-r'>
-                            <div className='col-span-4 grid grid-cols-4 grid-rows-3 '>
-                                <div className='col-span-4 row-span-1 text-[#545454]/80 font-medium flex items-center justify-center text-center text-[15px] border border-r-0 border-b-0 py-1'>
+                        <div className='col-span-12 grid grid-cols-12  w-full bg-[#7DF9FF]/30 border-r rounded-t-xl'>
+                            <div className='col-span-4 grid grid-cols-4 grid-rows-3'>
+                                <div className='col-span-4 row-span-1 text-[#545454]/80 font-medium flex items-center justify-center text-center text-[15px] border border-r-0 border-b-0 py-1 rounded-tl-xl'>
                                     Thời gian
                                 </div>
                                 <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-center text-[15px] border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
@@ -370,7 +440,7 @@ const TransactionStatement = ({ params }: Props) => {
                                 <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                     Phí vận hành
                                 </div>
-                                <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2  rounded-tr-xl">
                                     Thay đổi số dư
                                 </div>
                             </div>
@@ -383,7 +453,7 @@ const TransactionStatement = ({ params }: Props) => {
                                         <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-4 grid grid-cols-4 grid-rows-2`}>
                                             <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                                 <Link
-                                                    href=""
+                                                    href={`/info-rental-car/${item.id}?type=${item.type}`}
                                                     className='3xl:text-sm text-[13px] text-[#2FB9BD] hover:text-[#2FB8BD]/80 cursor-pointer transition duration-300 w-full text-center'
                                                 >
                                                     {item?.reference_no ? item?.reference_no : ""}
@@ -454,81 +524,6 @@ const TransactionStatement = ({ params }: Props) => {
                                     </React.Fragment>
                                 ))
                             }
-                            {/* {
-
-                                dataFake.transactionsFinished.map((item, index) => (
-                                    <React.Fragment key={item.trip.id}>
-                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-4 grid grid-cols-4 grid-rows-2`}>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] text-[#2FB9BD] cursor-pointer transition duration-300 w-full text-center'>
-                                                    {item.trip.id}
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {moment(item.trip.tripDateFrom).format("DD/MM/YYYY")}
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {moment(item.trip.timeEnded).format("DD/MM/YYYY")}
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {moment(item.trip.timeBooked).format("DD/MM/YYYY")}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-3 grid grid-cols-3 grid-rows-2`}>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {item.trip.travelerName}
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {item.trip.carName}
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {FormatNumberSpace(item.trip.price)}đ
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-2 grid grid-cols-2 grid-rows-2`}>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {FormatNumberSpace(item.trip.deposit)}đ
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {FormatNumberSpace(item.trip.payAfter)}đ
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-3 grid grid-cols-3`}>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {FormatNumberSpace(item.trip.promotion)}đ
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {FormatNumberSpace(item.trip.fee)}đ
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {FormatNumberSpace(item.amount)}đ
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </React.Fragment>
-                                ))
-                            } */}
                         </div>
                     </div>
                 </div>
@@ -564,8 +559,8 @@ const TransactionStatement = ({ params }: Props) => {
                 <div className='grid grid-cols-12'>
                     <div className='2xl:col-span-5 lg:col-span-7 col-span-12'>
                         {/* header */}
-                        <div className='2xl:col-span-5 lg:col-span-7 col-span-12 grid grid-cols-10  w-full bg-[#7DF9FF]/30 border-r'>
-                            <div className='col-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-center text-[15px] border border-r-0 border-b-0 py-1'>
+                        <div className='2xl:col-span-5 lg:col-span-7 col-span-12 grid grid-cols-10  w-full bg-[#7DF9FF]/30 border-r rounded-t-xl'>
+                            <div className='col-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-center text-[15px] border border-r-0 border-b-0 py-1 rounded-tl-xl'>
                                 Ngày giao dịch
                             </div>
 
@@ -573,7 +568,7 @@ const TransactionStatement = ({ params }: Props) => {
                                 Nội dung
                             </div>
 
-                            <div className='col-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-center text-[15px] border border-r-0 border-b-0 py-1'>
+                            <div className='col-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-center text-[15px] border border-r-0 border-b-0 py-1 rounded-tr-xl'>
                                 Thay đổi số dư
                             </div>
                         </div>
@@ -628,9 +623,9 @@ const TransactionStatement = ({ params }: Props) => {
                 <div className='overflow-x-auto pb-2'>
                     <div className='xl:min-w-full xl:max-w-full min-w-[1280px] max-w-[1280px] grid grid-cols-12'>
                         {/* header */}
-                        <div className='col-span-12 grid grid-cols-12  w-full bg-[#7DF9FF]/30 border-r'>
+                        <div className='col-span-12 grid grid-cols-12  w-full bg-[#7DF9FF]/30 border-r rounded-t-xl'>
                             <div className='col-span-4 grid grid-cols-4 grid-rows-3 '>
-                                <div className='col-span-4 row-span-1 text-[#545454]/80 font-medium flex items-center justify-center text-center text-[15px] border border-r-0 border-b-0 py-1'>
+                                <div className='col-span-4 row-span-1 text-[#545454]/80 font-medium flex items-center justify-center text-center text-[15px] border border-r-0 border-b-0 py-1 rounded-tl-xl'>
                                     Thời gian
                                 </div>
                                 <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-center text-[15px] border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
@@ -646,7 +641,7 @@ const TransactionStatement = ({ params }: Props) => {
                                     Ngày đặt xe
                                 </div>
                             </div>
-                            <div className='col-span-4 grid grid-cols-3 grid-rows-3 '>
+                            <div className='col-span-3 grid grid-cols-3 grid-rows-3 '>
                                 <div className='col-span-3 row-span-1 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 py-1'>
                                     Thông tin chuyến đi
                                 </div>
@@ -671,11 +666,14 @@ const TransactionStatement = ({ params }: Props) => {
                                     Thanh toán chủ xe
                                 </div>
                             </div>
-                            <div className='col-span-2 grid grid-cols-2'>
+                            <div className='col-span-3 grid grid-cols-3'>
                                 <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                     Nội dung huỷ chuyến
                                 </div>
                                 <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                    Hoàn tiền/Đền cọc
+                                </div>
+                                <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2 rounded-tr-xl">
                                     Thay đổi số dư
                                 </div>
                             </div>
@@ -688,7 +686,7 @@ const TransactionStatement = ({ params }: Props) => {
                                         <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-4 grid grid-cols-4 grid-rows-2`}>
                                             <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                                 <Link
-                                                    href=""
+                                                    href={`/info-rental-car/${item.id}?type=${item.type}`}
                                                     className='3xl:text-sm text-[13px] text-[#2FB9BD] hover:text-[#2FB8BD]/80 cursor-pointer transition duration-300 w-full text-center'
                                                 >
                                                     {item?.reference_no}
@@ -710,7 +708,7 @@ const TransactionStatement = ({ params }: Props) => {
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-4 grid grid-cols-3 grid-rows-2`}>
+                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-3 grid grid-cols-3 grid-rows-2`}>
                                             <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                                 <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
                                                     {item?.customer?.fullname}
@@ -739,10 +737,15 @@ const TransactionStatement = ({ params }: Props) => {
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-2 grid grid-cols-2`}>
+                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-3 grid grid-cols-3`}>
                                             <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                                 <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
                                                     {item?.note ? item?.note : ""}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {FormatNumberSpace(item?.cost?.refund_money)}đ
                                                 </span>
                                             </div>
                                             <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
@@ -754,75 +757,6 @@ const TransactionStatement = ({ params }: Props) => {
                                     </React.Fragment>
                                 ))
                             }
-                            {/* {
-                                dataFake.transactionsCanceled.map((item, index) => (
-                                    <React.Fragment key={item.trip.id}>
-                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-4 grid grid-cols-4 grid-rows-2`}>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] text-[#2FB9BD] cursor-pointer transition duration-300 w-full text-center'>
-                                                    {item.trip.id}
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {moment(item.trip.tripDateFrom).format("DD/MM/YYYY")}
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {moment(item.trip.tripDateTo).format("DD/MM/YYYY")}
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {moment(item.trip.timeEnded).format("DD/MM/YYYY")}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-4 grid grid-cols-3 grid-rows-2`}>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {item.trip.travelerName}
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {item.trip.carName}
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {FormatNumberSpace(item.trip.price)}đ
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-2 grid grid-cols-2 grid-rows-2`}>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {FormatNumberSpace(item.trip.deposit)}đ
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {FormatNumberSpace(item.trip.payAfter)}đ
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-2 grid grid-cols-2`}>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {item.trip.reasonCanceled}
-                                                </span>
-                                            </div>
-                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
-                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
-                                                    {FormatNumberSpace(item.amount)}đ
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </React.Fragment>
-                                ))
-                            } */}
                         </div>
                     </div>
                 </div>
@@ -848,7 +782,7 @@ const TransactionStatement = ({ params }: Props) => {
                         Tổng cộng thay đổi trong kì
                     </div>
                     <div className='text-sm text-[#545454] font-bold'>
-                        {FormatNumberSpace(679891)}đ
+                        {FormatNumberSpace(isState?.amountPrice?.balance_period)}đ
                     </div>
                 </div>
 
@@ -857,7 +791,7 @@ const TransactionStatement = ({ params }: Props) => {
                         Tiền đầu kì
                     </div>
                     <div className='text-sm text-[#545454] font-bold'>
-                        {FormatNumberSpace(511450)}đ
+                        {FormatNumberSpace(isState?.amountPrice?.opening_balance)}đ
                     </div>
                 </div>
 
@@ -866,18 +800,9 @@ const TransactionStatement = ({ params }: Props) => {
                         Tiền cuối kì
                     </div>
                     <div className='text-sm text-[#2FB9BD] font-bold'>
-                        {FormatNumberSpace(1191341)}đ
+                        {FormatNumberSpace(isState?.amountPrice?.ending_balance)}đ
                     </div>
                 </div>
-
-                {/* <div className='flex items-center justify-between'>
-                    <div className='3xl:text-base text-sm uppercase text-[#f08080] font-medium'>
-                        Thu nhập chủ xe
-                    </div>
-                    <div className='3xl:text-base text-sm text-[#f08080] font-medium'>
-                        {FormatNumberDot(4556000)}đ
-                    </div>
-                </div> */}
             </div>
 
             <div className='text-sm text-[#545454] font-normal'>
