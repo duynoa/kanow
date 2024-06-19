@@ -108,9 +108,6 @@ const SecurityInfo = (props: Props) => {
         },
     ]
 
-    console.log('isState', isState);
-
-
     return (
         <div className="flex flex-col gap-6 2xl:pb-20 pb-16">
             <div className='flex flex-col gap-4'>
@@ -212,64 +209,6 @@ const SecurityInfo = (props: Props) => {
                         ))
                     }
                 </Accordion >
-
-                {/* <div className='flex flex-col gap-2'>
-                    <div className='2xl:text-xl text-base font-medium'>
-                        1. Quy trình thanh toán giữa khách hàng và chủ xe
-                    </div>
-                    <div className='space-y-2'>
-                        <span>Sau khi lựa chọn xe, phía chủ xe và khách hàng sẽ thỏa thuận phương thức thanh toán phù hợp cho cả 2 bên.</span>
-                        <br />
-                        <span>Các bước trong quy trình thanh toán được thực hiện như sau:</span>
-                        <br />
-                        <ul className='list-disc space-y-1'>
-                            <li className='space-x-2'>
-                                <span className='text-base font-bold'>Bước 1:</span>
-                                <span>Khách hàng tìm hiểu kỹ thông tin về dịch vụ, loại xe khách muốn thuê, thời gian di chuyển phù hợp và chi phí trước khi thực hiện đặt xe tại KANOW.</span>
-                            </li>
-                            <li className='space-x-2'>
-                                <span className='text-base font-bold'>Bước 2:</span>
-                                <span>Sau đó phía KANOW sẽ kiểm tra thông tin, liên hệ đến khách và xác nhận thông tin đặt xe qua email hoặc tin nhắn điện thoại hoặc thông báo trên ứng dụng và Zalo đến khách hàng để khách nắm thông tin.</span>
-                            </li>
-                            <li className='space-x-2'>
-                                <span className='text-base font-bold'>Bước 3:</span>
-                                <span>Tiếp đến, khách hàng thực hiện thanh toán tiền cọc phí thuê xe thông qua các phương thức chuyển khoản ngân hàng hoặc liên kết thẻ.</span>
-                            </li>
-                            <li className='space-x-2'>
-                                <span className='text-base font-bold'>Bước 4:</span>
-                                <span>Sau khi khách thanh toán thành công, KANOW sẽ gửi xác nhận đặt cọc thành công qua email hoặc qua thông báo ứng dụng hoặc Zalo đến khách hàng.</span>
-                            </li>
-                            <li className='space-x-2'>
-                                <span className='text-base font-bold'>Bước 5:</span>
-                                <span>Khách hàng sẽ thực hiện thanh toán phần còn lại cho chủ xe thông qua hình thức chuyển khoản hoặc tiền mặt.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className='flex flex-col gap-2'>
-                    <div className='2xl:text-xl text-base font-medium'>
-                        2. Quy trình thanh toán giữa chủ xe và công ty
-                    </div>
-                    <div className='space-y-2'>
-                        <span>Các chủ xe sẽ thực hiện thanh toán phí cho phía chủ Công ty theo các bước sau đây:</span>
-                        <br />
-                        <ul className='list-disc space-y-1'>
-                            <li className='space-x-2'>
-                                <span className='text-base font-bold'>Bước 1:</span>
-                                <span>Các chủ xe thực hiện đầy đủ các bước đăng ký xe cho thuê tại KANOW</span>
-                            </li>
-                            <li className='space-x-2'>
-                                <span className='text-base font-bold'>Bước 2:</span>
-                                <span>Sau khi đăng ký thành công, chủ xe sẽ thực hiện xem xét và phê duyệt các yêu cầu thuê xe của khách hàng. Và phía công ty KANOW sẽ tính phí % dịch vụ trên mỗi chuyến đi.</span>
-                            </li>
-                            <li className='space-x-2'>
-                                <span className='text-base font-bold'>Bước 3:</span>
-                                <span>Chủ xe thực hiện thanh toán phí dịch vụ cho phía chủ công ty KANOW thông qua hình thức chuyển khoản hoặc liên kết thẻ.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div> */}
             </div>
         </div>
     )

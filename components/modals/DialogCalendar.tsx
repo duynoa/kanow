@@ -501,7 +501,6 @@ export function DialogCalendar({ }: Props) {
     ])
 
     useEffect(() => {
-
         setDateTemp(dateReal)
         setDateStart(dateReal?.from)
         setDateEnd(dateReal?.to)

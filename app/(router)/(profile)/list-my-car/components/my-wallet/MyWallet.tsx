@@ -18,6 +18,8 @@ import { useDialogPayment } from "@/hooks/useOpenDialog"
 import Link from "next/link"
 import { useDataMyWallet } from "@/hooks/useDataQueryKey"
 import { getListSyntheticTransaction } from "@/services/cars/historyPayment.services"
+import { createSignature } from '@/utils/signature/createSignature'
+import { getListBanksInland } from "@/services/cars/payment.services"
 
 type Props = {
 
@@ -266,6 +268,27 @@ const MyWallet = (props: Props) => {
             fetchListSyntheticTransaction()
         }
     }, [isStateMyWallet.selectedMonth])
+
+    useEffect(() => {
+        const fetchListBanksInland = async () => {
+            const data = {
+                "tokenKey": "MmoytVJm5iqU34T9fId8DIsMGowxMz",
+            };
+
+            const checksumkey = "X68SUvKaq9NdSiHVEH5cdJ4QIEJTFW";
+            const signature = createSignature(data, checksumkey);
+
+            // Thêm signature vào data
+            const requestData = { ...data, signature };
+
+            const res = await getListBanksInland(requestData)
+
+            console.log('res', res);
+
+        }
+
+        fetchListBanksInland()
+    }, [])
 
     // Function to convert data
     const convertData = (transactions: any[]) => {

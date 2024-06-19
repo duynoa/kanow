@@ -81,9 +81,7 @@ const PaymentCar = ({ }: Props) => {
 
     const latitude = 10.796455918645478; // Thay đổi giá trị này bằng vĩ độ thực tế
     const longitude = 106.63445664322627; // Thay đổi giá trị này bằng kinh độ thực tế
-    const dataMaps = {
-        google_map_link: ""
-    }
+    const dataMaps = { google_map_link: "" }
 
     const handleOpenDialog = async (type: string, typeTime?: string) => {
         if (type === 'custom_promotion') {
@@ -157,7 +155,7 @@ const PaymentCar = ({ }: Props) => {
 
     const handleSubmitCar = () => {
         if (dataCalendar.length === 0 && getCookie !== "kanow" && getCookie !== undefined) {
-            toastCore.error("Vui lòng chọn lại bộ lịch!")
+            toastCore.error("Bộ lịch của xe chưa được cập nhật!")
         } else if (validateDateSubmit && getCookie !== "kanow" && getCookie !== undefined) {
             toastCore.error("Xe bận trong khoảng thời gian trên. Vui lòng đặt xe khác hoặc thay đổi lịch trình thích hợp!")
         } else if (
@@ -347,194 +345,196 @@ const PaymentCar = ({ }: Props) => {
                 </div>
                 {
                     typeCarDetail == "2" ?
-                        <div className='flex flex-col gap-2 bg-[#2FB9BD]/10 p-4 rounded-lg'>
-                            <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
-                                Lộ trình
-                            </div>
-
-                            <div className='flex flex-row items-center gap-1'>
-                                <div className='3xl:text-sm text-xs text-[#767676]'>
-                                    Di chuyển liên tỉnh, trả khách tại điểm đón.
+                        (
+                            <div className='flex flex-col gap-2 bg-[#2FB9BD]/10 p-4 rounded-lg'>
+                                <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
+                                    Lộ trình
                                 </div>
-                                {
-                                    isVisibleTablet ?
-                                        <div onClick={() => setOpenDialogAnswerPolicy(true, "setting_price_car")}>
-                                            <FaRegQuestionCircle className='text-[#767676] text-lg cursor-pointer' />
-                                        </div>
-                                        :
-                                        <ActionTooltip
-                                            side="bottom"
-                                            align="center"
-                                            label={(
-                                                <div className='2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
-                                                    {/* <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy ? isStatePolicy?.dataPolicy?.setting_price_car : ''}` }} /> */}
-                                                    chưa có
-                                                </div>
-                                            )}
-                                        >
-                                            <div>
-                                                <FaRegQuestionCircle className='text-[#767676] lg:text-lg text-base cursor-pointer' />
+
+                                <div className='flex flex-row items-center gap-1'>
+                                    <div className='3xl:text-sm text-xs text-[#767676]'>
+                                        Di chuyển liên tỉnh, trả khách tại điểm đón.
+                                    </div>
+                                    {
+                                        isVisibleTablet ?
+                                            <div onClick={() => setOpenDialogAnswerPolicy(true, "setting_price_car")}>
+                                                <FaRegQuestionCircle className='text-[#767676] text-lg cursor-pointer' />
                                             </div>
-                                        </ActionTooltip>
-                                }
-                            </div>
+                                            :
+                                            <ActionTooltip
+                                                side="bottom"
+                                                align="center"
+                                                label={(
+                                                    <div className='2xl:max-w-[560px] xl:max-w-[520px] max-w-[420px]'>
+                                                        {/* <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy ? isStatePolicy?.dataPolicy?.setting_price_car : ''}` }} /> */}
+                                                        chưa có
+                                                    </div>
+                                                )}
+                                            >
+                                                <div>
+                                                    <FaRegQuestionCircle className='text-[#767676] lg:text-lg text-base cursor-pointer' />
+                                                </div>
+                                            </ActionTooltip>
+                                    }
+                                </div>
 
-                            <div className='w-full h-full'>
-                                <Map latitude={latitude} longitude={longitude} data={dataMaps} />
-                            </div>
+                                <div className='w-full h-full'>
+                                    <Map latitude={latitude} longitude={longitude} data={dataMaps} />
+                                </div>
 
 
-                            <div className='flex flex-col gap-4'>
-                                <div className='flex flex-col gap-2 w-full'>
-                                    <Label className='text-sm text-[#6F7689]' htmlFor="place">
-                                        Địa điểm đón
-                                    </Label>
-                                    <div className="relative">
-                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <TiLocation className="text-xl text-[#1EAAB1]" />
-                                        </span>
-                                        <div
-                                            id="place"
-                                            onClick={() => handleOpenDialogAddress('address_pickup')}
-                                            className='pl-10  cursor-pointer pr-2 py-3 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                <div className='flex flex-col gap-4'>
+                                    <div className='flex flex-col gap-2 w-full'>
+                                        <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                            Địa điểm đón
+                                        </Label>
+                                        <div className="relative">
+                                            <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <TiLocation className="text-xl text-[#1EAAB1]" />
+                                            </span>
+                                            <div
+                                                id="place"
+                                                onClick={() => handleOpenDialogAddress('address_pickup')}
+                                                className='pl-10  cursor-pointer pr-2 py-3 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
                                         focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
-                                        >
-                                            {
-                                                isStateDetailCar.map.valueAddressPickup ?
-                                                    (isStateDetailCar.map.valueAddressPickup ? isStateDetailCar.map.valueAddressPickup : 'Chọn địa điểm đón')
-                                                    :
-                                                    (valueAddressPickup ? valueAddressPickup : 'Chọn địa điểm đón')
-                                            }
+                                            >
+                                                {
+                                                    isStateDetailCar.map.valueAddressPickup ?
+                                                        (isStateDetailCar.map.valueAddressPickup ? isStateDetailCar.map.valueAddressPickup : 'Chọn địa điểm đón')
+                                                        :
+                                                        (valueAddressPickup ? valueAddressPickup : 'Chọn địa điểm đón')
+                                                }
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {
-                                    isStateDetailCar.map.coordinates.latTo != 0 && isStateDetailCar.map.coordinates.lngTo != 0 ?
-                                        isStateDetailCar.map.valueAddressDestination && isStateDetailCar.map.valueAddressDestination?.map((destination, index) => (
-                                            <div className='flex flex-col gap-2 w-full' key={index}>
-                                                <Label className='text-sm text-[#6F7689]' htmlFor="place">
-                                                    Địa điểm đến {isStateDetailCar.map.valueAddressDestination.length === 1 ? "" : index + 1}
-                                                </Label>
-                                                <div className="relative">
-                                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                                        <TiLocation className="text-xl text-[#1EAAB1]" />
-                                                    </span>
-                                                    <div
-                                                        id="place"
-                                                        onClick={() => handleOpenDialogAddress('address_destination', index)}
-                                                        className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                    {
+                                        isStateDetailCar.map.coordinates.latTo != 0 && isStateDetailCar.map.coordinates.lngTo != 0 ?
+                                            isStateDetailCar.map.valueAddressDestination && isStateDetailCar.map.valueAddressDestination?.map((destination, index) => (
+                                                <div className='flex flex-col gap-2 w-full' key={index}>
+                                                    <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                                        Địa điểm đến {isStateDetailCar.map.valueAddressDestination.length === 1 ? "" : index + 1}
+                                                    </Label>
+                                                    <div className="relative">
+                                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                            <TiLocation className="text-xl text-[#1EAAB1]" />
+                                                        </span>
+                                                        <div
+                                                            id="place"
+                                                            onClick={() => handleOpenDialogAddress('address_destination', index)}
+                                                            className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
                                         focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
-                                                    >
-                                                        {
-                                                            isStateDetailCar.map.valueAddressDestination[index].valueAddress
-                                                                ?
+                                                        >
+                                                            {
                                                                 isStateDetailCar.map.valueAddressDestination[index].valueAddress
-                                                                :
-                                                                'Chọn địa điểm đến'
-                                                        }
+                                                                    ?
+                                                                    isStateDetailCar.map.valueAddressDestination[index].valueAddress
+                                                                    :
+                                                                    'Chọn địa điểm đến'
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))
-                                        :
-                                        valueAddressDestination && valueAddressDestination?.map((destination, index) => (
-                                            <div className='flex flex-col gap-2 w-full' key={index}>
-                                                <Label className='text-sm text-[#6F7689]' htmlFor="place">
-                                                    Địa điểm đến {valueAddressDestination.length === 1 ? "" : index + 1}
-                                                </Label>
-                                                <div className="relative">
-                                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                                        <TiLocation className="text-xl text-[#1EAAB1]" />
-                                                    </span>
-                                                    <div
-                                                        id="place"
-                                                        onClick={() => handleOpenDialogAddress('address_destination', index)}
-                                                        className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
+                                            ))
+                                            :
+                                            valueAddressDestination && valueAddressDestination?.map((destination, index) => (
+                                                <div className='flex flex-col gap-2 w-full' key={index}>
+                                                    <Label className='text-sm text-[#6F7689]' htmlFor="place">
+                                                        Địa điểm đến {valueAddressDestination.length === 1 ? "" : index + 1}
+                                                    </Label>
+                                                    <div className="relative">
+                                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                            <TiLocation className="text-xl text-[#1EAAB1]" />
+                                                        </span>
+                                                        <div
+                                                            id="place"
+                                                            onClick={() => handleOpenDialogAddress('address_destination', index)}
+                                                            className='pl-10  cursor-pointer pr-2 py-3 w-full 3xl:text-base 2xl:text-sm xl:text-[13px] lg:text-xs md:text-xs text-xs truncate justify-start rounded-xl bg-[#F6F6F8]/70 border-0 hover:bg-[#F6F6F8]/70 focus-visible:outline-none focus-visible:ring-0 
                                         focus-visible:ring-offset-0 text-[#16171B] font-normal' // Để cung cấp khoảng trống bên trái để không làm che biểu tượng
-                                                    >
-                                                        {
-                                                            valueAddressDestination[indexAddressDestination].valueAddress ?
-                                                                valueAddressDestination[indexAddressDestination].valueAddress
-                                                                :
-                                                                'Chọn địa điểm đến'
-                                                        }
+                                                        >
+                                                            {
+                                                                valueAddressDestination[indexAddressDestination].valueAddress ?
+                                                                    valueAddressDestination[indexAddressDestination].valueAddress
+                                                                    :
+                                                                    'Chọn địa điểm đến'
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))
-                                }
-                            </div>
-
-                            <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
-                                Thông tin lộ trình
-                            </div>
-
-                            <div className='flex flex-col gap-2'>
-                                <div className='flex flex-row items-center justify-between'>
-                                    <div className='3xl:text-base text-sm text-[#16171B] font-thin'>
-                                        Tổng lộ trình
-                                    </div>
-                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
-                                        {isStateDetailCar?.map?.totalDistance ? FormatDistance(isStateDetailCar?.map?.totalDistance) : "0 km"}
-                                    </div>
+                                            ))
+                                    }
                                 </div>
 
-                                {/* Tổng số km được đi */}
-                                <div className='flex flex-row items-center justify-between'>
-                                    <div className='flex flex-row items-center gap-1'>
+                                <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
+                                    Thông tin lộ trình
+                                </div>
+
+                                <div className='flex flex-col gap-2'>
+                                    <div className='flex flex-row items-center justify-between'>
                                         <div className='3xl:text-base text-sm text-[#16171B] font-thin'>
-                                            Số km được đi
+                                            Tổng lộ trình
                                         </div>
-                                        {
-                                            isVisibleTablet ?
-                                                <div onClick={() => setOpenDialogAnswerPolicy(true, "total_km_car_talent")}>
-                                                    <FaRegQuestionCircle className='text-[#767676] text-lg cursor-pointer' />
-                                                </div>
-                                                :
-                                                <ActionTooltip
-                                                    side="bottom"
-                                                    align="center"
-                                                    label={(
-                                                        <div className='max-w-[320px]'>
-                                                            <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_talent?.total_km_car_talent ? isStatePolicy?.dataPolicy?.car_talent?.total_km_car_talent : ''}` }} />
-                                                        </div>
-                                                    )}
-                                                >
-                                                    <div>
-                                                        <FaRegQuestionCircle className='text-[#767676] lg:text-lg text-base cursor-pointer' />
-                                                    </div>
-                                                </ActionTooltip>
-                                        }
+                                        <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
+                                            {isStateDetailCar?.map?.totalDistance ? FormatDistance(isStateDetailCar?.map?.totalDistance) : "0 km"}
+                                        </div>
                                     </div>
-                                    <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
-                                        {isStateDetailCar?.dataDetailCar?.price?.total_km_day ? `${isStateDetailCar?.dataDetailCar?.price?.total_km_day} km/ngày` : "0 km"}
-                                    </div>
-                                </div>
-                                {
-                                    isStateDetailCar?.dataDetailCar?.surcharge_car && isStateDetailCar?.dataDetailCar?.surcharge_car.length > 0 ?
-                                        <>
-                                            {
-                                                isStateDetailCar?.dataDetailCar?.surcharge_car?.map((item) => (
-                                                    <div key={`id-${item.id}`} className='flex flex-row items-center justify-between'>
-                                                        <div className='3xl:text-base text-sm text-[#16171B] font-thin'>
-                                                            {item.name ? item.name : ""}
-                                                        </div>
-                                                        <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
-                                                            {item.value ? `${FormatNumberToDecimal(item.value, 3)} đ/ngày` : ""}
-                                                        </div>
-                                                    </div>
-                                                ))
-                                            }
-                                        </>
-                                        :
-                                        null
-                                }
-                            </div>
 
-                        </div>
-                        :
-                        null
+                                    {/* Tổng số km được đi */}
+                                    <div className='flex flex-row items-center justify-between'>
+                                        <div className='flex flex-row items-center gap-1'>
+                                            <div className='3xl:text-base text-sm text-[#16171B] font-thin'>
+                                                Số km được đi
+                                            </div>
+                                            {
+                                                isVisibleTablet ?
+                                                    <div onClick={() => setOpenDialogAnswerPolicy(true, "total_km_car_talent")}>
+                                                        <FaRegQuestionCircle className='text-[#767676] text-lg cursor-pointer' />
+                                                    </div>
+                                                    :
+                                                    <ActionTooltip
+                                                        side="bottom"
+                                                        align="center"
+                                                        label={(
+                                                            <div className='max-w-[320px]'>
+                                                                <span dangerouslySetInnerHTML={{ __html: `${isStatePolicy?.dataPolicy?.car_talent?.total_km_car_talent ? isStatePolicy?.dataPolicy?.car_talent?.total_km_car_talent : ''}` }} />
+                                                            </div>
+                                                        )}
+                                                    >
+                                                        <div>
+                                                            <FaRegQuestionCircle className='text-[#767676] lg:text-lg text-base cursor-pointer' />
+                                                        </div>
+                                                    </ActionTooltip>
+                                            }
+                                        </div>
+                                        <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
+                                            {isStateDetailCar?.dataDetailCar?.price?.total_km_day ? `${isStateDetailCar?.dataDetailCar?.price?.total_km_day} km/ngày` : "0 km"}
+                                        </div>
+                                    </div>
+                                    {
+                                        isStateDetailCar?.dataDetailCar?.surcharge_car && isStateDetailCar?.dataDetailCar?.surcharge_car.length > 0 ?
+                                            <>
+                                                {
+                                                    isStateDetailCar?.dataDetailCar?.surcharge_car?.map((item) => (
+                                                        <div key={`id-${item.id}`} className='flex flex-row items-center justify-between'>
+                                                            <div className='3xl:text-base text-sm text-[#16171B] font-thin'>
+                                                                {item.name ? item.name : ""}
+                                                            </div>
+                                                            <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
+                                                                {item.value ? `${FormatNumberToDecimal(item.value, 3)} đ/ngày` : ""}
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                }
+                                            </>
+                                            :
+                                            null
+                                    }
+                                </div>
+
+                            </div>
+                        )
+                        : 
+                        (null)
                 }
 
 
@@ -765,7 +765,6 @@ const PaymentCar = ({ }: Props) => {
                         Chọn thuê
                     </Button>
                 </motion.div>
-
             </div>
 
             <div className='flex w-full items-center justify-center'>
@@ -780,7 +779,7 @@ const PaymentCar = ({ }: Props) => {
                         </div>
                 }
             </div>
-        </div>
+        </div >
     )
 }
 

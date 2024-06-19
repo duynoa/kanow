@@ -28,6 +28,10 @@ const nextConfig = {
                 source: '/',
                 destination: '/home',
             },
+            {
+                source: '/api/:path*',
+                destination: 'https://alepay-v3-sandbox.nganluong.vn/api/:path*',
+            },
         ]
     },
     // experimental: {
