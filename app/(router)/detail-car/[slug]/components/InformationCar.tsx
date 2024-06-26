@@ -56,9 +56,6 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
         setIsMounted(true)
     }, [])
 
-    console.log("isStateDetailCar?.dataDetailCar :", isStateDetailCar?.dataDetailCar);
-
-
     if (!isMounted) {
         return null
     }

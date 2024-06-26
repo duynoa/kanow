@@ -47,7 +47,7 @@ const InfoRentalCar = ({ params }: Props) => {
 
     const { informationUser } = useAuth()
 
-    const { generalKey, setGeneralKey } = useGeneralKey()
+    const { generalKey } = useGeneralKey()
 
     const {
         isStateInfoRentalCar,
@@ -56,9 +56,8 @@ const InfoRentalCar = ({ params }: Props) => {
         setIsLoadingSkeletonIntroRentalCar
     } = useDataInfoRentalCar()
 
-    const { openDialogReviewCar, setOpenDialogReviewCar } = useDialogReviewCar()
+    const { setOpenDialogReviewCar } = useDialogReviewCar()
 
-    const { queryKeyIsStatePolicy } = useDataPolicy()
     const { isVisibleMobile } = useResize()
 
     const dataStep = [
@@ -148,15 +147,6 @@ const InfoRentalCar = ({ params }: Props) => {
     useEffect(() => {
         fetchStepTransaction()
     }, [params?.slug, informationUser])
-
-
-
-    // useEffect(() => {
-
-    // }, [informationUser, isStateInfoRentalCar.detailRentalCar?.status?.status])
-
-    console.log('openDialogReviewCar: ', openDialogReviewCar);
-
 
     useEffect(() => {
         if (generalKey && generalKey?.pusher && generalKey?.cluster && informationUser?.id) {

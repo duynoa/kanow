@@ -118,6 +118,7 @@ const Information = ({
                                 Thời gian thuê
                             </div>
                         </div>
+
                         <div className='pl-7 mt-1 flex items-center gap-1'>
                             <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#2FB9BD] font-medium">
                                 Từ:
@@ -126,6 +127,7 @@ const Information = ({
                                 {moment(isStateInfoRentalCar?.detailRentalCar?.date_time?.date_start).format("HH[h]mm DD/MM/YYYY")}
                             </div>
                         </div>
+
                         <div className='pl-7 flex items-center gap-1'>
                             <div className="3xl:text-base lg:text-sm md:text-base text-sm text-[#2FB9BD] font-medium">
                                 Đến:
@@ -145,10 +147,12 @@ const Information = ({
                                 Nhận xe ở địa điểm của chủ xe
                             </div>
                         </div>
+                        
                         <div className='pl-7 mt-1 3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium'>
                             {isStateInfoRentalCar?.detailRentalCar?.address?.full_address}
                             {/* 12 Hoàn Kiếm Hà Nội */}
                         </div>
+
                         <div className='pl-7 3xl:text-base lg:text-sm md:text-base text-sm text-[#2FB9BD] hover:text-[#2FB9BD]/80 font-medium cursor-pointer w-fit duration-200 transition caret-transparent'>
                             Xem bản đồ
                         </div>

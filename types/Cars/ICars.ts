@@ -224,6 +224,19 @@ interface IDetailRentalCar {
         fullname: string,
         avatar: string,
         phone: string,
+        total_trip: number,
+        total_star: number,
+        driving_liscense: {
+            id: number,
+            number_liscense: string,
+            fullname: string,
+            birthday: string,
+            image: string,
+            customer_id: number,
+            created_at: string,
+            updated_at: string,
+            status: number
+        }
     },
     address: {
         district: string,

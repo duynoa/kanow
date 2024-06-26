@@ -18,8 +18,6 @@ import { useDialogPayment } from "@/hooks/useOpenDialog"
 import Link from "next/link"
 import { useDataMyWallet } from "@/hooks/useDataQueryKey"
 import { getListSyntheticTransaction } from "@/services/cars/historyPayment.services"
-import { createSignature } from '@/utils/signature/createSignature'
-import { getListBanksInland } from "@/services/cars/payment.services"
 
 type Props = {
 
@@ -41,10 +39,7 @@ export interface FooterCell {
 const MyWallet = (props: Props) => {
     const [dataMonths, setDataMonths] = useState<{ id: number; date: string }[]>([]);
 
-    const {
-        setOpenDialogPayment,
-        setTypeModal
-    } = useDialogPayment()
+    const { setOpenDialogPayment, setTypeModal } = useDialogPayment()
 
     const { isStateMyWallet, queryKeyIsStateMyWallet } = useDataMyWallet()
 
@@ -269,27 +264,6 @@ const MyWallet = (props: Props) => {
         }
     }, [isStateMyWallet.selectedMonth])
 
-    useEffect(() => {
-        const fetchListBanksInland = async () => {
-            const data = {
-                "tokenKey": "MmoytVJm5iqU34T9fId8DIsMGowxMz",
-            };
-
-            const checksumkey = "X68SUvKaq9NdSiHVEH5cdJ4QIEJTFW";
-            const signature = createSignature(data, checksumkey);
-
-            // Thêm signature vào data
-            const requestData = { ...data, signature };
-
-            const res = await getListBanksInland(requestData)
-
-            console.log('res', res);
-
-        }
-
-        fetchListBanksInland()
-    }, [])
-
     // Function to convert data
     const convertData = (transactions: any[]) => {
         console.log('transactions', transactions);
@@ -495,7 +469,7 @@ const MyWallet = (props: Props) => {
         <>
             <div className='flex flex-col 3xl:gap-10 gap-6 3xl:pt-6 pt-4'>
                 <div className='3xl:text-4xl text-3xl w-full text-center font-bold'>
-                    Ví của tôi
+                    Thống kê thu nhập
                 </div>
 
                 <div className='flex items-center justify-between w-full bg-[#F1FCFC] rounded-lg 3xl:px-6 3xl:py-3 px-4 py-2'>

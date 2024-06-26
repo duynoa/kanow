@@ -2,22 +2,11 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy'
-
-import { useCookie } from '@/hooks/useCookie'
-import {
-    PiCar,
-    PiCheckSquareOffset,
-    PiClipboardText,
-    PiClipboardTextBold,
-    PiCreditCard,
-    PiPath
-} from 'react-icons/pi'
 import { getInfoDetailCarTransaction, getListPaymentMode } from '@/services/cars/payment.services'
-import { IInitialStatePayment } from '@/types/Initial/IInitial'
+
 import PaymentMethods from './components/PaymentMethods'
 import { CustomDataInfoRentalCar } from '@/custom/CustomData'
-import { useDataInfoRentalCar, useDataPaymentRental } from '@/hooks/useDataQueryKey'
+import { useDataPaymentRental } from '@/hooks/useDataQueryKey'
 import { useSearchParams } from 'next/navigation'
 import { useLoadSuccess } from '@/hooks/useLoadSuccess'
 
@@ -52,7 +41,7 @@ const InfoRentalCar = ({ params }: Props) => {
             try {
                 const { data } = await getListPaymentMode();
 
-                const indexFirstArray = data.data.findIndex((item: any) => item.type === 1)
+                const indexFirstArray = data.data.findIndex((item: any) => item.type === 2)
 
                 if (data && data.data) {
                     queryKeyIsStatePaymentRental({

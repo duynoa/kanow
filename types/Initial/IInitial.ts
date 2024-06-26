@@ -145,6 +145,7 @@ interface IInitialStatePayment {
         name: string;
         note: string;
         type: number;
+        code: string;
     }[];
     payment: {
         idActivePaymentMethod: number | string;

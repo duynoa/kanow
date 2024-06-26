@@ -40,7 +40,7 @@ const TAB = [
         id: "3",
         icon_active: '',
         icon_no_active: "",
-        name: 'Ví của tôi',
+        name: 'Thống kê thu nhập',
         link: '/list-my-car/my-wallet'
     },
     {

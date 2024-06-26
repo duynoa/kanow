@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { useDataPaymentRental } from '@/hooks/useDataQueryKey'
 import { toastCore } from '@/lib/toast'
-import { postPaymentRentalCar } from '@/services/cars/payment.services'
+import { postPaymentAlepayRentalCar, postPaymentRentalCar } from '@/services/cars/payment.services'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
@@ -13,6 +13,8 @@ import { PiCheckCircleFill } from 'react-icons/pi'
 import { motion } from 'framer-motion'
 import { useLoadSuccess } from '@/hooks/useLoadSuccess'
 import SkeletonPayment from '@/components/skeleton/SkeletonPayment'
+import { useAuth } from '@/hooks/useAuth'
+import { useGeneralKey } from '@/hooks/useGeneralKey'
 
 type Props = {}
 
@@ -21,8 +23,12 @@ const PaymentMethods = ({ }: Props) => {
     const searchParams = useSearchParams()
     const typeCarDetail = searchParams.get('type')
 
+    const { informationUser } = useAuth()
+    const { generalKey } = useGeneralKey()
     const { isStatePaymentRental, queryKeyIsStatePaymentRental } = useDataPaymentRental()
+
     const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
+
 
     const handleChangePayment = (item: any, index: number) => {
         queryKeyIsStatePaymentRental({
@@ -42,16 +48,40 @@ const PaymentMethods = ({ }: Props) => {
         })
         try {
             const dataPayment = {
-                payment_mode_id: isStatePaymentRental?.payment?.idActivePaymentMethod,
-                total: isStatePaymentRental?.detailRentalCar?.price?.price_depoist,
+                allowDomestic: isStatePaymentRental?.listPaymentMode[isStatePaymentRental?.payment?.indexPaymentMethod]?.code === "VISA" ? false : true,
+                amount: isStatePaymentRental?.detailRentalCar?.price?.price_depoist,
+                buyerAddress: "Ho Chi Minh",
+                buyerCity: "Ho Chi Minh",
+                buyerCountry: "Viet Nam",
+                buyerEmail: informationUser?.email || `default@gmail.com`,
+                buyerName: informationUser?.fullname,
+                buyerPhone: informationUser?.phone,
+                cancelUrl: "http://192.168.1.178:8080/api/alepay/resultAlepay",
+                checkoutType: isStatePaymentRental?.listPaymentMode[isStatePaymentRental?.payment?.indexPaymentMethod]?.code === "VISA" ? 0 : 4,
+                currency: "VND",
+                customMerchantId: informationUser?.fullname,
+                orderCode: isStatePaymentRental?.detailRentalCar?.car?.reference_no,
+                orderDescription: `Đặt cọc giao dịch ${isStatePaymentRental?.detailRentalCar?.car?.reference_no}`,
+                paymentMethod: isStatePaymentRental?.listPaymentMode[isStatePaymentRental?.payment?.indexPaymentMethod]?.code === "VISA" ? "" : isStatePaymentRental?.listPaymentMode[isStatePaymentRental?.payment?.indexPaymentMethod]?.code,
+                returnUrl: "http://192.168.1.178:8080/api/alepay/resultAlepay",
+                tokenKey: generalKey?.token_key,
+                totalItem: 1,
                 transaction_id: isStatePaymentRental?.detailRentalCar?.id,
-                type: typeCarDetail
+                payment_mode_id: isStatePaymentRental?.payment?.idActivePaymentMethod,
+
+                // payment_mode_id: isStatePaymentRental?.payment?.idActivePaymentMethod,
+                // total: isStatePaymentRental?.detailRentalCar?.price?.price_depoist,
+                // transaction_id: isStatePaymentRental?.detailRentalCar?.id,
+                // type: typeCarDetail
             }
-            const { data } = await postPaymentRentalCar(dataPayment)
+            const { data } = await postPaymentAlepayRentalCar(dataPayment)
+            // const { data } = await postPaymentRentalCar(dataPayment)
+
+            console.log('data: ', data);
 
             if (data && data.result) {
                 toastCore.success("Thanh toán cọc thành công!")
-                router.push(`/info-rental-car/${isStatePaymentRental?.detailRentalCar?.id}?type=${typeCarDetail}`)
+                // router.push(`/info-rental-car/${isStatePaymentRental?.detailRentalCar?.id}?type=${typeCarDetail}`)
             } else {
                 toastCore.error(data.message)
             }
@@ -66,6 +96,11 @@ const PaymentMethods = ({ }: Props) => {
             })
         }
     }
+
+    console.log('isStatePaymentRental: ', isStatePaymentRental);
+    console.log('informationUser: ', informationUser);
+    console.log('generalKey: ', generalKey);
+    // console.log('isStateLoadSuccess: ', isStateLoadSuccess);
 
     return (
         <div className="custom-container flex flex-col gap-4 py-10">
@@ -97,7 +132,7 @@ const PaymentMethods = ({ }: Props) => {
                                     isStatePaymentRental?.listPaymentMode && isStatePaymentRental?.listPaymentMode?.map((item, index) => (
                                         <React.Fragment key={`payment-${item.id}`} >
                                             {
-                                                item.type === 1 ?
+                                                item.type === 1 || item.type === 2 ?
                                                     <div
                                                         className={`${isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id ? "bg-[#F1FCFC] border-2 border-[#2FB9BD]" : "bg-white"} flex-flex-col px-4 py-3 rounded-xl caret-transparent cursor-pointer relative`}
                                                         onClick={() => handleChangePayment(item, index)}
@@ -167,7 +202,6 @@ const PaymentMethods = ({ }: Props) => {
                                     ))
                                 }
                             </div>
-
                     }
                 </div >
 
