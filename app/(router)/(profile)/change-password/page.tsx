@@ -48,8 +48,8 @@ const ChangePassWord = (props: Props) => {
         if (!informationUser?.password) {
             formData.append('password', `${value.newPassword}` ?? "")
         } else {
-            formData.append('password', `${value.oldPassword}` ?? "")
-            formData.append('password_old', `${value.newPassword}` ?? "")
+            formData.append('password', value.newPassword ?? "")
+            formData.append('password_old', value.oldPassword ?? "")
         }
         const { data } = await apiChangePassword(formData)
         if (data?.result) {

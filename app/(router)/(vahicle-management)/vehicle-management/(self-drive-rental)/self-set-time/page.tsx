@@ -89,6 +89,8 @@ export default function SelftSetTime(props: Props) {
                 wordLimit: 0,
                 until: 0
             },
+            //tắt mở thời gian giao nhận xe
+            openDeliverReceive: false,
             // giao  xe
             deliver: {
                 from: '00:00',
@@ -109,6 +111,8 @@ export default function SelftSetTime(props: Props) {
 
     useEffect(() => {
         if (!Array.isArray(data) && data) {
+            console.log("datadata", data?.type_hour);
+
             const arr = [
                 ['bookCarQuickly.open', data?.car?.book_car_flash == 1],
                 ['bookCarQuickly.wordLimit', data?.car?.from_book_car_flash],
@@ -116,7 +120,8 @@ export default function SelftSetTime(props: Props) {
                 ["deliver.from", data?.hour_receive_car[0]?.hour_start],
                 ["deliver.to", data?.hour_receive_car[0]?.hour_end],
                 ["receive.from", data?.hour_back_car[0]?.hour_start],
-                ["receive.to", data?.hour_back_car[0]?.hour_end]
+                ["receive.to", data?.hour_back_car[0]?.hour_end],
+                ["openDeliverReceive", data?.type_hour == 1]
             ]
             arr.forEach(([key, value]) => {
                 form.setValue(key, value)
@@ -128,22 +133,29 @@ export default function SelftSetTime(props: Props) {
 
     const onSubmit = async (value: any) => {
         let formData = new FormData()
+
         formData.append('car_id', idCar)
         formData.append('book_car_flash', `${value.bookCarQuickly.open ? 1 : 0}`)
         formData.append('from_book_car_flash', value.bookCarQuickly.wordLimit)
         formData.append('to_book_car_flash', value.bookCarQuickly.until)
-        // giao xe
-        formData.append('hour_start', value.deliver.from)
-        formData.append('hour_end', value.deliver.to)
-        // nhan xe
-        formData.append('hour_start_new', value.receive.from)
-        formData.append('hour_end_new', value.receive.to)
+        formData.append('type_hour', `${value.openDeliverReceive ? 1 : 0}`)
+
+        if (value.openDeliverReceive) {
+            // giao xe
+            formData.append('hour_start', value.deliver.from)
+            formData.append('hour_end', value.deliver.to)
+            // nhan xe
+            formData.append('hour_start_new', value.receive.from)
+            formData.append('hour_end_new', value.receive.to)
+        }
 
         const { data: db } = await apiUpdateCar(formData)
+
         if (db.result) {
             toastCore.success('Lưu thông tin thành công')
             return
         }
+
         toastCore.error(db.message)
 
     }
@@ -303,241 +315,282 @@ export default function SelftSetTime(props: Props) {
                         );
                     }}
                 />
-                <h1 className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                    Thời gian giao xe
-                </h1>
-                <div className="grid grid-cols-2 items-center gap-4">
-                    <FormField
-                        control={form.control}
-                        name="deliver.from"
-                        rules={{
-                            required: {
-                                value: true,
-                                message: 'Vui lòng chọn thời gian băt đầu giao xe',
-                            },
-                            validate: {
-                                checkTime: (value: any, d: any) => {
-                                    if (value === d.deliver.to) return false || 'Khoảng thời gian không được giống nhau'
-                                }
-                            }
-                        }}
-                        render={({ field, fieldState }) => {
-                            const checkValue = checkValueArray(isState.deliver, field)
-                            return (
-                                <FormItem className="space-y-0 flex flex-col gap-2">
-                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                        Giao xe từ<span className="text-red-500  px-1">*</span>
-                                    </FormLabel>
-                                    <FormControl>
-                                        <>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
-                                                    >
-                                                        {checkValue ? checkValue : "00:00"}
-                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="3xl:w-[600px] xxl:w-[560px] 2xl:w-[500px] xl:w-[400px] lg:w-[300px] md:w-[320px] w-auto">
-                                                    <SelectCombobox
-                                                        data={isState.deliver}
-                                                        field={field}
-                                                        onChange={(e: any) => {
-                                                            field.onChange(e)
-                                                            const toTime: any = revertTime(e, 'add')
-                                                            console.log(toTime);
 
-                                                            form.setValue('deliver.to', toTime);
-                                                        }}
-                                                    />
+                <FormField
+                    control={form.control}
+                    name="openDeliverReceive"
+                    render={({ field, fieldState }) => {
+                        return (
+                            <FormItem className="">
+                                <FormControl>
+                                    <div className="flex items-center gap-4">
+                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                            Thời gian giao nhận xe
+                                        </FormLabel>
+                                        <Switch
+                                            className="data-[state=checked]:bg-[#2FB9BD] "
+                                            checked={field.value}
+                                            onCheckedChange={(e) => {
+                                                field.onChange(e)
+                                                form.setValue('deliver.from', '00:00')
+                                                form.setValue('deliver.to', '00:00')
+                                                form.setValue('receive.from', '00:00')
+                                                form.setValue('receive.to', '00:00')
+                                            }}
+                                        />
+                                    </div>
+                                </FormControl>
+                                {field.value &&
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <div className="col-span-2">
+                                            <h1 className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                                Thời gian giao xe
+                                            </h1>
+                                            <div className="grid grid-cols-2 items-center gap-4">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="deliver.from"
+                                                    rules={{
+                                                        required: {
+                                                            value: true,
+                                                            message: 'Vui lòng chọn thời gian băt đầu giao xe',
+                                                        },
+                                                        validate: {
+                                                            checkTime: (value: any, d: any) => {
+                                                                if (value === d.deliver.to) return false || 'Khoảng thời gian không được giống nhau'
+                                                            }
+                                                        }
+                                                    }}
+                                                    render={({ field, fieldState }) => {
+                                                        const checkValue = checkValueArray(isState.deliver, field)
+                                                        return (
+                                                            <FormItem className="space-y-0 flex flex-col gap-2">
+                                                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                                                    Giao xe từ<span className="text-red-500  px-1">*</span>
+                                                                </FormLabel>
+                                                                <FormControl>
+                                                                    <>
+                                                                        <Popover>
+                                                                            <PopoverTrigger asChild>
+                                                                                <Button
+                                                                                    variant="outline"
+                                                                                    role="combobox"
+                                                                                    className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
+                                                                                >
+                                                                                    {checkValue ? checkValue : "00:00"}
+                                                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                                                </Button>
+                                                                            </PopoverTrigger>
+                                                                            <PopoverContent className="3xl:w-[600px] xxl:w-[560px] 2xl:w-[500px] xl:w-[400px] lg:w-[300px] md:w-[320px] w-auto">
+                                                                                <SelectCombobox
+                                                                                    data={isState.deliver}
+                                                                                    field={field}
+                                                                                    onChange={(e: any) => {
+                                                                                        field.onChange(e)
+                                                                                        const toTime: any = revertTime(e, 'add')
+                                                                                        console.log(toTime);
 
-                                                </PopoverContent>
-                                            </Popover>
-                                        </>
-                                    </FormControl>
-                                    {fieldState?.invalid && fieldState?.error && (
-                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                    )}
-                                </FormItem>
-                            );
-                        }}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="deliver.to"
-                        rules={{
-                            required: {
-                                value: true,
-                                message: 'Vui lòng chọn mốc thời gian đến',
-                            },
-                            validate: {
-                                checkTime: (value: any, d: any) => {
-                                    if (value === d.deliver.from) return false || 'Khoảng thời gian không được giống nhau'
-                                }
-                            }
-                        }}
-                        render={({ field, fieldState }) => {
-                            const checkValue = checkValueArray(isState.receive, field)
-                            return (
-                                <FormItem className="space-y-0 flex flex-col gap-2">
-                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                        Cho đến<span className="text-red-500 px-1">*</span>
-                                    </FormLabel>
-                                    <FormControl>
-                                        <>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
-                                                    >
-                                                        {checkValue ? checkValue : "00:00"}
-                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="3xl:w-[600px] xxl:w-[560px] 2xl:w-[500px] xl:w-[400px] lg:w-[300px] md:w-[320px] w-auto">
-                                                    <SelectCombobox
-                                                        data={isState.receive}
-                                                        field={field}
-                                                        onChange={(e: any) => {
-                                                            field.onChange(e)
-                                                            const toTime: any = revertTime(e, 'minus')
-                                                            form.setValue('deliver.from', toTime);
-                                                        }}
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </>
-                                    </FormControl>
+                                                                                        form.setValue('deliver.to', toTime);
+                                                                                    }}
+                                                                                />
 
-                                    {fieldState?.invalid && fieldState?.error && (
-                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                    )}
-                                </FormItem>
-                            );
-                        }}
-                    />
-                </div>
-                <h1 className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                    Thời gian nhận xe
-                </h1>
-                <div className="grid grid-cols-2 items-center gap-4">
-                    <FormField
-                        control={form.control}
-                        name="receive.from"
-                        rules={{
-                            required: {
-                                value: true,
-                                message: 'Vui lòng chọn thời gian băt đầu nhận xe',
-                            },
-                            validate: {
-                                checkTime: (value: any, d: any) => {
-                                    if (value === d.receive.to) return false || 'Khoảng thời gian không được giống nhau'
-                                }
-                            }
-                        }}
-                        render={({ field, fieldState }) => {
-                            const checkValue = checkValueArray(isState.receive, field)
-                            return (
-                                <FormItem className="space-y-0 flex flex-col gap-2">
-                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                        Nhận xe từ<span className="text-red-500  px-1">*</span>
-                                    </FormLabel>
-                                    <FormControl>
-                                        <>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
-                                                    >
-                                                        {checkValue ? checkValue : "00:00"}
-                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="3xl:w-[600px] xxl:w-[560px] 2xl:w-[500px] xl:w-[400px] lg:w-[300px] md:w-[320px] w-auto">
-                                                    <SelectCombobox
-                                                        data={isState.receive}
-                                                        field={field}
-                                                        onChange={(e: any) => {
-                                                            field.onChange(e)
-                                                            const toTime: any = revertTime(e, 'add')
-                                                            form.setValue('receive.to', toTime);
-                                                        }}
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </>
-                                    </FormControl>
+                                                                            </PopoverContent>
+                                                                        </Popover>
+                                                                    </>
+                                                                </FormControl>
+                                                                {fieldState?.invalid && fieldState?.error && (
+                                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                                )}
+                                                            </FormItem>
+                                                        );
+                                                    }}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="deliver.to"
+                                                    rules={{
+                                                        required: {
+                                                            value: true,
+                                                            message: 'Vui lòng chọn mốc thời gian đến',
+                                                        },
+                                                        validate: {
+                                                            checkTime: (value: any, d: any) => {
+                                                                if (value === d.deliver.from) return false || 'Khoảng thời gian không được giống nhau'
+                                                            }
+                                                        }
+                                                    }}
+                                                    render={({ field, fieldState }) => {
+                                                        const checkValue = checkValueArray(isState.receive, field)
+                                                        return (
+                                                            <FormItem className="space-y-0 flex flex-col gap-2">
+                                                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                                                    Cho đến<span className="text-red-500 px-1">*</span>
+                                                                </FormLabel>
+                                                                <FormControl>
+                                                                    <>
+                                                                        <Popover>
+                                                                            <PopoverTrigger asChild>
+                                                                                <Button
+                                                                                    variant="outline"
+                                                                                    role="combobox"
+                                                                                    className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
+                                                                                >
+                                                                                    {checkValue ? checkValue : "00:00"}
+                                                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                                                </Button>
+                                                                            </PopoverTrigger>
+                                                                            <PopoverContent className="3xl:w-[600px] xxl:w-[560px] 2xl:w-[500px] xl:w-[400px] lg:w-[300px] md:w-[320px] w-auto">
+                                                                                <SelectCombobox
+                                                                                    data={isState.receive}
+                                                                                    field={field}
+                                                                                    onChange={(e: any) => {
+                                                                                        field.onChange(e)
+                                                                                        const toTime: any = revertTime(e, 'minus')
+                                                                                        form.setValue('deliver.from', toTime);
+                                                                                    }}
+                                                                                />
+                                                                            </PopoverContent>
+                                                                        </Popover>
+                                                                    </>
+                                                                </FormControl>
 
-                                    {fieldState?.invalid && fieldState?.error && (
-                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                    )}
-                                </FormItem>
-                            );
-                        }}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="receive.to"
-                        rules={{
-                            required: {
-                                value: true,
-                                message: 'Vui lòng chọn mốc thời gian đến',
-                            },
-                            validate: {
-                                checkTime: (value: any, d: any) => {
-                                    if (value === d.receive.from) return false || 'Khoảng thời gian không được giống nhau'
+                                                                {fieldState?.invalid && fieldState?.error && (
+                                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                                )}
+                                                            </FormItem>
+                                                        );
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-span-2">
+                                            <h1 className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                                Thời gian nhận xe
+                                            </h1>
+                                            <div className="grid grid-cols-2 items-center gap-4">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="receive.from"
+                                                    rules={{
+                                                        required: {
+                                                            value: field.value,
+                                                            message: 'Vui lòng chọn thời gian băt đầu nhận xe',
+                                                        },
+                                                        validate: {
+                                                            checkTime: (value: any, d: any) => {
+                                                                if (value === d.receive.to) return false || 'Khoảng thời gian không được giống nhau'
+                                                            }
+                                                        }
+                                                    }}
+                                                    render={({ field, fieldState }) => {
+                                                        const checkValue = checkValueArray(isState.receive, field)
+                                                        return (
+                                                            <FormItem className="space-y-0 flex flex-col gap-2">
+                                                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                                                    Nhận xe từ<span className="text-red-500  px-1">*</span>
+                                                                </FormLabel>
+                                                                <FormControl>
+                                                                    <>
+                                                                        <Popover>
+                                                                            <PopoverTrigger asChild>
+                                                                                <Button
+                                                                                    variant="outline"
+                                                                                    role="combobox"
+                                                                                    className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
+                                                                                >
+                                                                                    {checkValue ? checkValue : "00:00"}
+                                                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                                                </Button>
+                                                                            </PopoverTrigger>
+                                                                            <PopoverContent className="3xl:w-[600px] xxl:w-[560px] 2xl:w-[500px] xl:w-[400px] lg:w-[300px] md:w-[320px] w-auto">
+                                                                                <SelectCombobox
+                                                                                    data={isState.receive}
+                                                                                    field={field}
+                                                                                    onChange={(e: any) => {
+                                                                                        field.onChange(e)
+                                                                                        const toTime: any = revertTime(e, 'add')
+                                                                                        form.setValue('receive.to', toTime);
+                                                                                    }}
+                                                                                />
+                                                                            </PopoverContent>
+                                                                        </Popover>
+                                                                    </>
+                                                                </FormControl>
+
+                                                                {fieldState?.invalid && fieldState?.error && (
+                                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                                )}
+                                                            </FormItem>
+                                                        );
+                                                    }}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="receive.to"
+                                                    rules={{
+                                                        required: {
+                                                            value: field.value,
+                                                            message: 'Vui lòng chọn mốc thời gian đến',
+                                                        },
+                                                        validate: {
+                                                            checkTime: (value: any, d: any) => {
+                                                                if (value === d.receive.from) return false || 'Khoảng thời gian không được giống nhau'
+                                                            }
+                                                        }
+                                                    }}
+                                                    render={({ field, fieldState }) => {
+                                                        const checkValue = checkValueArray(isState.receive, field)
+                                                        return (
+                                                            <FormItem className="space-y-0 flex flex-col gap-2">
+                                                                <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                                                    Cho đến<span className="text-red-500 px-1">*</span>
+                                                                </FormLabel>
+                                                                <FormControl>
+                                                                    <>
+                                                                        <Popover>
+                                                                            <PopoverTrigger asChild>
+                                                                                <Button
+                                                                                    variant="outline"
+                                                                                    role="combobox"
+                                                                                    className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
+                                                                                >
+                                                                                    {checkValue ? checkValue : "00:00"}
+                                                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                                                </Button>
+                                                                            </PopoverTrigger>
+                                                                            <PopoverContent className="3xl:w-[600px] xxl:w-[560px] 2xl:w-[500px] xl:w-[400px] lg:w-[300px] md:w-[320px] w-auto">
+                                                                                <SelectCombobox
+                                                                                    data={isState.receive}
+                                                                                    field={field}
+                                                                                    onChange={(e: any) => {
+                                                                                        field.onChange(e)
+                                                                                        const toTime: any = revertTime(e, 'minus')
+                                                                                        form.setValue('receive.from', toTime);
+                                                                                    }}
+                                                                                />
+                                                                            </PopoverContent>
+                                                                        </Popover>
+                                                                    </>
+                                                                </FormControl>
+                                                                {fieldState?.invalid && fieldState?.error && (
+                                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                                )}
+                                                            </FormItem>
+                                                        );
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
                                 }
-                            }
-                        }}
-                        render={({ field, fieldState }) => {
-                            const checkValue = checkValueArray(isState.receive, field)
-                            return (
-                                <FormItem className="space-y-0 flex flex-col gap-2">
-                                    <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                        Cho đến<span className="text-red-500 px-1">*</span>
-                                    </FormLabel>
-                                    <FormControl>
-                                        <>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        className="2xl:py-3 w-full lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs  justify-between border-[#E6E8EC] border-2 rounded-2xl hover:bg-transparent"
-                                                    >
-                                                        {checkValue ? checkValue : "00:00"}
-                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="3xl:w-[600px] xxl:w-[560px] 2xl:w-[500px] xl:w-[400px] lg:w-[300px] md:w-[320px] w-auto">
-                                                    <SelectCombobox
-                                                        data={isState.receive}
-                                                        field={field}
-                                                        onChange={(e: any) => {
-                                                            field.onChange(e)
-                                                            const toTime: any = revertTime(e, 'minus')
-                                                            form.setValue('receive.from', toTime);
-                                                        }}
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </>
-                                    </FormControl>
-                                    {fieldState?.invalid && fieldState?.error && (
-                                        <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                    )}
-                                </FormItem>
-                            );
-                        }}
-                    />
-                </div>
+                                {fieldState?.invalid && fieldState?.error && (
+                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                )}
+                            </FormItem>
+                        );
+                    }}
+                />
+
                 <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
                     <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} />
                 </div>

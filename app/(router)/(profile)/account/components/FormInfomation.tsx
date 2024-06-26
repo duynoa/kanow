@@ -26,7 +26,7 @@ const FormInformation = ({ form, isState }: Props) => {
         }
         return true;
     };
-    
+
     return (
         <Form {...form}>
             <div className="space-y-4" >
