@@ -36,7 +36,7 @@ export interface FooterCell {
     className?: string;
 }
 
-const MyWallet = (props: Props) => {
+const MyWalletMobile = (props: Props) => {
     const [dataMonths, setDataMonths] = useState<{ id: number; date: string }[]>([]);
 
     const { setOpenDialogPayment, setTypeModal } = useDialogPayment()
@@ -166,53 +166,6 @@ const MyWallet = (props: Props) => {
         bankProvince: "",
         bankBranch: ""
     }
-
-    // const dataMonths = [
-    //     {
-    //         id: 1,
-    //         date: "06-2024"
-    //     },
-    //     {
-    //         id: 2,
-    //         date: "05-2024"
-    //     },
-    //     {
-    //         id: 3,
-    //         date: "04-2024"
-    //     },
-    //     {
-    //         id: 4,
-    //         date: "03-2024"
-    //     },
-    //     {
-    //         id: 5,
-    //         date: "02-2024"
-    //     },
-    //     {
-    //         id: 6,
-    //         date: "01-2024"
-    //     },
-    //     {
-    //         id: 7,
-    //         date: "12-2023"
-    //     },
-    //     {
-    //         id: 8,
-    //         date: "11-2023"
-    //     },
-    //     {
-    //         id: 9,
-    //         date: "10-2023"
-    //     },
-    //     {
-    //         id: 10,
-    //         date: "09-2023"
-    //     },
-    //     {
-    //         id: 11,
-    //         date: "08-2023"
-    //     }
-    // ]
 
     useEffect(() => {
         const currentDate = new Date(); // Lấy ngày hiện tại
@@ -483,7 +436,7 @@ const MyWallet = (props: Props) => {
                     />
                 </div>
 
-                <div className="flex items-center gap-2 ">
+                <div className="md:mx-0 mx-4 flex items-center gap-2 ">
                     <div className='3xl:text-lg text-base'>
                         Số dư hiện tại:
                     </div>
@@ -492,7 +445,7 @@ const MyWallet = (props: Props) => {
                     </div>
                 </div>
 
-                <div className='3xl:mx-20 xl:mx-14 grid 3xl:grid-cols-8 grid-cols-10 md:gap-0 gap-4'>
+                <div className='3xl:mx-20 xl:mx-14 md:mx-0 mx-4 grid 3xl:grid-cols-8 grid-cols-10 md:gap-0 gap-4'>
                     <div className='md:col-span-2 col-span-5 flex flex-col items-center gap-1 border-r-2 xl:px-6 px-4'>
                         <div className='flex items-center gap-2'>
                             <FaStar className='3xl:text-lg text-base text-[#FF9900]' />
@@ -547,7 +500,7 @@ const MyWallet = (props: Props) => {
 
                 {
                     isStateMyWallet?.listSyntheticTransaction?.transactionFinish?.data && isStateMyWallet?.listSyntheticTransaction?.transactionFinish?.data?.length > 0 ?
-                        <div >
+                        <div className='md:mx-0 mx-4'>
                             <ReusableTable2
                                 data={convertDataCustom}
                                 columns={columnsDataCustom}
@@ -559,7 +512,7 @@ const MyWallet = (props: Props) => {
                         (null)
                 }
 
-                <div className="flex flex-col gap-3">
+                <div className="md:mx-0 mx-4 flex flex-col gap-3">
                     <div className='flex items-center justify-between bg-[#F6F6F6] py-2 px-4 rounded-md'>
                         <div className='3xl:text-base text-sm text-[#545454] font-medium'>
                             Tổng thay đổi - Chuyến đi hoàn thành
@@ -627,7 +580,7 @@ const MyWallet = (props: Props) => {
                 </div>
 
                 {/* Button */}
-                <div className='grid xxl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4'>
+                <div className='md:mx-0 mx-4 grid xxl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4'>
                     <div className='xxl:col-span-1 xxl:block hidden w-full' />
 
                     <motion.div
@@ -641,7 +594,7 @@ const MyWallet = (props: Props) => {
                         className='col-span-1 w-full'
                     >
                         <Link
-                            href={`/transaction-statement/${isStateMyWallet?.selectedMonth ? isStateMyWallet?.selectedMonth : ""}`}
+                            href={`/transaction-statement-mobile/${isStateMyWallet?.selectedMonth ? isStateMyWallet?.selectedMonth : ""}`}
                             type="button"
                             // onClick={handleSubmitCar}
                             className='py-4 w-full flex justify-center items-center 3xl:text-lg text-base text-[#2FB9BD] bg-white hover:bg-[#2FB9BD]/20 border border-[#2FB9BD] transition-all duration-300 font-semibold rounded-xl caret-transparent'
@@ -670,8 +623,10 @@ const MyWallet = (props: Props) => {
                     </motion.div>
                 </div>
             </div>
+            {/* <UnderDevelopment /> */}
         </>
+
     )
 }
 
-export default MyWallet
+export default MyWalletMobile

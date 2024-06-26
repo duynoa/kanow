@@ -528,12 +528,16 @@ const LayoutContainer = ({
                 <Suspense>
                     {
                         !pathname.startsWith("/vehicle-management-mobile") &&
+                        !pathname.startsWith("/income-statistic-mobile") &&
+                        !pathname.startsWith("/transaction-statement-mobile") &&
                         <Header />
                     }
                     <main className='overflow-hidden w-full h-full'>
                         {children}
                         {
                             !pathname.startsWith("/vehicle-management-mobile") &&
+                            !pathname.startsWith("/income-statistic-mobile") &&
+                            !pathname.startsWith("/transaction-statement-mobile") &&
                             <ButtonToTop />
                         }
                         <AlertDialogLogout />
@@ -566,6 +570,8 @@ const LayoutContainer = ({
                         pathname !== "/list-cars-autonomous" &&
                         pathname !== "/list-cars-driver" &&
                         !pathname.startsWith("/vehicle-management-mobile") &&
+                        !pathname.startsWith("/income-statistic-mobile") &&
+                        !pathname.startsWith("/transaction-statement-mobile") &&
                         !pathname.startsWith("/transaction-statement") &&
                         <Footer />
                     }

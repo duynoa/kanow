@@ -68,19 +68,12 @@ const PaymentMethods = ({ }: Props) => {
                 totalItem: 1,
                 transaction_id: isStatePaymentRental?.detailRentalCar?.id,
                 payment_mode_id: isStatePaymentRental?.payment?.idActivePaymentMethod,
-
-                // payment_mode_id: isStatePaymentRental?.payment?.idActivePaymentMethod,
-                // total: isStatePaymentRental?.detailRentalCar?.price?.price_depoist,
-                // transaction_id: isStatePaymentRental?.detailRentalCar?.id,
-                // type: typeCarDetail
             }
             const { data } = await postPaymentAlepayRentalCar(dataPayment)
-            // const { data } = await postPaymentRentalCar(dataPayment)
-
             console.log('data: ', data);
 
-            if (data && data.result) {
-                toastCore.success("Thanh toán cọc thành công!")
+            if (data && data.code === "000") {
+                toastCore.success(data.message)
                 // router.push(`/info-rental-car/${isStatePaymentRental?.detailRentalCar?.id}?type=${typeCarDetail}`)
             } else {
                 toastCore.error(data.message)

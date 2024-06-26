@@ -25,7 +25,7 @@ const SelectCustom = ({ dataMonths, selectedMonth, handleChangeValue }: Props) =
             value={selectedMonth}
             onValueChange={(value) => handleChangeValue(value)}
         >
-            <SelectTriggerNocheck className="w-[240px] border-0 bg-transparent 2xl:text-base text-sm text-[#2FB9BD] font-semibold focus:ring-0 focus:ring-offset-0">
+            <SelectTriggerNocheck className="md:w-[240px] w-[180px] border-0 bg-transparent 2xl:text-base md:text-sm text-base text-[#2FB9BD] font-semibold focus:ring-0 focus:ring-offset-0">
                 <SelectValueNocheck placeholder="Chọn tháng" />
             </SelectTriggerNocheck>
             <SelectContentNocheck >
