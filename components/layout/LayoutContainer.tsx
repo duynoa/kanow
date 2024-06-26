@@ -13,7 +13,7 @@ import { useResize } from '@/hooks/useResize';
 import Pusher from "pusher-js";
 import ButtonToTop from '../button/ButtonToTop';
 import { ToastContainer } from 'react-toastify';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import AlertDialogLogout from '../alert/AlertDialogLogout';
 import AlertCancel from '../alert/AlertCancel';
@@ -64,6 +64,7 @@ import { DialogSubmit } from '../modals/DialogSubmit';
 import { DialogReviewCar } from '../modals/DialogReviewCar';
 import { DialogPayment } from '../modals/DialogPayment';
 import { AnimatePresence } from 'framer-motion';
+import { toastCore } from '@/lib/toast';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -76,6 +77,7 @@ const LayoutContainer = ({
 }: {
     children: React.ReactNode
 }) => {
+    const router = useRouter()
     const pathname = usePathname()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
@@ -495,8 +497,41 @@ const LayoutContainer = ({
                 }
             });
 
+            presenceChannel.bind("change-status", (data: any) => {
+                console.log('CHANGE-STATUS PUSHER LAYOUT: ', data);
+                if (data && isStateInfoRentalCar?.detailRentalCar) {
+                    queryKeyIsStateInfoRentalCar({
+                        detailRentalCar: {
+                            ...isStateInfoRentalCar?.detailRentalCar,
+                            status: {
+                                ...isStateInfoRentalCar?.detailRentalCar?.status,
+                                status: +data.status,
+                                statusCustom: +data.status,
+                                note: data.note_status
+                            }
+                        },
+                        loading: {
+                            ...isStateInfoRentalCar.loading,
+                            isLoadingButton: false
+                        }
+                    })
+                }
+            });
+
+            // presenceChannel.bind("check-payment-alepay", (data: any) => {
+            //     console.log('CHECK-PAYMENT-ALEPAY PUSHER LAYOUT: ', data);
+            //     if (data && data.result) {
+            //         router.push(`/info-rental-car/${data.transaction_id}?type=${data.type}`)
+            //         toastCore.success("Thanh toán cọc thành công!")
+            //     } else {
+            //         router.push(`/info-rental-car/${data.transaction_id}?type=${data.type}`)
+            //     }
+            // });
+
             return () => {
                 presenceChannel.unbind("notification"); // Unbind sự kiện khi component bị unmounted
+                presenceChannel.unbind("change-status"); // Unbind sự kiện khi component bị unmounted
+                // presenceChannel.unbind("check-payment-alepay"); // Unbind sự kiện khi component bị unmounted
                 pusher.unsubscribe(`notifications-channel-${informationUser.id}-customer`); // Unsubscribe channel khi component bị unmounted
                 pusher.disconnect(); // Ngắt kết nối khi component bị unmounted
 
@@ -508,6 +543,9 @@ const LayoutContainer = ({
         queryKeyIsStateNotification,
         isStateNotification.dataListNotifications,
     ]);
+
+    console.log('isStateInfoRentalCar', isStateInfoRentalCar);
+
 
     // Hàm xử lí sự kiện khoá zoom trên giao diện mobile
     useEffect(() => {
