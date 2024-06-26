@@ -135,7 +135,7 @@ const PolicyRegulations = (props: Props) => {
                         <br />
                         Nếu bạn là chủ xe, trong trường hợp bạn muốn hủy chuyến sau khi khách hàng đã đặt xe thành công, bạn có thể thực hiện thao tác hủy chuyến trên ứng dụng Kanow.
                         <br />
-                        Nhằm gia tăng sự cam kết của chủ xe cũng như đảm bảo quyền lợi của khách thuê, trường hợp chủ xe hủy chuyến (vì lí do không giao đúng xe / không giao xe đúng thời gian), nếu như không thỏa thuận được hoặc không có sự đồng ý từ phía khách thuê, thì chủ xe phải bồi thường phí hủy chuyến cho khách thuê số tiền bằng đúng số tiền mà khách thuê đã đặt cọc thông qua Công ty Cổ phần Kanow Asia.
+                        Nhằm gia tăng sự cam kết của chủ xe cũng như đảm bảo quyền lợi của khách thuê, trường hợp chủ xe hủy chuyến (vì lí do không giao đúng xe / không giao xe đúng thời gian), nếu như không thỏa thuận được hoặc không có sự đồng ý từ phía khách thuê, thì chủ xe phải bồi thường phí hủy chuyến cho khách thuê số tiền bằng đúng số tiền mà khách thuê đã đặt cọc thông qua Công ty TNHH Kanow.
                         <br />
                         <div className='border border-[#C6C6C6] rounded-xl my-4'>
                             <div className='grid grid-cols-3 grid-rows-4'>

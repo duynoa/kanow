@@ -130,8 +130,12 @@ const IntroSection = () => {
 
     const handleSearchCar = () => {
         if (isStateDataHome.tabSearch.type === 'list-cars-autonomous') {
-            router.push('/list-cars-autonomous')
-            Cookies.set('coordinates', JSON.stringify(coordinates), { expires: expirationTime })
+            if (valueAddressPickup) {
+                router.push('/list-cars-autonomous')
+                Cookies.set('coordinates', JSON.stringify(coordinates), { expires: expirationTime })
+            } else {
+                toastCore.error("Vui lòng chọn địa điểm!")
+            }
 
         } else if (isStateDataHome.tabSearch.type === 'list-cars-driver') {
             if (valueAddressPickup && valueAddressDestination[indexAddressDestination].valueAddress) {

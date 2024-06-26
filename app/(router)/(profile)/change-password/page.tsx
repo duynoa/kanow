@@ -46,7 +46,7 @@ const ChangePassWord = (props: Props) => {
     const onSubmit = async (value: any) => {
         let formData = new FormData()
         if (!informationUser?.password) {
-            formData.append('password', value.newPassword ?? "")
+            formData.append('password', `${value.newPassword}` ?? "")
         } else {
             formData.append('password', value.newPassword ?? "")
             formData.append('password_old', value.oldPassword ?? "")
@@ -101,7 +101,7 @@ const ChangePassWord = (props: Props) => {
             </div>
             <Form {...form}>
                 <div className=' flex flex-col lg:gap-5 md:gap-4 gap-3'>
-                    {informationUser.password &&
+                    {informationUser?.password &&
                         <FormField
                             control={form.control}
                             name="oldPassword"

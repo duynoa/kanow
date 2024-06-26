@@ -190,7 +190,9 @@ const ListAddress = (props: Props) => {
             formData.append('address', values.address.split(',')[0].trim());
             formData.append('default_address', values.defaultAddress ? '1' : '0');
             formData.append('id', isState.idAddress);
+            
             const { data } = await apiCreateAddress(formData)
+
             if (data?.result) {
                 toastCore.success(data?.message)
                 queryKeyIsState({ tabAddress: 'list', idAddress: '0' })

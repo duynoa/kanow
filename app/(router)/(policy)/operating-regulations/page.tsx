@@ -25,16 +25,7 @@ const OperatingRegulations = (props: Props) => {
                     Kanow hướng đến việc xây dựng một cộng đồng văn minh, vì vậy hãy yêu quý và giữ vệ sinh những chiếc xe bạn thuê. Việc giao nhận và hoàn trả những chiếc xe SẠCH SẼ giúp cả hai bên kết thúc giao dịch một cách tốt đẹp và sẵn sàng cho những giao dịch tuyệt vời sau này.
                 </div>
             </div>
-
-            <div className='flex flex-col gap-2'>
-                <div className='2xl:text-2xl text-xl  text-[#000000] font-medium'>
-                    Hãy giữ xe sạch sẽ
-                </div>
-                <div className='2xl:text-base text-sm  text-[#000000] font-light space-y-2'>
-                    Kanow hướng đến việc xây dựng một cộng đồng văn minh, vì vậy hãy yêu quý và giữ vệ sinh những chiếc xe bạn thuê. Việc giao nhận và hoàn trả những chiếc xe SẠCH SẼ giúp cả hai bên kết thúc giao dịch một cách tốt đẹp và sẵn sàng cho những giao dịch tuyệt vời sau này.
-                </div>
-            </div>
-
+            
             <div className='flex flex-col gap-2'>
                 <div className='2xl:text-2xl text-xl  text-[#000000] font-medium'>
                     Thông báo ngay khi có vấn đề phát sinh

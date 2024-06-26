@@ -200,6 +200,19 @@ const CustomDataInfoRentalCar = (res: any) => {
             fullname: res?.data?.customer_renter?.fullname,
             avatar: res?.data?.customer_renter?.avatar,
             phone: res?.data?.customer_renter?.phone,
+            total_trip: res?.data?.customer_renter?.total_trip,
+            total_star: res?.data?.customer_renter?.total_star,
+            driving_liscense: {
+                id: res?.data?.customer_renter?.driving_liscense?.id,
+                number_liscense: res?.data?.customer_renter?.driving_liscense?.number_liscense,
+                fullname: res?.data?.customer_renter?.driving_liscense?.fullname,
+                birthday: res?.data?.customer_renter?.driving_liscense?.birthday,
+                image: res?.data?.customer_renter?.driving_liscense?.image,
+                customer_id: res?.data?.customer_renter?.driving_liscense?.customer_id,
+                created_at: res?.data?.customer_renter?.driving_liscense?.created_at,
+                updated_at: res?.data?.customer_renter?.driving_liscense?.updated_at,
+                status: res?.data?.customer_renter?.driving_liscense?.status
+            }
         },
         address: {
             district: res?.data?.district,

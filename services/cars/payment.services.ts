@@ -23,9 +23,8 @@ const postPaymentRentalCar = (data: any) => {
     return axios.post(`/transaction/addPayment`, data)
 }
 
-
-const getListBanksInland = (data?: any) => {
-    return axios.post(`${process.env.NEXT_PUBLIC_URL_API_PAYMENT}/get-list-banks`, data)
+const postPaymentAlepayRentalCar = (data: any) => {
+    return axios.post(`/alepay/requestPaymentAlepay`, data)
 }
 
 export {
@@ -33,5 +32,5 @@ export {
     getListStatusTransaction,
     getListPaymentMode,
     postPaymentRentalCar,
-    getListBanksInland
+    postPaymentAlepayRentalCar
 }
