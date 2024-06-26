@@ -161,7 +161,10 @@ export default function TalentedSurcharge(props: Props) {
                                                                         <FormControl>
                                                                             <>
                                                                                 <CustomSlider
-                                                                                    defaultValue={[field.value]} max={item.max} min={item.min} step={1}
+                                                                                    defaultValue={[field.value]}
+                                                                                    max={item.max}
+                                                                                    min={item.min}
+                                                                                    step={item.range}
                                                                                     onValueChange={field.onChange}
                                                                                 />
                                                                             </>

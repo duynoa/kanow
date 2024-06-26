@@ -166,7 +166,7 @@ export default function SelftSurcharge(props: Props) {
                                                                                     defaultValue={[field.value]}
                                                                                     max={item.max}
                                                                                     min={item.min}
-                                                                                    step={1}
+                                                                                    step={item?.range}
                                                                                     onValueChange={field.onChange}
                                                                                 />
                                                                             </>
