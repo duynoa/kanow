@@ -420,13 +420,9 @@ const MyWalletMobile = (props: Props) => {
 
     return (
         <>
-            <div className='flex flex-col 3xl:gap-10 gap-6 3xl:pt-6 pt-4'>
-                <div className='3xl:text-4xl text-3xl w-full text-center font-bold'>
-                    Thống kê thu nhập
-                </div>
-
+            <div className='flex flex-col 3xl:gap-10 gap-6 3xl:py-6 py-4'>
                 <div className='flex flex-row items-center justify-between w-full bg-[#F1FCFC] rounded-lg 3xl:px-6 3xl:py-3 px-4 py-2'>
-                    <div className='3xl:text-lg text-base uppercase font-semibold text-[#2FB9BD] max-w-[50%]'>
+                    <div className='3xl:text-lg text-base uppercase font-semibold text-[#2FB9BD] md:max-w-[60%] max-w-[50%]'>
                         Bảng tổng hợp giao dịch
                     </div>
                     <SelectCustom
@@ -514,65 +510,65 @@ const MyWalletMobile = (props: Props) => {
 
                 <div className="md:mx-0 mx-4 flex flex-col gap-3">
                     <div className='flex items-center justify-between bg-[#F6F6F6] py-2 px-4 rounded-md'>
-                        <div className='3xl:text-base text-sm text-[#545454] font-medium'>
+                        <div className='3xl:text-base text-sm text-[#545454] font-medium md:max-w-[60%] max-w-[50%]'>
                             Tổng thay đổi - Chuyến đi hoàn thành
                         </div>
-                        <div className='3xl:text-base text-sm text-[#545454] font-medium'>
+                        <div className='3xl:text-base text-sm text-[#545454] font-medium md:max-w-[40%] max-w-[50%]'>
                             {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.totalTransactionFinish ? isStateMyWallet?.listSyntheticTransaction?.totalTransactionFinish : 0)}đ
                         </div>
                     </div>
 
                     <div className='flex items-center justify-between bg-[#F6F6F6] py-2 px-4 rounded-md'>
-                        <div className='3xl:text-base text-sm text-[#545454] font-medium'>
+                        <div className='3xl:text-base text-sm text-[#545454] font-medium md:max-w-[60%] max-w-[50%]'>
                             Tổng thay đổi - Giao dịch rút/nộp tiền
                         </div>
-                        <div className='3xl:text-base text-sm text-[#545454] font-medium'>
+                        <div className='3xl:text-base text-sm text-[#545454] font-medium md:max-w-[40%] max-w-[50%]'>
                             {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.totalTransactionCancel ? isStateMyWallet?.listSyntheticTransaction?.totalRequestWithdrawMoney : 0)}đ
                         </div>
                     </div>
 
                     <div className='flex items-center justify-between bg-[#F6F6F6] py-2 px-4 rounded-md'>
-                        <div className='3xl:text-base text-sm text-[#545454] font-medium'>
+                        <div className='3xl:text-base text-sm text-[#545454] font-medium md:max-w-[60%] max-w-[50%]'>
                             Tổng thay đổi - Giao dịch huỷ chuyến
                         </div>
-                        <div className='3xl:text-base text-sm text-[#545454] font-medium'>
+                        <div className='3xl:text-base text-sm text-[#545454] font-medium md:max-w-[40%] max-w-[50%]'>
                             {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.totalTransactionCancel ? isStateMyWallet?.listSyntheticTransaction?.totalTransactionCancel : 0)}đ
                         </div>
                     </div>
 
                     <div className='flex flex-col gap-2 bg-[#F6F6F6] py-2 px-4 rounded-md'>
                         <div className='flex items-center justify-between'>
-                            <div className='3xl:text-base text-sm uppercase text-[#545454] font-medium'>
+                            <div className='3xl:text-base text-sm uppercase text-[#545454] font-medium md:max-w-[60%] max-w-[50%]'>
                                 Tổng cộng thay đổi trong kì
                             </div>
-                            <div className='3xl:text-base text-sm text-[#545454] font-medium'>
+                            <div className='3xl:text-base text-sm text-[#545454] font-medium md:max-w-[40%] max-w-[50%]'>
                                 {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.balance_period ? isStateMyWallet?.listSyntheticTransaction?.balance_period : 0)}đ
                             </div>
                         </div>
 
                         <div className='flex items-center justify-between'>
-                            <div className='3xl:text-base text-sm uppercase text-[#545454] font-medium'>
+                            <div className='3xl:text-base text-sm uppercase text-[#545454] font-medium md:max-w-[60%] max-w-[50%]'>
                                 Tiền đầu kì
                             </div>
-                            <div className='3xl:text-base text-sm text-[#545454] font-medium'>
+                            <div className='3xl:text-base text-sm text-[#545454] font-medium md:max-w-[40%] max-w-[50%]'>
                                 {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.opening_balance ? isStateMyWallet?.listSyntheticTransaction?.opening_balance : 0)}đ
                             </div>
                         </div>
 
                         <div className='flex items-center justify-between'>
-                            <div className='3xl:text-base text-sm uppercase text-[#2FB9BD] font-medium'>
+                            <div className='3xl:text-base text-sm uppercase text-[#2FB9BD] font-medium md:max-w-[60%] max-w-[50%]'>
                                 Tiền cuối kì
                             </div>
-                            <div className='3xl:text-base text-sm text-[#2FB9BD] font-medium'>
+                            <div className='3xl:text-base text-sm text-[#2FB9BD] font-medium md:max-w-[40%] max-w-[50%]'>
                                 {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.ending_balance ? isStateMyWallet?.listSyntheticTransaction?.ending_balance : 0)}đ
                             </div>
                         </div>
 
                         <div className='flex items-center justify-between'>
-                            <div className='3xl:text-base text-sm uppercase text-[#f08080] font-medium'>
+                            <div className='3xl:text-base text-sm uppercase text-[#f08080] font-medium md:max-w-[60%] max-w-[50%]'>
                                 Thu nhập chủ xe
                             </div>
-                            <div className='3xl:text-base text-sm text-[#f08080] font-medium'>
+                            <div className='3xl:text-base text-sm text-[#f08080] font-medium md:max-w-[40%] max-w-[50%]'>
                                 {FormatNumberDot(isStateMyWallet?.listSyntheticTransaction?.revenue_customer ? isStateMyWallet?.listSyntheticTransaction?.revenue_customer : 0)}đ
                             </div>
                         </div>
