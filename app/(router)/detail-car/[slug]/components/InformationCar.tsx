@@ -684,7 +684,36 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                                             </div>
                                         </div>
                                         <div className='3xl:text-base text-sm w-[20%] max-w-[20%] flex justify-end text-[#FA3434] font-medium'>
-                                            {item.value ? `${FormatNumberToDecimal(item.value, 3)} đ` : ""}
+                                            {item.value ? `${FormatNumberToDecimal(item.value, 3)} ${item?.unit ? item?.unit : ""}` : ""}
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+                    :
+                    null
+            }
+            {
+                typeCarDetail == "2" && isStateDetailCar?.dataDetailCar?.surcharge_car_talent && isStateDetailCar?.dataDetailCar?.surcharge_car_talent.length > 0 ?
+                    <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
+                        <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
+                            Phụ phí có thể phát sinh
+                        </div>
+                        <div className='flex flex-col gap-4'>
+                            {
+                                isStateDetailCar?.dataDetailCar?.surcharge_car?.map((item) => (
+                                    <div key={`id-${item.id}`} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
+                                        <div className='w-[70%] max-w-[70%] flex flex-col gap-1'>
+                                            <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
+                                                {item.name ? item.name : ""}
+                                            </div>
+                                            <div className='3xl:text-base text-sm text-[#585F71]'>
+                                                {item.note ? item.note : ""}
+                                            </div>
+                                        </div>
+                                        <div className='3xl:text-base text-sm w-[20%] max-w-[20%] flex justify-end text-[#FA3434] font-medium'>
+                                            {item.value ? `${FormatNumberToDecimal(item.value, 3)} ${item?.unit ? item?.unit : ""}` : ""}
                                         </div>
                                     </div>
                                 ))
