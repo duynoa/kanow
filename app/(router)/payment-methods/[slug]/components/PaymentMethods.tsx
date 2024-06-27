@@ -183,9 +183,10 @@ const PaymentMethods = ({ }: Props) => {
                                                                 {item?.name ? item?.name : ""}
                                                             </div>
                                                         </div>
-                                                        {
-                                                            isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id && item?.type !== 1 &&
-                                                            <div className='flex flex-col gap-4'>
+                                                        {/* <>
+                                                            {
+                                                                isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id && item?.type !== 1 &&
+                                                                    <div className='flex flex-col gap-4'>
                                                                 <div className='flex items-center justify-between pb-3 border-b ml-16'>
                                                                     <div className='flex flex-col gap-1 max-w-[80%]'>
                                                                         <div className='3xl:text-base text-sm text-[#585F71] font-semibold'>
@@ -218,8 +219,9 @@ const PaymentMethods = ({ }: Props) => {
                                                                         </Button>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        }
+                                                                    </div>
+                                                            }
+                                                        </> */}
                                                         {
                                                             isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id &&
                                                             <div className='absolute right-3 top-3'>

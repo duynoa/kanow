@@ -186,6 +186,7 @@ const CustomDataInfoRentalCar = (res: any) => {
             date: res?.data?.date,
             date_start: res?.data?.date_start,
             date_end: res?.data?.date_end,
+            date_status: res?.data?.date_status
         },
         customer: {
             id: res?.data?.customer?.id,
