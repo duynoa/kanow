@@ -82,7 +82,7 @@ const isStateListCarAutonomous: IInitialStateListCarAutonomous = {
     },
     limit: {
         limitFilterCars: 50,
-        limitAllCars: 8,
+        limitAllCars: 20,
     }
 };
 
@@ -254,7 +254,7 @@ const isStateListCarsDriver: IInitialStateListCarsDriver = {
     },
     limit: {
         limitFilterCars: 50,
-        limitAllCars: 8,
+        limitAllCars: 20,
     }
 };
 
