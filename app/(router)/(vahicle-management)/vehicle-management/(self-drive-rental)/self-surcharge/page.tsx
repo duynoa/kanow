@@ -1,11 +1,12 @@
 "use client"
-import ButtonSaveForm from "@/components/button/ButtonSaveForm";
+import ButtonLoading from "@/components/button/ButtonLoading";
 import { FormatOnlyNumberToThousands } from "@/components/format/FormatNumber";
 import Nodata from "@/components/image/Nodata";
 import { CustomSlider } from "@/components/ui/customSlider";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
+import { useLoadSuccess } from "@/hooks/useLoadSuccess";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import apiVehicleSurcharge from "@/services/vehicle-management/surcharge.services";
@@ -43,6 +44,9 @@ export default function SelftSurcharge(props: Props) {
 
 
     const { dataDetail: { data }, idCar, dataOther } = useVehicleManage()
+
+
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
 
 
     const { apiUpdateCar } = apiVehicleCommon()
@@ -92,6 +96,12 @@ export default function SelftSurcharge(props: Props) {
 
     const onSubmit = async (value: any) => {
         let formData = new FormData()
+        queryKeyIsStateLoadSuccess({
+            loading: {
+                ...isStateLoadSuccess.loading,
+                isLoadingButton: true
+            }
+        })
         formData.append('car_id', idCar)
         formData.append('type', '1')
         value.arraySurcharge.forEach((x: any, index: number) => {
@@ -100,6 +110,12 @@ export default function SelftSurcharge(props: Props) {
             formData.append(`surcharge_car[${index}][value]`, `${Array.isArray(x.value) ? x.value[0] : x.value}`)
         })
         const { data: db } = await apiUpdateCar(formData)
+        queryKeyIsStateLoadSuccess({
+            loading: {
+                ...isStateLoadSuccess.loading,
+                isLoadingButton: false
+            }
+        })
         if (db.result) {
             toastCore.success('Lưu thông tin thành công')
             return
@@ -205,7 +221,14 @@ export default function SelftSurcharge(props: Props) {
                 </div>
                 {isState.arraySurcharge && isState.arraySurcharge?.length > 0 &&
                     <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
-                        <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} />
+                        <ButtonLoading
+                            title="Lưu thông tin"
+                            type="button"
+                            onClick={form.handleSubmit((values) => onSubmit(values))}
+                            className="flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                            disabled={isStateLoadSuccess.loading.isLoadingButton}
+                            isStateloading={isStateLoadSuccess.loading.isLoadingButton}
+                        />
                     </div>
                 }
             </Form>

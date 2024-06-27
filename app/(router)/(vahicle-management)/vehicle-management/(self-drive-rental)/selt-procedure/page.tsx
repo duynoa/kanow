@@ -1,8 +1,10 @@
 "use client"
+import ButtonLoading from "@/components/button/ButtonLoading";
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useLoadSuccess } from "@/hooks/useLoadSuccess";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import { uuidv4 } from "@/lib/uuid";
@@ -75,10 +77,19 @@ export default function SeltProcedure(props: Props) {
 
     const { apiUpdateCar } = apiVehicleCommon()
 
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
+
+
 
     const onSubmit = async (value: any) => {
         // "mortgage": "0", //1 thế chấp, truyen 0 hoac 1
         // "note_mortgage": "", //ghi chu the chap
+        queryKeyIsStateLoadSuccess({
+            loading: {
+                ...isStateLoadSuccess.loading,
+                isLoadingButton: true
+            }
+        })
         let formData = new FormData()
         formData.append('car_id', idCar)
         formData.append('rules', value.rules)
@@ -86,6 +97,12 @@ export default function SeltProcedure(props: Props) {
         formData.append('mortgage', data?.mortgage)
 
         const { data: db } = await apiUpdateCar(formData)
+        queryKeyIsStateLoadSuccess({
+            loading: {
+                ...isStateLoadSuccess.loading,
+                isLoadingButton: false
+            }
+        })
         if (db.result) {
             toastCore.success('Lưu thông tin thành công')
             return
@@ -216,7 +233,15 @@ export default function SeltProcedure(props: Props) {
                     />
                 </div>
                 <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
-                    <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} />
+                    {/* <ButtonSaveForm title="Lưu thông tin" onClick={form.handleSubmit((values) => onSubmit(values))} /> */}
+                    <ButtonLoading
+                        title="Lưu thông tin"
+                        type="button"
+                        onClick={form.handleSubmit((values) => onSubmit(values))}
+                        className="flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                        disabled={isStateLoadSuccess.loading.isLoadingButton}
+                        isStateloading={isStateLoadSuccess.loading.isLoadingButton}
+                    />
                 </div>
             </Form>
         </BackgroundUiVehicle>
