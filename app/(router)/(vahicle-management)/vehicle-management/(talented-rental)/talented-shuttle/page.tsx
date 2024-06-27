@@ -23,6 +23,7 @@ export default function TalentedShuttle(props: Props) {
             max: 500,
             min: 0,
             propose: 0,
+            step: 1
 
         },
         // phí đưa đón
@@ -30,12 +31,14 @@ export default function TalentedShuttle(props: Props) {
             max: 5000000,
             min: 0,
             propose: 0,
+            step: 1
         },
         // miễn phí đưa đón
         freeShuttle: {
             max: 500,
             min: 0,
             propose: 0,
+            step: 1
         }
     }
 
@@ -78,14 +81,17 @@ export default function TalentedShuttle(props: Props) {
                 within: {
                     ...isState.within,
                     propose: +dataOther.other_talent?.km_delivery_car,
+                    step: +dataOther.other_talent?.range_km_delivery_car_talent ?? 1
                 },
                 shuttleFee: {
                     ...isState.shuttleFee,
                     propose: +dataOther.other_talent?.fee_km_delivery_car,
+                    step: +dataOther.other_talent?.range_fee_km_delivery_car_talent ?? 1
                 },
                 freeShuttle: {
                     ...isState.freeShuttle,
                     propose: +dataOther.other_talent?.free_km_delivery_car,
+                    step: +dataOther.other_talent?.range_free_km_delivery_car_talent ?? 1
                 },
             })
             return
@@ -135,7 +141,7 @@ export default function TalentedShuttle(props: Props) {
                                             defaultValue={[+field.value]}
                                             min={isState.within.min}
                                             max={isState.within.max}
-                                            step={1}
+                                            step={isState.within.step}
                                             onValueChange={field.onChange}
                                         />
                                     </>
@@ -170,7 +176,7 @@ export default function TalentedShuttle(props: Props) {
                                             defaultValue={[+field.value]}
                                             min={isState.shuttleFee.min}
                                             max={isState.shuttleFee.max}
-                                            step={1}
+                                            step={isState.shuttleFee.step}
                                             onValueChange={field.onChange}
                                         />
                                     </>
@@ -205,7 +211,7 @@ export default function TalentedShuttle(props: Props) {
                                             defaultValue={[+field.value]}
                                             min={isState.freeShuttle.min}
                                             max={isState.freeShuttle.max}
-                                            step={1}
+                                            step={isState.freeShuttle.step}
                                             onValueChange={field.onChange}
                                         />
                                     </>

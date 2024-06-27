@@ -1,6 +1,6 @@
 "use client"
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
-import { FormatNumberToThousands } from "@/components/format/FormatNumber";
+import { FormatOnlyNumberToThousands } from "@/components/format/FormatNumber";
 import Nodata from "@/components/image/Nodata";
 import { CustomSlider } from "@/components/ui/customSlider";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -66,7 +66,7 @@ export default function SelftSurcharge(props: Props) {
                     const Obj = data?.surcharge_car_new.find((x: any) => x.id === e.id)
                     return {
                         ...e,
-                        value: Obj ? Obj.value : e.value,
+                        value: Obj ? Obj.value : e.value ?? 0,
                         open: !!Obj
                     }
                 })
@@ -174,11 +174,11 @@ export default function SelftSurcharge(props: Props) {
                                                                         <div className={`flex ${item?.propose_fee > 0 ? "justify-between" : "justify-end"}`}>
                                                                             {item?.propose_fee > 0 &&
                                                                                 <FormDescription>
-                                                                                    Phí đề xuất: {FormatNumberToThousands(item?.propose_fee)}
+                                                                                    Phí đề xuất: {FormatOnlyNumberToThousands(item?.propose_fee) + ' ' + (item.unit ?? "")}
                                                                                 </FormDescription>
                                                                             }
                                                                             <FormDescription className='font-bold'>
-                                                                                {FormatNumberToThousands(field.value)}
+                                                                                {FormatOnlyNumberToThousands(field.value) + ' ' + (item.unit ?? "")}
                                                                             </FormDescription>
                                                                         </div>
                                                                         {fieldState?.invalid && fieldState?.error && (
