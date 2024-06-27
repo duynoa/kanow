@@ -1,9 +1,10 @@
 "use client"
-import ButtonSaveForm from "@/components/button/ButtonSaveForm";
+import ButtonLoading from "@/components/button/ButtonLoading";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { useLoadSuccess } from "@/hooks/useLoadSuccess";
 import { useResize } from "@/hooks/useResize";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
@@ -11,7 +12,7 @@ import { uuidv4 } from "@/lib/uuid";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { IoMdAdd } from "react-icons/io";
@@ -32,6 +33,8 @@ export default function VehicleImages(props: Props) {
 
     const { dataDetail: { data, base }, idCar } = useVehicleManage()
 
+    const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
+
     const findValue = form.getValues()
 
     useEffect(() => {
@@ -49,6 +52,13 @@ export default function VehicleImages(props: Props) {
     }, [data])
 
     const onSubmit = async (value: any) => {
+        queryKeyIsStateLoadSuccess({
+            loading: {
+                ...isStateLoadSuccess.loading,
+                isLoadingButton: true
+            }
+        })
+
         let formData = new FormData()
 
         formData.append('car_id', idCar)
@@ -62,6 +72,12 @@ export default function VehicleImages(props: Props) {
         })
 
         const { data: db } = await apiUpdateCar(formData)
+        queryKeyIsStateLoadSuccess({
+            loading: {
+                ...isStateLoadSuccess.loading,
+                isLoadingButton: false
+            }
+        })
         if (db.result) {
             toastCore.success('Lưu thông tin thành công')
             return
@@ -225,7 +241,14 @@ export default function VehicleImages(props: Props) {
 
                 </div>
                 <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
-                    <ButtonSaveForm title="Lưu hình ảnh" onClick={form.handleSubmit((values) => onSubmit(values))} />
+                    <ButtonLoading
+                        title="Lưu hình ảnh"
+                        type="button"
+                        onClick={form.handleSubmit((values) => onSubmit(values))}
+                        className="flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                        disabled={isStateLoadSuccess.loading.isLoadingButton}
+                        isStateloading={isStateLoadSuccess.loading.isLoadingButton}
+                    />
                 </div>
             </Form>
         </BackgroundUiVehicle >

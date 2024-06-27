@@ -68,7 +68,7 @@ export default function SelftSurcharge(props: Props) {
                     const Obj = data?.surcharge_car_new.find((x: any) => x.id === e.id)
                     return {
                         ...e,
-                        value: Obj ? Obj.value : e.value,
+                        value: Obj ? Obj.value : e.value ?? 0,
                         open: !!Obj
                     }
                 })
@@ -193,7 +193,7 @@ export default function SelftSurcharge(props: Props) {
                                                                                     defaultValue={[field.value]}
                                                                                     max={item.max}
                                                                                     min={item.min}
-                                                                                    step={1}
+                                                                                    step={item?.range}
                                                                                     onValueChange={field.onChange}
                                                                                 />
                                                                             </>

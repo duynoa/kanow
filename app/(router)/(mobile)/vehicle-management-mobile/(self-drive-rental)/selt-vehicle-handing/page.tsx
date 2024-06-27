@@ -1,6 +1,5 @@
 "use client"
 import ButtonLoading from "@/components/button/ButtonLoading";
-import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import { FormatNumberToThousands } from "@/components/format/FormatNumber";
 import { CustomSlider } from "@/components/ui/customSlider";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -20,17 +19,20 @@ export default function SelftVehicleHanding(props: Props) {
         intersectionSquare: {
             max: 500,
             min: 0,
-            propose: 0
+            propose: 0,
+            step: 1
         },
         deliveryFee: {
             max: 5000000,
             min: 0,
-            propose: 0
+            propose: 0,
+            step: 1
         },
         freeDelivery: {
             max: 500,
             min: 0,
-            propose: 0
+            propose: 0,
+            step: 1
         },
     }
 
@@ -65,15 +67,18 @@ export default function SelftVehicleHanding(props: Props) {
             queryState({
                 deliveryFee: {
                     ...isState.deliveryFee,
-                    propose: +dataOther.other?.fee_km_delivery_car
+                    propose: +dataOther.other?.fee_km_delivery_car,
+                    step: +dataOther.other?.range_fee_km_delivery_car ?? 1
                 },
                 freeDelivery: {
                     ...isState.freeDelivery,
-                    propose: +dataOther.other?.free_km_delivery_car
+                    propose: +dataOther.other?.free_km_delivery_car,
+                    step: +dataOther.other?.range_free_km_delivery_car ?? 1
                 },
                 intersectionSquare: {
                     ...isState.intersectionSquare,
-                    propose: +dataOther.other?.km_delivery_car
+                    propose: +dataOther.other?.km_delivery_car,
+                    step: +dataOther.other?.range_km_delivery_car ?? 1
                 },
             })
             return
@@ -164,7 +169,10 @@ export default function SelftVehicleHanding(props: Props) {
                                                         <FormControl>
                                                             <>
                                                                 <CustomSlider
-                                                                    defaultValue={[+field.value]} min={isState.intersectionSquare.min} max={isState.intersectionSquare.max} step={1}
+                                                                    defaultValue={[+field.value]}
+                                                                    min={isState.intersectionSquare.min}
+                                                                    max={isState.intersectionSquare.max}
+                                                                    step={isState.intersectionSquare.step}
                                                                     onValueChange={field.onChange}
                                                                 />
                                                             </>
@@ -199,7 +207,10 @@ export default function SelftVehicleHanding(props: Props) {
                                                         <FormControl>
                                                             <>
                                                                 <CustomSlider
-                                                                    defaultValue={[+field.value]} min={isState.deliveryFee.min} max={isState.deliveryFee.max} step={1}
+                                                                    defaultValue={[+field.value]}
+                                                                    min={isState.deliveryFee.min}
+                                                                    max={isState.deliveryFee.max}
+                                                                    step={isState.deliveryFee.step}
                                                                     onValueChange={field.onChange}
                                                                 />
                                                             </>
@@ -236,7 +247,10 @@ export default function SelftVehicleHanding(props: Props) {
                                                         <FormControl>
                                                             <>
                                                                 <CustomSlider
-                                                                    defaultValue={[+field.value]} max={isState.freeDelivery.max} min={isState.freeDelivery.min} step={1}
+                                                                    defaultValue={[+field.value]}
+                                                                    max={isState.freeDelivery.max}
+                                                                    min={isState.freeDelivery.min}
+                                                                    step={isState.freeDelivery.step}
                                                                     onValueChange={field.onChange}
                                                                 />
                                                             </>
