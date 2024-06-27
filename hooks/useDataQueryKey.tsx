@@ -164,6 +164,7 @@ const isStateDetailCar: IInitialStateDetailCar = {
             note_mortgage: "",
         },
         surcharge_car: [],
+        surcharge_car_talent: [],
         hour_back_car: [],
         hour_receive_car: []
     },

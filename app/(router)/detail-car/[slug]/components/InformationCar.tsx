@@ -702,7 +702,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                         </div>
                         <div className='flex flex-col gap-4'>
                             {
-                                isStateDetailCar?.dataDetailCar?.surcharge_car?.map((item) => (
+                                isStateDetailCar?.dataDetailCar?.surcharge_car_talent?.map((item) => (
                                     <div key={`id-${item.id}`} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
                                         <div className='w-[70%] max-w-[70%] flex flex-col gap-1'>
                                             <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>

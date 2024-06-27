@@ -499,7 +499,7 @@ const LayoutContainer = ({
 
             presenceChannel.bind("change-status", (data: any) => {
                 console.log('CHANGE-STATUS PUSHER LAYOUT: ', data);
-                if (data && isStateInfoRentalCar?.detailRentalCar) {
+                if (data) {
                     queryKeyIsStateInfoRentalCar({
                         detailRentalCar: {
                             ...isStateInfoRentalCar?.detailRentalCar,
@@ -543,9 +543,6 @@ const LayoutContainer = ({
         queryKeyIsStateNotification,
         isStateNotification.dataListNotifications,
     ]);
-
-    console.log('isStateInfoRentalCar', isStateInfoRentalCar);
-
 
     // Hàm xử lí sự kiện khoá zoom trên giao diện mobile
     useEffect(() => {

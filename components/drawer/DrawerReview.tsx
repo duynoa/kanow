@@ -116,10 +116,9 @@ export function DrawerReview({ children }: any) {
                     }
 
                     const { data } = await getListAllReview(dataParams)
-                    console.log('data list all review:', data);
+                  
                     if (data && data.data && data.links && data.meta) {
                         let newListAllReviewCar = [...isStateAllReview.listAllReviewCar, ...data.data]
-                        console.log('data newListAllReviewCar:', newListAllReviewCar);
 
                         queryKeyIsStateAllReview({
                             listAllReviewCar: newListAllReviewCar,
@@ -151,8 +150,6 @@ export function DrawerReview({ children }: any) {
             fetchListAllReview()
         }
     }
-
-    console.log('isStateAllReview', isStateAllReview);
 
     return (
         <Drawer
