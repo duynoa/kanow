@@ -148,58 +148,64 @@ const InfoRentalCar = ({ params }: Props) => {
         fetchStepTransaction()
     }, [params?.slug, informationUser])
 
-    useEffect(() => {
-        if (generalKey && generalKey?.pusher && generalKey?.cluster && informationUser?.id) {
-            const pusher = new Pusher(generalKey?.pusher, {
-                authTransport: "ajax",
-                cluster: generalKey?.cluster,
-            });
+    // useEffect(() => {
+    //     if (generalKey && generalKey?.pusher && generalKey?.cluster && informationUser?.id) {
+    //         const pusher = new Pusher(generalKey?.pusher, {
+    //             authTransport: "ajax",
+    //             cluster: generalKey?.cluster,
+    //         });
 
-            pusher.connection.bind("connected", () => {
-                console.log("Đã kết nối thành công đến Pusher!");
-            });
+    //         pusher.connection.bind("connected", () => {
+    //             console.log("Đã kết nối thành công đến Pusher!");
+    //         });
 
-            pusher.connection.bind("error", (err: any) => {
-                console.error("Lỗi kết nối Pusher:", err);
-            });
+    //         pusher.connection.bind("error", (err: any) => {
+    //             console.error("Lỗi kết nối Pusher:", err);
+    //         });
 
-            const presenceChannel = pusher.subscribe(`notifications-channel-${informationUser?.id}-customer`);
+    //         const presenceChannel = pusher.subscribe(`notifications-channel-${informationUser?.id}-customer`);
 
-            presenceChannel.bind("change-status", (data: any) => {
-                console.log('CHANGE-STATUS PUSHER: ', data);
+    //         presenceChannel.bind("change-status", (data: any) => {
+    //             // console.log('CHANGE-STATUS PUSHER: ', data);
 
-                if (data && isStateInfoRentalCar?.detailRentalCar) {
-                    queryKeyIsStateInfoRentalCar({
-                        detailRentalCar: {
-                            ...isStateInfoRentalCar?.detailRentalCar,
-                            status: {
-                                ...isStateInfoRentalCar?.detailRentalCar?.status,
-                                status: +data.status,
-                                statusCustom: +data.status,
-                                note: data.note_status
-                            }
-                        },
-                        loading: {
-                            ...isStateInfoRentalCar.loading,
-                            isLoadingButton: false
-                        }
-                    })
-                }
-            });
+    //             if (data && isStateInfoRentalCar?.detailRentalCar) {
+    //                 queryKeyIsStateInfoRentalCar({
+    //                     detailRentalCar: {
+    //                         ...isStateInfoRentalCar?.detailRentalCar,
+    //                         status: {
+    //                             ...isStateInfoRentalCar?.detailRentalCar?.status,
+    //                             status: +data.status,
+    //                             statusCustom: +data.status,
+    //                             note: data.note_status
+    //                         }
+    //                     },
+    //                     loading: {
+    //                         ...isStateInfoRentalCar.loading,
+    //                         isLoadingButton: false
+    //                     }
+    //                 })
+    //             }
+    //         });
 
-            return () => {
-                presenceChannel.unbind("change-status"); // Unbind sự kiện khi component bị unmounted
-                pusher.unsubscribe(`notifications-channel-${informationUser?.id}-customer`); // Unsubscribe channel khi component bị unmounted
-                pusher.disconnect(); // Ngắt kết nối khi component bị unmounted
+    //         // presenceChannel.bind("check-payment-alepay", (data: any) => {
+    //         //     console.log('CHECK-PAYMENT-ALEPAY PUSHER: ', data);
 
-            };
-        }
-    }, [
-        generalKey,
-        informationUser?.id,
-        isStateInfoRentalCar.detailRentalCar,
-        queryKeyIsStateInfoRentalCar,
-    ]);
+    //         // });
+
+    //         return () => {
+    //             presenceChannel.unbind("change-status"); // Unbind sự kiện khi component bị unmounted
+    //             presenceChannel.unbind("check-payment-alepay"); // Unbind sự kiện khi component bị unmounted
+    //             pusher.unsubscribe(`notifications-channel-${informationUser?.id}-customer`); // Unsubscribe channel khi component bị unmounted
+    //             pusher.disconnect(); // Ngắt kết nối khi component bị unmounted
+
+    //         };
+    //     }
+    // }, [
+    //     generalKey,
+    //     informationUser?.id,
+    //     isStateInfoRentalCar.detailRentalCar,
+    //     queryKeyIsStateInfoRentalCar,
+    // ]);
 
     // Hàm để đếm số cụm từ trong một chuỗi (dùng để chỉnh vị trí chữ trong step nhìn cho tương đối)
     const countWordClusters = (sentence: string) => {

@@ -6,7 +6,7 @@ import { toastCore } from '@/lib/toast'
 import { postPaymentAlepayRentalCar, postPaymentRentalCar } from '@/services/cars/payment.services'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FaArrowLeftLong } from 'react-icons/fa6'
 import { PiCheckCircleFill } from 'react-icons/pi'
 
@@ -15,6 +15,8 @@ import { useLoadSuccess } from '@/hooks/useLoadSuccess'
 import SkeletonPayment from '@/components/skeleton/SkeletonPayment'
 import { useAuth } from '@/hooks/useAuth'
 import { useGeneralKey } from '@/hooks/useGeneralKey'
+
+import Pusher from "pusher-js";
 
 type Props = {}
 
@@ -74,6 +76,7 @@ const PaymentMethods = ({ }: Props) => {
 
             if (data && data.code === "000") {
                 toastCore.success(data.message)
+                window.open(data.checkoutUrl)
                 // router.push(`/info-rental-car/${isStatePaymentRental?.detailRentalCar?.id}?type=${typeCarDetail}`)
             } else {
                 toastCore.error(data.message)
@@ -90,10 +93,46 @@ const PaymentMethods = ({ }: Props) => {
         }
     }
 
-    console.log('isStatePaymentRental: ', isStatePaymentRental);
-    console.log('informationUser: ', informationUser);
-    console.log('generalKey: ', generalKey);
-    // console.log('isStateLoadSuccess: ', isStateLoadSuccess);
+    useEffect(() => {
+        if (generalKey && generalKey?.pusher && generalKey?.cluster && informationUser?.id) {
+            const pusher = new Pusher(generalKey?.pusher, {
+                authTransport: "ajax",
+                cluster: generalKey?.cluster,
+            });
+
+            pusher.connection.bind("connected", () => {
+                console.log("Đã kết nối thành công đến Pusher!");
+            });
+
+            pusher.connection.bind("error", (err: any) => {
+                console.error("Lỗi kết nối Pusher:", err);
+            });
+
+            const presenceChannel = pusher.subscribe(`notifications-channel-${informationUser?.id}-customer`);
+
+            presenceChannel.bind("check-payment-alepay", (data: any) => {
+                console.log('CHECK-PAYMENT-ALEPAY PUSHER LAYOUT: ', data);
+                if (data && data.result) {
+                    router.push(`/info-rental-car/${data.transaction_id}?type=${data.type}`)
+                    toastCore.success("Thanh toán cọc thành công!")
+                } else {
+                    router.push(`/info-rental-car/${data.transaction_id}?type=${data.type}`)
+                    toastCore.error("Thanh toán cọc thất bại!")
+                }
+            });
+
+            return () => {
+                presenceChannel.unbind("check-payment-alepay"); // Unbind sự kiện khi component bị unmounted
+                pusher.unsubscribe(`notifications-channel-${informationUser.id}-customer`); // Unsubscribe channel khi component bị unmounted
+                pusher.disconnect(); // Ngắt kết nối khi component bị unmounted
+
+            };
+        }
+    }, [
+        generalKey,
+        informationUser?.id,
+    ]);
+
 
     return (
         <div className="custom-container flex flex-col gap-4 py-10">
@@ -144,9 +183,10 @@ const PaymentMethods = ({ }: Props) => {
                                                                 {item?.name ? item?.name : ""}
                                                             </div>
                                                         </div>
-                                                        {
-                                                            isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id && item?.type !== 1 &&
-                                                            <div className='flex flex-col gap-4'>
+                                                        {/* <>
+                                                            {
+                                                                isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id && item?.type !== 1 &&
+                                                                    <div className='flex flex-col gap-4'>
                                                                 <div className='flex items-center justify-between pb-3 border-b ml-16'>
                                                                     <div className='flex flex-col gap-1 max-w-[80%]'>
                                                                         <div className='3xl:text-base text-sm text-[#585F71] font-semibold'>
@@ -179,8 +219,9 @@ const PaymentMethods = ({ }: Props) => {
                                                                         </Button>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        }
+                                                                    </div>
+                                                            }
+                                                        </> */}
                                                         {
                                                             isStatePaymentRental?.payment?.idActivePaymentMethod === item?.id &&
                                                             <div className='absolute right-3 top-3'>

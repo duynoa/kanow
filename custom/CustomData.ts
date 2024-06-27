@@ -161,7 +161,7 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
             note_mortgage: res?.data?.note_mortgage,
         },
         surcharge_car: res?.data?.surcharge_car,
-
+        surcharge_car_talent: res?.data?.surcharge_car_talent,
         // giờ nhận xe và giờ trả xe
         hour_back_car: res?.data?.hour_back_car,
         hour_receive_car: res?.data?.hour_receive_car,
@@ -186,6 +186,7 @@ const CustomDataInfoRentalCar = (res: any) => {
             date: res?.data?.date,
             date_start: res?.data?.date_start,
             date_end: res?.data?.date_end,
+            date_status: res?.data?.date_status
         },
         customer: {
             id: res?.data?.customer?.id,

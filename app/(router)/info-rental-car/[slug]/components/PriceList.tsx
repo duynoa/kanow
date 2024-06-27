@@ -28,6 +28,9 @@ import { toastCore } from '@/lib/toast'
 
 import { motion } from "framer-motion"
 import ButtonLoading from '@/components/button/ButtonLoading'
+import { RiTimerFlashFill } from 'react-icons/ri'
+import CountdownTimer from '@/components/countdown/CountdownTimerProps'
+import { useGeneralKey } from '@/hooks/useGeneralKey'
 
 type Props = {
     params: {
@@ -49,6 +52,7 @@ const PriceList = ({
     const { isStatePolicy } = useDataPolicy()
     const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
     const { informationUser } = useAuth()
+    const { generalKey } = useGeneralKey()
 
     const handleOpenModal = (type: string) => {
         if (typeCarDetail) {
@@ -121,9 +125,40 @@ const PriceList = ({
         }
     }
 
+    console.log('generalKey', generalKey);
+
+
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
             {/* thông tin giữa các step */}
+            {
+                isStateInfoRentalCar?.detailRentalCar?.status &&
+                (isStateInfoRentalCar?.detailRentalCar?.status?.status === 1) &&
+                <>
+                    <div className='border-2 rounded-xl border-[#FFDAA3] bg-[#FFFCEA]/70 flex flex-row items-center gap-1 p-3'>
+                        <div className='size-5 max-w-5'>
+                            <RiTimerFlashFill className='size-5 max-w-5 text-[#FF9900]' />
+                        </div>
+                        {
+                            informationUser?.id === isStateInfoRentalCar?.detailRentalCar?.customer?.id ?
+                                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#6F7689] font-medium'>
+                                    Thời gian chờ khách thanh toán cọc
+                                </div>
+                                :
+                                <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#6F7689] font-medium'>
+                                    Thời gian thanh toán cọc còn
+                                </div>
+                        }
+                        <div className='3xl:text-base lg:text-sm md:text-base text-sm text-[#FF9900] font-medium'>
+                            <CountdownTimer
+                                targetDate={isStateInfoRentalCar?.detailRentalCar?.date_time?.date_status}
+                                waitTimeInHours={+generalKey?.hour_wait_status}
+                            />
+                        </div>
+                    </div>
+                </>
+            }
+
             {
                 isStateInfoRentalCar?.detailRentalCar?.status &&
                 (isStateInfoRentalCar?.detailRentalCar?.status?.status === 2 || isStateInfoRentalCar?.detailRentalCar?.status?.status === 3 || isStateInfoRentalCar?.detailRentalCar?.status?.status === 4) &&

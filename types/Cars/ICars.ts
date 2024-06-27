@@ -167,12 +167,20 @@ interface IDataDetailCar {
         name: string;
         note: string;
         value: number;
+        unit: string;
         created_at: string;
         updated_at: string;
         pivot: {
             car_id: number;
             surcharge_car_id: number;
         };
+    }[];
+    surcharge_car_talent: {
+        id: number;
+        name: string;
+        note: string;
+        value: number;
+        unit: string;
     }[];
     hour_back_car: {
         car_id: number,
@@ -210,6 +218,7 @@ interface IDetailRentalCar {
         date: string,
         date_start: string,
         date_end: string,
+        date_status: string
     },
     customer: {
         id: number,

@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const SkeletonDialogCancelCar = () => {
     return (
-        <div className='flex flex-col gap-4 md:px-6 px-3'>
+        <div className='flex flex-col gap-4'>
             <div className='flex flex-col gap-2'>
                 <Skeleton className='h-6 w-36' />
                 <div className='flex flex-row flex-wrap gap-2'>

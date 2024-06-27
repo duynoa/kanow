@@ -2,28 +2,22 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 
 import { uuidv4 } from '@/lib/uuid'
-
-import { IoArrowForwardOutline } from 'react-icons/io5'
-
-import { Button } from '@/components/ui/button'
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
-import BlurImage from '@/components/image/BlurImage'
 import PaginationCustom from '@/components/pagination/PaginationCustom'
-import { useDataListCarrer, useDataNewsEvents } from '@/hooks/useDataQueryKey'
-import { ReadonlyURLSearchParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { getListCarrer } from '@/services/blog/blog.services'
-import { FaUsers } from 'react-icons/fa'
-import { FaLocationDot, FaSackDollar } from 'react-icons/fa6'
-import { MdLocationOn } from 'react-icons/md'
-import { RiPassValidLine, RiShieldCheckFill } from 'react-icons/ri'
-import { PiGenderIntersexBold } from 'react-icons/pi'
 import SkeletonCarrer from '@/components/skeleton/SkeletonCarrer'
 
+import { useDataListCarrer } from '@/hooks/useDataQueryKey'
+import { ReadonlyURLSearchParams,  useSearchParams } from 'next/navigation'
+import { getListCarrer } from '@/services/blog/blog.services'
+
+import { FaUsers } from 'react-icons/fa'
+import { FaLocationDot, FaSackDollar } from 'react-icons/fa6'
+import { RiPassValidLine } from 'react-icons/ri'
+import { PiGenderIntersexBold } from 'react-icons/pi'
+
 import { motion } from 'framer-motion'
-import { HiLocationMarker } from 'react-icons/hi'
 
 type Props = {}
 
@@ -34,7 +28,6 @@ const Career = (props: Props) => {
     const param: ReadonlyURLSearchParams = useSearchParams()
 
     const current_page: string | null = param.get("current_page") || ''
-
 
     const dataCarRelated = [
         {
@@ -304,7 +297,7 @@ const Career = (props: Props) => {
                                             prefetch={false}
                                         >
                                             <div className='flex flex-col gap-2'>
-                                                <div className='3xl:text-xl 2xl:text-[17px] xxl:text-[17px] xl:text-base lg:text-base md:text-xl text-xl  text-[#272D37] font-semibold group-hover:text-[#272D37]/70 duration-500 transition ease-in-out line-clamp-2 capitalize'>
+                                                <div className='3xl:text-xl 2xl:text-[17px] xxl:text-[17px] xl:text-base lg:text-base md:text-xl text-xl  text-[#2FB9BD] font-semibold group-hover:text-[#2FB9BD]/70 duration-500 transition ease-in-out line-clamp-2 capitalize'>
                                                     {item.title}
                                                 </div>
                                                 <div className='flex items-center gap-2 3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out'>
