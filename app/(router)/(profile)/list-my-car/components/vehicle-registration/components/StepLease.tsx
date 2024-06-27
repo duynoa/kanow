@@ -16,7 +16,7 @@ import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.servi
 import { IStateLease, TComboboxApi } from "@/types/Profile/mycar/IMyCar"
 import { debounce } from "lodash"
 import { ChevronsUpDown } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 
 type Props = {
     form: any,
@@ -49,17 +49,20 @@ const StepLease = ({ form, checkValueArray }: Props) => {
             intersectionSquare: {
                 max: 500,
                 min: 0,
-                propose: 0
+                propose: 0,
+                step: 1
             },
             deliveryFee: {
                 max: 5000000,
                 min: 0,
-                propose: 0
+                propose: 0,
+                step: 1
             },
             freeDelivery: {
                 max: 500,
                 min: 0,
-                propose: 0
+                propose: 0,
+                step: 1
             },
         },
         discount: 0,
@@ -69,13 +72,15 @@ const StepLease = ({ form, checkValueArray }: Props) => {
             maximumKilometers: {
                 max: 0,
                 min: 0,
-                propose: 0
+                propose: 0,
+                step: 1
             },
             // phí vượt giới hạn
             overLimitFee: {
                 max: 0,
                 min: 0,
-                propose: 0
+                propose: 0,
+                step: 1
             }
         },
 
@@ -132,15 +137,18 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                         ...isState.vehicleHanding,
                         intersectionSquare: {
                             ...isState.vehicleHanding.intersectionSquare,
-                            propose: +other?.km_delivery_car
+                            propose: +other?.km_delivery_car,
+                            step: +other?.range_km_delivery_car ?? 1
                         },
                         deliveryFee: {
                             ...isState.vehicleHanding.deliveryFee,
-                            propose: +other?.fee_km_delivery_car
+                            propose: +other?.fee_km_delivery_car,
+                            step: +other?.range_fee_km_delivery_car ?? 1
                         },
                         freeDelivery: {
                             ...isState.vehicleHanding.freeDelivery,
-                            propose: +other?.free_km_delivery_car
+                            propose: +other?.free_km_delivery_car,
+                            step: +other?.range_free_km_delivery_car ?? 1
                         },
                     },
                     discount: +other?.percent_discount,
@@ -150,13 +158,13 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                             ...isState.limitedKilometers.maximumKilometers,
                             max: 5000,
                             propose: +other?.limit_km_day
-
                         },
                         overLimitFee: {
                             ...isState.limitedKilometers.overLimitFee,
                             max: +dtFee?.max,
                             min: +dtFee?.min,
-                            propose: +dtFee?.propose_fee
+                            propose: +dtFee?.propose_fee,
+                            step: +dtFee?.range ?? 1
                         }
                     }
                 })
@@ -831,7 +839,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                             defaultValue={[+field.value]}
                                                                             min={isState.vehicleHanding.deliveryFee.min}
                                                                             max={isState.vehicleHanding.deliveryFee.max}
-                                                                            step={1}
+                                                                            step={isState.vehicleHanding.deliveryFee.step}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>
@@ -869,7 +877,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                             defaultValue={[+field.value]}
                                                                             min={isState.vehicleHanding.freeDelivery.min}
                                                                             max={isState.vehicleHanding.freeDelivery.max}
-                                                                            step={1}
+                                                                            step={isState.vehicleHanding.freeDelivery.step}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>
@@ -939,7 +947,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                             value={[+field.value]}
                                                                             min={0}
                                                                             max={isState.limitedKilometers.maximumKilometers.max}
-                                                                            step={1}
+                                                                            step={isState.limitedKilometers.maximumKilometers.step}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>
@@ -978,7 +986,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                             defaultValue={[+field.value]}
                                                                             min={isState.limitedKilometers.overLimitFee.min}
                                                                             max={isState.limitedKilometers.overLimitFee.max}
-                                                                            step={1}
+                                                                            step={isState.limitedKilometers.overLimitFee.step}
                                                                             onValueChange={field.onChange}
                                                                         />
                                                                     </>

@@ -10,7 +10,7 @@ import { uuidv4 } from "@/lib/uuid";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { IoMdAdd } from "react-icons/io";
 import { MdClear } from "react-icons/md";
@@ -55,8 +55,8 @@ export default function VehicleRegistration(props: Props) {
                 return arr.map((i: any) => {
                     return {
                         ...i,
-                        name: `${base.base}/${i.name}`,
-                        nameDefault: i.name
+                        name: `${base?.base}/${i?.name}`,
+                        nameDefault: i?.name
                     }
                 })
             }
@@ -78,28 +78,28 @@ export default function VehicleRegistration(props: Props) {
         formData.append('car_id', idCar)
         // //cà vẹt
         value.imagesRegistration.forEach((i: any, index: number) => {
-            formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i.nameDefault || i.name)
+            formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i?.nameDefault || i?.name || '')
         })
         // // đăng kiểm
         value.imagesRegistry.forEach((i: any, index: number) => {
-            formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i.nameDefault || i.name)
+            formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i?.nameDefault || i?.name || '')
         })
         // //         bảo hiểm
         value.imagesInsurance.forEach((i: any, index: number) => {
-            formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i.nameDefault || i.name)
+            formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i?.nameDefault || i?.name || '')
         })
         // hinh mặt trước
-        formData.append('image_car_position_before', value?.carPhoto?.before[0]?.nameDefault || value?.carPhoto?.before[0]?.name)
-        formData.append('image_car_position_affter', value?.carPhoto?.after[0]?.nameDefault || value?.carPhoto?.after[0]?.name)
-        formData.append('image_car_position_left', value?.carPhoto?.left[0]?.nameDefault || value?.carPhoto?.left[0]?.name)
-        formData.append('image_car_position_right', value?.carPhoto?.right[0]?.nameDefault || value?.carPhoto?.right[0]?.name)
+        formData.append('image_car_position_before', value?.carPhoto?.before[0]?.nameDefault || value?.carPhoto?.before[0]?.name || '')
+        formData.append('image_car_position_affter', value?.carPhoto?.after[0]?.nameDefault || value?.carPhoto?.after[0]?.name || '')
+        formData.append('image_car_position_left', value?.carPhoto?.left[0]?.nameDefault || value?.carPhoto?.left[0]?.name || '')
+        formData.append('image_car_position_right', value?.carPhoto?.right[0]?.nameDefault || value?.carPhoto?.right[0]?.name || '')
 
         const { data: db } = await apiUpdateCar(formData)
         if (db.result) {
             toastCore.success('Lưu thông tin thành công')
             return
         }
-        toastCore.error(db.message)
+        toastCore.error(db?.message)
     }
 
 
@@ -177,7 +177,7 @@ export default function VehicleRegistration(props: Props) {
                                                                         <div key={e} className="col-span-1 h-[250px] relative my-1">
                                                                             <Image
 
-                                                                                src={e.name instanceof File ? URL.createObjectURL(e.name) : e.name ?? ""} width={1280}
+                                                                                src={e?.name instanceof File ? URL.createObjectURL(e?.name) : e?.name ?? ""} width={1280}
                                                                                 height={1024}
                                                                                 alt="image" className="w-full h-full object-cover rounded-md"
                                                                             />
@@ -189,7 +189,7 @@ export default function VehicleRegistration(props: Props) {
                                                                                         if (imagesRegistration && typeof imagesRegistration !== 'undefined') {
                                                                                             imagesRegistration.value = '';
                                                                                         }
-                                                                                        onChange(value?.filter((value: any) => value.name !== e.name))
+                                                                                        onChange(value?.filter((value: any) => value?.name !== e?.name))
                                                                                     }}
                                                                                     className="text-red-500 bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer md:text-[26px] text-xl"
                                                                                 />
@@ -308,12 +308,6 @@ export default function VehicleRegistration(props: Props) {
                         <FormField
                             control={form.control}
                             name="imagesInsurance"
-                            rules={{
-                                required: {
-                                    value: true,
-                                    message: 'Vui lòng thêm hình bảo hiểm vật chất',
-                                },
-                            }}
                             render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
                                 return (
                                     <FormItem className="">
@@ -322,11 +316,6 @@ export default function VehicleRegistration(props: Props) {
                                         </FormLabel>
                                         <FormControl>
                                             <>
-                                                {fieldState?.invalid && fieldState?.error && (
-                                                    <FormMessage>
-                                                        {fieldState?.error?.message}
-                                                    </FormMessage>
-                                                )}
                                                 <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
                                                     <div className="col-span-1  h-[250px]">
                                                         <Input {...fieldProps}
@@ -343,7 +332,7 @@ export default function VehicleRegistration(props: Props) {
                                                             className="hidden" />
                                                         <Label
                                                             htmlFor={"imagesInsurance"}
-                                                            className={`${fieldState?.invalid && fieldState?.error ? 'border-red-500' : 'border-[#BEBFC2]/80'} relative overflow-hidden h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                            className={`border-[#BEBFC2]/80 relative overflow-hidden h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
                                                         >
                                                             <IoMdAdd size={32} className="absolute z-10" />
                                                             <Image src={'/vehicle/registration/insurance.jpg'} width={1280} height={102} alt="" className="opacity-35 md:size-full size-[65%] object-cover" />
@@ -358,7 +347,7 @@ export default function VehicleRegistration(props: Props) {
                                                                         <div key={e} className="col-span-1 h-[250px] relative my-1">
                                                                             <Image
 
-                                                                                src={e.name instanceof File ? URL.createObjectURL(e.name) : e.name ?? ""}
+                                                                                src={e?.name instanceof File ? URL.createObjectURL(e?.name) : e?.name ?? ""}
                                                                                 width={1280}
                                                                                 height={1024}
                                                                                 alt="image" className="w-full h-full object-cover rounded-md"
@@ -405,10 +394,6 @@ export default function VehicleRegistration(props: Props) {
                                     validate: {
                                         maxFile: (value: any) => value?.length <= 1 || 'Chỉ cho phép tối đa 1 ảnh',
                                     },
-                                    required: {
-                                        value: true,
-                                        message: 'Vui lòng thêm ảnh trước xe',
-                                    }
                                 }}
                                 render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
                                     return (
@@ -441,7 +426,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 className="hidden" />
                                                             <Label
                                                                 htmlFor={"carPhotoBefore"}
-                                                                className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} ${fieldState?.invalid && fieldState?.error ? 'border-red-500' : 'border-[#BEBFC2]/80'} overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                                className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} border-[#BEBFC2]/80 overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
                                                             >
                                                                 <IoMdAdd size={32} className="absolute z-10" />
                                                                 <div className="flex items-center justify-center">
@@ -457,7 +442,7 @@ export default function VehicleRegistration(props: Props) {
                                                                         return (
                                                                             <div key={e} className="col-span-1 h-[300px] relative my-1">
                                                                                 <Image
-                                                                                    src={e.name instanceof File ? URL.createObjectURL(e.name) : e.name ?? ""}
+                                                                                    src={e?.name instanceof File ? URL.createObjectURL(e?.name) : e?.name ?? ""}
                                                                                     width={1280}
                                                                                     height={1024}
                                                                                     alt="image" className="w-full h-full object-cover rounded-md"
@@ -495,10 +480,6 @@ export default function VehicleRegistration(props: Props) {
                                 control={form.control}
                                 name="carPhoto.after"
                                 rules={{
-                                    required: {
-                                        value: true,
-                                        message: 'Vui lòng thêm ảnh sau xe',
-                                    },
                                     validate: {
                                         maxFile: (value: any) => value?.length <= 1 || 'Chỉ cho phép tối đa 1 ảnh',
                                     },
@@ -534,7 +515,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 className="hidden" />
                                                             <Label
                                                                 htmlFor={"carPhotoAfter"}
-                                                                className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} ${fieldState?.invalid && fieldState?.error ? 'border-red-500' : 'border-[#BEBFC2]/80'} overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                                className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} border-[#BEBFC2]/80 overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
                                                             >
                                                                 <IoMdAdd size={32} className="absolute z-10" />
                                                                 <div className="flex items-center justify-center">
@@ -551,7 +532,7 @@ export default function VehicleRegistration(props: Props) {
                                                                             <div key={e} className="col-span-1 h-[300px] relative my-1">
                                                                                 <Image
 
-                                                                                    src={e.name instanceof File ? URL.createObjectURL(e.name) : e.name ?? ""}
+                                                                                    src={e?.name instanceof File ? URL.createObjectURL(e?.name) : e?.name ?? ""}
                                                                                     width={1280}
                                                                                     height={1024}
                                                                                     alt="image" className="w-full h-full object-cover rounded-md"
@@ -589,10 +570,6 @@ export default function VehicleRegistration(props: Props) {
                                 control={form.control}
                                 name="carPhoto.left"
                                 rules={{
-                                    required: {
-                                        value: true,
-                                        message: 'Vui lòng thêm ảnh bên trái xe',
-                                    },
                                     validate: {
                                         maxFile: (value: any) => value?.length <= 1 || 'Chỉ cho phép tối đa 1 ảnh',
                                     },
@@ -628,7 +605,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 className="hidden" />
                                                             <Label
                                                                 htmlFor={"carPhotoLeft"}
-                                                                className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} ${fieldState?.invalid && fieldState?.error ? 'border-red-500' : 'border-[#BEBFC2]/80'} overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                                className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} border-[#BEBFC2]/80 overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
                                                             >
                                                                 <IoMdAdd size={32} className="absolute z-10" />
                                                                 <div className="flex items-center justify-center">
@@ -645,7 +622,7 @@ export default function VehicleRegistration(props: Props) {
                                                                             <div key={e} className="col-span-1 h-[300px] relative my-1">
                                                                                 <Image
 
-                                                                                    src={e.name instanceof File ? URL.createObjectURL(e.name) : e.name ?? ""}
+                                                                                    src={e?.name instanceof File ? URL.createObjectURL(e?.name) : e?.name ?? ""}
                                                                                     width={1280}
                                                                                     height={1024}
                                                                                     alt="image" className="w-full h-full object-cover rounded-md"
@@ -683,10 +660,9 @@ export default function VehicleRegistration(props: Props) {
                                 control={form.control}
                                 name="carPhoto.right"
                                 rules={{
-                                    required: {
-                                        value: true,
-                                        message: 'Vui lòng thêm ảnh bên phải xe',
-                                    },
+                                    validate: {
+                                        maxFile: (value: any) => value?.length <= 1 || 'Chỉ cho phép tối đa 1 ảnh',
+                                    }
                                 }}
                                 render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
                                     return (
@@ -718,7 +694,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 className="hidden" />
                                                             <Label
                                                                 htmlFor={"carPhotoRight"}
-                                                                className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} ${fieldState?.invalid && fieldState?.error ? 'border-red-500' : 'border-[#BEBFC2]/80'} overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                                className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} border-[#BEBFC2]/80 overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
                                                             >
                                                                 <IoMdAdd size={32} className="absolute z-10" />
                                                                 <div className="flex items-center justify-center">
@@ -735,7 +711,7 @@ export default function VehicleRegistration(props: Props) {
                                                                             <div key={e} className="col-span-1 h-[300px] relative my-1">
                                                                                 <Image
 
-                                                                                    src={e.name instanceof File ? URL.createObjectURL(e.name) : e.name ?? ""}
+                                                                                    src={e?.name instanceof File ? URL.createObjectURL(e?.name) : e?.name ?? ""}
                                                                                     width={1280}
                                                                                     height={1024}
                                                                                     alt="image" className="w-full h-full object-cover rounded-md"

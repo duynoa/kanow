@@ -34,6 +34,7 @@ interface Obj {
     max: number;
     min: number;
     propose: number;
+    step: number;
 }
 
 export interface IStateLease extends ICommonType {
