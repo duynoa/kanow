@@ -243,7 +243,6 @@ const TransactionStatement = ({ params }: Props) => {
 
     }, [params.slug])
 
-    console.log('isState : ', isState);
 
     useEffect(() => {
         const fetchListDetailSyntheticTransaction = async () => {
@@ -253,7 +252,6 @@ const TransactionStatement = ({ params }: Props) => {
                 }
 
                 const { data } = await getListDetailSyntheticTransaction(dataParams)
-                console.log('data', data);
 
                 if (data) {
                     const totalRevenueCustomer = data.transactionFinish.data.reduce((accumulator: any, currentValue: any) => { return accumulator + currentValue.cost.revenue_customer }, 0)

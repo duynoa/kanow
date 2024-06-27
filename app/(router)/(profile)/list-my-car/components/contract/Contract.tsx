@@ -20,7 +20,7 @@ const Contract = (props: Props) => {
 
     const fetChDataContract = async () => {
         const { data: res } = await apiContract()
-        console.log(res);
+
         if (res?.data) {
             setData(res.data)
         }

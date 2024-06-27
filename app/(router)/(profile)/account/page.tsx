@@ -75,9 +75,6 @@ const Account = (props: Props) => {
         },
     });
 
-    console.log('informationUser', informationUser);
-
-
     const onSetValue = (informationUser: any, type: string) => {
         const editInfo = [
             {
@@ -240,9 +237,6 @@ const Account = (props: Props) => {
             fetChDataRatings(1)
         }
     }, [isState.page, isState.tabRatings])
-
-    console.log('isState', isState);
-
 
     const handleClickOptionsButton = async (type: string) => {
         const checkKey: any = {
