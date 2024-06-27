@@ -89,21 +89,21 @@ export default function VehicleRegistration(props: Props) {
             formData.append('car_id', idCar)
             // //cà vẹt
             value.imagesRegistration.forEach((i: any, index: number) => {
-                formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i.nameDefault || i.name)
+                formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i?.nameDefault || i?.name || '')
             })
             // // đăng kiểm
             value.imagesRegistry.forEach((i: any, index: number) => {
-                formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i.nameDefault || i.name)
+                formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i?.nameDefault || i?.name || '')
             })
             // //         bảo hiểm
             value.imagesInsurance.forEach((i: any, index: number) => {
-                formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i.nameDefault || i.name)
+                formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i?.nameDefault || i?.name || '')
             })
             // hinh mặt trước
-            formData.append('image_car_position_before', value?.carPhoto?.before[0]?.nameDefault || value?.carPhoto?.before[0]?.name)
-            formData.append('image_car_position_affter', value?.carPhoto?.after[0]?.nameDefault || value?.carPhoto?.after[0]?.name)
-            formData.append('image_car_position_left', value?.carPhoto?.left[0]?.nameDefault || value?.carPhoto?.left[0]?.name)
-            formData.append('image_car_position_right', value?.carPhoto?.right[0]?.nameDefault || value?.carPhoto?.right[0]?.name)
+            formData.append('image_car_position_before', value?.carPhoto?.before[0]?.nameDefault || value?.carPhoto?.before[0]?.name || '')
+            formData.append('image_car_position_affter', value?.carPhoto?.after[0]?.nameDefault || value?.carPhoto?.after[0]?.name || '')
+            formData.append('image_car_position_left', value?.carPhoto?.left[0]?.nameDefault || value?.carPhoto?.left[0]?.name || '')
+            formData.append('image_car_position_right', value?.carPhoto?.right[0]?.nameDefault || value?.carPhoto?.right[0]?.name || '')
 
             const { data: db } = await apiUpdateCar(formData)
             if (db.result) {
