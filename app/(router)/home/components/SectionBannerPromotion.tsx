@@ -86,7 +86,7 @@ const SectionBannerPromotion = (props: Props) => {
                     <Swiper
                         slidesPerView={3}
                         spaceBetween={20}
-                        modules={[Pagination,Autoplay]}
+                        modules={[Pagination, Autoplay]}
                         onSwiper={(swiper) => {
                             swiperRefBanner.current = swiper;
                         }}

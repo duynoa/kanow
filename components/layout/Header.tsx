@@ -39,7 +39,6 @@ const Header = () => {
     const [isScrollBlocked, setIsScrollBlocked] = useState<boolean>(false);
     const [showActive, setShowActive] = useState<boolean>(false);
     const [activeService, setActiveService] = useState<boolean>(false)
-    const [openModalLogin, setOpenModalLogin] = useState<boolean>(false)
 
     const {
         isStateNotification,
