@@ -226,7 +226,7 @@ const FormPapers = ({ form, isState }: Props) => {
                                                     }
 
                                                     }
-                                                    accept="image/*, application/pdf"
+                                                    accept="image/*, application/pdf, image/heic"
                                                     id={!isState.editPapers ? "" : "picture"}
                                                     type="file"
                                                     multiple

@@ -109,25 +109,20 @@ export default function SelftVehicleHanding(props: Props) {
 
             const { data: db } = await apiUpdateCar(formData)
             if (db.result) {
-                queryKeyIsStateLoadSuccess({
-                    loading: {
-                        ...isStateLoadSuccess.loading,
-                        isLoadingButton: false
-                    }
-                })
-                toastCore.success('Lưu thông tin thành công')
 
-            } else {
-                queryKeyIsStateLoadSuccess({
-                    loading: {
-                        ...isStateLoadSuccess.loading,
-                        isLoadingButton: false
-                    }
-                })
-                toastCore.error(db.message)
+                toastCore.success('Lưu thông tin thành công')
+                return
             }
+            toastCore.error(db.message)
         } catch (err) {
             throw err
+        } finally {
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isLoadingButton: false
+                }
+            })
         }
     }
 
