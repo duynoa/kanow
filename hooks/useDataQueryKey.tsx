@@ -82,7 +82,7 @@ const isStateListCarAutonomous: IInitialStateListCarAutonomous = {
     },
     limit: {
         limitFilterCars: 50,
-        limitAllCars: 8,
+        limitAllCars: 20,
     }
 };
 
@@ -164,6 +164,7 @@ const isStateDetailCar: IInitialStateDetailCar = {
             note_mortgage: "",
         },
         surcharge_car: [],
+        surcharge_car_talent: [],
         hour_back_car: [],
         hour_receive_car: []
     },
@@ -253,7 +254,7 @@ const isStateListCarsDriver: IInitialStateListCarsDriver = {
     },
     limit: {
         limitFilterCars: 50,
-        limitAllCars: 8,
+        limitAllCars: 20,
     }
 };
 

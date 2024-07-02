@@ -259,6 +259,20 @@ interface IDetailRentalCar {
         value: number;
         created_at: string;
         updated_at: string;
+        unit: string;
+        pivot: {
+            car_id: number;
+            surcharge_car_id: number;
+        };
+    }[],
+    surcharge_car_talent: {
+        id: number;
+        name: string;
+        note: string;
+        value: number;
+        created_at: string;
+        updated_at: string;
+        unit: string;
         pivot: {
             car_id: number;
             surcharge_car_id: number;

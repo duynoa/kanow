@@ -24,6 +24,7 @@ import { HiClock } from 'react-icons/hi';
 import { IInitialStateInfoRentalCar } from '@/types/Initial/IInitial';
 import { Badge } from '@/components/ui/badge';
 import { useDataInfoRentalCar, useDataPolicy } from '@/hooks/useDataQueryKey';
+import { useSearchParams } from 'next/navigation';
 
 type Props = {
 
@@ -40,6 +41,12 @@ const Information = ({
     const { isStateInfoRentalCar } = useDataInfoRentalCar()
     const { setOpenDialogAnswerPolicy } = useDialogAnswerPolicy()
     const { isVisibleMobile, isVisibleTablet } = useResize()
+
+    const searchParams = useSearchParams()
+    const typeCarDetail = searchParams.get('type')
+
+    console.log('typeCarDetail: ', typeCarDetail);
+
 
     const listComment = [
         {
@@ -147,7 +154,7 @@ const Information = ({
                                 Nhận xe ở địa điểm của chủ xe
                             </div>
                         </div>
-                        
+
                         <div className='pl-7 mt-1 3xl:text-base lg:text-sm md:text-base text-sm text-[#16171B] font-medium'>
                             {isStateInfoRentalCar?.detailRentalCar?.address?.full_address}
                             {/* 12 Hoàn Kiếm Hà Nội */}
@@ -567,32 +574,8 @@ const Information = ({
                 }
             </div>
 
-            {/* <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
-                <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
-                    Phụ phí có thể phát sinh
-                </div>
-                <div className='flex flex-col gap-4'>
-                    {
-                        isStateInfoRentalCar?.detailRentalCar?.surcharge_car?.map((item) => (
-                            <div key={`id-${item.id}`} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
-                                <div className='w-[70%] max-w-[70%] flex flex-col gap-1'>
-                                    <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
-                                        {item.name ? item.name : ""}
-                                    </div>
-                                    <div className='3xl:text-base text-sm text-[#585F71]'>
-                                        {item.note ? item.note : ""}
-                                    </div>
-                                </div>
-                                <div className='3xl:text-base text-sm w-[20%] max-w-[20%] flex justify-end text-[#FA3434] font-medium'>
-                                    {item.value ? `${FormatNumberToDecimal(item.value, 3)}đ` : ""}
-                                </div>
-                            </div>
-                        ))
-                    }
-                </div>
-            </div> */}
             {
-                isStateInfoRentalCar?.detailRentalCar?.surcharge_car && isStateInfoRentalCar?.detailRentalCar?.surcharge_car.length > 0 ?
+                typeCarDetail == "1" && isStateInfoRentalCar?.detailRentalCar?.surcharge_car && isStateInfoRentalCar?.detailRentalCar?.surcharge_car.length > 0 ?
                     <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
                         <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
                             Phụ phí có thể phát sinh
@@ -610,7 +593,36 @@ const Information = ({
                                             </div>
                                         </div>
                                         <div className='3xl:text-base text-sm w-[20%] max-w-[20%] flex justify-end text-[#FA3434] font-medium'>
-                                            {item.value ? `${FormatNumberToDecimal(item.value, 3)} đ` : ""}
+                                            {item.value ? `${FormatNumberToDecimal(item.value, 3)} ${item?.unit ? item?.unit : ""}` : ""}
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+                    :
+                    null
+            }
+            {
+                typeCarDetail == "2" && isStateInfoRentalCar?.detailRentalCar?.surcharge_car_talent && isStateInfoRentalCar?.detailRentalCar?.surcharge_car_talent.length > 0 ?
+                    <div className='flex flex-col 3xl:gap-4 gap-2 3xl:pb-6 pb-4 border-b'>
+                        <div className='3xl:text-2xl text-xl text-[#16171B] font-semibold'>
+                            Phụ phí có thể phát sinh
+                        </div>
+                        <div className='flex flex-col gap-4'>
+                            {
+                                isStateInfoRentalCar?.detailRentalCar?.surcharge_car_talent?.map((item) => (
+                                    <div key={`id-${item.id}`} className='flex items-center justify-between gap-2 p-6 bg-[#F6F6F8] rounded-xl'>
+                                        <div className='w-[70%] max-w-[70%] flex flex-col gap-1'>
+                                            <div className='3xl:text-base text-sm text-[#16171B] font-semibold'>
+                                                {item.name ? item.name : ""}
+                                            </div>
+                                            <div className='3xl:text-base text-sm text-[#585F71]'>
+                                                {item.note ? item.note : ""}
+                                            </div>
+                                        </div>
+                                        <div className='3xl:text-base text-sm w-[20%] max-w-[20%] flex justify-end text-[#FA3434] font-medium'>
+                                            {item.value ? `${FormatNumberToDecimal(item.value, 3)} ${item?.unit ? item?.unit : ""}` : ""}
                                         </div>
                                     </div>
                                 ))

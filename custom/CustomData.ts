@@ -222,6 +222,7 @@ const CustomDataInfoRentalCar = (res: any) => {
             full_address: `${res?.data?.district}, ${res?.data?.province}`,
         },
         surcharge_car: res?.data?.surcharge_car,
+        surcharge_car_talent: res?.data?.surcharge_car_talent,
         status: {
             statusCustom: res?.data?.status?.status > 4 ? 4 : res?.data?.status?.status,
             status: res?.data?.status?.status,

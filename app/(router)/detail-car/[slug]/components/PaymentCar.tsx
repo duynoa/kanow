@@ -52,7 +52,6 @@ const PaymentCar = ({ }: Props) => {
         numberDay,
         validateDateSubmit,
         dataCalendar,
-        openDialogCalendar,
         setOpenDialogCalendar,
         setTypeCarCalendar,
     } = useDialogCalendar()
@@ -65,7 +64,7 @@ const PaymentCar = ({ }: Props) => {
     const { setDataListRequestCarRental, setOpenDialogRequestCarRental } = useDialogRequestCarRental()
     const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
     const { informationUser } = useAuth()
-    const { openDialogValidate, setOpenDialogValidate } = useDialogValidate();
+    const { setOpenDialogValidate } = useDialogValidate();
 
     const {
         valueAddressPickup,
@@ -181,6 +180,9 @@ const PaymentCar = ({ }: Props) => {
             setIndexAddressDestination(index)
         }
     }
+
+    console.log('isStateDetailCar', isStateDetailCar);
+    console.log('numberDay', numberDay);
 
     return (
         <div className='flex flex-col 3xl:gap-4 lg:gap-2 gap-4 xxl:w-[30%] xxl:max-w-[30%] lg:w-[35%] lg:max-w-[35%] w-full max-w-full h-full lg:order-none order-1'>
@@ -533,7 +535,7 @@ const PaymentCar = ({ }: Props) => {
 
                             </div>
                         )
-                        : 
+                        :
                         (null)
                 }
 
