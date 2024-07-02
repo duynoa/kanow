@@ -1,4 +1,5 @@
 "use client"
+import ButtonLoading from "@/components/button/ButtonLoading";
 import DropzoneFilesMulti from "@/components/image/DropzoneFilesMulti";
 import { Switch } from "@/components/ui/switch";
 import { useLoadSuccess } from "@/hooks/useLoadSuccess";
@@ -112,6 +113,17 @@ export default function VehicleImages(props: Props) {
                         className={`border-[#BEBFC2]/80 h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
                     />
                 </div>
+
+            </div>
+            <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
+                <ButtonLoading
+                    title="Lưu hình ảnh"
+                    type="button"
+                    onClick={() => onSubmit()}
+                    className="p-4 flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl border-2 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                    disabled={isStateLoadSuccess.loading.isLoadingButton}
+                    isStateloading={isStateLoadSuccess.loading.isLoadingButton}
+                />
             </div>
         </BackgroundUiVehicle >
     )
