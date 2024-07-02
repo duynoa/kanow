@@ -6,6 +6,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"; // 
 import { FileRejection, useDropzone } from "react-dropzone";
 import { HiPlus } from "react-icons/hi";
 import { MdClear } from "react-icons/md";
+import heic2any from 'heic2any';
 
 interface DropzoneImageProps {
     className?: string;
@@ -44,6 +45,60 @@ const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, se
         },
         [files, setFiles]
     );
+    // const onDrop = useCallback(
+    //     async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
+    //         if (files.length + acceptedFiles.length > 10) {
+    //             toastCore.error("Tối đa chỉ được 10 file", { style: { padding: "16px" } });
+    //             return;
+    //         }
+
+    //         const newFiles = await Promise.all(
+    //             acceptedFiles
+    //                 .slice(0, 10 - files.length)
+    //                 .filter((file) => !files.some((existingFile) => existingFile.name === file.name))
+    //                 .map(async (file: any) => {
+    //                     const fileExtension = file.name.split('.').pop().toLowerCase();
+    //                     if (fileExtension === 'heic') {
+    //                         try {
+    //                             const resultBlob: any = await heic2any({ blob: file, toType: 'image/jpeg' });
+    //                             const newFile = new File([resultBlob], file.name.replace(/\.heic$/, '.jpg'), {
+    //                                 type: 'image/jpeg',
+    //                                 lastModified: file.lastModified,
+    //                             });
+    //                             return newFile;
+    //                         } catch (error) {
+    //                             console.error('Error converting HEIC to JPG:', error);
+    //                             toastCore.error("Lỗi khi chuyển đổi HEIC sang JPG");
+    //                             return null;
+    //                         }
+    //                     } else {
+    //                         // For files that are not HEIC, add them directly
+    //                         return file;
+    //                     }
+    //                 })
+    //         );
+
+
+
+    //         const filteredFiles = newFiles.filter((file) => file !== null);
+
+    //         filteredFiles.forEach((file: any) => {
+    //             const reader = new FileReader();
+    //             reader.onload = () => {
+    //                 file.preview = reader.result as string;
+    //                 setFiles((prevFiles) => [...prevFiles, file]);
+    //             };
+    //             reader.readAsDataURL(file);
+    //         });
+
+    //         if (!filteredFiles.length) {
+    //             toastCore.error("Tối đa chỉ được 10 file", {
+    //                 style: { padding: "16px", boxShadow: "5px 10px #888888;" },
+    //             });
+    //         }
+    //     },
+    //     [files, setFiles]
+    // );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         accept: {

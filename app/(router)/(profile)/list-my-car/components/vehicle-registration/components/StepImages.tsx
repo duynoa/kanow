@@ -53,7 +53,7 @@ const StepImages = ({ form }: Props) => {
                                                             onChange([...value, event.target.files[0]])
                                                         }
                                                         }
-                                                        accept="image/*, application/pdf"
+                                                        accept="image/*, application/pdf, image/heic"
                                                         id={"picture"}
                                                         type="file"
                                                         multiple
