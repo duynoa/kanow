@@ -49,18 +49,23 @@ export default function TalentedRentalPrice(props: Props) {
         let formData = new FormData()
         formData.append('car_id', idCar)
         formData.append('rent_cost_talent', value.unitPrice)
-        const { data: db } = await apiUpdateCar(formData)
-        queryKeyIsStateLoadSuccess({
-            loading: {
-                ...isStateLoadSuccess.loading,
-                isLoadingButton: false
+        try {
+            const { data: db } = await apiUpdateCar(formData)
+            if (db.result) {
+                toastCore.success('Lưu thông tin thành công')
+                return
             }
-        })
-        if (db.result) {
-            toastCore.success('Lưu thông tin thành công')
-            return
+            toastCore.error(db.message)
+        } catch (error) {
+
+        } finally {
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isLoadingButton: false
+                }
+            })
         }
-        toastCore.error(db.message)
     }
 
 
@@ -129,7 +134,7 @@ export default function TalentedRentalPrice(props: Props) {
                         title="Lưu thông tin"
                         type="button"
                         onClick={form.handleSubmit((values) => onSubmit(values))}
-                        className="flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                        className="p-4 flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl border-2 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
                         disabled={isStateLoadSuccess.loading.isLoadingButton}
                         isStateloading={isStateLoadSuccess.loading.isLoadingButton}
                     />

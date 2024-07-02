@@ -1,305 +1,118 @@
 "use client"
-import ButtonLoading from "@/components/button/ButtonLoading";
-import ButtonSaveForm from "@/components/button/ButtonSaveForm";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import DropzoneFilesMulti from "@/components/image/DropzoneFilesMulti";
 import { Switch } from "@/components/ui/switch";
 import { useLoadSuccess } from "@/hooks/useLoadSuccess";
-import { useResize } from "@/hooks/useResize";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
 import { uuidv4 } from "@/lib/uuid";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
-import Image from "next/image";
-import { useEffect, useRef } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { useForm } from "react-hook-form";
-import { IoMdAdd } from "react-icons/io";
-import { MdClear } from "react-icons/md";
+import { useEffect, useState } from "react";
 type Props = {}
 
 export default function VehicleImages(props: Props) {
 
-    const form = useForm({
-        defaultValues: {
-            images: [],
-            onDrag: false
-        }
-    })
-
     const { apiUpdateCar } = apiVehicleCommon()
+
+    const [images, setImages] = useState<any[]>([]);
+
+    const [onDrag, setOnDrag] = useState<boolean>(false)
 
     const { dataDetail: { data, base }, idCar } = useVehicleManage()
 
-    const { isVisibleMobile, isVisibleTablet } = useResize()
     const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
-
-    const findValue = form.getValues()
 
     useEffect(() => {
         if (!Array.isArray(data) && data) {
-            form.setValue("images", data?.image_car.map((i: any) => {
+            const img = data?.image_car.map((i: any) => {
                 return {
                     id: uuidv4(),
                     name: `${base.base}/${i.name}`,
                     nameDefault: i.name
                 }
-            }))
+            })
+            setImages(img)
             return
         }
-        form.reset()
+        setImages([])
     }, [data])
 
-    const onSubmit = async (value: any) => {
+
+
+    const onSubmit = async () => {
+        queryKeyIsStateLoadSuccess({
+            loading: {
+                ...isStateLoadSuccess.loading,
+                isLoadingButton: true
+            }
+        })
+
+        let formData = new FormData()
+
+        formData.append('car_id', idCar)
+
+        images.filter((i: any) => i?.nameDefault).forEach((i: any, index: number) => {
+            formData.append(`image_old[${index}]`, i?.nameDefault)
+        })
+
+        images.filter((i: any) => !i?.nameDefault).forEach((i: any, index: number) => {
+            formData.append(`image[${index}]`, i?.name)
+        })
+
         try {
+            const { data: db } = await apiUpdateCar(formData)
+            if (db.result) {
+                toastCore.success('Lưu thông tin thành công')
+                return
+            }
+            toastCore.error(db.message)
+        } catch (error) {
+
+        }
+        finally {
             queryKeyIsStateLoadSuccess({
                 loading: {
                     ...isStateLoadSuccess.loading,
-                    isLoadingButton: true
+                    isLoadingButton: false
                 }
             })
-
-            let formData = new FormData()
-
-            formData.append('car_id', idCar)
-
-            value.images.filter((i: any) => i?.nameDefault).forEach((i: any, index: number) => {
-                formData.append(`image_old[${index}]`, i?.nameDefault)
-            })
-
-            value.images.filter((i: any) => !i?.nameDefault).forEach((i: any, index: number) => {
-                formData.append(`image[${index}]`, i?.name)
-            })
-
-            const { data: db } = await apiUpdateCar(formData)
-
-            if (db.result) {
-                queryKeyIsStateLoadSuccess({
-                    loading: {
-                        ...isStateLoadSuccess.loading,
-                        isLoadingButton: false
-                    }
-                })
-                toastCore.success('Lưu thông tin thành công')
-
-            } else {
-                queryKeyIsStateLoadSuccess({
-                    loading: {
-                        ...isStateLoadSuccess.loading,
-                        isLoadingButton: false
-                    }
-                })
-                toastCore.error(db.message)
-            }
-
-        } catch (err) {
-            throw err
         }
     }
+
 
     return (
         <BackgroundUiVehicle className="flex flex-col gap-4 ">
             <div className="flex md:flex-row flex-col justify-between">
                 <h1 className='text-[#3E424E] text-xl uppercase font-bold'>Hình ảnh xe</h1>
             </div>
-            <Form {...form}>
-                <div className="space-y-4" >
-                    <FormField
-                        control={form.control}
-                        name="images"
-                        render={({ field: { value, onChange, ...fieldProps }, fieldState }: any) => {
-                            return (
-                                <FormItem className="">
-                                    <FormField
-                                        control={form.control}
-                                        name="onDrag"
-                                        render={({ field, fieldState }) => {
-                                            return (
-                                                <FormItem className="flex items-center gap-4">
-                                                    <FormLabel className="text-base font-semibold text-[#16171B]">
-                                                        Chọn hình ảnh
-                                                    </FormLabel>
-                                                    <FormControl>
-                                                        <div className="">
-                                                            <Switch
-                                                                className="data-[state=checked]:bg-[#2FB9BD] "
-                                                                checked={field.value}
-                                                                onCheckedChange={field.onChange}
-                                                            />
-                                                        </div>
-                                                    </FormControl>
-
-                                                </FormItem>
-                                            );
-                                        }}
-                                    />
-                                    <FormDescription>
-                                        <h1 className="text-sm text-gray-400">
-                                            Cho phép kéo thả để sắp xếp thứ tự hình ảnh
-                                        </h1>
-                                    </FormDescription>
-                                    <FormControl>
-                                        <>
-                                            <DragDropContext
-                                                onDragEnd={result => {
-                                                    const { destination, source, draggableId } = result;
-                                                    if (!destination) return;
-                                                    if (destination.index === source.index) return;
-                                                    const newValue = Array.from(value);
-                                                    const [removed] = newValue.splice(source.index, 1);
-                                                    newValue.splice(destination.index, 0, removed);
-                                                    onChange(newValue);
-                                                }}
-                                            >
-                                                <Droppable droppableId="droppable">
-                                                    {
-                                                        (provided) => (
-                                                            <div
-                                                                className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4"
-                                                                ref={provided.innerRef}
-                                                                {...provided.droppableProps}
-                                                            >
-                                                                <div className="col-span-1 h-[250px] relative my-1">
-                                                                    <Input {...fieldProps}
-                                                                        id={"vehicle-management-picture"}
-                                                                        onChange={(event: any) => {
-                                                                            if (value?.some((x: any) => x?.name == event.target.files[0]?.name || x.name?.name == event.target.files[0]?.name)) {
-                                                                                return
-                                                                            }
-                                                                            onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
-                                                                        }
-                                                                        }
-                                                                        accept="image/*, application/pdf"
-                                                                        type="file"
-                                                                        multiple
-                                                                        className="hidden"
-                                                                    />
-                                                                    <Label
-                                                                        htmlFor={"vehicle-management-picture"}
-                                                                        className={`${fieldState?.invalid && fieldState?.error ? 'border-red-500' : 'border-[#BEBFC2]/80'} h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
-                                                                    >
-                                                                        <IoMdAdd size={32} />
-                                                                    </Label>
-                                                                </div>
-                                                                {
-                                                                    value && value.map((i: any, index: any) => {
-                                                                        return (
-                                                                            <Draggable
-                                                                                key={i.id}
-                                                                                draggableId={`draggableId-${i.id}`}
-                                                                                index={index}
-                                                                                isDragDisabled={!findValue.onDrag}
-                                                                                disableInteractiveElementBlocking={true}
-                                                                            >
-                                                                                {
-                                                                                    (provided, snapshot) => (
-                                                                                        <div
-                                                                                            {...provided.dragHandleProps}
-                                                                                            {...provided.draggableProps}
-                                                                                            ref={provided.innerRef}
-                                                                                        >
-                                                                                            <div className={`${snapshot.isDragging && 'opacity-50'} relative w-full h-[250px]`}>
-                                                                                                <Image
-                                                                                                    src={i.name instanceof File ? URL.createObjectURL(i.name) : i.name ?? ""}
-                                                                                                    width={1280}
-                                                                                                    height={1024}
-                                                                                                    alt="image"
-                                                                                                    className="w-full h-full object-cover rounded-md"
-                                                                                                />
-                                                                                                <div className={`bg-white rounded-full rounded-fit absolute top-0 right-3 translate-x-1/2 -translate-y-1/2 flex items-center justify-center`}>
-                                                                                                    {/* {
-                                                                                                        (isVisibleMobile || isVisibleTablet) ?
-                                                                                                            <MdClear
-                                                                                                                onTouchStart={(event) => {
-                                                                                                                    const inputValue = document.getElementById('vehicle-management-picture') as HTMLInputElement | null;
-
-                                                                                                                    if (inputValue && typeof inputValue !== 'undefined') {
-                                                                                                                        inputValue.value = '';
-                                                                                                                    }
-                                                                                                                    onChange(value?.filter((value: any) => value !== i))
-                                                                                                                }}
-                                                                                                                className="text-red-500 z-[1000] bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer  md:text-[26px] text-xl"
-                                                                                                            />
-                                                                                                            :
-                                                                                                            <MdClear
-                                                                                                                onClick={(event) => {
-                                                                                                                    const inputValue = document.getElementById('vehicle-management-picture') as HTMLInputElement | null;
-
-                                                                                                                    if (inputValue && typeof inputValue !== 'undefined') {
-                                                                                                                        inputValue.value = '';
-                                                                                                                    }
-                                                                                                                    onChange(value?.filter((value: any) => value !== i))
-                                                                                                                }}
-                                                                                                                className="text-red-500 z-[1000] bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer  md:text-[26px] text-xl"
-                                                                                                            />
-                                                                                                    } */}
-
-                                                                                                    <MdClear
-                                                                                                        onClick={
-                                                                                                            (isVisibleMobile || isVisibleTablet) ?
-                                                                                                                () => { }
-                                                                                                                :
-                                                                                                                () => {
-                                                                                                                    const inputValue = document.getElementById('vehicle-management-picture') as HTMLInputElement | null;
-
-                                                                                                                    if (inputValue && typeof inputValue !== 'undefined') {
-                                                                                                                        inputValue.value = '';
-                                                                                                                    }
-                                                                                                                    onChange(value?.filter((value: any) => value !== i))
-                                                                                                                }
-                                                                                                        }
-                                                                                                        onTouchStart={
-                                                                                                            (isVisibleMobile || isVisibleTablet) ?
-                                                                                                                () => {
-                                                                                                                    const inputValue = document.getElementById('vehicle-management-picture') as HTMLInputElement | null;
-
-                                                                                                                    if (inputValue && typeof inputValue !== 'undefined') {
-                                                                                                                        inputValue.value = '';
-                                                                                                                    }
-                                                                                                                    onChange(value?.filter((value: any) => value !== i))
-                                                                                                                }
-                                                                                                                :
-                                                                                                                () => { }
-                                                                                                        }
-                                                                                                        className="text-red-500 bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer md:text-[26px] text-xl"
-                                                                                                    />
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    )
-                                                                                }
-                                                                            </Draggable>
-                                                                        )
-                                                                    })
-                                                                }
-                                                                {provided.placeholder}
-                                                            </div>
-                                                        )
-                                                    }
-                                                </Droppable>
-                                            </DragDropContext>
-                                        </>
-                                    </FormControl>
-                                </FormItem>
-                            );
-                        }}
-                    />
-
+            <div>
+                <div className="flex md:flex-row flex-col justify-between">
+                    <h1 className='text-[#3E424E] lg:text-2xl text-xl  font-semibold'>Hình ảnh xe</h1>
                 </div>
-                <div className="flex items-center md:justify-end justify-between gap-2 mt-4">
-                    <ButtonLoading
-                        title="Lưu hình ảnh"
-                        type="button"
-                        onClick={form.handleSubmit((values) => onSubmit(values))}
-                        className="flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
-                                border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
-                        disabled={isStateLoadSuccess.loading.isLoadingButton}
-                        isStateloading={isStateLoadSuccess.loading.isLoadingButton}
+            </div>
+            <div className="space-y-4" >
+                <div className="flex items-center gap-4">
+                    <div className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                        Chọn hình ảnh
+                    </div>
+                    <div className="">
+                        <Switch
+                            className="data-[state=checked]:bg-[#2FB9BD] "
+                            checked={onDrag}
+                            onCheckedChange={(e) => setOnDrag(e)}
+                        />
+                    </div>
+                </div>
+                <h1 className="text-xs text-gray-400">Cho phép kéo thả để sắp xếp thứ tự hình ảnh</h1>
+                <div className="">
+                    <DropzoneFilesMulti
+                        files={images}
+                        onDrag={onDrag}
+                        setFiles={setImages}
+                        className={`border-[#BEBFC2]/80 h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
                     />
                 </div>
-            </Form>
+            </div>
         </BackgroundUiVehicle >
     )
 }

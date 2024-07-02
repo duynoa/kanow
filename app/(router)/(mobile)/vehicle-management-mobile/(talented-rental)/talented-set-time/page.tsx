@@ -108,25 +108,19 @@ export default function TalentedSetTime(props: Props) {
             formData.append('to_book_car_flash_talent', value.bookCarQuickly.until)
             const { data: db } = await apiUpdateCar(formData)
             if (db.result) {
-                queryKeyIsStateLoadSuccess({
-                    loading: {
-                        ...isStateLoadSuccess.loading,
-                        isLoadingButton: false
-                    }
-                })
                 toastCore.success('Lưu thông tin thành công')
-
-            } else {
-                queryKeyIsStateLoadSuccess({
-                    loading: {
-                        ...isStateLoadSuccess.loading,
-                        isLoadingButton: false
-                    }
-                })
-                toastCore.error(db.message)
+                return
             }
+            toastCore.error(db.message)
         } catch (err) {
             throw err
+        } finally {
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isLoadingButton: false
+                }
+            })
         }
     }
 

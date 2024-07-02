@@ -87,18 +87,31 @@ export default function VehicleRegistration(props: Props) {
 
             let formData = new FormData()
             formData.append('car_id', idCar)
-            // //cà vẹt
-            value.imagesRegistration.forEach((i: any, index: number) => {
-                formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i?.nameDefault || i?.name || '')
-            })
-            // // đăng kiểm
-            value.imagesRegistry.forEach((i: any, index: number) => {
-                formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i?.nameDefault || i?.name || '')
-            })
-            // //         bảo hiểm
-            value.imagesInsurance.forEach((i: any, index: number) => {
-                formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i?.nameDefault || i?.name || '')
-            })
+            // cà vẹt
+            if (value.imagesRegistration?.length > 0) {
+                value.imagesRegistration.forEach((i: any, index: number) => {
+                    formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i?.nameDefault || i?.name || '')
+                })
+            } else {
+                formData.append(`image_parrot_old[]`, '')
+            }
+
+            // đăng kiểm
+            if (value.imagesRegistry?.length > 0) {
+                value.imagesRegistry.forEach((i: any, index: number) => {
+                    formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i?.nameDefault || i?.name || '')
+                })
+            } else {
+                formData.append(`image_registry_old[]`, '')
+            }
+            //  bảo hiểm
+            if (value.imagesInsurance?.length > 0) {
+                value.imagesInsurance.forEach((i: any, index: number) => {
+                    formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i?.nameDefault || i?.name || '')
+                })
+            } else {
+                formData.append(`image_insurance_old[]`, '')
+            }
             // hinh mặt trước
             formData.append('image_car_position_before', value?.carPhoto?.before[0]?.nameDefault || value?.carPhoto?.before[0]?.name || '')
             formData.append('image_car_position_affter', value?.carPhoto?.after[0]?.nameDefault || value?.carPhoto?.after[0]?.name || '')
@@ -107,26 +120,22 @@ export default function VehicleRegistration(props: Props) {
 
             const { data: db } = await apiUpdateCar(formData)
             if (db.result) {
-                queryKeyIsStateLoadSuccess({
-                    loading: {
-                        ...isStateLoadSuccess.loading,
-                        isLoadingButton: false
-                    }
-                })
                 toastCore.success('Lưu thông tin thành công')
 
             } else {
-                queryKeyIsStateLoadSuccess({
-                    loading: {
-                        ...isStateLoadSuccess.loading,
-                        isLoadingButton: false
-                    }
-                })
+
                 toastCore.error(db.message)
             }
 
         } catch (err) {
             throw err
+        } finally {
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isLoadingButton: false
+                }
+            })
         }
     }
 
@@ -185,7 +194,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                             }
                                                             }
-                                                            accept="image/*, application/pdf"
+                                                            accept="image/*, application/pdf, image/heic"
                                                             id={"imagesRegistration"}
                                                             type="file"
                                                             multiple
@@ -276,7 +285,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                             }
                                                             }
-                                                            accept="image/*, application/pdf"
+                                                            accept="image/*, application/pdf, image/heic"
                                                             id={"imagesRegistry"}
                                                             type="file"
                                                             multiple
@@ -366,7 +375,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 }
                                                                 onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                             }}
-                                                            accept="image/*, application/pdf"
+                                                            accept="image/*, application/pdf, image/heic"
                                                             id={"imagesInsurance"}
                                                             type="file"
                                                             multiple
@@ -463,7 +472,7 @@ export default function VehicleRegistration(props: Props) {
                                                                     onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                                 }
                                                                 }
-                                                                accept="image/*, application/pdf"
+                                                                accept="image/*, application/pdf, image/heic"
                                                                 id={"carPhotoBefore"}
                                                                 type="file"
                                                                 multiple
@@ -556,7 +565,7 @@ export default function VehicleRegistration(props: Props) {
                                                                     onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                                 }
                                                                 }
-                                                                accept="image/*, application/pdf"
+                                                                accept="image/*, application/pdf, image/heic"
                                                                 id={"carPhotoAfter"}
                                                                 type="file"
                                                                 multiple
@@ -650,7 +659,7 @@ export default function VehicleRegistration(props: Props) {
                                                                     onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                                 }
                                                                 }
-                                                                accept="image/*, application/pdf"
+                                                                accept="image/*, application/pdf, image/heic"
                                                                 id={"carPhotoLeft"}
                                                                 type="file"
                                                                 multiple
@@ -740,7 +749,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                             }
                                                             }
-                                                                accept="image/*, application/pdf"
+                                                                accept="image/*, application/pdf, image/heic"
                                                                 id={"carPhotoRight"}
                                                                 type="file"
                                                                 multiple

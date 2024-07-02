@@ -88,36 +88,55 @@ export default function VehicleRegistration(props: Props) {
         let formData = new FormData()
 
         formData.append('car_id', idCar)
-        // //cà vẹt
-        value.imagesRegistration.forEach((i: any, index: number) => {
-            formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i?.nameDefault || i?.name || '')
-        })
-        // // đăng kiểm
-        value.imagesRegistry.forEach((i: any, index: number) => {
-            formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i?.nameDefault || i?.name || '')
-        })
-        // //         bảo hiểm
-        value.imagesInsurance.forEach((i: any, index: number) => {
-            formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i?.nameDefault || i?.name || '')
-        })
+        // cà vẹt
+        if (value.imagesRegistration?.length > 0) {
+            value.imagesRegistration.forEach((i: any, index: number) => {
+                formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i?.nameDefault || i?.name || '')
+            })
+        } else {
+            formData.append(`image_parrot_old[]`, '')
+        }
+
+        // đăng kiểm
+        if (value.imagesRegistry?.length > 0) {
+            value.imagesRegistry.forEach((i: any, index: number) => {
+                formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i?.nameDefault || i?.name || '')
+            })
+        } else {
+            formData.append(`image_registry_old[]`, '')
+        }
+        //  bảo hiểm
+        if (value.imagesInsurance?.length > 0) {
+            value.imagesInsurance.forEach((i: any, index: number) => {
+                formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i?.nameDefault || i?.name || '')
+            })
+        } else {
+            formData.append(`image_insurance_old[]`, '')
+        }
         // hinh mặt trước
         formData.append('image_car_position_before', value?.carPhoto?.before[0]?.nameDefault || value?.carPhoto?.before[0]?.name || '')
         formData.append('image_car_position_affter', value?.carPhoto?.after[0]?.nameDefault || value?.carPhoto?.after[0]?.name || '')
         formData.append('image_car_position_left', value?.carPhoto?.left[0]?.nameDefault || value?.carPhoto?.left[0]?.name || '')
         formData.append('image_car_position_right', value?.carPhoto?.right[0]?.nameDefault || value?.carPhoto?.right[0]?.name || '')
 
-        const { data: db } = await apiUpdateCar(formData)
-        queryKeyIsStateLoadSuccess({
-            loading: {
-                ...isStateLoadSuccess.loading,
-                isLoadingButton: false
+        try {
+            const { data: db } = await apiUpdateCar(formData)
+
+            if (db.result) {
+                toastCore.success('Lưu thông tin thành công')
+                return
             }
-        })
-        if (db.result) {
-            toastCore.success('Lưu thông tin thành công')
-            return
+            toastCore.error(db?.message)
+        } catch (error) {
+
+        } finally {
+            queryKeyIsStateLoadSuccess({
+                loading: {
+                    ...isStateLoadSuccess.loading,
+                    isLoadingButton: false
+                }
+            })
         }
-        toastCore.error(db?.message)
     }
 
 
@@ -173,11 +192,12 @@ export default function VehicleRegistration(props: Props) {
                                                                 onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                             }
                                                             }
-                                                            accept="image/*, application/pdf"
+                                                            accept="image/*, application/pdf, image/heic"
                                                             id={"imagesRegistration"}
                                                             type="file"
                                                             multiple
-                                                            className="hidden" />
+                                                            className="hidden"
+                                                        />
                                                         <Label
                                                             htmlFor={"imagesRegistration"}
                                                             className={`${fieldState?.invalid && fieldState?.error ? 'border-red-500' : 'border-[#BEBFC2]/80'} relative overflow-hidden h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
@@ -264,7 +284,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                             }
                                                             }
-                                                            accept="image/*, application/pdf"
+                                                            accept="image/*, application/pdf, image/heic"
                                                             id={"imagesRegistry"}
                                                             type="file"
                                                             multiple
@@ -343,7 +363,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 }
                                                                 onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                             }}
-                                                            accept="image/*, application/pdf"
+                                                            accept="image/*, application/pdf, image/heic"
                                                             id={"imagesInsurance"}
                                                             type="file"
                                                             multiple
@@ -436,7 +456,7 @@ export default function VehicleRegistration(props: Props) {
                                                                     onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                                 }
                                                                 }
-                                                                accept="image/*, application/pdf"
+                                                                accept="image/*, application/pdf, image/heic"
                                                                 id={"carPhotoBefore"}
                                                                 type="file"
                                                                 multiple
@@ -525,7 +545,7 @@ export default function VehicleRegistration(props: Props) {
                                                                     onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                                 }
                                                                 }
-                                                                accept="image/*, application/pdf"
+                                                                accept="image/*, application/pdf, image/heic"
                                                                 id={"carPhotoAfter"}
                                                                 type="file"
                                                                 multiple
@@ -615,7 +635,7 @@ export default function VehicleRegistration(props: Props) {
                                                                     onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                                 }
                                                                 }
-                                                                accept="image/*, application/pdf"
+                                                                accept="image/*, application/pdf, image/heic"
                                                                 id={"carPhotoLeft"}
                                                                 type="file"
                                                                 multiple
@@ -704,7 +724,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
                                                             }
                                                             }
-                                                                accept="image/*, application/pdf"
+                                                                accept="image/*, application/pdf, image/heic"
                                                                 id={"carPhotoRight"}
                                                                 type="file"
                                                                 multiple
@@ -770,7 +790,7 @@ export default function VehicleRegistration(props: Props) {
                     title="Lưu giấy tờ xe"
                     type="button"
                     onClick={form.handleSubmit((values) => onSubmit(values))}
-                    className="flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                    className="p-4 flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl border-2 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
                     disabled={isStateLoadSuccess.loading.isLoadingButton}
                     isStateloading={isStateLoadSuccess.loading.isLoadingButton}
                 />
