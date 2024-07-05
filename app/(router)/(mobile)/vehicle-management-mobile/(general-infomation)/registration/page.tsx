@@ -1,6 +1,7 @@
 "use client"
 import ButtonLoading from "@/components/button/ButtonLoading";
 import ButtonSaveForm from "@/components/button/ButtonSaveForm";
+import DropzoneFilesMulti from "@/components/image/DropzoneFilesMulti";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +12,7 @@ import { toastCore } from "@/lib/toast";
 import { uuidv4 } from "@/lib/uuid";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
+import { changeCheckFileImage } from "@/utils/fnChange/changeFile";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
@@ -77,58 +79,57 @@ export default function VehicleRegistration(props: Props) {
     }, [data])
 
     const onSubmit = async (value: any) => {
-        try {
-            queryKeyIsStateLoadSuccess({
-                loading: {
-                    ...isStateLoadSuccess.loading,
-                    isLoadingButton: true
-                }
+        queryKeyIsStateLoadSuccess({
+            loading: {
+                ...isStateLoadSuccess.loading,
+                isLoadingButton: true
+            }
+        })
+
+        let formData = new FormData()
+
+        formData.append('car_id', idCar)
+        // cà vẹt
+        if (value.imagesRegistration?.length > 0) {
+            value.imagesRegistration.forEach((i: any, index: number) => {
+                formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i?.nameDefault || i || '')
             })
+        } else {
+            formData.append(`image_parrot_old[]`, '')
+        }
 
-            let formData = new FormData()
-            formData.append('car_id', idCar)
-            // cà vẹt
-            if (value.imagesRegistration?.length > 0) {
-                value.imagesRegistration.forEach((i: any, index: number) => {
-                    formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i?.nameDefault || i?.name || '')
-                })
-            } else {
-                formData.append(`image_parrot_old[]`, '')
-            }
+        // đăng kiểm
+        if (value.imagesRegistry?.length > 0) {
+            value.imagesRegistry.forEach((i: any, index: number) => {
+                formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i?.nameDefault || i || '')
+            })
+        } else {
+            formData.append(`image_registry_old[]`, '')
+        }
+        //  bảo hiểm
+        if (value.imagesInsurance?.length > 0) {
+            value.imagesInsurance.forEach((i: any, index: number) => {
+                formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i?.nameDefault || i || '')
+            })
+        } else {
+            formData.append(`image_insurance_old[]`, '')
+        }
+        // hinh mặt trước
+        formData.append('image_car_position_before', value?.carPhoto?.before[0]?.nameDefault || value?.carPhoto?.before[0]?.name || '')
+        formData.append('image_car_position_affter', value?.carPhoto?.after[0]?.nameDefault || value?.carPhoto?.after[0]?.name || '')
+        formData.append('image_car_position_left', value?.carPhoto?.left[0]?.nameDefault || value?.carPhoto?.left[0]?.name || '')
+        formData.append('image_car_position_right', value?.carPhoto?.right[0]?.nameDefault || value?.carPhoto?.right[0]?.name || '')
 
-            // đăng kiểm
-            if (value.imagesRegistry?.length > 0) {
-                value.imagesRegistry.forEach((i: any, index: number) => {
-                    formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i?.nameDefault || i?.name || '')
-                })
-            } else {
-                formData.append(`image_registry_old[]`, '')
-            }
-            //  bảo hiểm
-            if (value.imagesInsurance?.length > 0) {
-                value.imagesInsurance.forEach((i: any, index: number) => {
-                    formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i?.nameDefault || i?.name || '')
-                })
-            } else {
-                formData.append(`image_insurance_old[]`, '')
-            }
-            // hinh mặt trước
-            formData.append('image_car_position_before', value?.carPhoto?.before[0]?.nameDefault || value?.carPhoto?.before[0]?.name || '')
-            formData.append('image_car_position_affter', value?.carPhoto?.after[0]?.nameDefault || value?.carPhoto?.after[0]?.name || '')
-            formData.append('image_car_position_left', value?.carPhoto?.left[0]?.nameDefault || value?.carPhoto?.left[0]?.name || '')
-            formData.append('image_car_position_right', value?.carPhoto?.right[0]?.nameDefault || value?.carPhoto?.right[0]?.name || '')
-
+        try {
             const { data: db } = await apiUpdateCar(formData)
+
             if (db.result) {
                 toastCore.success('Lưu thông tin thành công')
-
-            } else {
-
-                toastCore.error(db.message)
+                return
             }
+            toastCore.error(db?.message)
+        } catch (error) {
 
-        } catch (err) {
-            throw err
         } finally {
             queryKeyIsStateLoadSuccess({
                 loading: {
@@ -138,6 +139,7 @@ export default function VehicleRegistration(props: Props) {
             })
         }
     }
+
 
 
     const checkFile = (array: any, event: any) => {
@@ -184,7 +186,13 @@ export default function VehicleRegistration(props: Props) {
                                                         </FormMessage>
                                                     )
                                                 }
-                                                <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+                                                <DropzoneFilesMulti
+                                                    files={value || []}
+                                                    onDrag={false}
+                                                    setFiles={onChange}
+                                                    className={`${fieldState?.invalid && fieldState?.error ? "border-red-500" : "border-[#BEBFC2]/80"}  h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                />
+                                                {/* <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
                                                     <div className="col-span-1  h-[250px]">
                                                         <Input {...fieldProps}
                                                             onChange={(event: any) => {
@@ -240,7 +248,7 @@ export default function VehicleRegistration(props: Props) {
                                                         </>
                                                         : null
                                                     }
-                                                </div>
+                                                </div> */}
                                             </>
                                         </FormControl>
                                     </FormItem>
@@ -275,7 +283,13 @@ export default function VehicleRegistration(props: Props) {
                                                         {fieldState?.error?.message}
                                                     </FormMessage>
                                                 )}
-                                                <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+                                                <DropzoneFilesMulti
+                                                    files={value || []}
+                                                    onDrag={false}
+                                                    setFiles={onChange}
+                                                    className={`${fieldState?.invalid && fieldState?.error ? "border-red-500" : "border-[#BEBFC2]/80"}  h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                />
+                                                {/* <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
                                                     <div className="col-span-1  h-[250px]">
                                                         <Input {...fieldProps}
                                                             onChange={(event: any) => {
@@ -331,7 +345,7 @@ export default function VehicleRegistration(props: Props) {
                                                         </>
                                                         : null
                                                     }
-                                                </div>
+                                                </div> */}
                                             </>
                                         </FormControl>
                                     </FormItem>
@@ -347,12 +361,6 @@ export default function VehicleRegistration(props: Props) {
                         <FormField
                             control={form.control}
                             name="imagesInsurance"
-                            rules={{
-                                required: {
-                                    value: true,
-                                    message: 'Vui lòng thêm hình bảo hiểm vật chất',
-                                },
-                            }}
                             render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
                                 return (
                                     <FormItem className="">
@@ -366,7 +374,13 @@ export default function VehicleRegistration(props: Props) {
                                                         {fieldState?.error?.message}
                                                     </FormMessage>
                                                 )}
-                                                <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+                                                <DropzoneFilesMulti
+                                                    files={value || []}
+                                                    onDrag={false}
+                                                    setFiles={onChange}
+                                                    className={`${"border-[#BEBFC2]/80"}  h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                />
+                                                {/* <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
                                                     <div className="col-span-1  h-[250px]">
                                                         <Input {...fieldProps}
                                                             onChange={(event: any) => {
@@ -423,7 +437,7 @@ export default function VehicleRegistration(props: Props) {
                                                         </>
                                                         : null
                                                     }
-                                                </div>
+                                                </div> */}
                                             </>
                                         </FormControl>
                                     </FormItem>
@@ -465,11 +479,12 @@ export default function VehicleRegistration(props: Props) {
                                                     <div className={`grid col-span-1 gap-4`}>
                                                         <div className={`${value?.length > 0 && 'hidden'} col-span-1  h-[300px]`}>
                                                             <Input {...fieldProps}
-                                                                onChange={(event: any) => {
+                                                                onChange={async (event: any) => {
                                                                     if (value?.length > 0 && event && checkFile(value, event)) {
                                                                         return checkFile(value, event)
                                                                     }
-                                                                    onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
+                                                                    const file = await changeCheckFileImage(event.target.files[0])
+                                                                    onChange([...value, { id: uuidv4(), name: file }])
                                                                 }
                                                                 }
                                                                 accept="image/*, application/pdf, image/heic"
@@ -558,11 +573,12 @@ export default function VehicleRegistration(props: Props) {
                                                     <div className={`grid col-span-1 gap-4`}>
                                                         <div className={`${value?.length > 0 && 'hidden'} col-span-1  h-[300px]`}>
                                                             <Input {...fieldProps}
-                                                                onChange={(event: any) => {
+                                                                onChange={async (event: any) => {
                                                                     if (value?.length > 0 && event && checkFile(value, event)) {
                                                                         return checkFile(value, event)
                                                                     }
-                                                                    onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
+                                                                    const file = await changeCheckFileImage(event.target.files[0])
+                                                                    onChange([...value, { id: uuidv4(), name: file }])
                                                                 }
                                                                 }
                                                                 accept="image/*, application/pdf, image/heic"
@@ -652,11 +668,13 @@ export default function VehicleRegistration(props: Props) {
                                                     <div className={`grid col-span-1 gap-4`}>
                                                         <div className={`${value?.length > 0 && 'hidden'} col-span-1  h-[300px]`}>
                                                             <Input {...fieldProps}
-                                                                onChange={(event: any) => {
+                                                                onChange={async (event: any) => {
                                                                     if (value?.length > 0 && event && checkFile(value, event)) {
                                                                         return checkFile(value, event)
                                                                     }
-                                                                    onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
+                                                                    const file = await changeCheckFileImage(event.target.files[0])
+
+                                                                    onChange([...value, { id: uuidv4(), name: file }])
                                                                 }
                                                                 }
                                                                 accept="image/*, application/pdf, image/heic"
@@ -742,13 +760,17 @@ export default function VehicleRegistration(props: Props) {
                                                     )}
                                                     <div className={`grid col-span-1 gap-4`}>
                                                         <div className={`${value?.length > 0 && 'hidden'} col-span-1  h-[300px]`}>
-                                                            <Input {...fieldProps} onChange={(event: any) => {
-                                                                if (value?.length > 0 && event && checkFile(value, event)) {
-                                                                    return checkFile(value, event)
+                                                            <Input
+                                                                {...fieldProps}
+                                                                onChange={async (event: any) => {
+                                                                    if (value?.length > 0 && event && checkFile(value, event)) {
+                                                                        return checkFile(value, event)
+                                                                    }
+                                                                    const file = await changeCheckFileImage(event.target.files[0])
+
+                                                                    onChange([...value, { id: uuidv4(), name: file }])
                                                                 }
-                                                                onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
-                                                            }
-                                                            }
+                                                                }
                                                                 accept="image/*, application/pdf, image/heic"
                                                                 id={"carPhotoRight"}
                                                                 type="file"

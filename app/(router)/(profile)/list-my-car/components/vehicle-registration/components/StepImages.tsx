@@ -1,10 +1,5 @@
-import Image from "next/image"
-import { IoMdAdd } from "react-icons/io"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { IVehicleRegistration } from "@/types/Profile/mycar/IMyCar"
+import DropzoneFilesMulti from "@/components/image/DropzoneFilesMulti"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { MdClear } from "react-icons/md"
 
 type Props = {
     form: any,
@@ -43,7 +38,13 @@ const StepImages = ({ form }: Props) => {
                                                     {fieldState?.error?.message}
                                                 </FormMessage>
                                             )}
-                                            <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+                                            <DropzoneFilesMulti
+                                                files={value || []}
+                                                setFiles={onChange}
+                                                className={`${fieldState?.invalid && fieldState?.error ? "border-red-500" : "border-[#BEBFC2]/80"}  h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                onDrag={false}
+                                            />
+                                            {/* <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
                                                 <div className="col-span-1  h-[250px]">
                                                     <Input {...fieldProps}
                                                         onChange={(event: any) => {
@@ -99,7 +100,7 @@ const StepImages = ({ form }: Props) => {
                                                     </>
                                                     : null
                                                 }
-                                            </div>
+                                            </div> */}
                                         </>
                                     </FormControl>
                                 </FormItem>

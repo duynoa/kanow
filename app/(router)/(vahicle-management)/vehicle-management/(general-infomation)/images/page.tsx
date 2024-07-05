@@ -48,17 +48,29 @@ export default function VehicleImages(props: Props) {
             }
         })
 
-        let formData = new FormData()
+        let formData: any = new FormData()
 
         formData.append('car_id', idCar)
 
-        images.filter((i: any) => i?.nameDefault).forEach((i: any, index: number) => {
-            formData.append(`image_old[${index}]`, i?.nameDefault)
+        const imageDefault = images?.filter((i: any) => i?.nameDefault)
+
+        if (imageDefault?.length > 0) {
+            imageDefault?.forEach((i: any, index: number) => {
+                formData.append(`image_old[${index}]`, i?.nameDefault)
+            })
+        } else {
+            formData.append(`image_old[]`, "")
+        }
+
+        images?.filter((i: any) => !i?.nameDefault).forEach((i: any, index: number) => {
+            if (i?.file instanceof File) {
+                formData.append(`image[${index}]`, i?.file)
+            } else {
+                formData.append(`image[${index}]`, i instanceof File ? i : i?.name)
+            }
         })
 
-        images.filter((i: any) => !i?.nameDefault).forEach((i: any, index: number) => {
-            formData.append(`image[${index}]`, i?.name)
-        })
+
 
         try {
             const { data: db } = await apiUpdateCar(formData)

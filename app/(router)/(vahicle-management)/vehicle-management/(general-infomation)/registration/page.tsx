@@ -1,5 +1,6 @@
 "use client"
 import ButtonLoading from "@/components/button/ButtonLoading";
+import DropzoneFilesMulti from "@/components/image/DropzoneFilesMulti";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +11,7 @@ import { toastCore } from "@/lib/toast";
 import { uuidv4 } from "@/lib/uuid";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
+import { changeCheckFileImage } from "@/utils/fnChange/changeFile";
 import Image from "next/image";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -91,7 +93,7 @@ export default function VehicleRegistration(props: Props) {
         // cà vẹt
         if (value.imagesRegistration?.length > 0) {
             value.imagesRegistration.forEach((i: any, index: number) => {
-                formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i?.nameDefault || i?.name || '')
+                formData.append(i.nameDefault ? `image_parrot_old[${index}]` : `image_parrot[${index}]`, i?.nameDefault || i || '')
             })
         } else {
             formData.append(`image_parrot_old[]`, '')
@@ -100,7 +102,7 @@ export default function VehicleRegistration(props: Props) {
         // đăng kiểm
         if (value.imagesRegistry?.length > 0) {
             value.imagesRegistry.forEach((i: any, index: number) => {
-                formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i?.nameDefault || i?.name || '')
+                formData.append(i.nameDefault ? `image_registry_old[${index}]` : `image_registry[${index}]`, i?.nameDefault || i || '')
             })
         } else {
             formData.append(`image_registry_old[]`, '')
@@ -108,7 +110,7 @@ export default function VehicleRegistration(props: Props) {
         //  bảo hiểm
         if (value.imagesInsurance?.length > 0) {
             value.imagesInsurance.forEach((i: any, index: number) => {
-                formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i?.nameDefault || i?.name || '')
+                formData.append(i.nameDefault ? `image_insurance_old[${index}]` : `image_insurance[${index}]`, i?.nameDefault || i || '')
             })
         } else {
             formData.append(`image_insurance_old[]`, '')
@@ -177,19 +179,29 @@ export default function VehicleRegistration(props: Props) {
                                         </FormLabel>
                                         <FormControl>
                                             <>
+
                                                 {fieldState?.invalid && fieldState?.error && (
                                                     <FormMessage>
                                                         {fieldState?.error?.message}
                                                     </FormMessage>
                                                 )}
-                                                <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+                                                <DropzoneFilesMulti
+                                                    files={value || []}
+                                                    onDrag={false}
+                                                    setFiles={onChange}
+                                                    className={`${fieldState?.invalid && fieldState?.error ? "border-red-500" : "border-[#BEBFC2]/80"}  h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                />
+                                                {/* <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
                                                     <div className="col-span-1  h-[250px]">
                                                         <Input {...fieldProps}
-                                                            onChange={(event: any) => {
+                                                            onChange={async (event: any) => {
                                                                 if (value?.length > 0 && event && checkFile(value, event)) {
                                                                     return checkFile(value, event)
                                                                 }
-                                                                onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
+
+                                                                const file = await changeCheckFileImage(event.target.files[0])
+
+                                                                onChange([...value, { id: uuidv4(), name: file }])
                                                             }
                                                             }
                                                             accept="image/*, application/pdf, image/heic"
@@ -239,7 +251,7 @@ export default function VehicleRegistration(props: Props) {
                                                         </>
                                                         : null
                                                     }
-                                                </div>
+                                                </div> */}
                                             </>
                                         </FormControl>
                                     </FormItem>
@@ -274,7 +286,13 @@ export default function VehicleRegistration(props: Props) {
                                                         {fieldState?.error?.message}
                                                     </FormMessage>
                                                 )}
-                                                <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+                                                <DropzoneFilesMulti
+                                                    files={value || []}
+                                                    onDrag={false}
+                                                    setFiles={onChange}
+                                                    className={`${fieldState?.invalid && fieldState?.error ? "border-red-500" : "border-[#BEBFC2]/80"}  h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                />
+                                                {/* <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
                                                     <div className="col-span-1  h-[250px]">
                                                         <Input {...fieldProps}
                                                             onChange={(event: any) => {
@@ -330,7 +348,7 @@ export default function VehicleRegistration(props: Props) {
                                                         </>
                                                         : null
                                                     }
-                                                </div>
+                                                </div> */}
                                             </>
                                         </FormControl>
                                     </FormItem>
@@ -353,7 +371,13 @@ export default function VehicleRegistration(props: Props) {
                                             Chọn hình bảo hiểm vật chất
                                         </FormLabel>
                                         <FormControl>
-                                            <>
+                                            <DropzoneFilesMulti
+                                                files={value || []}
+                                                onDrag={false}
+                                                setFiles={onChange}
+                                                className={`${"border-[#BEBFC2]/80"}  h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                            />
+                                            {/* <>
                                                 <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
                                                     <div className="col-span-1  h-[250px]">
                                                         <Input {...fieldProps}
@@ -412,7 +436,7 @@ export default function VehicleRegistration(props: Props) {
                                                         : null
                                                     }
                                                 </div>
-                                            </>
+                                            </> */}
                                         </FormControl>
                                     </FormItem>
                                 );
@@ -449,11 +473,13 @@ export default function VehicleRegistration(props: Props) {
                                                     <div className={`grid col-span-1 gap-4`}>
                                                         <div className={`${value?.length > 0 && 'hidden'} col-span-1  h-[300px]`}>
                                                             <Input {...fieldProps}
-                                                                onChange={(event: any) => {
+                                                                onChange={async (event: any) => {
                                                                     if (value?.length > 0 && event && checkFile(value, event)) {
                                                                         return checkFile(value, event)
                                                                     }
-                                                                    onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
+                                                                    const file = await changeCheckFileImage(event.target.files[0])
+
+                                                                    onChange([...value, { id: uuidv4(), name: file }])
                                                                 }
                                                                 }
                                                                 accept="image/*, application/pdf, image/heic"
@@ -538,11 +564,12 @@ export default function VehicleRegistration(props: Props) {
                                                     <div className={`grid col-span-1 gap-4`}>
                                                         <div className={`${value?.length > 0 && 'hidden'} col-span-1  h-[300px]`}>
                                                             <Input {...fieldProps}
-                                                                onChange={(event: any) => {
+                                                                onChange={async (event: any) => {
                                                                     if (value?.length > 0 && event && checkFile(value, event)) {
                                                                         return checkFile(value, event)
                                                                     }
-                                                                    onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
+                                                                    const file = await changeCheckFileImage(event.target.files[0])
+                                                                    onChange([...value, { id: uuidv4(), name: file }])
                                                                 }
                                                                 }
                                                                 accept="image/*, application/pdf, image/heic"
@@ -628,11 +655,12 @@ export default function VehicleRegistration(props: Props) {
                                                     <div className={`grid col-span-1 gap-4`}>
                                                         <div className={`${value?.length > 0 && 'hidden'} col-span-1  h-[300px]`}>
                                                             <Input {...fieldProps}
-                                                                onChange={(event: any) => {
+                                                                onChange={async (event: any) => {
                                                                     if (value?.length > 0 && event && checkFile(value, event)) {
                                                                         return checkFile(value, event)
                                                                     }
-                                                                    onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
+                                                                    const file = await changeCheckFileImage(event.target.files[0])
+                                                                    onChange([...value, { id: uuidv4(), name: file }])
                                                                 }
                                                                 }
                                                                 accept="image/*, application/pdf, image/heic"
@@ -717,13 +745,16 @@ export default function VehicleRegistration(props: Props) {
                                                     )}
                                                     <div className={`grid col-span-1 gap-4`}>
                                                         <div className={`${value?.length > 0 && 'hidden'} col-span-1  h-[300px]`}>
-                                                            <Input {...fieldProps} onChange={(event: any) => {
-                                                                if (value?.length > 0 && event && checkFile(value, event)) {
-                                                                    return checkFile(value, event)
+                                                            <Input
+                                                                {...fieldProps}
+                                                                onChange={async (event: any) => {
+                                                                    if (value?.length > 0 && event && checkFile(value, event)) {
+                                                                        return checkFile(value, event)
+                                                                    }
+                                                                    const file = await changeCheckFileImage(event.target.files[0])
+                                                                    onChange([...value, { id: uuidv4(), name: file }])
                                                                 }
-                                                                onChange([...value, { id: uuidv4(), name: event.target.files[0] }])
-                                                            }
-                                                            }
+                                                                }
                                                                 accept="image/*, application/pdf, image/heic"
                                                                 id={"carPhotoRight"}
                                                                 type="file"
