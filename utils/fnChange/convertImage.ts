@@ -28,30 +28,33 @@ async function convertImageToBase64(file: FileWithPath) {
 // hàm convert heic sang jpg
 async function convertHeicToJpg(file: FileWithPath, progressCallback?: (progress: number) => void) {
     try {
-        const blob: any = await heic2any({
-            blob: file,
-            toType: "image/jpeg",
-            quality: 0.5,
-        });
+        if (typeof window !== "undefined") {
+            const blob: any = await heic2any({
+                blob: file,
+                toType: "image/jpeg",
+                quality: 0.5,
+            });
 
-        const convertedFile = new File([blob], file.name.replace(/\.heic$/, ".jpg"), {
-            type: "image/jpg",
-        }) as FileWithPath;
+            const convertedFile = new File([blob], file.name.replace(/\.heic$/, ".jpg"), {
+                type: "image/jpg",
+            }) as FileWithPath;
 
-        convertedFile.path = convertedFile.name;
+            convertedFile.path = convertedFile.name;
 
-        if (convertedFile) {
-            const totalSteps = 5;
+            if (convertedFile) {
+                const totalSteps = 5;
 
-            for (let step = 1; step <= totalSteps; step++) {
-                await new Promise((resolve) => setTimeout(resolve, 100)); // Giả lập thời gian xử lý
-                if (progressCallback) {
-                    progressCallback(Math.round((step / totalSteps) * 100)); // Cập nhật tiến trình
+                for (let step = 1; step <= totalSteps; step++) {
+                    await new Promise((resolve) => setTimeout(resolve, 100)); // Giả lập thời gian xử lý
+                    if (progressCallback) {
+                        progressCallback(Math.round((step / totalSteps) * 100)); // Cập nhật tiến trình
+                    }
                 }
             }
+            return convertedFile;
+        } else {
+            console.log("err");
         }
-
-        return convertedFile;
     } catch (error) {
         console.error("Conversion error: ", error);
     }
