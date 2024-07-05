@@ -1,4 +1,3 @@
-import heic2any from "heic2any";
 interface FileWithPath extends File {
     path?: string;
     uri?: string;
@@ -29,11 +28,17 @@ async function convertImageToBase64(file: FileWithPath) {
 async function convertHeicToJpg(file: FileWithPath, progressCallback?: (progress: number) => void) {
     try {
         if (typeof window !== "undefined") {
-            const blob: any = await heic2any({
+            // const blob: any = await heic2any({
+            //     blob: file,
+            //     toType: "image/jpeg",
+            //     quality: 0.5,
+            // });
+            const heic2any = require("heic2any");
+            const blob = await heic2any({
                 blob: file,
                 toType: "image/jpeg",
-                quality: 0.5,
-            });
+                quality: 0.8, // Set the desired JPEG quality (0 to 1)
+            }); // error check after//
 
             const convertedFile = new File([blob], file.name.replace(/\.heic$/, ".jpg"), {
                 type: "image/jpg",
