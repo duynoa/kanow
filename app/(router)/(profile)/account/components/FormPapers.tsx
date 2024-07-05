@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { DatePickerShowYear } from "@/components/datePicker/DatePickerShowYear";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { changeCheckFileImage } from "@/utils/fnChange/changeFile";
 
 type Props = {
     form: any,
@@ -220,12 +221,10 @@ const FormPapers = ({ form, isState }: Props) => {
                                                     </FormMessage>
                                                 )}
                                                 <Input {...fieldProps}
-                                                    onChange={(event: any) => {
-
-                                                        onChange(event.target.files[0])
-                                                    }
-
-                                                    }
+                                                    onChange={async (event: any) => {
+                                                        const file = await changeCheckFileImage(event.target.files[0])
+                                                        onChange(file)
+                                                    }}
                                                     accept="image/*, application/pdf, image/heic"
                                                     id={!isState.editPapers ? "" : "picture"}
                                                     type="file"

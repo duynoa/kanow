@@ -1,104 +1,67 @@
 import { useResize } from "@/hooks/useResize";
 import { toastCore } from "@/lib/toast";
+import { changeCheckFileImage } from "@/utils/fnChange/changeFile";
 import Image from "next/image";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"; // Import các thành phần từ react-beautiful-dnd
 import { FileRejection, useDropzone } from "react-dropzone";
 import { HiPlus } from "react-icons/hi";
 import { MdClear } from "react-icons/md";
-import heic2any from 'heic2any';
-
+import { Progress } from "../ui/progress";
+import { Skeleton } from "../ui/skeleton";
 interface DropzoneImageProps {
     className?: string;
     files: any[];
-    setFiles: React.Dispatch<React.SetStateAction<any[]>>;
+    setFiles: any;
     onDrag?: boolean;
+    maxFile?: number;
 }
 
-const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, setFiles, onDrag }) => {
+const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, setFiles, onDrag, maxFile = 10 }) => {
     const { isVisibleMobile, isVisibleTablet } = useResize()
+    const [loading, setLoading] = useState<boolean>(false); // State để theo dõi trạng thái loading
+    const [processing, setProcessing] = useState<number>(0);
 
     const onDrop = useCallback(
-        (acceptedFiles: File[], fileRejections: FileRejection[]) => {
-            if (files.length + acceptedFiles.length > 10) {
-                toastCore.error("Tối đa chỉ được 10 file", { style: { padding: "16px" } });
+        async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
+            setLoading(true);
+            if (files.length + acceptedFiles?.length > maxFile) {
+                toastCore.error(`Tối đa chỉ được ${maxFile} file`, { style: { padding: "16px" } });
                 return;
             }
-            const newFiles = acceptedFiles
-                .slice(0, 10 - files.length)
-                .filter((file) => !files.some((existingFile) => existingFile.name === file.name));
 
-            newFiles.forEach((file: any) => {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    file.preview = reader.result as string;
-                    setFiles((prevFiles) => [...prevFiles, file]);
-                };
-                reader.readAsDataURL(file);
-            });
+            const newFiles = acceptedFiles.slice(0, maxFile - files?.length)
+
+            // const convertedFiles = await Promise.all(
+            //     newFiles.map(async (file: any) => {
+            //         const newFile = await changeCheckFileImage(file, files)
+            //         return newFile
+            //     })
+            // )
+            const convertedFiles = await Promise.all(
+                newFiles.map(async (file: any) => {
+                    setProcessing(0);
+
+                    const newFile = await changeCheckFileImage(file, files, undefined, (progress) => {
+                        setProcessing(progress);
+                    });
+                    return newFile;
+                })
+            );
+
+
+            setLoading(false);
+
+            setFiles([...files, ...convertedFiles]);
 
             if (!newFiles.length) {
-                toastCore.error("Tối đa chỉ được 10 file", {
-                    style: { padding: "16px", boxShadow: "5px 10px #888888;" },
-                });
+                toastCore.error(`Tối đa chỉ được ${maxFile} file`, { style: { padding: "16px" } });
             }
+
         },
         [files, setFiles]
     );
-    // const onDrop = useCallback(
-    //     async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
-    //         if (files.length + acceptedFiles.length > 10) {
-    //             toastCore.error("Tối đa chỉ được 10 file", { style: { padding: "16px" } });
-    //             return;
-    //         }
 
-    //         const newFiles = await Promise.all(
-    //             acceptedFiles
-    //                 .slice(0, 10 - files.length)
-    //                 .filter((file) => !files.some((existingFile) => existingFile.name === file.name))
-    //                 .map(async (file: any) => {
-    //                     const fileExtension = file.name.split('.').pop().toLowerCase();
-    //                     if (fileExtension === 'heic') {
-    //                         try {
-    //                             const resultBlob: any = await heic2any({ blob: file, toType: 'image/jpeg' });
-    //                             const newFile = new File([resultBlob], file.name.replace(/\.heic$/, '.jpg'), {
-    //                                 type: 'image/jpeg',
-    //                                 lastModified: file.lastModified,
-    //                             });
-    //                             return newFile;
-    //                         } catch (error) {
-    //                             console.error('Error converting HEIC to JPG:', error);
-    //                             toastCore.error("Lỗi khi chuyển đổi HEIC sang JPG");
-    //                             return null;
-    //                         }
-    //                     } else {
-    //                         // For files that are not HEIC, add them directly
-    //                         return file;
-    //                     }
-    //                 })
-    //         );
-
-
-
-    //         const filteredFiles = newFiles.filter((file) => file !== null);
-
-    //         filteredFiles.forEach((file: any) => {
-    //             const reader = new FileReader();
-    //             reader.onload = () => {
-    //                 file.preview = reader.result as string;
-    //                 setFiles((prevFiles) => [...prevFiles, file]);
-    //             };
-    //             reader.readAsDataURL(file);
-    //         });
-
-    //         if (!filteredFiles.length) {
-    //             toastCore.error("Tối đa chỉ được 10 file", {
-    //                 style: { padding: "16px", boxShadow: "5px 10px #888888;" },
-    //             });
-    //         }
-    //     },
-    //     [files, setFiles]
-    // );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         accept: {
@@ -107,16 +70,14 @@ const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, se
             "video/mp4": [],
             "audio/mp3": [],
         },
-        maxFiles: 10,
+        maxFiles: maxFile,
         onDrop,
     });
 
     const removeFile = (name: string) => {
-        setFiles((prevFiles) => {
-            const updatedFiles = prevFiles.filter((file) => (file.name || file.nameDefault) !== name);
-            revokeObjectURLs(updatedFiles);
-            return updatedFiles;
-        });
+        const updatedFiles = files.filter((file: any) => (file?.name || file?.nameDefault) !== name);
+        revokeObjectURLs(updatedFiles);
+        setFiles(updatedFiles);
     };
 
     const revokeObjectURLs = (files: any) => {
@@ -161,11 +122,11 @@ const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, se
                                 )}
                             </div>
                         </div>
-                        {files.map((i, index) => (
+                        {files?.map((i, index) => (
                             <Draggable
                                 disableInteractiveElementBlocking={true}
-                                key={i.name}
-                                draggableId={`draggableId-${i.name}`}
+                                key={i?.name}
+                                draggableId={`draggableId-${i?.name}`}
                                 index={index}
                                 isDragDisabled={!onDrag}
 
@@ -179,7 +140,7 @@ const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, se
                                     >
                                         <div className={`${snapshot.isDragging && 'opacity-50'} relative  w-full h-[250px]`}>
                                             <Image
-                                                src={i instanceof File ? URL.createObjectURL(i) : i.name ?? ""}
+                                                src={i instanceof File ? URL.createObjectURL(i) : i?.name ?? ""}
                                                 width={1280}
                                                 height={1024}
                                                 alt="image"
@@ -189,16 +150,12 @@ const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, se
                                                 className={`bg-white rounded-full z-[1000] rounded-fit cursor-pointer absolute top-0 right-3 translate-x-1/2 -translate-y-1/2 flex items-center justify-center`}>
                                                 {(isVisibleMobile || isVisibleTablet) ?
                                                     <MdClear
-                                                        onTouchStart={(event) => {
-                                                            removeFile(i.name)
-                                                        }}
+                                                        onTouchStart={(event) => { removeFile(i?.name) }}
                                                         className="text-red-500 z-[1000] bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer  md:text-[26px] text-xl"
                                                     />
                                                     :
                                                     <MdClear
-                                                        onClick={(event) => {
-                                                            removeFile(i.name)
-                                                        }}
+                                                        onClick={(event) => { removeFile(i?.name) }}
                                                         className="text-red-500 z-[1000] bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer  md:text-[26px] text-xl"
                                                     />
                                                 }
@@ -208,12 +165,23 @@ const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, se
                                 )}
                             </Draggable>
                         ))}
+                        {loading && (
+                            <Skeleton className="col-span-1 flex justify-center text-sm items-center h-[250px] text-black">
+                                <div className="flex flex-col gap-1">
+                                    Hình ảnh đang được xử lý...
+                                    <div className="flex items-center gap-2">
+                                        <Progress value={processing} className="w-full h-2 bg-gray-400" />
+                                        {processing}%
+                                    </div>
+                                </div>
+                            </Skeleton>
+                        )}
                         {provided.placeholder}
                     </div>
                 )}
             </Droppable>
         </DragDropContext>
     );
-};
+}
 
 export default DropzoneFilesMulti;
