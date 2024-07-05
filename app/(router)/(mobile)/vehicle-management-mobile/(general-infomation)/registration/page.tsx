@@ -1,6 +1,5 @@
 "use client"
 import ButtonLoading from "@/components/button/ButtonLoading";
-import ButtonSaveForm from "@/components/button/ButtonSaveForm";
 import DropzoneFilesMulti from "@/components/image/DropzoneFilesMulti";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -14,7 +13,7 @@ import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.servi
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { changeCheckFileImage } from "@/utils/fnChange/changeFile";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { IoMdAdd } from "react-icons/io";
 import { MdClear } from "react-icons/md";
