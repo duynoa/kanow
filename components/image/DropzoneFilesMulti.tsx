@@ -7,11 +7,10 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"; // 
 import { FileRejection, useDropzone } from "react-dropzone";
 import { HiPlus } from "react-icons/hi";
 import { MdClear } from "react-icons/md";
-import { Progress } from "../ui/progress";
-import { Skeleton } from "../ui/skeleton";
+import ProcessingImage from "./ProcessingImage";
 interface DropzoneImageProps {
     className?: string;
-    files: any[];
+    files: any
     setFiles: any;
     onDrag?: boolean;
     maxFile?: number;
@@ -25,7 +24,7 @@ const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, se
     const onDrop = useCallback(
         async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
             setLoading(true);
-            if (files.length + acceptedFiles?.length > maxFile) {
+            if (files?.length + acceptedFiles?.length > maxFile) {
                 toastCore.error(`Tối đa chỉ được ${maxFile} file`, { style: { padding: "16px" } });
                 return;
             }
@@ -54,7 +53,7 @@ const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, se
 
             setFiles([...files, ...convertedFiles]);
 
-            if (!newFiles.length) {
+            if (!newFiles?.length) {
                 toastCore.error(`Tối đa chỉ được ${maxFile} file`, { style: { padding: "16px" } });
             }
 
@@ -75,13 +74,13 @@ const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, se
     });
 
     const removeFile = (name: string) => {
-        const updatedFiles = files.filter((file: any) => (file?.name || file?.nameDefault) !== name);
+        const updatedFiles = files?.filter((file: any) => (file?.name || file?.nameDefault) !== name);
         revokeObjectURLs(updatedFiles);
         setFiles(updatedFiles);
     };
 
     const revokeObjectURLs = (files: any) => {
-        files.forEach((file: any) => {
+        files?.forEach((file: any) => {
             if (file.preview) {
                 const img = document.createElement("img");
                 img.src = file.preview;
@@ -122,7 +121,7 @@ const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, se
                                 )}
                             </div>
                         </div>
-                        {files?.map((i, index) => (
+                        {files?.map((i: any, index: number) => (
                             <Draggable
                                 disableInteractiveElementBlocking={true}
                                 key={i?.name}
@@ -147,16 +146,16 @@ const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, se
                                                 className="w-full h-full object-cover rounded-md"
                                             />
                                             <div
-                                                className={`bg-white rounded-full z-[1000] rounded-fit cursor-pointer absolute top-0 right-3 translate-x-1/2 -translate-y-1/2 flex items-center justify-center`}>
+                                                className={`bg-white rounded-full z-[10] rounded-fit cursor-pointer absolute top-0 right-3 translate-x-1/2 -translate-y-1/2 flex items-center justify-center`}>
                                                 {(isVisibleMobile || isVisibleTablet) ?
                                                     <MdClear
                                                         onTouchStart={(event) => { removeFile(i?.name) }}
-                                                        className="text-red-500 z-[1000] bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer  md:text-[26px] text-xl"
+                                                        className="text-red-500 z-[10] bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer  md:text-[26px] text-xl"
                                                     />
                                                     :
                                                     <MdClear
                                                         onClick={(event) => { removeFile(i?.name) }}
-                                                        className="text-red-500 z-[1000] bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer  md:text-[26px] text-xl"
+                                                        className="text-red-500 z-[10] bg-red-200 size-7 rounded-full p-1 m-1 cursor-pointer  md:text-[26px] text-xl"
                                                     />
                                                 }
                                             </div>
@@ -165,17 +164,7 @@ const DropzoneFilesMulti: React.FC<DropzoneImageProps> = ({ className, files, se
                                 )}
                             </Draggable>
                         ))}
-                        {loading && (
-                            <Skeleton className="col-span-1 flex justify-center text-sm items-center h-[250px] text-black">
-                                <div className="flex flex-col gap-1">
-                                    Hình ảnh đang được xử lý...
-                                    <div className="flex items-center gap-2">
-                                        <Progress value={processing} className="w-full h-2 bg-gray-400" />
-                                        {processing}%
-                                    </div>
-                                </div>
-                            </Skeleton>
-                        )}
+                        {loading && <ProcessingImage processing={processing} className="!h-[250px]" />}
                         {provided.placeholder}
                     </div>
                 )}
