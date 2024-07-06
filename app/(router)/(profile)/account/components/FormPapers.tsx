@@ -1,15 +1,19 @@
+import { DatePickerShowYear } from "@/components/datePicker/DatePickerShowYear";
+import ProcessingImage from "@/components/image/ProcessingImage";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toastCore } from "@/lib/toast";
+import { changeCheckFileImage } from "@/utils/fnChange/changeFile";
 import moment from "moment";
 import Image from "next/image";
-import { toastCore } from "@/lib/toast";
-import { MdClear } from "react-icons/md";
+import { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { DatePickerShowYear } from "@/components/datePicker/DatePickerShowYear";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { changeCheckFileImage } from "@/utils/fnChange/changeFile";
+import { MdClear } from "react-icons/md";
 
 type Props = {
     form: any,
@@ -41,6 +45,8 @@ const FormPapers = ({ form, isState }: Props) => {
         return true;
     };
 
+    const [loadingProcessing, setLoadingProcessing] = useState<boolean>(false)
+    const [processing, setProcessing] = useState<number>(0)
     return (
         <Form {...form}>
             <div className="space-y-4" >
@@ -222,7 +228,12 @@ const FormPapers = ({ form, isState }: Props) => {
                                                 )}
                                                 <Input {...fieldProps}
                                                     onChange={async (event: any) => {
-                                                        const file = await changeCheckFileImage(event.target.files[0])
+                                                        setLoadingProcessing(true)
+                                                        setProcessing(0);
+                                                        const file = await changeCheckFileImage(event.target.files[0], undefined, undefined, (process: any) => {
+                                                            setProcessing(process)
+                                                        })
+                                                        setLoadingProcessing(false)
                                                         onChange(file)
                                                     }}
                                                     accept="image/*, application/pdf, image/heic"
@@ -231,44 +242,49 @@ const FormPapers = ({ form, isState }: Props) => {
                                                     multiple
                                                     className="hidden" />
                                                 <div className="h-[280px] relative bg-white rounded-md">
-                                                    {value ?
-                                                        <>
-                                                            <Image
-                                                                src={value instanceof File ? URL.createObjectURL(value) : value}
-                                                                width={1280}
-                                                                height={1024}
-                                                                alt="image" className="w-full h-full object-cover rounded-md"
-                                                            />
-                                                            <div
-                                                                className="bg-white rounded-full rounded-fit absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-                                                                <MdClear
-                                                                    onClick={() => {
-                                                                        if (!isState.editPapers) {
-                                                                            toastCore.warning('Vui lòng chọn chỉnh sửa')
-                                                                            return
-                                                                        }
-                                                                        const inputElement = document.getElementById('picture') as HTMLInputElement | null;
-                                                                        if (inputElement && typeof inputElement !== 'undefined') {
-                                                                            inputElement.value = '';
-                                                                        }
-                                                                        form.reset({ ...form.getValues(), filePapers: null })
-                                                                    }}
-                                                                    className="text-red-500 bg-red-200 md:size-9 size-8 rounded-full p-1 m-1 cursor-pointer md:text-[26px] text-xl"
+                                                    {loadingProcessing ? (
+                                                        <ProcessingImage processing={processing} />
+                                                    ) :
+                                                        value ?
+                                                            <>
+
+
+                                                                <Image
+                                                                    src={value instanceof File ? URL.createObjectURL(value) : value}
+                                                                    width={1280}
+                                                                    height={1024}
+                                                                    alt="image" className="w-full h-full object-cover rounded-md"
                                                                 />
-                                                            </div>
-                                                        </>
-                                                        :
-                                                        <Label
-                                                            onClick={() => {
-                                                                if (!isState.editPapers) {
-                                                                    toastCore.warning('Vui lòng chọn chỉnh sửa')
-                                                                }
-                                                            }}
-                                                            htmlFor={!isState.editPapers ? "" : "picture"}
-                                                            className={`${isState.editPapers && fieldState?.invalid && fieldState?.error ? 'border-red-500' : 'border-[#BEBFC2]/80'} h-full w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
-                                                        >
-                                                            <IoMdAdd size={32} />
-                                                        </Label>
+                                                                <div
+                                                                    className="bg-white rounded-full rounded-fit absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                                                                    <MdClear
+                                                                        onClick={() => {
+                                                                            if (!isState.editPapers) {
+                                                                                toastCore.warning('Vui lòng chọn chỉnh sửa')
+                                                                                return
+                                                                            }
+                                                                            const inputElement = document.getElementById('picture') as HTMLInputElement | null;
+                                                                            if (inputElement && typeof inputElement !== 'undefined') {
+                                                                                inputElement.value = '';
+                                                                            }
+                                                                            form.reset({ ...form.getValues(), filePapers: null })
+                                                                        }}
+                                                                        className="text-red-500 bg-red-200 md:size-9 size-8 rounded-full p-1 m-1 cursor-pointer md:text-[26px] text-xl"
+                                                                    />
+                                                                </div>
+                                                            </>
+                                                            :
+                                                            <Label
+                                                                onClick={() => {
+                                                                    if (!isState.editPapers) {
+                                                                        toastCore.warning('Vui lòng chọn chỉnh sửa')
+                                                                    }
+                                                                }}
+                                                                htmlFor={!isState.editPapers ? "" : "picture"}
+                                                                className={`${isState.editPapers && fieldState?.invalid && fieldState?.error ? 'border-red-500' : 'border-[#BEBFC2]/80'} h-full w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                            >
+                                                                <IoMdAdd size={32} />
+                                                            </Label>
                                                     }
                                                 </div>
                                             </>

@@ -1,10 +1,13 @@
 "use client"
 import ButtonLoading from "@/components/button/ButtonLoading";
 import DropzoneFilesMulti from "@/components/image/DropzoneFilesMulti";
+import ProcessingImage from "@/components/image/ProcessingImage";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useLoadSuccess } from "@/hooks/useLoadSuccess";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 import { toastCore } from "@/lib/toast";
@@ -13,7 +16,7 @@ import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.servi
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { changeCheckFileImage } from "@/utils/fnChange/changeFile";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoMdAdd } from "react-icons/io";
 import { MdClear } from "react-icons/md";
@@ -52,6 +55,15 @@ export default function VehicleRegistration(props: Props) {
     const { apiUpdateCar } = apiVehicleCommon()
 
     const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
+
+    const [processing, setProcessing] = useState<number>(0)
+
+    const [formLoading, setFormLoading] = useState({
+        carPhotoBefore: false,
+        carPhotoAfter: false,
+        carPhotoLeft: false,
+        carPhotoRight: false,
+    });
 
 
     useEffect(() => {
@@ -192,7 +204,7 @@ export default function VehicleRegistration(props: Props) {
                                                     className={`${fieldState?.invalid && fieldState?.error ? "border-red-500" : "border-[#BEBFC2]/80"}  h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
                                                 />
                                                 {/* <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
-                                                    <div className="col-span-1  h-[250px]">
+                                                    <div className="col-span-1  h-full">
                                                         <Input {...fieldProps}
                                                             onChange={async (event: any) => {
                                                                 if (value?.length > 0 && event && checkFile(value, event)) {
@@ -224,7 +236,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 value.map((e: any, index: number) => {
                                                                     if (!e) return
                                                                     return (
-                                                                        <div key={e} className="col-span-1 h-[250px] relative my-1">
+                                                                        <div key={e} className="col-span-1 h-full relative my-1">
                                                                             <Image
 
                                                                                 src={e?.name instanceof File ? URL.createObjectURL(e?.name) : e?.name ?? ""} width={1280}
@@ -293,7 +305,7 @@ export default function VehicleRegistration(props: Props) {
                                                     className={`${fieldState?.invalid && fieldState?.error ? "border-red-500" : "border-[#BEBFC2]/80"}  h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
                                                 />
                                                 {/* <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
-                                                    <div className="col-span-1  h-[250px]">
+                                                    <div className="col-span-1  h-full">
                                                         <Input {...fieldProps}
                                                             onChange={(event: any) => {
                                                                 if (checkFile(value, event)) {
@@ -321,7 +333,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 value.map((e: any, index: number) => {
                                                                     if (!e) return
                                                                     return (
-                                                                        <div key={e} className="col-span-1 h-[250px] relative my-1">
+                                                                        <div key={e} className="col-span-1 h-full relative my-1">
                                                                             <Image
 
                                                                                 src={e.name instanceof File ? URL.createObjectURL(e.name) : e.name ?? ""} width={1280}
@@ -379,7 +391,7 @@ export default function VehicleRegistration(props: Props) {
                                             />
                                             {/* <>
                                                 <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
-                                                    <div className="col-span-1  h-[250px]">
+                                                    <div className="col-span-1  h-full">
                                                         <Input {...fieldProps}
                                                             onChange={(event: any) => {
                                                                 if (checkFile(value, event)) {
@@ -406,7 +418,7 @@ export default function VehicleRegistration(props: Props) {
                                                                 value.map((e: any, index: number) => {
                                                                     if (!e) return
                                                                     return (
-                                                                        <div key={e} className="col-span-1 h-[250px] relative my-1">
+                                                                        <div key={e} className="col-span-1 h-full relative my-1">
                                                                             <Image
 
                                                                                 src={e?.name instanceof File ? URL.createObjectURL(e?.name) : e?.name ?? ""}
@@ -457,7 +469,7 @@ export default function VehicleRegistration(props: Props) {
                                         maxFile: (value: any) => value?.length <= 1 || 'Chỉ cho phép tối đa 1 ảnh',
                                     },
                                 }}
-                                render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
+                                render={({ field: { value, onChange, ...fieldProps }, fieldState, formState }) => {
                                     return (
                                         <FormItem className="">
                                             <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
@@ -477,7 +489,12 @@ export default function VehicleRegistration(props: Props) {
                                                                     if (value?.length > 0 && event && checkFile(value, event)) {
                                                                         return checkFile(value, event)
                                                                     }
-                                                                    const file = await changeCheckFileImage(event.target.files[0])
+                                                                    setFormLoading((prev) => ({ ...prev, carPhotoBefore: true }));
+                                                                    setProcessing(0);
+                                                                    const file = await changeCheckFileImage(event.target.files[0], undefined, undefined, (process: any) => {
+                                                                        setProcessing(process)
+                                                                    })
+                                                                    setFormLoading((prev) => ({ ...prev, carPhotoBefore: false }));
 
                                                                     onChange([...value, { id: uuidv4(), name: file }])
                                                                 }
@@ -488,15 +505,21 @@ export default function VehicleRegistration(props: Props) {
                                                                 multiple
                                                                 disabled={value?.length > 0}
                                                                 className="hidden" />
-                                                            <Label
-                                                                htmlFor={"carPhotoBefore"}
-                                                                className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} border-[#BEBFC2]/80 overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
-                                                            >
-                                                                <IoMdAdd size={32} className="absolute z-10" />
-                                                                <div className="flex items-center justify-center">
-                                                                    <Image src={'/vehicle/registration/car/1.png'} width={1280} height={102} alt="" className="opacity-35 md:size-full size-[65%] object-cover" />
-                                                                </div>
-                                                            </Label>
+
+                                                            {
+                                                                (formLoading?.carPhotoBefore) ? (
+                                                                    <ProcessingImage processing={processing} />
+                                                                ) :
+                                                                    <Label
+                                                                        htmlFor={"carPhotoBefore"}
+                                                                        className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} border-[#BEBFC2]/80 overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                                    >
+                                                                        <IoMdAdd size={32} className="absolute z-10" />
+                                                                        <div className="flex items-center justify-center">
+                                                                            <Image src={'/vehicle/registration/car/1.png'} width={1280} height={102} alt="" className="opacity-35 md:size-full size-[65%] object-cover" />
+                                                                        </div>
+                                                                    </Label>
+                                                            }
                                                         </div>
                                                         {value ?
                                                             <>
@@ -548,7 +571,7 @@ export default function VehicleRegistration(props: Props) {
                                         maxFile: (value: any) => value?.length <= 1 || 'Chỉ cho phép tối đa 1 ảnh',
                                     },
                                 }}
-                                render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
+                                render={({ field: { value, onChange, ...fieldProps }, fieldState, formState }) => {
                                     return (
                                         <FormItem className="">
                                             <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
@@ -568,7 +591,12 @@ export default function VehicleRegistration(props: Props) {
                                                                     if (value?.length > 0 && event && checkFile(value, event)) {
                                                                         return checkFile(value, event)
                                                                     }
-                                                                    const file = await changeCheckFileImage(event.target.files[0])
+                                                                    setFormLoading((prev) => ({ ...prev, carPhotoAfter: true }));
+                                                                    setProcessing(0);
+                                                                    const file = await changeCheckFileImage(event.target.files[0], undefined, undefined, (process: any) => {
+                                                                        setProcessing(process)
+                                                                    })
+                                                                    setFormLoading((prev) => ({ ...prev, carPhotoAfter: false }));
                                                                     onChange([...value, { id: uuidv4(), name: file }])
                                                                 }
                                                                 }
@@ -578,15 +606,19 @@ export default function VehicleRegistration(props: Props) {
                                                                 multiple
                                                                 disabled={value?.length > 0}
                                                                 className="hidden" />
-                                                            <Label
-                                                                htmlFor={"carPhotoAfter"}
-                                                                className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} border-[#BEBFC2]/80 overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
-                                                            >
-                                                                <IoMdAdd size={32} className="absolute z-10" />
-                                                                <div className="flex items-center justify-center">
-                                                                    <Image src={'/vehicle/registration/car/2.png'} width={1280} height={102} alt="" className="opacity-35 md:size-full size-[65%] object-cover" />
-                                                                </div>
-                                                            </Label>
+                                                            {(formLoading?.carPhotoAfter) ? (
+                                                                <ProcessingImage processing={processing} />
+                                                            ) :
+                                                                <Label
+                                                                    htmlFor={"carPhotoAfter"}
+                                                                    className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} border-[#BEBFC2]/80 overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                                >
+                                                                    <IoMdAdd size={32} className="absolute z-10" />
+                                                                    <div className="flex items-center justify-center">
+                                                                        <Image src={'/vehicle/registration/car/2.png'} width={1280} height={102} alt="" className="opacity-35 md:size-full size-[65%] object-cover" />
+                                                                    </div>
+                                                                </Label>
+                                                            }
                                                         </div>
                                                         {value ?
                                                             <>
@@ -659,7 +691,13 @@ export default function VehicleRegistration(props: Props) {
                                                                     if (value?.length > 0 && event && checkFile(value, event)) {
                                                                         return checkFile(value, event)
                                                                     }
-                                                                    const file = await changeCheckFileImage(event.target.files[0])
+                                                                    setFormLoading((prev) => ({ ...prev, carPhotoLeft: true }));
+                                                                    setProcessing(0);
+                                                                    const file = await changeCheckFileImage(event.target.files[0], undefined, undefined, (process: any) => {
+                                                                        setProcessing(process)
+                                                                    })
+                                                                    setFormLoading((prev) => ({ ...prev, carPhotoLeft: false }));
+
                                                                     onChange([...value, { id: uuidv4(), name: file }])
                                                                 }
                                                                 }
@@ -669,15 +707,19 @@ export default function VehicleRegistration(props: Props) {
                                                                 multiple
                                                                 disabled={value?.length > 0}
                                                                 className="hidden" />
-                                                            <Label
-                                                                htmlFor={"carPhotoLeft"}
-                                                                className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} border-[#BEBFC2]/80 overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
-                                                            >
-                                                                <IoMdAdd size={32} className="absolute z-10" />
-                                                                <div className="flex items-center justify-center">
-                                                                    <Image src={'/vehicle/registration/car/3.png'} width={1280} height={102} alt="" className="opacity-35 md:size-full size-[65%] object-cover" />
-                                                                </div>
-                                                            </Label>
+                                                            {(formLoading?.carPhotoLeft) ? (
+                                                                <ProcessingImage processing={processing} />
+                                                            ) :
+                                                                <Label
+                                                                    htmlFor={"carPhotoLeft"}
+                                                                    className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} border-[#BEBFC2]/80 overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                                >
+                                                                    <IoMdAdd size={32} className="absolute z-10" />
+                                                                    <div className="flex items-center justify-center">
+                                                                        <Image src={'/vehicle/registration/car/3.png'} width={1280} height={102} alt="" className="opacity-35 md:size-full size-[65%] object-cover" />
+                                                                    </div>
+                                                                </Label>
+                                                            }
                                                         </div>
                                                         {value ?
                                                             <>
@@ -751,7 +793,12 @@ export default function VehicleRegistration(props: Props) {
                                                                     if (value?.length > 0 && event && checkFile(value, event)) {
                                                                         return checkFile(value, event)
                                                                     }
-                                                                    const file = await changeCheckFileImage(event.target.files[0])
+                                                                    setFormLoading((prev) => ({ ...prev, carPhotoRight: true }));
+                                                                    setProcessing(0);
+                                                                    const file = await changeCheckFileImage(event.target.files[0], undefined, undefined, (process: any) => {
+                                                                        setProcessing(process)
+                                                                    })
+                                                                    setFormLoading((prev) => ({ ...prev, carPhotoRight: false }));
                                                                     onChange([...value, { id: uuidv4(), name: file }])
                                                                 }
                                                                 }
@@ -761,15 +808,20 @@ export default function VehicleRegistration(props: Props) {
                                                                 multiple
                                                                 disabled={value?.length > 0}
                                                                 className="hidden" />
-                                                            <Label
-                                                                htmlFor={"carPhotoRight"}
-                                                                className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} border-[#BEBFC2]/80 overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
-                                                            >
-                                                                <IoMdAdd size={32} className="absolute z-10" />
-                                                                <div className="flex items-center justify-center">
-                                                                    <Image src={'/vehicle/registration/car/4.png'} width={1280} height={102} alt="" className="opacity-35 md:size-full size-[65%] object-cover z-0" />
-                                                                </div>
-                                                            </Label>
+                                                            {
+                                                                (formLoading?.carPhotoRight) ? (
+                                                                    <ProcessingImage processing={processing} />
+                                                                ) :
+                                                                    <Label
+                                                                        htmlFor={"carPhotoRight"}
+                                                                        className={`${value?.length > 0 ? '!cursor-not-allowed' : ''} border-[#BEBFC2]/80 overflow-hidden relative h-full  w-full cursor-pointer  hover:border-[#2FB9BD] border-2 border-dashed  rounded-md flex items-center justify-center`}
+                                                                    >
+                                                                        <IoMdAdd size={32} className="absolute z-10" />
+                                                                        <div className="flex items-center justify-center">
+                                                                            <Image src={'/vehicle/registration/car/4.png'} width={1280} height={102} alt="" className="opacity-35 md:size-full size-[65%] object-cover z-0" />
+                                                                        </div>
+                                                                    </Label>
+                                                            }
                                                         </div>
                                                         {value ?
                                                             <>
