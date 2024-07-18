@@ -234,14 +234,21 @@ export default function VehicleInfomation(props: Props) {
             let formData = new FormData();
 
             formData.append('car_id', idCar)
-            formData.append('name', value.nameCar)
-            formData.append('number_car', value.licensePlates)
+
+            formData.append('province_id', value?.address?.city)
+            formData.append('district_id', value?.address?.district)
+            formData.append('wards_id', value?.address?.wards)
+            formData.append('address', value?.address?.street)
+            formData.append('fuel_consumption', value?.fuelConsumptionLevel)
+
+            formData.append('name', value?.nameCar)
+            formData.append('number_car', value?.licensePlates)
             formData.append('latitude', `${coordinates?.lat}`)
             formData.append('longitude', `${coordinates?.lng}`)
-            formData.append('number_seat', value.seats)
+            formData.append('number_seat', value?.seats)
             formData.append('transmission_id', data?.transmission_id)
-            formData.append('detail', value.describe)
-            formData.append('other_amenities_car', `${value.feature.map((x: any) => x).join(',')}`);
+            formData.append('detail', value?.describe)
+            formData.append('other_amenities_car', `${value?.feature?.map((x: any) => x).join(',')}`);
 
             const { data: db } = await apiUpdateCar(formData)
             if (db.result) {
