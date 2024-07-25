@@ -100,13 +100,13 @@ const SessionStarRating = ({ isState, queryState }: Props) => {
                                 <div className='capitalize 3xl:text-base text-sm text-[#484D5C] font-semibold'>
                                     {item.name ? item.name : ''}
                                 </div>
-                                <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                {/* <div className='3xl:text-sm text-xs text-[#8C93A3]'>
                                     {
                                         moment().subtract(1, "days").isSame(moment(item?.date, "DD/MM/YYYY"), "day")
                                             ? `Hôm qua lúc ${moment(item?.date).format("HH:mm")}`
                                             : moment(item?.date).fromNow()
                                     }
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         <div className='3xl:text-base text-sm text-[#585F71] mt-2'>

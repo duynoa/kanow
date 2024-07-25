@@ -250,11 +250,11 @@ export default function VehicleInfomation(props: Props) {
         try {
             const { data: db } = await apiUpdateCar(formData)
 
-            if (db.result) {
+            if (db?.result) {
                 toastCore.success('Lưu thông tin thành công')
                 return
             }
-            toastCore.error(db.message)
+            toastCore.error(db?.message)
 
         } catch (error) {
 
