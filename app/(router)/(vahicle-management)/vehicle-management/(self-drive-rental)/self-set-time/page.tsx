@@ -94,7 +94,8 @@ export default function SelftSetTime(props: Props) {
                 until: 0
             },
             //tắt mở thời gian giao nhận xe
-            openDeliverReceive: false,
+            openDeliver: false,
+            openReceive: false,
             // giao  xe
             deliver: {
                 from: '00:00',
@@ -125,7 +126,8 @@ export default function SelftSetTime(props: Props) {
                 ["deliver.to", data?.hour_receive_car[0]?.hour_end],
                 ["receive.from", data?.hour_back_car[0]?.hour_start],
                 ["receive.to", data?.hour_back_car[0]?.hour_end],
-                ["openDeliverReceive", data?.type_hour == 1]
+                ["openDeliver", data?.type_hour == 1],
+                ["openReceive", data?.type_hour_new == 1],
             ]
             arr.forEach(([key, value]) => {
                 form.setValue(key, value)
@@ -148,12 +150,15 @@ export default function SelftSetTime(props: Props) {
         formData.append('book_car_flash', `${value.bookCarQuickly.open ? 1 : 0}`)
         formData.append('from_book_car_flash', value.bookCarQuickly.wordLimit)
         formData.append('to_book_car_flash', value.bookCarQuickly.until)
-        formData.append('type_hour', `${value.openDeliverReceive ? 1 : 0}`)
+        formData.append('type_hour', `${value.openDeliver ? 1 : 0}`)
+        formData.append('type_hour_new', `${value.openReceive ? 1 : 0}`)
 
-        if (value.openDeliverReceive) {
+        if (value.openDeliver) {
             // giao xe
             formData.append('hour_start', value.deliver.from)
             formData.append('hour_end', value.deliver.to)
+        }
+        if (value.openReceive) {
             // nhan xe
             formData.append('hour_start_new', value.receive.from)
             formData.append('hour_end_new', value.receive.to)
@@ -161,11 +166,11 @@ export default function SelftSetTime(props: Props) {
 
         try {
             const { data: db } = await apiUpdateCar(formData)
-            if (db.result) {
+            if (db?.result) {
                 toastCore.success('Lưu thông tin thành công')
                 return
             }
-            toastCore.error(db.message)
+            toastCore.error(db?.message)
         } catch (error) {
 
         } finally {
@@ -337,14 +342,14 @@ export default function SelftSetTime(props: Props) {
 
                 <FormField
                     control={form.control}
-                    name="openDeliverReceive"
+                    name="openDeliver"
                     render={({ field, fieldState }) => {
                         return (
                             <FormItem className="">
                                 <FormControl>
                                     <div className="flex items-center gap-4">
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                            Thời gian giao nhận xe
+                                            Thời gian giao xe
                                         </FormLabel>
                                         <Switch
                                             className="data-[state=checked]:bg-[#2FB9BD] "
@@ -353,8 +358,6 @@ export default function SelftSetTime(props: Props) {
                                                 field.onChange(e)
                                                 form.setValue('deliver.from', '00:00')
                                                 form.setValue('deliver.to', '00:00')
-                                                form.setValue('receive.from', '00:00')
-                                                form.setValue('receive.to', '00:00')
                                             }}
                                         />
                                     </div>
@@ -362,9 +365,6 @@ export default function SelftSetTime(props: Props) {
                                 {field.value &&
                                     <div className="grid grid-cols-2 gap-2">
                                         <div className="col-span-2">
-                                            <h1 className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                Thời gian giao xe
-                                            </h1>
                                             <div className="grid grid-cols-2 items-center gap-4">
                                                 <FormField
                                                     control={form.control}
@@ -482,10 +482,40 @@ export default function SelftSetTime(props: Props) {
                                                 />
                                             </div>
                                         </div>
+                                    </div>
+                                }
+                                {fieldState?.invalid && fieldState?.error && (
+                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                )}
+                            </FormItem>
+                        );
+                    }}
+                />
+                <FormField
+                    control={form.control}
+                    name="openReceive"
+                    render={({ field, fieldState }) => {
+                        return (
+                            <FormItem className="">
+                                <FormControl>
+                                    <div className="flex items-center gap-4">
+                                        <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
+                                            Thời gian nhận xe
+                                        </FormLabel>
+                                        <Switch
+                                            className="data-[state=checked]:bg-[#2FB9BD] "
+                                            checked={field.value}
+                                            onCheckedChange={(e) => {
+                                                field.onChange(e)
+                                                form.setValue('receive.from', '00:00')
+                                                form.setValue('receive.to', '00:00')
+                                            }}
+                                        />
+                                    </div>
+                                </FormControl>
+                                {field.value &&
+                                    <div className="grid grid-cols-2 gap-2">
                                         <div className="col-span-2">
-                                            <h1 className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                                Thời gian nhận xe
-                                            </h1>
                                             <div className="grid grid-cols-2 items-center gap-4">
                                                 <FormField
                                                     control={form.control}
