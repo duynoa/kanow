@@ -29,15 +29,20 @@ import { getListNotifications } from '@/services/notification/notification.servi
 const Header = () => {
     // lấy thông tin user
     const router = useRouter()
+
     const { isVisibleTablet } = useResize()
-    const { getCookie, setCookie } = useCookie()
     const { apiInfoUser } = useAuthenticationAPI()
-    const [isLoading, setIsLoading] = useState(false)
+    const { getCookie, setCookie } = useCookie()
     const { informationUser, setInformationUser } = useAuth()
-    const [isZoomAnimated, setIsZoomAnimated] = useState<boolean>(false);
+    const { queryKeyIsStateProfileMyCar } = useDataProfileMyCar()
+    const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
+
+
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isMounted, setIsMounted] = useState<boolean>(false)
-    const [isScrollBlocked, setIsScrollBlocked] = useState<boolean>(false);
     const [showActive, setShowActive] = useState<boolean>(false);
+    const [isZoomAnimated, setIsZoomAnimated] = useState<boolean>(false);
+    const [isScrollBlocked, setIsScrollBlocked] = useState<boolean>(false);
     const [activeService, setActiveService] = useState<boolean>(false)
 
     const {
@@ -46,12 +51,6 @@ const Header = () => {
         queryKeyIsStateNotification,
         setOpenDropdownNotification
     } = useNotification()
-
-    const { openDialogLogin, setOpenDialogLogin, statusModal, setStatusModal } = useDialogLogin()
-
-    const { queryKeyIsStateProfileMyCar } = useDataProfileMyCar()
-
-    // const [statusModal, setStatusModal] = useState<string>("login")
 
     const dataHeader = [
         {

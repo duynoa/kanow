@@ -66,7 +66,6 @@ const DetailCar = ({ params }: Props) => {
     const {
         dataPromotions,
         openDialogPromotion,
-        isLoadingDataPromotions,
         setDataPromotions,
         setIsLoadingDataPromotion,
     } = useDialogPromotion()
@@ -83,15 +82,12 @@ const DetailCar = ({ params }: Props) => {
     const {
         dateReal,
         dateTemp,
-        dateEnd,
         numberDay,
-        openDialogCalendar,
         setDateTemp,
         setDateStart,
         setDateEnd,
         setDataCalendar,
         setNumberDay,
-        setDateReal
     } = useDialogCalendar()
 
     const {
@@ -99,11 +95,6 @@ const DetailCar = ({ params }: Props) => {
         valueAddressPickup,
         valueAddressDestination,
         indexAddressDestination,
-        setValueAddressPickup,
-        setValueAddressDestination,
-        setIndexAddressDestination,
-        setCoordinates,
-        setOpenDialogAddress,
     } = useDialogAddress()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)

@@ -373,7 +373,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                 <div className='flex gap-1 items-center'>
                     <TiLocation className='text-base text-[#FA3434] w-[16px] max-w-[16px]' />
                     <div className='3xl:text-base text-sm text-[#8C93A3] font-medium max-w-full'>
-                        Quận Hồ Tây, Hà Nội, Việt Nam
+                        {isStateDetailCar?.dataDetailCar?.full_address}
                     </div>
                 </div>
                 <div className='w-full h-full'>
