@@ -373,7 +373,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                 <div className='flex gap-1 items-center'>
                     <TiLocation className='text-base text-[#FA3434] w-[16px] max-w-[16px]' />
                     <div className='3xl:text-base text-sm text-[#8C93A3] font-medium max-w-full'>
-                        {isStateDetailCar?.dataDetailCar?.full_address}
+                        {isStateDetailCar?.dataDetailCar?.address}
                     </div>
                 </div>
                 <div className='w-full h-full'>
