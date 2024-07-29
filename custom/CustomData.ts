@@ -53,6 +53,10 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
             ...image,
             name: `${res?.base?.base}/${image.name}`,
         })),
+        image_car_detail: res?.data?.image_car_detail?.map((image: any) => ({
+            ...image,
+            name: `${res?.base?.base}/${image.name}`,
+        })),
         type: {
             delivery_car: res?.data?.delivery_car === 1,
             book_car_flash: res?.data?.book_car_flash === 1,

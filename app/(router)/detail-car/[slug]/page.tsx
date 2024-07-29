@@ -799,7 +799,7 @@ const DetailCar = ({ params }: Props) => {
                                     className='custom-swiper-detail-car w-full md:h-[380px] h-[240px] lg:px-2'
                                 >
                                     {
-                                        isStateDetailCar?.dataDetailCar && isStateDetailCar?.dataDetailCar?.image_car && isStateDetailCar?.dataDetailCar?.image_car.map((carDetail: any, index: number) => (
+                                        isStateDetailCar?.dataDetailCar && isStateDetailCar?.dataDetailCar?.image_car_detail && isStateDetailCar?.dataDetailCar?.image_car_detail.map((carDetail: any, index: number) => (
                                             <SwiperSlide
                                                 key={`carDetail-${carDetail.id}`}
                                                 onClick={() => handleOpenReviewImage(carDetail.id, index)}
@@ -849,7 +849,7 @@ const DetailCar = ({ params }: Props) => {
                                         className='custom-swiper-detail-car w-full 3xl:h-[330px] xl:h-[280px] lg:h-[240px] md:h-[380px] h-[240px] lg:px-2'
                                     >
                                         {
-                                            isStateDetailCar?.dataDetailCar && isStateDetailCar?.dataDetailCar?.image_car && isStateDetailCar?.dataDetailCar?.image_car?.map((carDetail: any, index: number) => (
+                                            isStateDetailCar?.dataDetailCar && isStateDetailCar?.dataDetailCar?.image_car_detail && isStateDetailCar?.dataDetailCar?.image_car_detail?.map((carDetail: any, index: number) => (
                                                 <SwiperSlide key={`carDetail-${carDetail.id}`} onClick={() => handleOpenReviewImage(carDetail.id, index)}>
                                                     <div className='w-full 3xl:h-[300px] xl:h-[240px] lg:h-[200px] md:h-[380px] h-[240px] cursor-pointer'>
                                                         <Image

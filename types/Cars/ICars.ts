@@ -71,6 +71,13 @@ interface IDataDetailCar {
         name: string;
         updated_at: string;
     }[];
+    image_car_detail: {
+        car_id: number;
+        created_at: string;
+        id: number;
+        name: string;
+        updated_at: string;
+    }[];
     customer: {
         id: number;
         fullname: string;
