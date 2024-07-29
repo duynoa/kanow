@@ -47,19 +47,19 @@ const StepLease = ({ form, checkValueArray }: Props) => {
             // // miễn phí giao
             // freeDelivery: 0
             intersectionSquare: {
-                max: 500,
+                max: 0,
                 min: 0,
                 propose: 0,
                 step: 1
             },
             deliveryFee: {
-                max: 5000000,
+                max: 0,
                 min: 0,
                 propose: 0,
                 step: 1
             },
             freeDelivery: {
-                max: 500,
+                max: 0,
                 min: 0,
                 propose: 0,
                 step: 1

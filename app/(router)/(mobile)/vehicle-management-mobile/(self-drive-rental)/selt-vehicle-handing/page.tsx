@@ -17,19 +17,19 @@ type Props = {}
 export default function SelftVehicleHanding(props: Props) {
     const initialState: StateSelftVehicleHanding = {
         intersectionSquare: {
-            max: 500,
+            max: 0,
             min: 0,
             propose: 0,
             step: 1
         },
         deliveryFee: {
-            max: 5000000,
+            max: 0,
             min: 0,
             propose: 0,
             step: 1
         },
         freeDelivery: {
-            max: 500,
+            max: 0,
             min: 0,
             propose: 0,
             step: 1
@@ -68,17 +68,20 @@ export default function SelftVehicleHanding(props: Props) {
                 deliveryFee: {
                     ...isState.deliveryFee,
                     propose: +dataOther.other?.fee_km_delivery_car,
-                    step: +dataOther.other?.range_fee_km_delivery_car ?? 1
+                    step: +dataOther.other?.range_fee_km_delivery_car ?? 1,
+                    max: +dataOther.other?.fee_km_delivery_car_limit,
                 },
                 freeDelivery: {
                     ...isState.freeDelivery,
                     propose: +dataOther.other?.free_km_delivery_car,
-                    step: +dataOther.other?.range_free_km_delivery_car ?? 1
+                    step: +dataOther.other?.range_free_km_delivery_car ?? 1,
+                    max: +dataOther.other?.free_km_delivery_car_limit,
                 },
                 intersectionSquare: {
                     ...isState.intersectionSquare,
                     propose: +dataOther.other?.km_delivery_car,
-                    step: +dataOther.other?.range_km_delivery_car ?? 1
+                    step: +dataOther.other?.range_km_delivery_car ?? 1,
+                    max: +dataOther.other?.km_delivery_car_limit,
                 },
             })
             return
