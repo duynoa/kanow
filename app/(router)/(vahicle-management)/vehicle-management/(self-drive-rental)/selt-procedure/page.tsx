@@ -133,7 +133,7 @@ export default function SeltProcedure(props: Props) {
             </div>
             <Form {...form}>
                 <div className="grid grid-cols-1 gap-6">
-                    {isState.openMortgage && (
+                    {/* {isState.openMortgage && (
                         <FormField
                             control={form.control}
                             name="mortgage"
@@ -164,7 +164,7 @@ export default function SeltProcedure(props: Props) {
                                 </FormItem>
                             )}
                         />
-                    )}
+                    )} */}
                     <FormField
                         control={form.control}
                         name="carRentalDocuments"

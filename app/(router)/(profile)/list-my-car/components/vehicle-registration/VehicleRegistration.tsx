@@ -27,6 +27,8 @@ type Props = {
 
 const VehicleRegistration = ({ }: Props) => {
     const { isStateProfileMyCar, queryKeyIsStateProfileMyCar } = useDataProfileMyCar()
+    const { openBoxSearch } = useDialogAddress()
+
     const dataSteps: ISteps[] = [
         {
             name: "Thông tin",
@@ -120,7 +122,7 @@ const VehicleRegistration = ({ }: Props) => {
                 },
                 // thế chấp
                 mortgage: {
-                    open: false,
+                    open: true,
                     value: ''
                 },
                 // Điều khoản thuê xe
@@ -342,6 +344,7 @@ const VehicleRegistration = ({ }: Props) => {
                             onClick={() => {
                                 form.handleSubmit((values) => onSubmit(values, 'images'))()
                             }}
+                            disabled={openBoxSearch}
                             type="button"
                             className={`md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
                                     border-2 px-10 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>
@@ -357,6 +360,7 @@ const VehicleRegistration = ({ }: Props) => {
                                 onScrollTop()
                                 handlePrevStep()
                             }}
+                            disabled={openBoxSearch}
                             type="button"
                             className={`md:w-fit w-full text-white border-[#2FB9BD] rounded-xl
                                     border-2 px-10 py-3 bg-[#2FB9BD] font-semibold lg:text-sm text-xs leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80`}>

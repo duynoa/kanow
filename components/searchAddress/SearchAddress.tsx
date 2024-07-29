@@ -7,17 +7,20 @@ import { useDebounce } from "use-debounce"
 import { ScrollArea } from "../ui/scroll-area"
 
 const SearchAddress = ({ onChange, children, field }: any) => {
-    const { setCoordinates, openBoxSearch, setOpenBoxSearch } = useDialogAddress()
+    const { setCoordinates, openBoxSearch, setOpenBoxSearch, coordinates } = useDialogAddress()
     const [debouncedOpenBoxSearch] = useDebounce(openBoxSearch, 500)
     const [dataAddress, setDataAddress] = useState<string>("")
     const [debouncedDataAddress] = useDebounce(dataAddress, 500)
     const [dataBoxSearch, setDataBoxSearch] = useState<any[]>([])
 
     const { apiViewboxSearch } = useGoogleApi()
-
+    console.log("coordinates dd", coordinates,);
     useEffect(() => {
         if (field.value) {
             setDataAddress(field.value)
+            if (coordinates.lat == 0 && coordinates.lng == 0) {
+                setOpenBoxSearch(true)
+            }
         } else {
             setOpenBoxSearch(false)
         }
@@ -29,6 +32,7 @@ const SearchAddress = ({ onChange, children, field }: any) => {
             lat: item.location.lat,
             lng: item.location.lng
         })
+
         onChange(item.address);
         setOpenBoxSearch(false)
     }

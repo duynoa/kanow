@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useDialogAddress } from "@/hooks/useOpenDialog"
 const FormCreatAddress = ({ form, isState, queryKeyIsState, handleSearchApi, onSubmit }: any) => {
-    const { setOpenBoxSearch } = useDialogAddress()
+    const { setOpenBoxSearch, setCoordinates, coordinates, openBoxSearch } = useDialogAddress()
 
     return (
         <Form {...form}>
@@ -299,12 +299,28 @@ const FormCreatAddress = ({ form, isState, queryKeyIsState, handleSearchApi, onS
                                                             w-full border-[#E6E8EC] border-2 2xl:py-3 lg:py-2 md:py-2 py-2 rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                 placeholder="Nhập địa chỉ của bạn"
                                                 {...field}
+                                                // onChange={(e: any) => {
+                                                //     field.onChange(e)
+                                                //     setOpenBoxSearch(true)
+                                                // }}
+                                                // onClick={() => setOpenBoxSearch(true)}
+                                                // onBlur={() => setOpenBoxSearch(false)}
                                                 onChange={(e: any) => {
                                                     field.onChange(e)
+                                                    setCoordinates({
+                                                        lat: 0,
+                                                        lng: 0
+                                                    })
                                                     setOpenBoxSearch(true)
                                                 }}
                                                 onClick={() => setOpenBoxSearch(true)}
-                                                onBlur={() => setOpenBoxSearch(false)}
+                                                onBlur={() => {
+                                                    if (field.value && coordinates.lat == 0 && coordinates.lng == 0) {
+                                                        setOpenBoxSearch(true)
+                                                    } else {
+                                                        setOpenBoxSearch(false)
+                                                    }
+                                                }}
                                             />
                                         </SearchAddress>
                                     </FormControl>
@@ -349,7 +365,7 @@ const FormCreatAddress = ({ form, isState, queryKeyIsState, handleSearchApi, onS
                 <div className="flex justify-end">
                     <Button
                         type="button"
-                        disabled={form.formState.isSubmitting}
+                        disabled={openBoxSearch || form.formState.isSubmitting}
                         onClick={() => form.handleSubmit((values: any) => onSubmit(values))()}
                         className={`bg-[#2FB9BD]/80  hover:bg-[#2FB9BD]/80" hover:bg-[#2FB9BD]/80 hover:text-white bg-white text-[#2FB9BD] border-[#2FB9BD] md:w-fit w-full text-sm lg:px-8
                                     px-5 2xl:py-3 xl:py-2.5 py-2.5 3xl:gap-2 gap-1 rounded-xl cursor-pointer hover:scale-105  uppercase transition-all overflow-hidden  border uppercases`}

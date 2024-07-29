@@ -39,6 +39,7 @@ interface Obj {
 
 export interface IStateLease extends ICommonType {
     dataCity: any[];
+    notiMortgage: string;
     dataDistrict: any[];
     dataWards: any[];
     dataWordLimit: any[];

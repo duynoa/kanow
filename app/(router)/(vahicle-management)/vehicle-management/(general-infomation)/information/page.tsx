@@ -79,7 +79,7 @@ export default function VehicleInfomation(props: Props) {
 
     const { apiUpdateCar } = apiVehicleCommon()
 
-    const { coordinates, setCoordinates } = useDialogAddress()
+    const { coordinates, openBoxSearch, setCoordinates } = useDialogAddress()
 
     const { apiListFeature } = apiMyCar()
 
@@ -543,10 +543,20 @@ export default function VehicleInfomation(props: Props) {
                                                                         // onBlur={() => setOpenBoxSearch(false)}
                                                                         onChange={(e: any) => {
                                                                             field.onChange(e)
+                                                                            setCoordinates({
+                                                                                lat: 0,
+                                                                                lng: 0
+                                                                            })
                                                                             setOpenBoxSearch(true)
                                                                         }}
                                                                         onClick={() => setOpenBoxSearch(true)}
-                                                                        onBlur={() => setOpenBoxSearch(false)}
+                                                                        onBlur={() => {
+                                                                            if (field.value && coordinates.lat == 0 && coordinates.lng == 0) {
+                                                                                setOpenBoxSearch(true)
+                                                                            } else {
+                                                                                setOpenBoxSearch(false)
+                                                                            }
+                                                                        }}
                                                                     />
                                                                 </SearchAddress>
                                                             </FormControl>
@@ -760,7 +770,7 @@ export default function VehicleInfomation(props: Props) {
                         type="button"
                         onClick={form.handleSubmit((values) => onSubmit(values))}
                         className="p-4 flex items-center gap-2 md:w-fit w-full text-white border-[#2FB9BD] rounded-xl border-2 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
-                        disabled={isStateLoadSuccess.loading.isLoadingButton}
+                        disabled={openBoxSearch || isStateLoadSuccess.loading.isLoadingButton}
                         isStateloading={isStateLoadSuccess.loading.isLoadingButton}
                     />
                 </div>
