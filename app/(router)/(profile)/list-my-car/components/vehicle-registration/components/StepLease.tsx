@@ -1,6 +1,7 @@
 import SelectCombobox from "@/components/combobox/SelectCombobox"
 import { FormatNumberToThousands } from "@/components/format/FormatNumber"
 import SearchAddress from "@/components/searchAddress/SearchAddress"
+import { ActionTooltip } from "@/components/tooltip/ActionTooltip"
 import { Button } from "@/components/ui/button"
 import { CustomSlider } from "@/components/ui/customSlider"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -17,6 +18,7 @@ import { IStateLease, TComboboxApi } from "@/types/Profile/mycar/IMyCar"
 import { debounce } from "lodash"
 import { ChevronsUpDown } from "lucide-react"
 import { useEffect, useState } from "react"
+import { FaRegQuestionCircle } from "react-icons/fa"
 
 type Props = {
     form: any,
@@ -28,7 +30,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
     const { apiListMoveEndFeuelType } = apiMyCar()
     const { apiListCity, apiListDistrict, apiListWard } = apiAddress()
     const { apiRentCostPropose } = apiVehicleCommon()
-    const { setOpenBoxSearch } = useDialogAddress()
+    const { setOpenBoxSearch, coordinates, setCoordinates } = useDialogAddress()
     const initialState: IStateLease = {
         rentCostPropose: 0,
         openCombobox: false,
@@ -38,6 +40,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
         dataWards: [],
         dataWordLimit: [],
         dataUntil: [],
+        notiMortgage: "",
         //giao xe tận tơi
         vehicleHanding: {
             // // quảng đường giao 
@@ -138,19 +141,23 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                         intersectionSquare: {
                             ...isState.vehicleHanding.intersectionSquare,
                             propose: +other?.km_delivery_car,
-                            step: +other?.range_km_delivery_car ?? 1
+                            step: +other?.range_km_delivery_car ?? 1,
+                            max: +other?.km_delivery_car_limit,
                         },
                         deliveryFee: {
                             ...isState.vehicleHanding.deliveryFee,
                             propose: +other?.fee_km_delivery_car,
-                            step: +other?.range_fee_km_delivery_car ?? 1
+                            step: +other?.range_fee_km_delivery_car ?? 1,
+                            max: +other?.fee_km_delivery_car_limit,
                         },
                         freeDelivery: {
                             ...isState.vehicleHanding.freeDelivery,
                             propose: +other?.free_km_delivery_car,
-                            step: +other?.range_free_km_delivery_car ?? 1
+                            step: +other?.range_free_km_delivery_car ?? 1,
+                            max: +other?.free_km_delivery_car_limit,
                         },
                     },
+                    notiMortgage: other?.noti_mortgage,
                     discount: +other?.percent_discount,
                     limitedKilometers: {
                         ...isState.limitedKilometers,
@@ -176,6 +183,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                     { name: 'stepLease.limitedKilometers.maximumKilometers', value: +other?.limit_km_day },
                     { name: 'stepLease.limitedKilometers.overLimitFeeId', value: dtFee?.id },
                     { name: 'stepLease.limitedKilometers.overLimitFee', value: +dtFee?.propose_fee },
+                    { name: 'stepLease.mortgage.value', value: other?.note_mortgage },
                 ]
                 db.forEach((item: any) => {
                     form.setValue(item.name, item.value);
@@ -553,12 +561,28 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                             {...field}
                                                                             // onClick={() => setOpenBoxSearch(true)}
                                                                             // onBlur={() => setOpenBoxSearch(false)}
+                                                                            // onChange={(e: any) => {
+                                                                            //     field.onChange(e)
+                                                                            //     setOpenBoxSearch(true)
+                                                                            // }}
+                                                                            // onClick={() => setOpenBoxSearch(true)}
+                                                                            // onBlur={() => setOpenBoxSearch(false)}
                                                                             onChange={(e: any) => {
                                                                                 field.onChange(e)
+                                                                                setCoordinates({
+                                                                                    lat: 0,
+                                                                                    lng: 0
+                                                                                })
                                                                                 setOpenBoxSearch(true)
                                                                             }}
                                                                             onClick={() => setOpenBoxSearch(true)}
-                                                                            onBlur={() => setOpenBoxSearch(false)}
+                                                                            onBlur={() => {
+                                                                                if (field.value && coordinates.lat == 0 && coordinates.lng == 0) {
+                                                                                    setOpenBoxSearch(true)
+                                                                                } else {
+                                                                                    setOpenBoxSearch(false)
+                                                                                }
+                                                                            }}
 
                                                                         />
                                                                     </SearchAddress>
@@ -1026,15 +1050,31 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                 return (
                                     <FormItem className="">
                                         <FormLabel className="2xl:text-sm lg:text-xs font-semibold text-[#16171B]">
-                                            Thế chấp thuê xe
+                                            <div className="flex items-center gap-2">
+                                                <h1> Thế chấp thuê xe</h1>
+                                                <ActionTooltip
+                                                    side="bottom"
+                                                    align="center"
+                                                    label={(
+                                                        <div className='flex flex-col gap-1 max-w-[240px]'>
+                                                            {isState.notiMortgage}
+                                                        </div>
+                                                    )}
+                                                >
+                                                    <div>
+                                                        <FaRegQuestionCircle className='text-[#FF9900] text-xl cursor-pointer' />
+                                                    </div>
+                                                </ActionTooltip>
+                                            </div>
                                             <h1 className="text-xs text-gray-400">Bật tính năng</h1>
                                         </FormLabel>
                                         <FormControl>
                                             <div className="">
                                                 <Switch
                                                     className="data-[state=checked]:bg-[#2FB9BD] "
-                                                    checked={field.value}
-                                                    onCheckedChange={field.onChange}
+                                                    checked={true}
+                                                    disabled
+                                                // onCheckedChange={field.onChange}
                                                 />
                                             </div>
                                         </FormControl>
@@ -1051,6 +1091,7 @@ const StepLease = ({ form, checkValueArray }: Props) => {
                                                                 </FormLabel>
                                                                 <FormControl>
                                                                     <Textarea
+                                                                        disabled
                                                                         className={`disabled:bg-[#E6E8EC] min-h-[85px] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2  w-full border-[#E6E8EC]
                                                                     focus:border-[#2FB9BD] border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-2xl   px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0 `}
                                                                         placeholder="Nhập ghi chú thế chấp"

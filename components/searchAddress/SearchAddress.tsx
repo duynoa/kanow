@@ -18,7 +18,6 @@ const SearchAddress = ({ onChange, children, field }: any) => {
     useEffect(() => {
         if (field.value) {
             setDataAddress(field.value)
-            setCoordinates({ lat: 0, lng: 0 })
             if (coordinates.lat == 0 && coordinates.lng == 0) {
                 setOpenBoxSearch(true)
             }
@@ -33,8 +32,6 @@ const SearchAddress = ({ onChange, children, field }: any) => {
             lat: item.location.lat,
             lng: item.location.lng
         })
-        console.log("item.address", item.address);
-        console.log("item.latlon", item.location.lat, item.location.lng);
 
         onChange(item.address);
         setOpenBoxSearch(false)

@@ -69,6 +69,7 @@ export default function SelftVehicleHanding(props: Props) {
             form.setValue('vehicleHanding.deliveryFee', data?.car?.fee_km_delivery_car ?? 0)
             form.setValue('vehicleHanding.freeDelivery', data?.car?.free_km_delivery_car ?? 0)
             form.setValue('vehicleHanding.intersectionSquare', data?.car?.km_delivery_car ?? 0)
+
             queryState({
                 deliveryFee: {
                     ...isState.deliveryFee,
