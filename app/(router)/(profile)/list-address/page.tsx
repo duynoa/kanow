@@ -13,6 +13,7 @@ import BackgroundUiProfile from "@/themes/profile/BackgroundUiProfile"
 import { IListAddress } from "@/types/Profile/IListAddress"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useResize } from "@/hooks/useResize"
+import { useDialogAddress } from "@/hooks/useOpenDialog"
 
 type Props = {}
 
@@ -45,6 +46,9 @@ const ListAddress = (props: Props) => {
     const { isVisibleMobile, isVisibleTablet } = useResize()
 
     const valuesForm = form.getValues()
+
+    const { coordinates } = useDialogAddress()
+
 
     const [isState, setIsState] = useState<IListAddress>(initialSatate)
 
@@ -190,7 +194,8 @@ const ListAddress = (props: Props) => {
             formData.append('address', values.address.split(',')[0].trim());
             formData.append('default_address', values.defaultAddress ? '1' : '0');
             formData.append('id', isState.idAddress);
-            
+            formData.append('latitude', `${coordinates?.lat}`)
+            formData.append('longitude', `${coordinates?.lng}`)
             const { data } = await apiCreateAddress(formData)
 
             if (data?.result) {
