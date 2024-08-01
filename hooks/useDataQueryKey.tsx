@@ -110,6 +110,7 @@ const isStateDetailCar: IInitialStateDetailCar = {
         address: "",
         full_address: "",
         image_car: [],
+        image_car_detail: [],
         customer: {
             avatar: "",
             fullname: "",
