@@ -47,7 +47,7 @@ const ListAddress = (props: Props) => {
 
     const valuesForm = form.getValues()
 
-    const { coordinates } = useDialogAddress()
+    const { coordinates, setCoordinates } = useDialogAddress()
 
 
     const [isState, setIsState] = useState<IListAddress>(initialSatate)
@@ -93,6 +93,9 @@ const ListAddress = (props: Props) => {
                     { name: 'address', value: data?.data?.address },
                     { name: 'defaultAddress', value: data?.data?.default_address == 0 ? false : true }
                 ]
+
+                setCoordinates({ lat: data?.data?.latitude, lng: data?.data?.longitude })
+
                 db.forEach((item: any) => {
                     form.setValue(item.name, item.value);
                 });
