@@ -919,7 +919,7 @@ const DetailCar = ({ params }: Props) => {
                                                                     :
                                                                     null
                                                             }
-                                                            <div className='w-full 3xl:h-[230px] xxl:h-auto xl:h-[180px] h-[180px] relative'>
+                                                            <div className='w-full 3xl:h-[230px] xxl:h-[200px] xl:h-[180px] h-[180px] relative'>
                                                                 <Image
                                                                     width={600}
                                                                     height={600}
@@ -1075,7 +1075,7 @@ const DetailCar = ({ params }: Props) => {
                                                                 :
                                                                 null
                                                         }
-                                                        <div className='w-full 3xl:h-[230px] xxl:h-auto xl:h-[180px] h-[180px] relative'>
+                                                        <div className='w-full 3xl:h-[230px] xxl:h-[200px] xl:h-[180px] h-[180px] relative'>
                                                             <Image
                                                                 width={600}
                                                                 height={600}
