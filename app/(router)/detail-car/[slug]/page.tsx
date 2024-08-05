@@ -677,7 +677,7 @@ const DetailCar = ({ params }: Props) => {
     const handleOpenReviewImage = (id: number | string, index: number) => {
         setOpenDialogReview(true)
         setIndexImage(index)
-        setDataImage(isStateDetailCar?.dataDetailCar?.image_car)
+        setDataImage(isStateDetailCar?.dataDetailCar?.image_car_detail)
     }
 
     const customPagination = {
