@@ -17,9 +17,7 @@ import { useDataProfileMyCar } from "@/hooks/useDataQueryKey"
 import LoadingData from "@/components/loadingData/LoadingData"
 
 type Props = {
-
 }
-
 
 const TAB = [
     {
@@ -60,6 +58,7 @@ const ListMyCar = (props: Props) => {
     const { isVisibleMobile, isVisibleTablet } = useResize()
 
     const lastContainerRef = useRef<HTMLDivElement | null>(null);
+
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
     const { apiListCar, apiListStatusFilter } = apiMyCar()
@@ -74,8 +73,7 @@ const ListMyCar = (props: Props) => {
                 web: 1,
             }
             const { data } = await apiListCar(page, isStateProfileMyCar.limit, dataParams)
-
-            if (data && data.data && data.base) {
+            if (data && data?.data && data?.base) {
                 const { customDataMyCar } = CustomDataMyCar(data)
                 queryKeyIsStateProfileMyCar({
                     dataMyCar: customDataMyCar,
@@ -83,7 +81,6 @@ const ListMyCar = (props: Props) => {
                     next: data?.links?.next,
                 })
             }
-
         }
         catch (err) {
             throw err
@@ -91,9 +88,7 @@ const ListMyCar = (props: Props) => {
         finally {
             queryKeyIsStateProfileMyCar({ isLoadingCar: false })
         }
-
     }
-
 
     /// danh sách xe
     useEffect(() => {
@@ -110,7 +105,7 @@ const ListMyCar = (props: Props) => {
             const threshold = containerHeight * 0.1; // 10% của kích thước containe
 
             if (scrollContainerBottom <= lastContainerBottom + threshold) {
-                if (isStateProfileMyCar.dataMyCar && isStateProfileMyCar.next !== null) {
+                if (isStateProfileMyCar.dataMyCar && isStateProfileMyCar?.next !== null) {
                     queryKeyIsStateProfileMyCar({ isLoadingScroll: true });
                     const fetchDataListCar = async () => {
                         try {
@@ -141,7 +136,6 @@ const ListMyCar = (props: Props) => {
                         } finally {
                             queryKeyIsStateProfileMyCar({ isLoadingScroll: false });
                         }
-
                     };
                     fetchDataListCar()
                 } else {
