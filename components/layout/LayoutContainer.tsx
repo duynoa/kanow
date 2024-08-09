@@ -33,7 +33,7 @@ import '@/styles/globals.scss';
 import 'react-toastify/dist/ReactToastify.css';
 import "moment/locale/vi";
 
-import { useDataHome, useDataInfoRentalCar, useDataListCarAutonomous, useDataListCarsDriver, useDataPolicy } from '@/hooks/useDataQueryKey';
+import { useDataDetailCar, useDataHome, useDataInfoRentalCar, useDataListCarAutonomous, useDataListCarsDriver, useDataPolicy } from '@/hooks/useDataQueryKey';
 import { useDialogAddress, useDialogPayment, useDialogRegisterOwnerDriver, useDialogRequestCarRental, useDialogReviewCar, useDialogRouteAddress } from '@/hooks/useOpenDialog';
 
 import DialogFilterMyCar from '@/components/modals/DialogFilterMyCar';
@@ -65,6 +65,7 @@ import { DialogReviewCar } from '../modals/DialogReviewCar';
 import { DialogPayment } from '../modals/DialogPayment';
 import { AnimatePresence } from 'framer-motion';
 import { toastCore } from '@/lib/toast';
+import { Toaster } from 'react-hot-toast';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -102,6 +103,8 @@ const LayoutContainer = ({
         isStateNotification,
         queryKeyIsStateNotification,
     } = useNotification()
+
+    const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
 
     const { setValueTwoAddress } = useDialogRouteAddress()
     const { openDialogRegisterOwnerDriver } = useDialogRegisterOwnerDriver();
@@ -170,12 +173,214 @@ const LayoutContainer = ({
         fetchDataPolicy()
     }, []);
 
-    // chuyển lại page là 1 khi pathname khác
+    const fetchAddressLocalStorage = async () => {
+        // const savedCoordinates = localStorage.getItem('coordinates');
+        const savedCoordinates = Cookies.get('coordinates');
+
+        // Kiểm tra xem giá trị từ localStorage có tồn tại không
+        if (savedCoordinates) {
+            // if (savedCoordinates && !valueAddressPickup || savedCoordinates && !valueAddressDestination.some(item => item.valueAddress !== "")) {
+            const parseCoordinates = JSON.parse(savedCoordinates)
+
+            const dataParamsPickup = {
+                key: process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D,
+                location: `${parseCoordinates.lat},${parseCoordinates.lng}`,
+                address: "",
+                viewbox: "",
+            }
+
+            const dataParamsDestination = {
+                key: process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D,
+                location: `${parseCoordinates.latTo},${parseCoordinates.lngTo}`,
+                address: "",
+                viewbox: "",
+            }
+
+            if (pathname.startsWith('/list-cars-autonomous')) {
+                if (parseCoordinates.lat && parseCoordinates.lng) {
+                    const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
+
+                    if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
+                        const address = dataPickup.result[0].address
+                        const location = dataPickup.result[0].location
+
+                        setValueAddressPickup(address)
+                        setCoordinates({
+                            ...parseCoordinates,
+                            lat: location.lat,
+                            lng: location.lng,
+                        })
+                    }
+                }
+            } else if (pathname.startsWith('/list-cars-driver')) {
+                if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
+                    const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
+                    const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
+
+                    // điểm đón
+                    if ((dataPickup && dataPickup.code == 'ok' && dataPickup.result) && dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
+                        const addressPickup = dataPickup.result[0].address
+                        const locationPickup = dataPickup.result[0].location
+                        const addressDestination = dataDestination.result[0].address
+                        const locationDestination = dataDestination.result[0].location
+
+                        // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
+                        const updatedAddressDestination = [...valueAddressDestination];
+                        updatedAddressDestination[indexAddressDestination] = {
+                            id: valueAddressDestination[indexAddressDestination].id,
+                            valueAddress: addressDestination ? addressDestination : ""
+                        };
+
+
+                        setValueAddressPickup(addressPickup)
+
+                        setValueAddressDestination(updatedAddressDestination)
+
+                        setCoordinates({
+                            ...parseCoordinates,
+                            lat: locationPickup.lat,
+                            lng: locationPickup.lng,
+                            latTo: locationDestination.lat,
+                            lngTo: locationDestination.lng,
+                        })
+
+                        setValueTwoAddress(`${dataPickup.result[0].name} - ${dataDestination.result[0].name}`)
+                    }
+                } else if (parseCoordinates.lat && parseCoordinates.lng) {
+                    const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
+
+                    if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
+                        const address = dataPickup.result[0].address
+                        const location = dataPickup.result[0].location
+
+                        setValueAddressPickup(address)
+                        setCoordinates({
+                            ...parseCoordinates,
+                            lat: location.lat,
+                            lng: location.lng,
+                        })
+                    }
+                } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
+                    const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
+
+                    if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
+                        const address = dataDestination.result[0].address
+                        const location = dataDestination.result[0].location
+
+                        // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
+                        const updatedAddressDestination = [...valueAddressDestination];
+                        updatedAddressDestination[indexAddressDestination] = {
+                            id: valueAddressDestination[indexAddressDestination].id,
+                            valueAddress: address ? address : ""
+                        };
+
+                        setValueAddressDestination(updatedAddressDestination)
+                        setCoordinates({
+                            ...parseCoordinates,
+                            latTo: location.lat,
+                            lngTo: location.lng,
+                        })
+                    }
+                }
+            } else if (pathname.startsWith('/detail-car')) {
+                if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
+                    const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
+                    const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
+
+                    // điểm đón
+                    if ((dataPickup && dataPickup.code == 'ok' && dataPickup.result) && dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
+                        const addressPickup = dataPickup.result[0].address
+                        const locationPickup = dataPickup.result[0].location
+                        const addressDestination = dataDestination.result[0].address
+                        const locationDestination = dataDestination.result[0].location
+
+                        // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
+                        const updatedAddressDestination = [...valueAddressDestination];
+                        updatedAddressDestination[indexAddressDestination] = {
+                            id: valueAddressDestination[indexAddressDestination].id,
+                            valueAddress: addressDestination ? addressDestination : ""
+                        };
+
+
+                        setValueAddressPickup(addressPickup)
+
+                        setValueAddressDestination(updatedAddressDestination)
+
+                        setCoordinates({
+                            ...parseCoordinates,
+                            lat: locationPickup.lat,
+                            lng: locationPickup.lng,
+                            latTo: locationDestination.lat,
+                            lngTo: locationDestination.lng,
+                        })
+
+                        setValueTwoAddress(`${dataPickup.result[0].name} - ${dataDestination.result[0].name}`)
+                    }
+                } else if (parseCoordinates.lat && parseCoordinates.lng) {
+                    const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
+
+                    if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
+                        const address = dataPickup.result[0].address
+                        const location = dataPickup.result[0].location
+
+                        setValueAddressPickup(address)
+                        setCoordinates({
+                            ...parseCoordinates,
+                            lat: location.lat,
+                            lng: location.lng,
+                        })
+                    }
+                } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
+                    const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
+
+                    if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
+                        const address = dataDestination.result[0].address
+                        const location = dataDestination.result[0].location
+
+                        // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
+                        const updatedAddressDestination = [...valueAddressDestination];
+                        updatedAddressDestination[indexAddressDestination] = {
+                            id: valueAddressDestination[indexAddressDestination].id,
+                            valueAddress: address ? address : ""
+                        };
+
+                        setValueAddressDestination(updatedAddressDestination)
+                        setCoordinates({
+                            ...parseCoordinates,
+                            latTo: location.lat,
+                            lngTo: location.lng,
+                        })
+                    }
+                }
+            } else if (pathname === "/" || pathname === "/home") {
+                const dataJson = {
+                    lat: 0,
+                    lng: 0,
+                    latTo: 0,
+                    lngTo: 0,
+                    latCurrent: 0,
+                    lngCurrent: 0,
+                }
+
+                setCoordinates(InitialCoordinates)
+
+                const updatedAddressDestination = [...valueAddressDestination];
+                updatedAddressDestination[indexAddressDestination] = {
+                    id: valueAddressDestination[indexAddressDestination].id,
+                    valueAddress: ""
+                };
+
+                setValueAddressPickup("")
+                setValueAddressDestination(updatedAddressDestination)
+                Cookies.set('coordinates', JSON.stringify(InitialCoordinates), { expires: expirationTime });
+            }
+        }
+    }
+
     useEffect(() => {
         const scrollTop = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
-        scrollTop()
 
         if (!pathname.startsWith('/list-cars-autonomous') && !pathname.startsWith('/list-cars-driver')) {
             queryKeyIsStateListCarAutonomous({
@@ -191,215 +396,35 @@ const LayoutContainer = ({
         if (!pathname.startsWith("/info-rental-car")) {
             setOpenDialogReviewCar(false)
         }
-    }, [pathname])
 
-    useEffect(() => {
-        const fetchAddressLocalStorage = async () => {
-            // const savedCoordinates = localStorage.getItem('coordinates');
-            const savedCoordinates = Cookies.get('coordinates');
+        const metaViewport = document.querySelector('meta[name=viewport]');
 
-            // Kiểm tra xem giá trị từ localStorage có tồn tại không
-            if (savedCoordinates) {
-                // if (savedCoordinates && !valueAddressPickup || savedCoordinates && !valueAddressDestination.some(item => item.valueAddress !== "")) {
-                const parseCoordinates = JSON.parse(savedCoordinates)
-
-                const dataParamsPickup = {
-                    key: process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D,
-                    location: `${parseCoordinates.lat},${parseCoordinates.lng}`,
-                    address: "",
-                    viewbox: "",
-                }
-
-                const dataParamsDestination = {
-                    key: process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D,
-                    location: `${parseCoordinates.latTo},${parseCoordinates.lngTo}`,
-                    address: "",
-                    viewbox: "",
-                }
-
-                if (pathname.startsWith('/list-cars-autonomous')) {
-                    if (parseCoordinates.lat && parseCoordinates.lng) {
-                        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
-
-                        if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
-                            const address = dataPickup.result[0].address
-                            const location = dataPickup.result[0].location
-
-                            setValueAddressPickup(address)
-                            setCoordinates({
-                                ...parseCoordinates,
-                                lat: location.lat,
-                                lng: location.lng,
-                            })
-                        }
-                    }
-                } else if (pathname.startsWith('/list-cars-driver')) {
-                    if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
-                        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
-                        const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
-
-                        // điểm đón
-                        if ((dataPickup && dataPickup.code == 'ok' && dataPickup.result) && dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
-                            const addressPickup = dataPickup.result[0].address
-                            const locationPickup = dataPickup.result[0].location
-                            const addressDestination = dataDestination.result[0].address
-                            const locationDestination = dataDestination.result[0].location
-
-                            // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-                            const updatedAddressDestination = [...valueAddressDestination];
-                            updatedAddressDestination[indexAddressDestination] = {
-                                id: valueAddressDestination[indexAddressDestination].id,
-                                valueAddress: addressDestination ? addressDestination : ""
-                            };
-
-
-                            setValueAddressPickup(addressPickup)
-
-                            setValueAddressDestination(updatedAddressDestination)
-
-                            setCoordinates({
-                                ...parseCoordinates,
-                                lat: locationPickup.lat,
-                                lng: locationPickup.lng,
-                                latTo: locationDestination.lat,
-                                lngTo: locationDestination.lng,
-                            })
-
-                            setValueTwoAddress(`${dataPickup.result[0].name} - ${dataDestination.result[0].name}`)
-                        }
-                    } else if (parseCoordinates.lat && parseCoordinates.lng) {
-                        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
-
-                        if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
-                            const address = dataPickup.result[0].address
-                            const location = dataPickup.result[0].location
-
-                            setValueAddressPickup(address)
-                            setCoordinates({
-                                ...parseCoordinates,
-                                lat: location.lat,
-                                lng: location.lng,
-                            })
-                        }
-                    } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
-                        const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
-
-                        if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
-                            const address = dataDestination.result[0].address
-                            const location = dataDestination.result[0].location
-
-                            // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-                            const updatedAddressDestination = [...valueAddressDestination];
-                            updatedAddressDestination[indexAddressDestination] = {
-                                id: valueAddressDestination[indexAddressDestination].id,
-                                valueAddress: address ? address : ""
-                            };
-
-                            setValueAddressDestination(updatedAddressDestination)
-                            setCoordinates({
-                                ...parseCoordinates,
-                                latTo: location.lat,
-                                lngTo: location.lng,
-                            })
-                        }
-                    }
-                } else if (pathname.startsWith('/detail-car')) {
-                    if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
-                        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
-                        const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
-
-                        // điểm đón
-                        if ((dataPickup && dataPickup.code == 'ok' && dataPickup.result) && dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
-                            const addressPickup = dataPickup.result[0].address
-                            const locationPickup = dataPickup.result[0].location
-                            const addressDestination = dataDestination.result[0].address
-                            const locationDestination = dataDestination.result[0].location
-
-                            // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-                            const updatedAddressDestination = [...valueAddressDestination];
-                            updatedAddressDestination[indexAddressDestination] = {
-                                id: valueAddressDestination[indexAddressDestination].id,
-                                valueAddress: addressDestination ? addressDestination : ""
-                            };
-
-
-                            setValueAddressPickup(addressPickup)
-
-                            setValueAddressDestination(updatedAddressDestination)
-
-                            setCoordinates({
-                                ...parseCoordinates,
-                                lat: locationPickup.lat,
-                                lng: locationPickup.lng,
-                                latTo: locationDestination.lat,
-                                lngTo: locationDestination.lng,
-                            })
-
-                            setValueTwoAddress(`${dataPickup.result[0].name} - ${dataDestination.result[0].name}`)
-                        }
-                    } else if (parseCoordinates.lat && parseCoordinates.lng) {
-                        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup)
-
-                        if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
-                            const address = dataPickup.result[0].address
-                            const location = dataPickup.result[0].location
-
-                            setValueAddressPickup(address)
-                            setCoordinates({
-                                ...parseCoordinates,
-                                lat: location.lat,
-                                lng: location.lng,
-                            })
-                        }
-                    } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
-                        const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination)
-
-                        if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
-                            const address = dataDestination.result[0].address
-                            const location = dataDestination.result[0].location
-
-                            // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-                            const updatedAddressDestination = [...valueAddressDestination];
-                            updatedAddressDestination[indexAddressDestination] = {
-                                id: valueAddressDestination[indexAddressDestination].id,
-                                valueAddress: address ? address : ""
-                            };
-
-                            setValueAddressDestination(updatedAddressDestination)
-                            setCoordinates({
-                                ...parseCoordinates,
-                                latTo: location.lat,
-                                lngTo: location.lng,
-                            })
-                        }
-                    }
-                } else if (pathname === "/" || pathname === "/home") {
-                    const dataJson = {
-                        lat: 0,
-                        lng: 0,
-                        latTo: 0,
-                        lngTo: 0,
-                        latCurrent: 0,
-                        lngCurrent: 0,
-                    }
-
-                    setCoordinates(InitialCoordinates)
-
-                    const updatedAddressDestination = [...valueAddressDestination];
-                    updatedAddressDestination[indexAddressDestination] = {
-                        id: valueAddressDestination[indexAddressDestination].id,
-                        valueAddress: ""
-                    };
-
-                    setValueAddressPickup("")
-                    setValueAddressDestination(updatedAddressDestination)
-                    Cookies.set('coordinates', JSON.stringify(InitialCoordinates), { expires: expirationTime });
-                }
-            }
+        if (metaViewport) {
+            metaViewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
+        } else {
+            const meta = document.createElement('meta');
+            meta.name = 'viewport';
+            meta.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no';
+            document.head.appendChild(meta);
         }
 
+        if (!pathname.startsWith('/detail-car')) {
+            queryKeyIsStateDetailCar({
+                infoPromotion: {
+                    ...isStateDetailCar?.infoPromotion,
+                    selectPromotion: "0",
+                    activePromotion: null
+                },
+                price: {
+                    ...isStateDetailCar?.price,
+                    total_amount: isStateDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion
+                }
+            })
+        }
+
+        scrollTop()
         fetchAddressLocalStorage()
-    }, [pathname])
+    }, [pathname]);
 
     // ẩn/hiện khi chuyển qua màn hình nhỏ khi không dùng chung div để tránh xung đột 
     useEffect(() => {
@@ -518,16 +543,6 @@ const LayoutContainer = ({
                 }
             });
 
-            // presenceChannel.bind("check-payment-alepay", (data: any) => {
-            //     console.log('CHECK-PAYMENT-ALEPAY PUSHER LAYOUT: ', data);
-            //     if (data && data.result) {
-            //         router.push(`/info-rental-car/${data.transaction_id}?type=${data.type}`)
-            //         toastCore.success("Thanh toán cọc thành công!")
-            //     } else {
-            //         router.push(`/info-rental-car/${data.transaction_id}?type=${data.type}`)
-            //     }
-            // });
-
             return () => {
                 presenceChannel.unbind("notification"); // Unbind sự kiện khi component bị unmounted
                 presenceChannel.unbind("change-status"); // Unbind sự kiện khi component bị unmounted
@@ -543,19 +558,6 @@ const LayoutContainer = ({
         queryKeyIsStateNotification,
         isStateNotification.dataListNotifications,
     ]);
-
-    // Hàm xử lí sự kiện khoá zoom trên giao diện mobile
-    useEffect(() => {
-        const metaViewport = document.querySelector('meta[name=viewport]');
-        if (metaViewport) {
-            metaViewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
-        } else {
-            const meta = document.createElement('meta');
-            meta.name = 'viewport';
-            meta.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no';
-            document.head.appendChild(meta);
-        }
-    }, [pathname]);
 
     return (
         <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>
@@ -610,18 +612,7 @@ const LayoutContainer = ({
                         !pathname.startsWith("/transaction-statement") &&
                         <Footer />
                     }
-                    <ToastContainer
-                        position="top-right"
-                        autoClose={5000}
-                        hideProgressBar={false}
-                        newestOnTop={false}
-                        closeOnClick
-                        rtl={false}
-                        pauseOnFocusLoss
-                        draggable
-                        pauseOnHover
-                        theme="light"
-                    />
+                    <Toaster position="top-right" reverseOrder={false} />
                 </Suspense>
             </body>
         </GoogleOAuthProvider>

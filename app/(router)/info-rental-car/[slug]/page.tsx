@@ -228,6 +228,9 @@ const InfoRentalCar = ({ params }: Props) => {
         return clusterCount;
     }
 
+    console.log('isStateInfoRentalCar', isStateInfoRentalCar);
+
+
     if (!isMounted) {
         return null
     }

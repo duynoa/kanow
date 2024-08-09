@@ -60,6 +60,36 @@ interface IAutomaker {
 }
 
 // detail car
+interface IPriceDetailCar {
+    // Tổng số km đi được theo xe
+    total_km_day: number;
+    // tiền trước khuyến mãi show ra giao diện
+    price_before_promotion: number;
+    // tiền sau khuyến mãi show ra giao diện
+    price_after_promotion: number;
+
+    // tiền gốc chưa có phí dịch vụ
+    rent_cost: number;
+    // tiền gốc có phí dịch vụ
+    rent_cost_day: number;
+    // tiền bảo hiểm
+    price_insurance_day: number;
+
+    // tổng tạm tính (chưa tính % khuyến mãi)
+    temp_total_amount: number;
+    // thành tiền (đã tính tiền khuyến mãi)
+    total_amount: number;
+
+    max_money_discount: number;
+    // tiền đặt cọc
+    price_depoist?: number;
+    // % tiền đặt cọc
+    percent_deposit: number;
+    // số ngày
+    number_day?: number;
+    // thanh toán khi nhận xe
+    cash_on_delivery?: number;
+}
 interface IDataDetailCar {
     id: string;
     address: string;
@@ -364,4 +394,4 @@ interface IDetailRentalCar {
     };
 }
 
-export type { IDataCardCar, ITypesCar, IAutomaker, IDataDetailCar, IDetailRentalCar };
+export type { IDataCardCar, ITypesCar, IAutomaker, IDataDetailCar, IDetailRentalCar, IPriceDetailCar };

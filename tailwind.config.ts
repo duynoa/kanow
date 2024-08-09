@@ -20,7 +20,12 @@ const config = {
 
         extend: {
             gridTemplateColumns: {
+                13: "repeat(13, minmax(0, 1fr))",
                 14: "repeat(14, minmax(0, 1fr))",
+            },
+            gridColumn: {
+                'span-13': 'span 13 / span 13',
+                'span-14': 'span 14 / span 14',
             },
             colors: {
                 border: "hsl(var(--border))",

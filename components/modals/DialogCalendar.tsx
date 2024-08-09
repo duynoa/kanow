@@ -739,7 +739,7 @@ export function DialogCalendar({ }: Props) {
                         }
                     })
                     if (
-                        isStateDetailCar?.dataDetailCar?.price?.number_day &&
+                        isStateDetailCar.price?.number_day &&
                         isStateDetailCar?.infoPromotion?.activePromotion?.number_day &&
                         numberDayComponent < isStateDetailCar.infoPromotion.activePromotion.number_day
                     ) {
@@ -805,7 +805,7 @@ export function DialogCalendar({ }: Props) {
                     })
 
                     if (
-                        isStateDetailCar?.dataDetailCar?.price?.number_day &&
+                        isStateDetailCar.price?.number_day &&
                         isStateDetailCar?.infoPromotion?.activePromotion?.number_day &&
                         numberDayComponent < isStateDetailCar.infoPromotion.activePromotion.number_day
                     ) {

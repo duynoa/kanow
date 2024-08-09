@@ -212,7 +212,7 @@ const DialogRouteAddress = memo(({ }: Props) => {
         if (!flagValidateSubmit) {
             toastCore.error("Vui lòng chọn địa điểm đón hoặc địa điểm đến!")
         } else if (flagCloseModalRouteAddress) {
-            toastCore.warning("Vui lòng nhấn tìm xe!")
+            toastCore.error("Vui lòng nhấn tìm xe!")
         } else {
             setOpenDialogRouteAddress(false)
 

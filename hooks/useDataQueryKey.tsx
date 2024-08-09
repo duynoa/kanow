@@ -169,6 +169,25 @@ const isStateDetailCar: IInitialStateDetailCar = {
         hour_back_car: [],
         hour_receive_car: []
     },
+    price: {
+        total_km_day: 0,
+        percent_deposit: 0,
+        price_before_promotion: 0,
+        price_after_promotion: 0,
+        rent_cost: 0,
+        rent_cost_day: 0,
+        price_insurance_day: 0,
+        temp_total_amount: 0,
+        total_amount: 0,
+
+        max_money_discount: 0,
+        // tiền đặt cọc
+        price_depoist: 0,
+        // số ngày
+        number_day: 0,
+        // thanh toán khi nhận xe
+        cash_on_delivery: 0
+    },
     infoPromotion: {
         selectPromotion: "0",
         activePromotion: null,
