@@ -62,6 +62,14 @@ const getDataDetailCar = (id: string | number, param?: any) => {
 
     return axios.get(`/car/getDetail/${id}`, config);
 };
+const getPriceDetail = (param: any) => {
+    let config: AxiosRequestConfig = {
+        params: {
+            ...param, // Nối các tham số trong param object
+        },
+    };
+    return axios.get(`/car/getPriceDetail`, config);
+};
 
 // post update favorite heart car
 const postUpdateFavoriteHeartCar = (data: any) => {
@@ -144,5 +152,6 @@ export {
     postChangeStatusRentalCar,
     getListContentReview,
     postAddReviewCar,
-    getListAllReview
+    getListAllReview,
+    getPriceDetail
 };

@@ -153,7 +153,7 @@ const FormInformation = ({ form, isState }: Props) => {
                                             <RadioGroup
                                                 onValueChange={(e) => {
                                                     if (!isState.editInfo) {
-                                                        toastCore.warning('Vui lòng chọn chỉnh sửa')
+                                                        toastCore.error('Vui lòng chọn chỉnh sửa')
                                                         return
                                                     }
                                                     field.onChange(e)

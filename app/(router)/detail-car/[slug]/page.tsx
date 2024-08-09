@@ -25,7 +25,7 @@ import { FormatDistance, FormatDistanceFullKm, FormatNumberHundred, FormatNumber
 
 import PaymentCar from './components/PaymentCar'
 import InformationCar from './components/InformationCar';
-import { getDataDetailCar, getListCarsRelated, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services'
+import { getDataDetailCar, getListCarsRelated, getPriceDetail, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services'
 import { CustomDataDetailCar, CustomDataListCars, CustomDataPolicy } from '@/custom/CustomData'
 import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy'
 import { getListPromotions } from '@/services/cars/promotion.services'
@@ -107,10 +107,6 @@ const DetailCar = ({ params }: Props) => {
         return [hours, minutes];
     };
 
-    useEffect(() => {
-        setIsMounted(true)
-    }, [])
-
     // Định nghĩa một hàm xử lý sự kiện cuộn trang
     const handleScroll = () => {
         // Lấy vị trí cuộn của trang
@@ -125,15 +121,6 @@ const DetailCar = ({ params }: Props) => {
             setShowSecondHeader(false);
         }
     }
-
-    // Sử dụng useEffect để đăng ký sự kiện cuộn khi component được mount
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        // Cleanup: đảm bảo gỡ bỏ sự kiện cuộn khi component bị unmount
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
 
     // fetch data api google lấy toạ độ vị trí, total km, tính số ngày khi ở type xe có tài 
     useEffect(() => {
@@ -343,7 +330,108 @@ const DetailCar = ({ params }: Props) => {
                 lon: coordinates.lng != 0 ? coordinates.lng : undefined,
             }
             const { data } = await getDataDetailCar(params.slug, dataParams)
-            console.log('data detail :', data);
+
+            console.log('data detail car:', data);
+
+            if (data && data.data && data.base && data.base.base) {
+                let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
+
+                if (typeCarDetail === "1" && dateReal?.from && dateReal?.to) {
+                    if (data.data?.hour_receive_car &&
+                        data.data?.hour_back_car &&
+                        data.data?.hour_receive_car?.length > 0 &&
+                        data.data?.hour_back_car?.length > 0
+                    ) {
+                        const [startHours, startMinutes] = parseTimeString(data.data?.hour_receive_car ? data.data?.hour_receive_car[0]?.hour_start : "8:00");
+                        const [endHours, endMinutes] = parseTimeString(data.data?.hour_back_car ? data.data?.hour_back_car[0]?.hour_start : "8:00");
+
+                        const startDate = setMinutes(setHours(dateReal.from, startHours), startMinutes);
+                        const endDate = setMinutes(setHours(dateReal?.to, endHours), endMinutes);
+
+
+                        const minutesDifference = differenceInMinutes(endDate, startDate);
+                        const timeDate = Math.ceil(minutesDifference / 1440)
+
+                        setDateStart(startDate)
+                        setDateEnd(endDate)
+
+                        setNumberDay(timeDate)
+
+                        setDateTemp({
+                            from: startDate,
+                            to: endDate,
+                        })
+
+                    } else {
+                        setDateStart(dateReal?.from)
+                        setDateEnd(dateReal?.to)
+                        setDateTemp({
+                            from: dateReal?.from,
+                            to: dateReal?.to,
+                        })
+                    }
+                } else if (typeCarDetail === "2" && dateReal?.from && dateReal?.to) {
+                    if (data.data?.hour_receive_car &&
+                        data.data?.hour_back_car &&
+                        data.data?.hour_receive_car?.length > 0 &&
+                        data.data?.hour_back_car?.length > 0
+                    ) {
+                        const [startHours, startMinutes] = parseTimeString(data.data?.hour_receive_car ? data.data?.hour_receive_car[0]?.hour_start : "8:00");
+                        const [endHours, endMinutes] = parseTimeString(data.data?.hour_back_car ? data.data?.hour_back_car[0]?.hour_start : "8:00");
+
+                        const startDate = setMinutes(setHours(new Date(), startHours), startMinutes);
+
+                        const endDate = setMinutes(setHours(addDays(startDate, numberDay ? Math.ceil(numberDay) : 1), endHours), endMinutes);
+
+                        const minutesDifference = differenceInMinutes(endDate, startDate);
+                        const timeDate = Math.ceil(minutesDifference / 1440)
+
+                        setDateStart(startDate)
+                        setDateEnd(endDate)
+
+                        setNumberDay(timeDate)
+
+                        setDateTemp({
+                            from: startDate,
+                            to: endDate,
+                        })
+                    } else {
+                        setDateStart(dateReal?.from)
+                        setDateEnd(dateReal?.to)
+                    }
+
+                }
+
+
+                queryKeyIsStateDetailCar({
+                    dataDetailCar: customDataDetailCar
+                })
+                setIsLoadingSkeletonDetailCar(false);
+            } else {
+
+                setIsLoadingSkeletonDetailCar(false);
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    const fetchDataPriceDetail = async () => {
+        try {
+            // Kiểm tra nếu không cần gọi fetchDataDetailCarSecond thì return luôn
+            setIsLoadingSkeletonDetailCar(true)
+
+            let dataParams = {
+                car_id: params.slug,
+                type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
+                date_search: `${typeCarDetail === "2" && dateTemp ? `${moment(dateTemp?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateTemp?.to).format("DD/MM/YYYY HH:mm:ss")}` : `${moment(dateReal?.from).format("DD/MM/YYYY HH:mm:ss")} - ${moment(dateReal?.to).format("DD/MM/YYYY HH:mm:ss")}`}`,
+                lat: coordinates.lat != 0 ? coordinates.lat : undefined,
+                lon: coordinates.lng != 0 ? coordinates.lng : undefined,
+            }
+
+            const { data } = await getPriceDetail(dataParams)
+
+            console.log('data price detail: ', data);
 
             if (data && data.data && data.base && data.base.base) {
                 let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
@@ -415,19 +503,16 @@ const DetailCar = ({ params }: Props) => {
 
                 }
 
-
                 queryKeyIsStateDetailCar({
                     dataDetailCar: customDataDetailCar
                 })
                 setIsLoadingSkeletonDetailCar(false);
             } else {
-
                 setIsLoadingSkeletonDetailCar(false);
             }
         } catch (err) {
             throw err
         }
-
     }
 
     // fetch data detail second
@@ -453,6 +538,7 @@ const DetailCar = ({ params }: Props) => {
                 queryKeyIsStateDetailCar({
                     dataDetailCar: customDataDetailCar,
                 })
+
                 setIsLoadingSkeletonDetailCar(false);
             } else {
                 setIsLoadingSkeletonDetailCar(false);
@@ -465,15 +551,27 @@ const DetailCar = ({ params }: Props) => {
 
     // fetch data 
     useEffect(() => {
+        setIsMounted(true)
+
+        window.addEventListener('scroll', handleScroll);
+        // Cleanup: đảm bảo gỡ bỏ sự kiện cuộn khi component bị unmount
+
+
         const savedCoordinates = Cookies.get('coordinates');
 
         if (typeCarDetail == "2" && !savedCoordinates) {
             return router.push("/")
         }
 
+        // fetchDataPriceDetail()
+
         fetchDataDetailCarFirst()
         fetchDataListCalendarPriceMonth()
         fetchDataListCarsRelated()
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
     }, [])
 
     // fetch data list report car và data list khuyến mãi

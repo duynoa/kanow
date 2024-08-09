@@ -45,9 +45,6 @@ const Information = ({
     const searchParams = useSearchParams()
     const typeCarDetail = searchParams.get('type')
 
-    console.log('typeCarDetail: ', typeCarDetail);
-
-
     const listComment = [
         {
             id: uuidv4(),
@@ -86,6 +83,34 @@ const Information = ({
                                 Mã số chuyến: {isStateInfoRentalCar?.detailRentalCar?.car?.reference_no ? isStateInfoRentalCar?.detailRentalCar?.car?.reference_no : ""}
                             </Badge>
                         </div>
+
+                        {/* {
+                            isStateInfoRentalCar?.detailRentalCar?.customer?.total_star ?
+                                <div className='flex items-center gap-1'>
+                                    <FaStar className='3xl:text-base text-sm text-[#FF9900]' />
+                                    <div className='3xl:text-sm text-xs text-[#484D5C] font-medium      '>
+                                        {isStateInfoRentalCar?.detailRentalCar?.customer?.total_star ? (FormatPointStar(isStateInfoRentalCar?.detailRentalCar?.customer?.total_star, 1)) : 0}
+                                    </div>
+                                </div>
+                                :
+                                <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                    Chưa có đánh giá
+                                </div>
+                        }
+
+                        {
+                            isStateInfoRentalCar?.detailRentalCar?.customer?.total_trip ?
+                                <div className='flex items-center gap-1'>
+                                    <FaCircleCheck className='3xl:text-base 2xl:text-sm xxl:text-xs text-sm text-[#3AC996]' />
+                                    <div className='3xl:text-sm 2xl:text-xs xxl:text-[11px] text-xs text-[#484D5C] font-semibold'>
+                                        {isStateInfoRentalCar?.detailRentalCar?.customer?.total_trip ? FormatNumberHundred(isStateInfoRentalCar?.detailRentalCar?.customer?.total_trip, 100) : 0} Chuyến
+                                    </div>
+                                </div>
+                                :
+                                <div className='3xl:text-sm text-xs text-[#8C93A3]'>
+                                    Chưa có chuyến
+                                </div>
+                        } */}
 
                         <div className='flex items-center gap-1'>
                             <FaCircleCheck className='3xl:text-base lg:text-sm md:text-base text-sm text-[#3AC996]' />
@@ -198,7 +223,7 @@ const Information = ({
                                 {isStateInfoRentalCar?.detailRentalCar?.customer?.fullname ? isStateInfoRentalCar?.detailRentalCar?.customer?.fullname : ""}
                             </div>
                             {
-                                isStateInfoRentalCar?.detailRentalCar?.status && (isStateInfoRentalCar?.detailRentalCar?.status?.status === 2 || isStateInfoRentalCar?.detailRentalCar?.status?.status === 3 || isStateInfoRentalCar?.detailRentalCar?.status?.status === 4) &&
+                                isStateInfoRentalCar?.detailRentalCar?.status && (isStateInfoRentalCar?.detailRentalCar?.status?.status === 2 || isStateInfoRentalCar?.detailRentalCar?.status?.status === 3) &&
                                 <div className='3xl:text-sm text-xs text-[#484D6C] font-medium'>
                                     SĐT: {FormatPhoneNumber(`${isStateInfoRentalCar?.detailRentalCar?.customer?.phone}`)}
                                 </div>

@@ -260,7 +260,7 @@ const FormPapers = ({ form, isState }: Props) => {
                                                                     <MdClear
                                                                         onClick={() => {
                                                                             if (!isState.editPapers) {
-                                                                                toastCore.warning('Vui lòng chọn chỉnh sửa')
+                                                                                toastCore.error('Vui lòng chọn chỉnh sửa')
                                                                                 return
                                                                             }
                                                                             const inputElement = document.getElementById('picture') as HTMLInputElement | null;
@@ -277,7 +277,7 @@ const FormPapers = ({ form, isState }: Props) => {
                                                             <Label
                                                                 onClick={() => {
                                                                     if (!isState.editPapers) {
-                                                                        toastCore.warning('Vui lòng chọn chỉnh sửa')
+                                                                        toastCore.error('Vui lòng chọn chỉnh sửa')
                                                                     }
                                                                 }}
                                                                 htmlFor={!isState.editPapers ? "" : "picture"}
