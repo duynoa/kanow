@@ -1,5 +1,5 @@
 import { IDetailCareer, IDetailNewsEvents, IListCareer, IListNewsEvents } from "../Blog/IBlog";
-import { IAutomaker, IDataCardCar, IDataDetailCar, IDetailRentalCar, ITypesCar } from "../Cars/ICars";
+import { IAutomaker, IDataCardCar, IDataDetailCar, IDetailRentalCar, IPriceDetailCar, ITypesCar } from "../Cars/ICars";
 import { IInfoPromotion } from "../Cars/IPromotions";
 import { IReportCar } from "../Cars/IReportCar";
 import { INotification } from "../Notification/INotification";
@@ -92,6 +92,7 @@ interface IInitialStateListCarsDriver {
 // initial detail car
 interface IInitialStateDetailCar {
     dataDetailCar: IDataDetailCar;
+    price: IPriceDetailCar,
     infoPromotion: {
         selectPromotion: string;
         activePromotion: IInfoPromotion | null;

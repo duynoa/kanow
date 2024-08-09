@@ -33,7 +33,7 @@ import '@/styles/globals.scss';
 import 'react-toastify/dist/ReactToastify.css';
 import "moment/locale/vi";
 
-import { useDataHome, useDataInfoRentalCar, useDataListCarAutonomous, useDataListCarsDriver, useDataPolicy } from '@/hooks/useDataQueryKey';
+import { useDataDetailCar, useDataHome, useDataInfoRentalCar, useDataListCarAutonomous, useDataListCarsDriver, useDataPolicy } from '@/hooks/useDataQueryKey';
 import { useDialogAddress, useDialogPayment, useDialogRegisterOwnerDriver, useDialogRequestCarRental, useDialogReviewCar, useDialogRouteAddress } from '@/hooks/useOpenDialog';
 
 import DialogFilterMyCar from '@/components/modals/DialogFilterMyCar';
@@ -103,6 +103,8 @@ const LayoutContainer = ({
         isStateNotification,
         queryKeyIsStateNotification,
     } = useNotification()
+
+    const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar()
 
     const { setValueTwoAddress } = useDialogRouteAddress()
     const { openDialogRegisterOwnerDriver } = useDialogRegisterOwnerDriver();
@@ -404,6 +406,20 @@ const LayoutContainer = ({
             meta.name = 'viewport';
             meta.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no';
             document.head.appendChild(meta);
+        }
+
+        if (!pathname.startsWith('/detail-car')) {
+            queryKeyIsStateDetailCar({
+                infoPromotion: {
+                    ...isStateDetailCar?.infoPromotion,
+                    selectPromotion: "0",
+                    activePromotion: null
+                },
+                price: {
+                    ...isStateDetailCar?.price,
+                    total_amount: isStateDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion
+                }
+            })
         }
 
         scrollTop()

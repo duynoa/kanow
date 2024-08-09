@@ -60,22 +60,19 @@ export function DialogPromotions({ }: Props) {
 
     const handleClickSubmit = (item: IInfoPromotion) => {
         if (item.percent !== 0) {
-            let maxMoneyDiscount = (isStateDetailCar?.dataDetailCar?.price?.temp_total_amount * (item?.percent / 100)) >= item?.money_max ? item?.money_max : (isStateDetailCar?.dataDetailCar?.price?.temp_total_amount * (item?.percent / 100))
+            let maxMoneyDiscount = (isStateDetailCar.price?.temp_total_amount * (item?.percent / 100)) >= item?.money_max ? item?.money_max : (isStateDetailCar.price?.temp_total_amount * (item?.percent / 100))
 
             queryKeyIsStateDetailCar({
                 infoPromotion: {
                     selectPromotion: "1",
                     activePromotion: item
                 },
-                dataDetailCar: {
-                    ...isStateDetailCar?.dataDetailCar,
-                    price: {
-                        ...isStateDetailCar?.dataDetailCar?.price,
-                        total_amount: isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - maxMoneyDiscount,
-                        price_depoist: (isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - maxMoneyDiscount) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100),
-                        cash_on_delivery: ((isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - maxMoneyDiscount)) - ((isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - maxMoneyDiscount) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)),
-                        max_money_discount: maxMoneyDiscount
-                    }
+                price: {
+                    ...isStateDetailCar.price,
+                    total_amount: isStateDetailCar.price?.temp_total_amount - maxMoneyDiscount,
+                    price_depoist: (isStateDetailCar.price?.temp_total_amount - maxMoneyDiscount) * (isStateDetailCar.price?.percent_deposit / 100),
+                    cash_on_delivery: ((isStateDetailCar.price?.temp_total_amount - maxMoneyDiscount)) - ((isStateDetailCar.price?.temp_total_amount - maxMoneyDiscount) * (isStateDetailCar.price?.percent_deposit / 100)),
+                    max_money_discount: maxMoneyDiscount
                 }
             })
 
@@ -89,15 +86,12 @@ export function DialogPromotions({ }: Props) {
                     selectPromotion: "1",
                     activePromotion: item
                 },
-                dataDetailCar: {
-                    ...isStateDetailCar?.dataDetailCar,
-                    price: {
-                        ...isStateDetailCar?.dataDetailCar?.price,
-                        total_amount: isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - item?.cash,
-                        price_depoist: (isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - item?.cash) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100),
-                        cash_on_delivery: ((isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - item?.cash) - ((isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - item?.cash) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100))),
+                price: {
+                    ...isStateDetailCar.price,
+                    total_amount: isStateDetailCar.price?.temp_total_amount - item?.cash,
+                    price_depoist: (isStateDetailCar.price?.temp_total_amount - item?.cash) * (isStateDetailCar.price?.percent_deposit / 100),
+                    cash_on_delivery: ((isStateDetailCar.price?.temp_total_amount - item?.cash) - ((isStateDetailCar.price?.temp_total_amount - item?.cash) * (isStateDetailCar.price?.percent_deposit / 100))),
 
-                    }
                 }
             })
 
@@ -190,10 +184,10 @@ export function DialogPromotions({ }: Props) {
                                                 {
                                                     (
                                                         item.indefinite == 1 &&
-                                                        isStateDetailCar?.dataDetailCar?.price?.number_day &&
-                                                        isStateDetailCar?.dataDetailCar?.price?.number_day >= item.number_day || item.indefinite == 0 &&
-                                                        isStateDetailCar?.dataDetailCar?.price?.number_day &&
-                                                        isStateDetailCar?.dataDetailCar?.price?.number_day >= item.number_day
+                                                        isStateDetailCar.price?.number_day &&
+                                                        isStateDetailCar.price?.number_day >= item.number_day || item.indefinite == 0 &&
+                                                        isStateDetailCar.price?.number_day &&
+                                                        isStateDetailCar.price?.number_day >= item.number_day
                                                     ) && isCurrentDateWithinRange ?
                                                         <div className='flex flex-col gap-4'>
                                                             <div className='flex items-center justify-between w-full'>

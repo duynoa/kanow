@@ -90,7 +90,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                     car_id: dataListRequestCarRental?.dataDetailCar?.id,
                     date_start: dateTemp ? moment(dateTemp?.from).format("YYYY-MM-DD HH:mm") : moment(dateReal?.from).format("YYYY-MM-DD HH:mm"),
                     date_end: dateTemp ? moment(dateTemp?.to).format("YYYY-MM-DD HH:mm") : moment(dateReal?.from).format("YYYY-MM-DD HH:mm"),
-                    rent_cost: dataListRequestCarRental?.dataDetailCar?.price?.rent_cost,
+                    rent_cost: dataListRequestCarRental?.price?.rent_cost,
                     quantity: numberDay ? numberDay : 1,
                     promotion_car_id: !dataListRequestCarRental?.infoPromotion?.activePromotion && dataListRequestCarRental?.dataDetailCar?.promotion && dataListRequestCarRental?.dataDetailCar?.promotion?.length > 0 ? dataListRequestCarRental?.dataDetailCar?.promotion[0]?.id : 0,
                     type: typeCarDetail == "1" ? 1 : 2,
@@ -154,6 +154,9 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
             transition: { delay: 0.5 }
         }
     }
+
+    console.log('dataListRequestCarRental', dataListRequestCarRental);
+
 
     return (
         <Dialog modal open={openDialogRequestCarRental} onOpenChange={handleCloseModal}>
@@ -538,7 +541,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                             </div>
 
                                             <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
-                                                {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.rent_cost_day ? dataListRequestCarRental?.dataDetailCar?.price?.rent_cost_day : 0)}<span>đ/ngày</span>
+                                                {FormatNumberDot(dataListRequestCarRental?.price?.rent_cost_day ? dataListRequestCarRental?.price?.rent_cost_day : 0)}<span>đ/ngày</span>
                                             </div>
                                         </div>
 
@@ -569,7 +572,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                 }
                                             </div>
                                             <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
-                                                {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.price_insurance_day ? dataListRequestCarRental?.dataDetailCar?.price?.price_insurance_day : 0)}<span>đ/ngày</span>
+                                                {FormatNumberDot(dataListRequestCarRental?.price?.price_insurance_day ? dataListRequestCarRental?.price?.price_insurance_day : 0)}<span>đ/ngày</span>
                                             </div>
                                         </div>
                                     </div>
@@ -580,7 +583,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                             Tổng tạm tính:
                                         </div>
                                         <div className='text-[#3E424E] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
-                                            {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.temp_total_amount ? dataListRequestCarRental?.dataDetailCar?.price?.temp_total_amount : 0)}{dataListRequestCarRental?.dataDetailCar?.price?.number_day === 1 ? <span>đ/ngày</span> : <span>đ/{dataListRequestCarRental?.dataDetailCar?.price?.number_day} ngày</span>}
+                                            {FormatNumberDot(dataListRequestCarRental?.price?.temp_total_amount ? dataListRequestCarRental?.price?.temp_total_amount : 0)}{dataListRequestCarRental?.price?.number_day === 1 ? <span>đ/ngày</span> : <span>đ/{dataListRequestCarRental?.price?.number_day} ngày</span>}
                                         </div>
                                     </div>
 
@@ -642,7 +645,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                 {
                                                     dataListRequestCarRental?.infoPromotion?.activePromotion?.percent !== 0 ?
                                                         <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
-                                                            -{FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.max_money_discount ? dataListRequestCarRental?.dataDetailCar?.price?.max_money_discount : 0)}đ
+                                                            -{FormatNumberDot(dataListRequestCarRental?.price?.max_money_discount ? dataListRequestCarRental?.price?.max_money_discount : 0)}đ
                                                         </div>
                                                         :
                                                         <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
@@ -663,7 +666,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                                 Thành tiền:
                                             </div>
                                             <div className='text-[#16171B] font-bold 3xl:text-base lg:text-sm md:text-base text-sm'>
-                                                {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.total_amount ? dataListRequestCarRental?.dataDetailCar?.price?.total_amount : 0)}{dataListRequestCarRental?.dataDetailCar?.price?.number_day === 1 ? <span>đ/ngày</span> : <span>đ/{dataListRequestCarRental?.dataDetailCar?.price?.number_day} ngày</span>}
+                                                {FormatNumberDot(dataListRequestCarRental?.price?.total_amount ? dataListRequestCarRental?.price?.total_amount : 0)}{dataListRequestCarRental?.price?.number_day === 1 ? <span>đ/ngày</span> : <span>đ/{dataListRequestCarRental?.price?.number_day} ngày</span>}
                                             </div>
                                         </div>
 
@@ -695,7 +698,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                             </div>
 
                                             <div className='text-[#2FB9BD] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
-                                                {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.price_depoist ? dataListRequestCarRental?.dataDetailCar?.price?.price_depoist : 0)}<span>đ</span>
+                                                {FormatNumberDot(dataListRequestCarRental?.price?.price_depoist ? dataListRequestCarRental?.price?.price_depoist : 0)}<span>đ</span>
                                             </div>
                                         </div>
 
@@ -727,7 +730,7 @@ export const DialogRequestCarRental = memo(({ }: Props) => {
                                             </div>
 
                                             <div className='text-[#2FB9BD] font-semibold 3xl:text-base lg:text-sm md:text-base text-sm'>
-                                                {FormatNumberDot(dataListRequestCarRental?.dataDetailCar?.price?.cash_on_delivery ? dataListRequestCarRental?.dataDetailCar?.price?.cash_on_delivery : 0)}<span>đ</span>
+                                                {FormatNumberDot(dataListRequestCarRental?.price?.cash_on_delivery ? dataListRequestCarRental?.price?.cash_on_delivery : 0)}<span>đ</span>
                                             </div>
                                         </div>
                                     </div>

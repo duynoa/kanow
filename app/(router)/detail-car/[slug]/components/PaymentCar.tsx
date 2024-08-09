@@ -103,12 +103,9 @@ const PaymentCar = ({ }: Props) => {
                 selectPromotion: "0",
                 activePromotion: null
             },
-            dataDetailCar: {
-                ...isStateDetailCar?.dataDetailCar,
-                price: {
-                    ...isStateDetailCar?.dataDetailCar?.price,
-                    total_amount: isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion
-                }
+            price: {
+                ...isStateDetailCar?.price,
+                total_amount: isStateDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion
             }
         })
     }
@@ -118,14 +115,11 @@ const PaymentCar = ({ }: Props) => {
 
         if (isStateDetailCar?.dataDetailCar?.promotion?.length > 0) {
             queryKeyIsStateDetailCar({
-                dataDetailCar: {
-                    ...isStateDetailCar?.dataDetailCar,
-                    price: {
-                        ...isStateDetailCar?.dataDetailCar?.price,
-                        total_amount: isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion,
-                        price_depoist: (isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100),
-                        cash_on_delivery: ((isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion)) - ((isStateDetailCar?.dataDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)),
-                    }
+                price: {
+                    ...isStateDetailCar?.price,
+                    total_amount: isStateDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion,
+                    price_depoist: (isStateDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (isStateDetailCar?.price?.percent_deposit / 100),
+                    cash_on_delivery: ((isStateDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion)) - ((isStateDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (isStateDetailCar?.price?.percent_deposit / 100)),
                 },
                 infoPromotion: {
                     selectPromotion: "0",
@@ -134,14 +128,11 @@ const PaymentCar = ({ }: Props) => {
             })
         } else {
             queryKeyIsStateDetailCar({
-                dataDetailCar: {
-                    ...isStateDetailCar?.dataDetailCar,
-                    price: {
-                        ...isStateDetailCar?.dataDetailCar?.price,
-                        total_amount: isStateDetailCar?.dataDetailCar?.price?.temp_total_amount,
-                        price_depoist: (isStateDetailCar?.dataDetailCar?.price?.temp_total_amount) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100),
-                        cash_on_delivery: ((isStateDetailCar?.dataDetailCar?.price?.temp_total_amount)) - ((isStateDetailCar?.dataDetailCar?.price?.temp_total_amount) * (isStateDetailCar?.dataDetailCar?.price?.percent_deposit / 100)),
-                    }
+                price: {
+                    ...isStateDetailCar?.price,
+                    total_amount: isStateDetailCar?.price?.temp_total_amount,
+                    price_depoist: (isStateDetailCar?.price?.temp_total_amount) * (isStateDetailCar?.price?.percent_deposit / 100),
+                    cash_on_delivery: ((isStateDetailCar?.price?.temp_total_amount)) - ((isStateDetailCar?.price?.temp_total_amount) * (isStateDetailCar?.price?.percent_deposit / 100)),
                 },
                 infoPromotion: {
                     selectPromotion: "0",
@@ -206,14 +197,14 @@ const PaymentCar = ({ }: Props) => {
                     {
                         isStateDetailCar?.dataDetailCar?.promotion?.length > 0 ?
                             <div className='3xl:text-4xl md:text-3xl text-2xl text-[#D7D9E0] font-medium line-through'>
-                                {isStateDetailCar?.dataDetailCar?.price?.price_before_promotion ? FormatNumberToThousands(isStateDetailCar?.dataDetailCar?.price?.price_before_promotion) : ""}
+                                {isStateDetailCar?.price?.price_before_promotion ? FormatNumberToThousands(isStateDetailCar?.price?.price_before_promotion) : ""}
                             </div>
                             :
                             null
                     }
                     <div className='flex'>
                         <span className='3xl:text-4xl md:text-3xl text-2xl text-[#1AC5CA] font-bold'>
-                            {isStateDetailCar?.dataDetailCar?.price?.price_after_promotion ? FormatNumberToThousands(isStateDetailCar?.dataDetailCar?.price?.price_after_promotion) : ""}
+                            {isStateDetailCar?.price?.price_after_promotion ? FormatNumberToThousands(isStateDetailCar?.price?.price_after_promotion) : ""}
                         </span>
                         <span className='3xl:text-base md:text-sm text-xs text-[#585F71] flex justify-start font-semibold capitalize'>
                             /ngày
@@ -506,7 +497,7 @@ const PaymentCar = ({ }: Props) => {
                                             }
                                         </div>
                                         <div className='3xl:text-base text-sm text-[#3E424E] font-semibold'>
-                                            {isStateDetailCar?.dataDetailCar?.price?.total_km_day ? `${isStateDetailCar?.dataDetailCar?.price?.total_km_day} km/ngày` : "0 km"}
+                                            {isStateDetailCar?.price?.total_km_day ? `${isStateDetailCar?.price?.total_km_day} km/ngày` : "0 km"}
                                         </div>
                                     </div>
                                     {
@@ -567,7 +558,7 @@ const PaymentCar = ({ }: Props) => {
                             </div>
 
                             <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                                {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.rent_cost_day ? isStateDetailCar?.dataDetailCar?.price?.rent_cost_day : 0)}<span>đ/ngày</span>
+                                {FormatNumberDot(isStateDetailCar?.price?.rent_cost_day ? isStateDetailCar?.price?.rent_cost_day : 0)}<span>đ/ngày</span>
                             </div>
                         </div>
 
@@ -598,7 +589,7 @@ const PaymentCar = ({ }: Props) => {
                                 }
                             </div>
                             <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                                {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.price_insurance_day ? isStateDetailCar?.dataDetailCar?.price?.price_insurance_day : 0)}đ/ngày
+                                {FormatNumberDot(isStateDetailCar?.price?.price_insurance_day ? isStateDetailCar?.price?.price_insurance_day : 0)}đ/ngày
                             </div>
                         </div>
                     </div>
@@ -608,7 +599,7 @@ const PaymentCar = ({ }: Props) => {
                             Tổng tạm tính
                         </div>
                         <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                            {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.temp_total_amount)}{numberDay && numberDay === 1 ? <span>đ/ngày</span> : <span>đ/{numberDay} ngày</span>}
+                            {FormatNumberDot(isStateDetailCar?.price?.temp_total_amount)}{numberDay && numberDay === 1 ? <span>đ/ngày</span> : <span>đ/{numberDay} ngày</span>}
                         </div>
                     </div>
                 </div>
@@ -696,7 +687,7 @@ const PaymentCar = ({ }: Props) => {
                                                 {
                                                     isStateDetailCar?.infoPromotion?.activePromotion?.percent !== 0 ?
                                                         <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
-                                                            -{FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.max_money_discount ? isStateDetailCar?.dataDetailCar?.price?.max_money_discount : 0)}đ
+                                                            -{FormatNumberDot(isStateDetailCar?.price?.max_money_discount ? isStateDetailCar?.price?.max_money_discount : 0)}đ
                                                         </div>
                                                         :
                                                         <div className='3xl:text-base xl:text-sm text-xs text-[#2FB9BD] font-semibold'>
@@ -742,7 +733,7 @@ const PaymentCar = ({ }: Props) => {
                             Thành tiền
                         </div>
                         <div className='text-[#3E424E] font-semibold 3xl:text-base text-sm'>
-                            {FormatNumberDot(isStateDetailCar?.dataDetailCar?.price?.total_amount ? isStateDetailCar?.dataDetailCar?.price?.total_amount : 0)}{numberDay === 1 ? <span>đ/ngày</span> : <span>đ/{numberDay} ngày</span>}
+                            {FormatNumberDot(isStateDetailCar?.price?.total_amount ? isStateDetailCar?.price?.total_amount : 0)}{numberDay === 1 ? <span>đ/ngày</span> : <span>đ/{numberDay} ngày</span>}
                         </div>
                     </div>
                 </div>
