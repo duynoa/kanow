@@ -17,7 +17,7 @@ import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
 import { useResize } from '@/hooks/useResize'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { FormatNumberHundred, FormatNumberSpace, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
+import { FormatNumberDot, FormatNumberHundred, FormatNumberSpace, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
 
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import moment from 'moment'
@@ -386,9 +386,9 @@ const TransactionStatement = ({ params }: Props) => {
                     Chuyến đi hoàn thành trong kì
                 </div>
                 <div className='overflow-x-auto pb-2'>
-                    <div className=' xl:min-w-full xl:max-w-full min-w-[1280px] max-w-[1280px] grid grid-cols-12'>
+                    <div className=' xl:min-w-full xl:max-w-full min-w-[1280px] max-w-[1280px] grid grid-cols-13'>
                         {/* header */}
-                        <div className='col-span-12 grid grid-cols-12  w-full bg-[#7DF9FF]/30 border-r rounded-t-xl'>
+                        <div className='col-span-13 grid grid-cols-13  w-full bg-[#7DF9FF]/30 border-r rounded-t-xl'>
                             <div className='col-span-4 grid grid-cols-4 grid-rows-3'>
                                 <div className='col-span-4 row-span-1 text-[#545454]/80 font-medium flex items-center justify-center text-center text-[15px] border border-r-0 border-b-0 py-1 rounded-tl-xl'>
                                     Thời gian
@@ -406,8 +406,8 @@ const TransactionStatement = ({ params }: Props) => {
                                     Ngày đặt xe
                                 </div>
                             </div>
-                            <div className='col-span-3 grid grid-cols-3 grid-rows-3 '>
-                                <div className='col-span-3 row-span-1 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 py-1'>
+                            <div className='col-span-4 grid grid-cols-4 grid-rows-3 '>
+                                <div className='col-span-4 row-span-1 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 py-1'>
                                     Thông tin chuyến đi
                                 </div>
                                 <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
@@ -415,6 +415,9 @@ const TransactionStatement = ({ params }: Props) => {
                                 </div>
                                 <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                     Xe thuê
+                                </div>
+                                <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                    Biển số xe
                                 </div>
                                 <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                     Đơn giá
@@ -444,7 +447,7 @@ const TransactionStatement = ({ params }: Props) => {
                             </div>
                         </div>
                         {/* body */}
-                        <div className='col-span-12 grid grid-cols-12 border-b border-r'>
+                        <div className='col-span-13 grid grid-cols-13 border-b border-r'>
                             {
                                 isState?.dataTableFinish && isState?.dataTableFinish?.length > 0 && isState?.dataTableFinish?.map((item: any, index: number) => (
                                     <React.Fragment key={`id-${item.id}`}>
@@ -473,7 +476,7 @@ const TransactionStatement = ({ params }: Props) => {
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-3 grid grid-cols-3 grid-rows-2`}>
+                                        <div className={`${index % 2 !== 0 ? "bg-[#F6F6F6]/20" : "bg-white"} col-span-4 grid grid-cols-4 grid-rows-2`}>
                                             <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                                 <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
                                                     {item?.customer?.fullname}
@@ -482,6 +485,11 @@ const TransactionStatement = ({ params }: Props) => {
                                             <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                                 <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
                                                     {item?.car?.name}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {FormatNumberDot(item?.car?.number_car)}
                                                 </span>
                                             </div>
                                             <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
@@ -619,9 +627,9 @@ const TransactionStatement = ({ params }: Props) => {
                     Giao dịch hủy chuyến trong kì
                 </div>
                 <div className='overflow-x-auto pb-2'>
-                    <div className='xl:min-w-full xl:max-w-full min-w-[1280px] max-w-[1280px] grid grid-cols-12'>
+                    <div className='xl:min-w-full xl:max-w-full min-w-[1280px] max-w-[1280px] grid grid-cols-13'>
                         {/* header */}
-                        <div className='col-span-12 grid grid-cols-12  w-full bg-[#7DF9FF]/30 border-r rounded-t-xl'>
+                        <div className='col-span-13 grid grid-cols-13  w-full bg-[#7DF9FF]/30 border-r rounded-t-xl'>
                             <div className='col-span-4 grid grid-cols-4 grid-rows-3 '>
                                 <div className='col-span-4 row-span-1 text-[#545454]/80 font-medium flex items-center justify-center text-center text-[15px] border border-r-0 border-b-0 py-1 rounded-tl-xl'>
                                     Thời gian
@@ -639,8 +647,8 @@ const TransactionStatement = ({ params }: Props) => {
                                     Ngày đặt xe
                                 </div>
                             </div>
-                            <div className='col-span-3 grid grid-cols-3 grid-rows-3 '>
-                                <div className='col-span-3 row-span-1 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 py-1'>
+                            <div className='col-span-4 grid grid-cols-4 grid-rows-3 '>
+                                <div className='col-span-4 row-span-1 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 py-1'>
                                     Thông tin chuyến đi
                                 </div>
                                 <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
@@ -648,6 +656,9 @@ const TransactionStatement = ({ params }: Props) => {
                                 </div>
                                 <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                     Xe thuê
+                                </div>
+                                <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                    Biển số xe
                                 </div>
                                 <div className="col-span-1 row-span-2 text-[#545454]/80 font-medium flex items-center justify-center text-[15px] text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                     Đơn giá
@@ -677,7 +688,7 @@ const TransactionStatement = ({ params }: Props) => {
                             </div>
                         </div>
                         {/* body */}
-                        <div className='col-span-12 grid grid-cols-12 border-b border-r'>
+                        <div className='col-span-13 grid grid-cols-13 border-b border-r'>
                             {
                                 isState?.dataTableCancel && isState?.dataTableCancel?.length > 0 && isState?.dataTableCancel?.map((item: any, index: number) => (
                                     <React.Fragment key={`id_cancel_${item.id}`}>
@@ -715,6 +726,11 @@ const TransactionStatement = ({ params }: Props) => {
                                             <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
                                                 <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
                                                     {item?.car?.name}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
+                                                <span className='3xl:text-sm text-[13px] font-normal w-full text-center'>
+                                                    {FormatNumberDot(item?.car?.number_car)}
                                                 </span>
                                             </div>
                                             <div className="col-span-1 row-span-2 text-[#545454] font-medium flex items-center justify-center text-center border border-r-0 border-b-0 3xl:py-[6px] 3xl:px-3 py-[4px] px-2">
