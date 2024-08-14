@@ -243,7 +243,6 @@ const TransactionStatement = ({ params }: Props) => {
 
     }, [params.slug])
 
-
     useEffect(() => {
         const fetchListDetailSyntheticTransaction = async () => {
             try {
@@ -322,6 +321,8 @@ const TransactionStatement = ({ params }: Props) => {
         fetchListDetailSyntheticTransaction()
     }, [])
 
+
+
     if (!isMounted) {
         return null
     }
@@ -368,14 +369,14 @@ const TransactionStatement = ({ params }: Props) => {
                             </span>
                         </div>
                     </div>
-                    {/* <div className='flex items-center justify-between w-full'>
+                    <div className='flex items-center justify-between w-full'>
                         <div className='w-[40%] max-w-[40%] text-base font-semibold'>
                             Mã số
                         </div>
                         <div className='w-[60%] max-w-[60%] text-[#545454] text-base font-medium bg-[#F6F6F6] px-4 py-1'>
-                            UQ7FVL
+                            {informationUser?.code ? informationUser?.code : ""}
                         </div>
-                    </div> */}
+                    </div>
                 </div>
                 <div className='lg:col-span-3 hidden' />
             </div>

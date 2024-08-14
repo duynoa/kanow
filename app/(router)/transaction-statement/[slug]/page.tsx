@@ -325,6 +325,9 @@ const TransactionStatement = ({ params }: Props) => {
         fetchListDetailSyntheticTransaction()
     }, [])
 
+    console.log('informationUser', informationUser);
+
+
     if (!isMounted) {
         return null
     }
@@ -359,28 +362,28 @@ const TransactionStatement = ({ params }: Props) => {
                 </div>
             </div>
 
-            <div className='grid grid-cols-5'>
-                <div className='lg:col-span-2 lg:block col-span-5 flex flex-col w-full'>
-                    <div className='flex items-center justify-between w-full'>
-                        <div className='w-[40%] max-w-[40%] text-base font-semibold'>
+            <div className='grid grid-cols-10'>
+                <div className='lg:col-span-3 lg:block col-span-10 flex flex-col w-full'>
+                    <div className='flex items-center w-full'>
+                        <div className='w-[25%] max-w-[25%] text-base font-semibold'>
                             Chủ xe
                         </div>
-                        <div className='w-[60%] max-w-[60%] '>
+                        <div className='w-fit max-w-[70%] '>
                             <span className='bg-[#F6F6F6] px-4 py-1 w-fit text-[#545454] text-base font-medium'>
                                 {informationUser?.fullname ? informationUser?.fullname : ""}
                             </span>
                         </div>
                     </div>
-                    {/* <div className='flex items-center justify-between w-full'>
-                        <div className='w-[40%] max-w-[40%] text-base font-semibold'>
-                            Mã số
+                    <div className='flex items-center w-full'>
+                        <div className='w-[25%] max-w-[25%] text-base font-semibold'>
+                            Mã số KH:
                         </div>
-                        <div className='w-[60%] max-w-[60%] text-[#545454] text-base font-medium bg-[#F6F6F6] px-4 py-1'>
-                            UQ7FVL
+                        <div className='w-fit max-w-[70%] text-[#545454] text-base font-medium bg-[#F6F6F6] px-4 py-1'>
+                            {informationUser?.code ? informationUser?.code : ""}
                         </div>
-                    </div> */}
+                    </div>
                 </div>
-                <div className='lg:col-span-3 hidden' />
+                <div className='lg:col-span-7 hidden' />
             </div>
 
             {/* table1 */}
