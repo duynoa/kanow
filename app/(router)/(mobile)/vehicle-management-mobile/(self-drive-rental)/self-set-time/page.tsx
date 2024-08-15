@@ -180,30 +180,66 @@ export default function SelftSetTime(props: Props) {
 
     }
 
-    const revertTime = (e: string, type: string) => {
+    // const revertTime = (e: string, type: string) => {
+    //     const [hour, minute] = e.split(':').map(Number);
+    //     if (hour === undefined || minute === undefined) {
+    //         throw new Error('Invalid time format');
+    //     }
+    //     let time: string = '';
+    //     const timeDiff = type === 'add' ? 4 : -4;
+
+    //     if (minute === 30) {
+    //         if (hour + timeDiff >= 0) {
+    //             time = '0' + String((hour + timeDiff) % 24) + ':00';
+    //             return time;
+    //         } else {
+    //             time = String(24 + (hour + timeDiff)) + ':00';
+    //         }
+    //     } else {
+    //         if (hour + timeDiff >= 0) {
+    //             time = '0' + String((hour + timeDiff) % 24) + ':' + String(minute + 30);
+    //         } else {
+    //             time = String(24 + (hour + timeDiff)) + ':' + String(minute + 30);
+    //         }
+    //     }
+    //     return time;
+    // }
+    const revertTime = (e: string, type: string): string => {
         const [hour, minute] = e.split(':').map(Number);
-        if (hour === undefined || minute === undefined) {
+        if (isNaN(hour) || isNaN(minute)) {
             throw new Error('Invalid time format');
         }
-        let time: string = '';
-        const timeDiff = type === 'add' ? 4 : -4;
 
-        if (minute === 30) {
-            if (hour + timeDiff >= 0) {
-                time = '0' + String((hour + timeDiff) % 24) + ':00';
-                return time;
-            } else {
-                time = String(24 + (hour + timeDiff)) + ':00';
-            }
-        } else {
-            if (hour + timeDiff >= 0) {
-                time = '0' + String((hour + timeDiff) % 24) + ':' + String(minute + 30);
-            } else {
-                time = String(24 + (hour + timeDiff)) + ':' + String(minute + 30);
-            }
+        // Xác định khoảng thời gian cần cộng hoặc trừ
+        const hourDiff = type === 'add' ? 4 : -4;
+        const minuteDiff = type === 'add' ? 30 : -30;
+
+        // Tính toán giờ và phút mới
+        let newHour = hour + hourDiff;
+        let newMinute = minute + minuteDiff;
+
+        // Điều chỉnh phút nếu cần
+        if (newMinute < 0) {
+            newMinute += 60;
+            newHour -= 1;
+        } else if (newMinute >= 60) {
+            newMinute -= 60;
+            newHour += 1;
         }
-        return time;
-    }
+
+        // Điều chỉnh giờ nếu cần
+        if (newHour < 0) {
+            newHour += 24;
+        } else if (newHour >= 24) {
+            newHour -= 24;
+        }
+
+        // Định dạng kết quả và trả về
+        const formattedHour = newHour.toString().padStart(2, '0');
+        const formattedMinute = newMinute.toString().padStart(2, '0');
+
+        return `${formattedHour}:${formattedMinute}`;
+    };
 
     return (
         <BackgroundUiVehicle className="flex flex-col gap-4">
