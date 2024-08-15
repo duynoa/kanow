@@ -3,6 +3,10 @@ import moment from 'moment';
 import type { Metadata, ResolvingMetadata } from 'next'
 import { ReactNode } from 'react';
 
+function stripHtml(html: string) {
+    return html.replace(/<[^>]*>/g, '');
+}
+
 interface LayoutProps {
     children: ReactNode;
     params: { slug: string }; // Thêm params nếu cần
@@ -23,13 +27,15 @@ export async function generateMetadata({ params }: { params: { slug: string } },
 
         const car = data.data;
         const previousImages = (await parent).openGraph?.images || []
+        // Sử dụng hàm stripHtml để loại bỏ thẻ HTML trong mô tả
+        const description = stripHtml(car.detail || 'No description available');
 
         return {
             title: car.name,
-            description: car.detail || 'No description available',
+            description: description || 'No description available',
             openGraph: {
                 title: car.name,
-                description: car.detail || 'No description available',
+                description: description || 'No description available',
                 images: [
                     {
                         url: `${data.base.base}/${car?.image_car_detail[0]?.name}`, // Replace with the actual image URL field
@@ -40,7 +46,7 @@ export async function generateMetadata({ params }: { params: { slug: string } },
             },
             twitter: {
                 title: car.name,
-                description: car.detail || 'No description available',
+                description: description || 'No description available',
                 images: [
                     `${data.base.base}/${car?.image_car_detail[0]?.name}`, // Replace with the actual image URL field
                 ],
