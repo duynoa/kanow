@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: { slug: string } },
                 description: car.detail || 'No description available',
                 images: [
                     {
-                        url: `${data?.base}/${car.image_car_detail[0]?.name}`, // Replace with the actual image URL field
+                        url: `${data?.base?.base}/${car?.image_car_detail[0]?.name}`, // Replace with the actual image URL field
                         alt: car.name,
                     },
                     ...previousImages
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: { params: { slug: string } },
                 title: car.name,
                 description: car.detail || 'No description available',
                 images: [
-                    `${data?.base}/${car.image_car_detail[0]?.name}`, // Replace with the actual image URL field
+                    `${data?.base?.base}/${car?.image_car_detail[0]?.name}`, // Replace with the actual image URL field
                 ],
                 card: "summary_large_image",
             },
