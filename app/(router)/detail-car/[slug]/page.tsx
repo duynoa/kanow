@@ -259,9 +259,9 @@ const DetailCar = ({ params }: Props) => {
                         }
 
                         setNumberDay(numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1)
-                        // setIsLoadingSkeletonDetailCar(false);
+                        setIsLoadingSkeletonDetailCar(false);
                     } else {
-                        // setIsLoadingSkeletonDetailCar(false);
+                        setIsLoadingSkeletonDetailCar(false);
                     }
 
                 } catch (err) {
@@ -319,9 +319,9 @@ const DetailCar = ({ params }: Props) => {
 
     // fetch data detail first
     const fetchDataDetailCarFirst = async () => {
+        setIsLoadingSkeletonDetailCar(true)
         try {
             // Kiểm tra nếu không cần gọi fetchDataDetailCarSecond thì return luôn
-            setIsLoadingSkeletonDetailCar(true)
 
             let dataParams = {
                 type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
@@ -332,6 +332,7 @@ const DetailCar = ({ params }: Props) => {
                 lat: coordinates.lat != 0 ? coordinates.lat : undefined,
                 lon: coordinates.lng != 0 ? coordinates.lng : undefined,
             }
+
             const { data } = await getDataDetailCar(params.slug, dataParams)
 
             if (data && data.data && data.base && data.base.base) {
@@ -406,20 +407,18 @@ const DetailCar = ({ params }: Props) => {
                 queryKeyIsStateDetailCar({
                     dataDetailCar: customDataDetailCar
                 })
-
-                // setIsLoadingSkeletonDetailCar(false);
-            } else {
-                setIsLoadingSkeletonDetailCar(false);
             }
         } catch (err) {
             throw err
+        } finally {
+            setIsLoadingSkeletonDetailCar(false);
         }
     }
 
     const fetchDataPriceDetail = async () => {
         try {
             // Kiểm tra nếu không cần gọi fetchDataDetailCarSecond thì return luôn
-            setIsLoadingSkeletonDetailCar(true)
+            // setIsLoadingSkeletonDetailCar(true)
 
             let dataParams = {
                 car_id: params.slug,
@@ -450,9 +449,7 @@ const DetailCar = ({ params }: Props) => {
                     })
                 }
 
-                setIsLoadingSkeletonDetailCar(false);
-            } else {
-                setIsLoadingSkeletonDetailCar(false);
+                // setIsLoadingSkeletonDetailCar(false);
             }
         } catch (err) {
             throw err
@@ -484,11 +481,14 @@ const DetailCar = ({ params }: Props) => {
                 })
 
                 // setIsLoadingSkeletonDetailCar(false);
-            } else {
-                setIsLoadingSkeletonDetailCar(false);
             }
+            // else {
+            //     setIsLoadingSkeletonDetailCar(false);
+            // }
         } catch (err) {
             throw err
+        } finally {
+            setIsLoadingSkeletonDetailCar(false);
         }
 
     }
@@ -506,10 +506,8 @@ const DetailCar = ({ params }: Props) => {
             return router.push("/")
         }
 
-        fetchDataDetailCarFirst()
-        fetchDataListCalendarPriceMonth()
-        fetchDataListCarsRelated()
-        fetchDataPriceDetail()
+
+
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
@@ -569,89 +567,81 @@ const DetailCar = ({ params }: Props) => {
     useEffect(() => {
         if (typeCarDetail == "1") {
             queryKeyIsStateDetailCar({
-                dataDetailCar: {
-                    ...isStateDetailCar?.dataDetailCar,
-                    price: {
-                        ...isStateDetailCar.price,
-                        // tổng tạm tính 
-                        temp_total_amount: (isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+                price: {
+                    ...isStateDetailCar.price,
+                    // tổng tạm tính 
+                    temp_total_amount: (isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1),
 
-                        // thành tiền
-                        total_amount:
-                            isStateDetailCar?.dataDetailCar?.promotion?.length > 0
-                                ?
-                                (((isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion)
-                                // ((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion)* (numberDay ? numberDay : 1) ) + isStateDetailCar.price?.price_insurance_day
-                                :
-                                (isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+                    // thành tiền
+                    total_amount:
+                        isStateDetailCar?.dataDetailCar?.promotion?.length > 0
+                            ?
+                            (((isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion)
+                            // ((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion)* (numberDay ? numberDay : 1) ) + isStateDetailCar.price?.price_insurance_day
+                            :
+                            (isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1),
 
-                        // tiền đặt cọc
-                        price_depoist:
-                            isStateDetailCar?.dataDetailCar?.promotion?.length > 0
-                                ?
-                                ((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) + isStateDetailCar.price?.price_insurance_day) * (isStateDetailCar.price?.percent_deposit / 100)
-                                // ((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + isStateDetailCar.price?.price_insurance_day) * (isStateDetailCar.price?.percent_deposit / 100)
-                                :
-                                (isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (isStateDetailCar.price?.percent_deposit / 100)
-                        ,
-                        // số ngày
-                        // number_day: +isStateDetailCar.price?.number_day,
-                        number_day: numberDay ? numberDay : 1,
-                        // thanh toán khi nhận xe (Thành tiền - tiền cọc)
-                        cash_on_delivery:
-                            isStateDetailCar?.dataDetailCar?.promotion?.length > 0
-                                ?
-                                (((+isStateDetailCar.price?.rent_cost_day - +isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + (+isStateDetailCar.price?.price_insurance_day)) * (numberDay ? numberDay : 1)) - ((((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar.price?.percent_deposit / 100))
-                                :
-                                ((isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - (((isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar.price?.percent_deposit / 100)),
+                    // tiền đặt cọc
+                    price_depoist:
+                        isStateDetailCar?.dataDetailCar?.promotion?.length > 0
+                            ?
+                            ((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) + isStateDetailCar.price?.price_insurance_day) * (isStateDetailCar.price?.percent_deposit / 100)
+                            // ((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + isStateDetailCar.price?.price_insurance_day) * (isStateDetailCar.price?.percent_deposit / 100)
+                            :
+                            (isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (isStateDetailCar.price?.percent_deposit / 100)
+                    ,
+                    // số ngày
+                    // number_day: +isStateDetailCar.price?.number_day,
+                    number_day: numberDay ? numberDay : 1,
+                    // thanh toán khi nhận xe (Thành tiền - tiền cọc)
+                    cash_on_delivery:
+                        isStateDetailCar?.dataDetailCar?.promotion?.length > 0
+                            ?
+                            (((+isStateDetailCar.price?.rent_cost_day - +isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + (+isStateDetailCar.price?.price_insurance_day)) * (numberDay ? numberDay : 1)) - ((((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar.price?.percent_deposit / 100))
+                            :
+                            ((isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - (((isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar.price?.percent_deposit / 100)),
 
-                    }
                 }
             })
         } else if (typeCarDetail == "2") {
             // Đặt options vào state
             queryKeyIsStateDetailCar({
-                ...isStateDetailCar,
-                dataDetailCar: {
-                    ...isStateDetailCar.dataDetailCar,
-                    price: {
-                        ...isStateDetailCar.price,
-                        temp_total_amount: (isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1),
-                        // thành tiền
-                        total_amount:
-                            isStateDetailCar?.dataDetailCar?.promotion?.length > 0
-                                ?
-                                (((isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion)
-                                // ((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1)) + isStateDetailCar.price?.price_insurance_day
-                                :
-                                (isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1),
-                        // tiền đặt cọc
-                        price_depoist:
-                            isStateDetailCar?.dataDetailCar?.promotion?.length > 0
-                                ?
-                                ((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) + isStateDetailCar.price?.price_insurance_day) * (isStateDetailCar.price?.percent_deposit / 100)
-                                :
-                                (isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (isStateDetailCar.price?.percent_deposit / 100)
-                        ,
-                        number_day: numberDay ? numberDay : 1,
-                        // thanh toán khi nhận xe (Thành tiền - tiền cọc)
-                        cash_on_delivery:
-                            isStateDetailCar?.dataDetailCar?.promotion?.length > 0
-                                ?
-                                (((+isStateDetailCar.price?.rent_cost_day - +isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + (+isStateDetailCar.price?.price_insurance_day)) * (numberDay ? numberDay : 1)) - ((((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar.price?.percent_deposit / 100))
-                                :
-                                ((isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - (((isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar.price?.percent_deposit / 100)),
-                    }
+                price: {
+                    ...isStateDetailCar.price,
+                    temp_total_amount: (isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+                    // thành tiền
+                    total_amount:
+                        isStateDetailCar?.dataDetailCar?.promotion?.length > 0
+                            ?
+                            (((isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion)
+                            // ((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1)) + isStateDetailCar.price?.price_insurance_day
+                            :
+                            (isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+                    // tiền đặt cọc
+                    price_depoist:
+                        isStateDetailCar?.dataDetailCar?.promotion?.length > 0
+                            ?
+                            ((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) + isStateDetailCar.price?.price_insurance_day) * (isStateDetailCar.price?.percent_deposit / 100)
+                            :
+                            (isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (isStateDetailCar.price?.percent_deposit / 100)
+                    ,
+                    number_day: numberDay ? numberDay : 1,
+                    // thanh toán khi nhận xe (Thành tiền - tiền cọc)
+                    cash_on_delivery:
+                        isStateDetailCar?.dataDetailCar?.promotion?.length > 0
+                            ?
+                            (((+isStateDetailCar.price?.rent_cost_day - +isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + (+isStateDetailCar.price?.price_insurance_day)) * (numberDay ? numberDay : 1)) - ((((isStateDetailCar.price?.rent_cost_day - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion) + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar.price?.percent_deposit / 100))
+                            :
+                            ((isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) - (((isStateDetailCar.price?.rent_cost_day + isStateDetailCar.price?.price_insurance_day) * (numberDay ? numberDay : 1)) * (isStateDetailCar.price?.percent_deposit / 100)),
                 }
             })
         }
 
+        fetchDataDetailCarFirst()
+        fetchDataPriceDetail()
+        fetchDataListCarsRelated()
+        fetchDataListCalendarPriceMonth()
     }, [params.slug, typeCarDetail, numberDay, router])
-
-    // useEffect(() => {
-
-    // }, [params.slug, typeCarDetail, numberDay, router, isStateDetailCar?.dataDetailCar?.promotion])
-
 
     // on/off thả tim
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {
@@ -734,6 +724,8 @@ const DetailCar = ({ params }: Props) => {
     }
 
     console.log('isStateDetailCar: ', isStateDetailCar);
+    console.log('params.slug: ', params.slug);
+    console.log('isLoadingSkeletonDetailCar: ', isLoadingSkeletonDetailCar);
 
     if (!isMounted) {
         return null

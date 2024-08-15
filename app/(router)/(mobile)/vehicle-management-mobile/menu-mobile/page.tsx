@@ -24,6 +24,7 @@ import Link from "next/link";
 import { ReadonlyURLSearchParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { IoIosArrowForward } from "react-icons/io";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 const CustomQuill = dynamic(() => import("@/components/quill/CustomQuill"), { ssr: false });
@@ -290,8 +291,14 @@ export default function MenuMobile(props: Props) {
                                                                                     className="data-[state=checked]:bg-[#2FB9BD] "
                                                                                     checked={field.value}
                                                                                     onCheckedChange={(value) => {
-                                                                                        field.onChange(value)
-                                                                                        form.handleSubmit((value) => onSubmit(value, e?.id == 2 ? 1 : 2))()
+                                                                                        // field.onChange(value)
+                                                                                        // form.handleSubmit((value) => onSubmit(value, e?.id == 2 ? 1 : 2))()
+                                                                                        if (e?.id == 2) {
+                                                                                            field.onChange(value)
+                                                                                            form.handleSubmit(value => onSubmit(value, e?.id == 2 ? 1 : 2))()
+                                                                                        } else {
+                                                                                            toast.error("Vui lòng liên hệ quản trị viên Kanow để được hỗ trợ!")
+                                                                                        }
                                                                                     }}
                                                                                 />
                                                                             </div>

@@ -39,9 +39,6 @@ export function DialogReviewImage({ }: Props) {
         sortedDataImage?.unshift(selectedElement);
     }
 
-    console.log('dataImage', dataImage);
-
-
     return (
         <Dialog modal open={openDialogReview} >
             <DialogOverlay />
