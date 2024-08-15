@@ -259,9 +259,9 @@ const DetailCar = ({ params }: Props) => {
                         }
 
                         setNumberDay(numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1)
-                        setIsLoadingSkeletonDetailCar(false);
+                        // setIsLoadingSkeletonDetailCar(false);
                     } else {
-                        setIsLoadingSkeletonDetailCar(false);
+                        // setIsLoadingSkeletonDetailCar(false);
                     }
 
                 } catch (err) {
@@ -334,8 +334,6 @@ const DetailCar = ({ params }: Props) => {
             }
             const { data } = await getDataDetailCar(params.slug, dataParams)
 
-            console.log('data detail car:', data);
-
             if (data && data.data && data.base && data.base.base) {
                 let { customDataDetailCar } = CustomDataDetailCar(data, numberDay)
 
@@ -405,13 +403,12 @@ const DetailCar = ({ params }: Props) => {
 
                 }
 
-
                 queryKeyIsStateDetailCar({
                     dataDetailCar: customDataDetailCar
                 })
-                setIsLoadingSkeletonDetailCar(false);
-            } else {
 
+                // setIsLoadingSkeletonDetailCar(false);
+            } else {
                 setIsLoadingSkeletonDetailCar(false);
             }
         } catch (err) {
@@ -437,12 +434,9 @@ const DetailCar = ({ params }: Props) => {
 
             const { data } = await getPriceDetail(dataParams)
 
-            console.log('data price detail: ', data);
-
             if (data && data.price) {
                 if (isStateDetailCar?.dataDetailCar?.promotion) {
                     let { customPriceDetailCar } = CustomPriceDetailCar(data, numberDay, isStateDetailCar?.dataDetailCar?.promotion)
-                    console.log('customPriceDetailCar promotion', customPriceDetailCar);
 
                     queryKeyIsStateDetailCar({
                         price: customPriceDetailCar
@@ -450,7 +444,6 @@ const DetailCar = ({ params }: Props) => {
 
                 } else {
                     let { customPriceDetailCar } = CustomPriceDetailCar(data, numberDay)
-                    console.log('customPriceDetailCar promotion', customPriceDetailCar);
 
                     queryKeyIsStateDetailCar({
                         price: customPriceDetailCar
@@ -490,7 +483,7 @@ const DetailCar = ({ params }: Props) => {
                     dataDetailCar: customDataDetailCar,
                 })
 
-                setIsLoadingSkeletonDetailCar(false);
+                // setIsLoadingSkeletonDetailCar(false);
             } else {
                 setIsLoadingSkeletonDetailCar(false);
             }
@@ -516,6 +509,7 @@ const DetailCar = ({ params }: Props) => {
         fetchDataDetailCarFirst()
         fetchDataListCalendarPriceMonth()
         fetchDataListCarsRelated()
+        fetchDataPriceDetail()
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
@@ -651,11 +645,12 @@ const DetailCar = ({ params }: Props) => {
                 }
             })
         }
+
     }, [params.slug, typeCarDetail, numberDay, router])
 
-    useEffect(() => {
-        fetchDataPriceDetail()
-    }, [params.slug, typeCarDetail, numberDay, router, isStateDetailCar?.dataDetailCar?.promotion])
+    // useEffect(() => {
+
+    // }, [params.slug, typeCarDetail, numberDay, router, isStateDetailCar?.dataDetailCar?.promotion])
 
 
     // on/off thả tim

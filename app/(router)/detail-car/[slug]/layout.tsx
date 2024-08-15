@@ -3,8 +3,15 @@ import moment from 'moment';
 import type { Metadata, ResolvingMetadata } from 'next'
 import { ReactNode } from 'react';
 
-function stripHtml(html: string) {
-    return html.replace(/<[^>]*>/g, '');
+function stripHtml(html: string): string {
+    // Bước 1: Loại bỏ các thẻ HTML bằng regex
+    const plainText = html.replace(/<[^>]*>/g, '');
+
+    // Bước 2: Giải mã các thực thể HTML
+    const parser = new DOMParser();
+    const decodedString = parser.parseFromString(plainText, 'text/html').documentElement.textContent || '';
+
+    return decodedString;
 }
 
 interface LayoutProps {
@@ -16,8 +23,7 @@ export async function generateMetadata({ params }: { params: { slug: string } },
     try {
         const today = new Date()
         let dataParams = {
-            // car_id: params.slug,
-            // type: (typeCarDetail === "1" || typeCarDetail === "2") ? parseInt(typeCarDetail) : null,
+            type: 1,
             date_search: `${moment(today).format("DD/MM/YYYY HH:mm:ss")} - ${moment(today).format("DD/MM/YYYY HH:mm:ss")}`,
         }
 
