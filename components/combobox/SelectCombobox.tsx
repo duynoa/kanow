@@ -5,8 +5,6 @@ import { cn } from "@/lib/utils"
 import { Check, ChevronsUpDown, Search } from "lucide-react"
 
 const SelectCombobox = ({ data, onChange, field, onValueChange, placeholderInput }: any) => {
-    console.log('field combobox',field);
-    
     return (
         <Command className="w-full">
             {
