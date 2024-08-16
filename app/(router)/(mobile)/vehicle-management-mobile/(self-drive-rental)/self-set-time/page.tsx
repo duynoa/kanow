@@ -806,7 +806,7 @@ export default function SelftSetTime(props: Props) {
                                                                                         field.onChange(e)
                                                                                         // const toTime: any = revertTime(e, 'add')
                                                                                         // console.log(toTime);
-
+                                                                                        form.clearErrors('deliver.from')
                                                                                         // form.setValue('deliver.to', toTime);
                                                                                     }}
                                                                                 />
@@ -863,6 +863,7 @@ export default function SelftSetTime(props: Props) {
                                                                                     field={field}
                                                                                     onChange={(e: any) => {
                                                                                         field.onChange(e)
+                                                                                        form.clearErrors('deliver.from')
                                                                                         // const toTime: any = revertTime(e, 'minus')
                                                                                         // form.setValue('deliver.from', toTime);
                                                                                     }}
@@ -957,6 +958,7 @@ export default function SelftSetTime(props: Props) {
                                                                                     field={field}
                                                                                     onChange={(e: any) => {
                                                                                         field.onChange(e)
+                                                                                        form.clearErrors('receive.to')
                                                                                         // const toTime: any = revertTime(e, 'add')
                                                                                         // form.setValue('receive.to', toTime);
                                                                                     }}
@@ -1014,6 +1016,7 @@ export default function SelftSetTime(props: Props) {
                                                                                     field={field}
                                                                                     onChange={(e: any) => {
                                                                                         field.onChange(e)
+                                                                                        form.clearErrors('receive.from')
                                                                                         // const toTime: any = revertTime(e, 'minus')
                                                                                         // form.setValue('receive.from', toTime);
                                                                                     }}
