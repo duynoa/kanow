@@ -12,6 +12,7 @@ import { toastCore } from "@/lib/toast";
 import apiVehicleCommon from "@/services/vehicle-management/vehicle-common.services";
 import BackgroundUiVehicle from "@/themes/vehicle-management/BackgroundUiVehicle";
 import { StateSeltSetTime } from "@/types/VehicleManagement/SelfDriveRental/ISetTime";
+import { compareTimes } from "@/utils/convertTime/convertTime";
 import { ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -209,47 +210,6 @@ export default function SelftSetTime(props: Props) {
     //     return time;
     // }
 
-    const revertTime = (e: string, type: string): string => {
-        const [hour, minute] = e.split(':').map(Number);
-        if (isNaN(hour) || isNaN(minute)) {
-            throw new Error('Invalid time format');
-        }
-
-        // Xác định khoảng thời gian cần cộng hoặc trừ
-        const hourDiff = type === 'add' ? 4 : -4;
-        const minuteDiff = type === 'add' ? 30 : -30;
-
-        // Tính toán giờ và phút mới
-        let newHour = hour + hourDiff;
-        let newMinute = minute + minuteDiff;
-
-        // Điều chỉnh phút nếu cần
-        if (newMinute < 0) {
-            newMinute += 60;
-            newHour -= 1;
-        } else if (newMinute >= 60) {
-            newMinute -= 60;
-            newHour += 1;
-        }
-
-        // Điều chỉnh giờ nếu cần
-        if (newHour < 0) {
-            newHour += 24;
-        } else if (newHour >= 24) {
-            newHour -= 24;
-        }
-
-        // Định dạng kết quả và trả về
-        const formattedHour = newHour.toString().padStart(2, '0');
-        const formattedMinute = newMinute.toString().padStart(2, '0');
-
-        return `${formattedHour}:${formattedMinute}`;
-    };
-
-
-
-
-
 
 
 
@@ -421,6 +381,7 @@ export default function SelftSetTime(props: Props) {
                                                         validate: {
                                                             checkTime: (value: any, d: any) => {
                                                                 if (value === d.deliver.to) return false || 'Khoảng thời gian không được giống nhau'
+                                                                // if (compareTimes(value, d.receive.from) == 1) return false || 'Thời gian bắt đầu không được lớn hơn thời gian kết thúc'
                                                             }
                                                         }
                                                     }}
@@ -450,10 +411,11 @@ export default function SelftSetTime(props: Props) {
                                                                                     field={field}
                                                                                     onChange={(e: any) => {
                                                                                         field.onChange(e)
-                                                                                        const toTime: any = revertTime(e, 'add')
-                                                                                        console.log(toTime);
+                                                                                        // const toTime: any = revertTime(e, 'add')
+                                                                                        // form.setValue('deliver.to', toTime);
+                                                                                        // console.log(form.getValues('deliver.to'));
 
-                                                                                        form.setValue('deliver.to', toTime);
+
                                                                                     }}
                                                                                 />
 
@@ -479,6 +441,7 @@ export default function SelftSetTime(props: Props) {
                                                         validate: {
                                                             checkTime: (value: any, d: any) => {
                                                                 if (value === d.deliver.from) return false || 'Khoảng thời gian không được giống nhau'
+                                                                // if (compareTimes(value, d.deliver.from) == -1) return false || 'Thời gian kết thúc không được nhỏ hơn thời gian bắt đầu'
                                                             }
                                                         }
                                                     }}
@@ -508,8 +471,8 @@ export default function SelftSetTime(props: Props) {
                                                                                     field={field}
                                                                                     onChange={(e: any) => {
                                                                                         field.onChange(e)
-                                                                                        const toTime: any = revertTime(e, 'minus')
-                                                                                        form.setValue('deliver.from', toTime);
+                                                                                        // const toTime: any = revertTime(e, 'minus')
+                                                                                        // form.setValue('deliver.from', toTime);
                                                                                     }}
                                                                                 />
                                                                             </PopoverContent>
@@ -572,6 +535,7 @@ export default function SelftSetTime(props: Props) {
                                                         validate: {
                                                             checkTime: (value: any, d: any) => {
                                                                 if (value === d.receive.to) return false || 'Khoảng thời gian không được giống nhau'
+                                                                // if (compareTimes(value, d.receive.from) == 1) return false || 'Thời gian bắt đầu không được lớn hơn thời gian kết thúc'
                                                             }
                                                         }
                                                     }}
@@ -601,8 +565,8 @@ export default function SelftSetTime(props: Props) {
                                                                                     field={field}
                                                                                     onChange={(e: any) => {
                                                                                         field.onChange(e)
-                                                                                        const toTime: any = revertTime(e, 'add')
-                                                                                        form.setValue('receive.to', toTime);
+                                                                                        // const toTime: any = revertTime(e, 'add')
+                                                                                        // form.setValue('receive.to', toTime);
                                                                                     }}
                                                                                 />
                                                                             </PopoverContent>
@@ -627,7 +591,8 @@ export default function SelftSetTime(props: Props) {
                                                         },
                                                         validate: {
                                                             checkTime: (value: any, d: any) => {
-                                                                if (value === d.receive.from) return false || 'Khoảng thời gian không được giống nhau'
+                                                                if ((value === d.receive.from)) return false || 'Khoảng thời gian không được giống nhau'
+                                                                // if (compareTimes(value, d.receive.from) == -1) return false || 'Thời gian kết thúc không được nhỏ hơn thời gian bắt đầu'
                                                             }
                                                         }
                                                     }}
@@ -657,8 +622,8 @@ export default function SelftSetTime(props: Props) {
                                                                                     field={field}
                                                                                     onChange={(e: any) => {
                                                                                         field.onChange(e)
-                                                                                        const toTime: any = revertTime(e, 'minus')
-                                                                                        form.setValue('receive.from', toTime);
+                                                                                        // const toTime: any = revertTime(e, 'minus')
+                                                                                        // form.setValue('receive.from', toTime);
                                                                                     }}
                                                                                 />
                                                                             </PopoverContent>
