@@ -174,7 +174,7 @@ export default function SelftSetTime(props: Props) {
             queryKeyIsStateLoadSuccess({
                 loading: {
                     ...isStateLoadSuccess.loading,
-                    isLoadingButton: true
+                    isLoadingButton: false
                 }
             })
         }
