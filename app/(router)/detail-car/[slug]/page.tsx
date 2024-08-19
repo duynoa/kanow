@@ -405,7 +405,8 @@ const DetailCar = ({ params }: Props) => {
                 }
 
                 queryKeyIsStateDetailCar({
-                    dataDetailCar: customDataDetailCar
+                    dataDetailCar: customDataDetailCar,
+                    price: customDataDetailCar.price
                 })
             }
         } catch (err) {
@@ -506,9 +507,6 @@ const DetailCar = ({ params }: Props) => {
             return router.push("/")
         }
 
-
-
-
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
@@ -566,6 +564,8 @@ const DetailCar = ({ params }: Props) => {
 
     useEffect(() => {
         if (typeCarDetail == "1") {
+            console.log('check');
+
             queryKeyIsStateDetailCar({
                 price: {
                     ...isStateDetailCar.price,
