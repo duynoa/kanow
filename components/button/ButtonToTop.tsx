@@ -27,7 +27,7 @@ const ButtonToTop = () => {
     }, [handleNavigation]);
 
     return (
-        <div className='fixed bottom-10 lg:right-10 right-5 md:space-y-4 space-y-4 z-[999]'>
+        <div className='fixed bottom-20 lg:right-10 right-5 md:space-y-4 space-y-4 z-[999]'>
             <div className={`${isShow ? "translate-x-0" : "translate-x-[200%]"} transition-transform duration-300 relative flex flex-col justify-center items-center`}>
                 <button type="button" onClick={() => scrollTop()} className='relative z-[1] lg:w-14 w-12 lg:h-14 h-12 rounded-full bg-[#2FB9BD] text-white flex flex-col justify-center items-center'>
                     <HiOutlineArrowNarrowUp className='text-2xl'/>

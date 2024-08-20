@@ -66,6 +66,7 @@ import { DialogPayment } from '../modals/DialogPayment';
 import { AnimatePresence } from 'framer-motion';
 import { toastCore } from '@/lib/toast';
 import { Toaster } from 'react-hot-toast';
+import ButtonDownloadApp from '../button/ButtonDownloadApp';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -575,7 +576,13 @@ const LayoutContainer = ({
                             !pathname.startsWith("/vehicle-management-mobile") &&
                             !pathname.startsWith("/income-statistic-mobile") &&
                             !pathname.startsWith("/transaction-statement-mobile") &&
-                            <ButtonToTop />
+                            <>
+                                <ButtonToTop />
+                                {
+                                    isVisibleTablet &&
+                                    <ButtonDownloadApp />
+                                }
+                            </>
                         }
                         <AlertDialogLogout />
                         <DialogLogin />

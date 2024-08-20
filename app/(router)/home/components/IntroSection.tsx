@@ -259,7 +259,7 @@ const IntroSection = () => {
                         }
                     </div>
                     <div className='flex flex-col xl:w-[500px] md:w-[400px] w-full'>
-                        <div className='flex gap-[2px] items-center bg-white/0'>
+                        <div className='flex md:gap-[2px] items-center bg-white/0'>
                             {
                                 tabSearch && tabSearch.map((tab: any) => (
                                     <div
@@ -293,7 +293,7 @@ const IntroSection = () => {
 
                         {
                             isStateDataHome.tabSearch.tab === 1 &&
-                            <div className='flex flex-col gap-4 bg-white w-full h-full rounded-tr-xl rounded-b-xl xl:px-6 xl:py-4 p-4'>
+                            <div className='flex flex-col gap-4 bg-white w-full h-full rounded-b-xl xl:px-6 xl:py-4 p-4'>
                                 <div className='flex flex-col gap-2'>
                                     <Label className='text-sm text-[#6F7689]' htmlFor="place">
                                         Địa điểm
