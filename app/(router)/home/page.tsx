@@ -71,7 +71,7 @@ export default function Home() {
     }
 
     return (
-        <div className='bg-[#FBFBFC]'>
+        <div className='bg-[#FBFBFC] '>
             <IntroSection />
             <SectionCardCar />
             <SectionBannerPromotion />

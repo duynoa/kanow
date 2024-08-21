@@ -31,7 +31,7 @@ const ButtonDownloadApp = () => {
 
     const handleDownloadClick = () => {
         const userAgent = navigator.userAgent || (navigator as any).vendor || (window as any).opera;
-    
+
         if (/android/i.test(userAgent)) {
             // Điều hướng đến Google Play
             window.location.href = 'https://play.google.com/store/apps/details?id=com.kanow&pcampaignid=web_share';
@@ -45,11 +45,11 @@ const ButtonDownloadApp = () => {
     };
 
     return (
-        <div className='fixed right-0 bottom-0 md:space-y-4 space-y-4 z-[999] w-full'>
-            <div className={`${isShow ? "translate-y-0" : "translate-y-[200%]"} transition-transform duration-300 relative flex flex-row justify-between items-center w-full bg-white p-4`}>
+        <div className='fixed right-0 bottom-2 md:space-y-4 space-y-4 z-[999] w-full shadow-2xl'>
+            <div className={`${isShow ? "translate-y-0" : "translate-y-[200%]"} transition-transform duration-300 relative flex flex-row justify-between items-center w-full bg-gray-100 p-4`}>
                 <div className='max-w-[10%]'>
                     <IoCloseCircle
-                        className='size-5 text-red-500'
+                        className='size-5 text-gray-500'
                         onClick={() => sIsShow(false)}
                     />
                 </div>
