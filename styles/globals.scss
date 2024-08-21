@@ -116,6 +116,10 @@ body {
     justify-content: center;
 }
 
+.custom-transition {
+    @apply transition duration-300 ease-in-out;
+}
+
 .custom-container {
     @apply 3xl:mx-44 2xl:mx-32 xl:mx-28 lg:mx-12 md:mx-10 mx-6;
 }

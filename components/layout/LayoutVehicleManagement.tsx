@@ -18,6 +18,7 @@ import { Separator } from '../ui/separator'
 import { Switch } from '../ui/switch'
 import { toastCore } from '@/lib/toast'
 import { useDialogCalendar } from '@/hooks/useOpenDialog'
+import toast from 'react-hot-toast'
 
 const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) => {
     const href = usePathname()
@@ -180,7 +181,7 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
         const { data: db } = await apiDetailCar(id, { type: -1, car_owner: 1 })
         // const { data: db } = await apiDetailCar(id, { type: 1, car_owner: 1 })
         const { data: { other, dtFee, other_talent } } = await apiListOtherAmenitiesCar()
-        
+
         if (other || dtFee || other_talent) {
             setDataOther({ other, dtFee, other_talent })
         }
@@ -274,139 +275,152 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
             <div className='flex flex-col custom-container py-8'>
                 <div className='grid grid-cols-12 xxl:gap-6 xl:gap-4 gap-8'>
                     <div className='xl:col-span-2 lg:col-span-3 col-span-12 flex flex-col 2xl:gap-6 gap-4'>
-                        {isVisibleTablet ?
-                            <Select
-                                value={pathname ? pathname : ""}
-                                onValueChange={(value) => handleChangeSidebar(value)}
-                            >
-                                <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
-                                    <SelectValue placeholder="Chọn giờ nhận xe" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {listNavbar.map((e) => {
-                                        return (
-                                            <SelectGroup key={`e-${e.id}`}>
-                                                <SelectLabel className='flex justify-between'>
-                                                    <h1>{e.lable}</h1>
-                                                    {e.id != 1 ?
-                                                        <Form {...form}>
-                                                            <FormField
-                                                                control={form.control}
-                                                                name={`${e.id == 2 ? "openSelf" : "openTalented"}`}
-                                                                render={({ field }) => {
-                                                                    return (
-                                                                        <FormItem className="">
-                                                                            <FormControl>
-                                                                                <div className="">
-                                                                                    <Switch
-                                                                                        className="data-[state=checked]:bg-[#2FB9BD] "
-                                                                                        checked={field.value}
-                                                                                        onCheckedChange={(value) => {
-                                                                                            field.onChange(value)
-                                                                                            form.handleSubmit(value => onSubmit(value, e?.id == 2 ? 1 : 2))()
-                                                                                        }}
-                                                                                    />
-                                                                                </div>
-                                                                            </FormControl>
-                                                                        </FormItem>
-                                                                    )
-                                                                }}
-                                                            />
-                                                        </Form> : null
-                                                    }
-
-                                                </SelectLabel>
-                                                {e.list && e.list.map((item) => (
-                                                    <SelectItemNocheck
-                                                        key={`item-${item.id}`}
-                                                        value={`${item.link}`}
-                                                        className='flex flex-row items-center'
-                                                    >
-                                                        <div
-                                                            className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
-                                                        >
-                                                            <div className="size-5">
-                                                                <Image
-                                                                    width={100}
-                                                                    height={100}
-                                                                    alt="@kanow"
-                                                                    className='w-full h-full'
-                                                                    src={`/vehicle/tab/${pathname === item.link ? 'active' : 'noactive'}/${item.icon}`}
+                        {
+                            isVisibleTablet ?
+                                <Select
+                                    value={pathname ? pathname : ""}
+                                    onValueChange={(value) => handleChangeSidebar(value)}
+                                >
+                                    <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-offset-0">
+                                        <SelectValue placeholder="Chọn giờ nhận xe" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {listNavbar.map((e) => {
+                                            return (
+                                                <SelectGroup key={`e-${e.id}`}>
+                                                    <SelectLabel className='flex justify-between'>
+                                                        <h1>{e.lable}</h1>
+                                                        {e.id != 1 ?
+                                                            <Form {...form}>
+                                                                <FormField
+                                                                    control={form.control}
+                                                                    name={`${e.id == 2 ? "openSelf" : "openTalented"}`}
+                                                                    render={({ field }) => {
+                                                                        return (
+                                                                            <FormItem className="">
+                                                                                <FormControl>
+                                                                                    <div className="">
+                                                                                        <Switch
+                                                                                            className="data-[state=checked]:bg-[#2FB9BD] "
+                                                                                            checked={field.value}
+                                                                                            onCheckedChange={(value) => {
+                                                                                                if (e?.id == 2) {
+                                                                                                    field.onChange(value)
+                                                                                                    form.handleSubmit(value => onSubmit(value, e?.id == 2 ? 1 : 2))()
+                                                                                                } else {
+                                                                                                    toast.error("Vui lòng liên hệ quản trị viên Kanow để được hỗ trợ!")
+                                                                                                }
+                                                                                            }}
+                                                                                        />
+                                                                                    </div>
+                                                                                </FormControl>
+                                                                            </FormItem>
+                                                                        )
+                                                                    }}
                                                                 />
-                                                            </div>
-                                                            <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
-                                                                {item.name}
-                                                            </div>
-                                                        </div>
-                                                    </SelectItemNocheck>
-                                                ))}
-                                            </SelectGroup>
-                                        )
-                                    })}
+                                                            </Form> : null
+                                                        }
 
-                                </SelectContent>
-                            </Select>
-                            : listNavbar.map((e, index) => {
-                                return (
-                                    <div key={`e-${e.id}`} className=''>
-                                        <div className='flex flex-col gap-3 caret-transparent'>
-                                            <div className='xxl:text-xs text-[11px] uppercase font-semibold text-[#6F7689] flex items-center justify-between'>
-                                                <h1>{e.lable}</h1>
-                                                {e.id != 1 ?
-                                                    <Form {...form}>
-                                                        <FormField
-                                                            control={form.control}
-                                                            name={`${e.id == 2 ? "openSelf" : "openTalented"}`}
-                                                            render={({ field }) => {
-                                                                return (
-                                                                    <FormItem className="">
-                                                                        <FormControl>
-                                                                            <div className="">
-                                                                                <Switch
-                                                                                    className="data-[state=checked]:bg-[#2FB9BD] "
-                                                                                    checked={field.value}
-                                                                                    onCheckedChange={(value) => {
-                                                                                        field.onChange(value)
-                                                                                        form.handleSubmit(value => onSubmit(value, e?.id == 2 ? 1 : 2))()
-                                                                                    }}
-                                                                                />
-                                                                            </div>
-                                                                        </FormControl>
-                                                                    </FormItem>
-                                                                )
-                                                            }}
-                                                        />
-                                                    </Form> : null
-                                                }
+                                                    </SelectLabel>
+                                                    {e.list && e.list.map((item) => (
+                                                        <SelectItemNocheck
+                                                            key={`item-${item.id}`}
+                                                            value={`${item.link}`}
+                                                            className='flex flex-row items-center'
+                                                        >
+                                                            <div
+                                                                className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
+                                                            >
+                                                                <div className="size-5">
+                                                                    <Image
+                                                                        width={100}
+                                                                        height={100}
+                                                                        alt="@kanow"
+                                                                        className='w-full h-full'
+                                                                        src={`/vehicle/tab/${pathname === item.link ? 'active' : 'noactive'}/${item.icon}`}
+                                                                    />
+                                                                </div>
+                                                                <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
+                                                                    {item.name}
+                                                                </div>
+                                                            </div>
+                                                        </SelectItemNocheck>
+                                                    ))}
+                                                </SelectGroup>
+                                            )
+                                        })}
+
+                                    </SelectContent>
+                                </Select>
+                                :
+                                listNavbar.map((e, index) => {
+                                    return (
+                                        <div key={`e-${e.id}`} className=''>
+                                            <div className='flex flex-col gap-3 caret-transparent'>
+                                                <div className='xxl:text-xs text-[11px] uppercase font-semibold text-[#6F7689] flex items-center justify-between'>
+                                                    <h1>{e.lable}</h1>
+                                                    {
+                                                        e.id != 1 ?
+                                                            <Form {...form}>
+                                                                <FormField
+                                                                    control={form.control}
+                                                                    name={`${e.id == 2 ? "openSelf" : "openTalented"}`}
+                                                                    render={({ field }) => {
+                                                                        return (
+                                                                            <FormItem className="">
+                                                                                <FormControl>
+                                                                                    <div className="">
+                                                                                        <Switch
+                                                                                            className="data-[state=checked]:bg-[#2FB9BD] "
+                                                                                            checked={field.value}
+                                                                                            onCheckedChange={(value) => {
+                                                                                                if (e?.id == 2) {
+                                                                                                    field.onChange(value)
+                                                                                                    form.handleSubmit(value => onSubmit(value, e?.id == 2 ? 1 : 2))()
+                                                                                                } else {
+                                                                                                    toast.error("Vui lòng liên hệ quản trị viên Kanow để được hỗ trợ!")
+                                                                                                }
+                                                                                            }}
+                                                                                        // disabled={e?.id == 3 ? true : false}
+                                                                                        />
+                                                                                    </div>
+                                                                                </FormControl>
+                                                                            </FormItem>
+                                                                        )
+                                                                    }}
+                                                                />
+                                                            </Form> : null
+                                                    }
+                                                </div>
+                                                <div className='flex flex-col gap-4'>
+                                                    {
+                                                        e.list?.map((item) => {
+                                                            return <Link
+                                                                key={`item-${item.id}`}
+                                                                href={item.link}
+                                                                className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
+                                                            >
+                                                                <div className="size-6">
+                                                                    <Image
+                                                                        width={100}
+                                                                        height={100}
+                                                                        alt="@kanow"
+                                                                        className='w-full h-full object-cover'
+                                                                        src={`/vehicle/tab/${pathname === item.link ? 'active' : 'noactive'}/${item.icon}`}
+                                                                    />
+                                                                </div>
+                                                                <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
+                                                                    {item.name}
+                                                                </div>
+                                                            </Link>
+                                                        })
+                                                    }
+                                                </div>
+                                                {index != listNavbar.length - 1 ? <Separator orientation='horizontal' className='my-3' /> : null}
                                             </div>
-                                            <div className='flex flex-col gap-4'>
-                                                {e.list?.map((item) => {
-                                                    return <Link
-                                                        key={`item-${item.id}`}
-                                                        href={item.link}
-                                                        className='flex items-center gap-3 cursor-pointer w-fit hover:opacity-90 duration-200 transition'
-                                                    >
-                                                        <div className="size-6">
-                                                            <Image
-                                                                width={100}
-                                                                height={100}
-                                                                alt="@kanow"
-                                                                className='w-full h-full object-cover'
-                                                                src={`/vehicle/tab/${pathname === item.link ? 'active' : 'noactive'}/${item.icon}`}
-                                                            />
-                                                        </div>
-                                                        <div className={`${pathname === item.link ? "text-[#1EAAB1]" : "text-[#383A43]"} 3xl:text-sm text-xs font-semibold`}>
-                                                            {item.name}
-                                                        </div>
-                                                    </Link>
-                                                })
-                                                }
-                                            </div>
-                                            {index != listNavbar.length - 1 ? <Separator orientation='horizontal' className='my-3' /> : null}
                                         </div>
-                                    </div>
-                                )
-                            })
+                                    )
+                                })
                         }
                     </div>
                     <div className='xl:col-span-10 lg:col-span-9 col-span-12 w-full h-auto'>

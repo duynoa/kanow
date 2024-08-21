@@ -513,7 +513,7 @@ export default function TalentedCalender(props: Props) {
                     defaultValue="customPriceSingleDay"
                     value={optionRadio}
                     onValueChange={(value) => handleChangeRadio(value)}
-                    className='flex items-center gap-6 w-full'
+                    className='flex md:flex-row flex-col md:items-center gap-6 w-full'
                     autoFocus={false}
                 >
                     <div key={'option-1'} className='flex items-center space-x-2 group w-fit'>
@@ -532,10 +532,18 @@ export default function TalentedCalender(props: Props) {
                                 </div>
                             </Label>
                         </div>
-                        <div onClick={() => handleChangePriceWeekend()}>
-                            <LuCalendarClock className='text-lg text-[#2FB9BD] hover:text-[#2FB9BD]/80 cursor-pointer transition-all duration-300' />
+                    </div>
+
+                    <div
+                        onClick={() => handleChangePriceWeekend()}
+                        className='flex items-center gap-2'
+                    >
+                        <LuCalendarClock className='text-lg text-[#2FB9BD] hover:text-[#2FB9BD]/80 cursor-pointer transition-all duration-300 custom-transition' />
+                        <div className='text-base font-normal capitalize hover:text-[#2FB9BD]/80 cursor-pointer custom-transition'>
+                            Chỉnh giá ngày cuối tuần
                         </div>
                     </div>
+
                     <div key={'option-2'} className='flex items-center 3xl:space-x-3 space-x-2 group w-fit'>
                         <RadioGroupItem
                             value={`settingCalendarBusy`}

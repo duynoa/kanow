@@ -56,6 +56,10 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
         setIsMounted(true)
     }, [])
 
+    const handleBack = () => {
+        router.back()
+    }
+
     if (!isMounted) {
         return null
     }
@@ -132,7 +136,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                         <TiHeartFullOutline className={`${isStateDetailCar?.dataDetailCar?.favorite_car ? 'text-[#FA3434]' : 'text-white'} text-xl group-hover:scale-105 duration-200 transition-color ease-in-out`} />
                     </div>
                     <div
-                        onClick={() => router.back()}
+                        onClick={() => handleBack()}
                         className='flex items-center gap-2 text-[#2FB9BD] hover:text-[#2FB9BD]/80 bg-[#2FB9BD]/20 border px-4 py-2 border-[#2FB9BD] rounded-md cursor-pointer w-fit group hover:-translate-x-2 duration-200 transition caret-transparent'
                     >
                         <FaArrowLeftLong className="3xl:size-5 size-4 3xl:max-w-5 max-w-4" />

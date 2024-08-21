@@ -226,7 +226,7 @@ const isStateDetailCar: IInitialStateDetailCar = {
 
 export const useDataDetailCar = create<IStateDetailCar>((set) => ({
     isStateDetailCar,
-    isLoadingSkeletonDetailCar: false,
+    isLoadingSkeletonDetailCar: true,
     queryKeyIsStateDetailCar: (key) => set((state) => ({
         isStateDetailCar: {
             ...state.isStateDetailCar,
