@@ -40,7 +40,7 @@ async function convertHeicToJpg(file: FileWithPath, progressCallback?: (progress
                 quality: 0.8, // Set the desired JPEG quality (0 to 1)
             }); // error check after//
 
-            const convertedFile = new File([blob], file.name.replace(/\.heic$/, ".jpg"), {
+            const convertedFile = new File([blob], file.name.replace(/\.heic$/i, ".jpg"), {
                 type: "image/jpg",
             }) as FileWithPath;
 
