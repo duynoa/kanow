@@ -325,11 +325,11 @@ const SignupDriverStep = (props: Props) => {
                                             />
                                         </div>
                                         <Link
-                                            href="https://zalo.me/2281264205827497572"
+                                            href="https://zalo.me/3428542604197988220"
                                             target='_blank'
                                             className='3xl:text-base lg:text-sm md:text-xs text-sm text-[#3E424E] font-semibold hover:underline hover:underline-offset-2'
                                         >
-                                            https://zalo.me/2281264205827497572
+                                            Zalo Kanow
                                         </Link>
                                     </div>
                                     <div className='flex flex-row items-center gap-3'>
