@@ -5,6 +5,9 @@
 body {
     overflow-y: scroll !important;
 }
+.no-scroll {
+    overflow-y: hidden !important;
+}
 
 .disable-selection {
     -webkit-touch-callout: none; /* iOS Safari */

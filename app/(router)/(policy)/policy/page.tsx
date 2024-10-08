@@ -4,22 +4,48 @@ import { useResize } from '@/hooks/useResize'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-import { SelectContentNocheck, SelectGroupNocheck, SelectItemNocheck, SelectNocheck, SelectTriggerNocheck, SelectValueNocheck } from '../ui/selectNocheck'
+import { SelectContentNocheck, SelectGroupNocheck, SelectItemNocheck, SelectNocheck, SelectTriggerNocheck, SelectValueNocheck } from '@/components/ui/selectNocheck'
+import usePolicyApi from '@/services/policy/policy.services'
 
-const LayoutPolicy = ({ children }: { children: React.ReactNode }) => {
+const Page = ({ children }: { children: React.ReactNode }) => {
     const router = useRouter()
 
     const pathname = usePathname()
 
+    const { apiPolicyList } = usePolicyApi()
+
     const { isVisibleTablet } = useResize()
 
+    const id = useSearchParams().get('id') ?? ""
+
     const param = useSearchParams().get('type')
+
+    const [dataPolicy, setDataPolicy] = useState<any[]>()
+
+    const [isIdPolicy, setIdPolicy] = useState<string>(id)
+
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
 
     useEffect(() => {
         setIsMounted(true)
     }, [])
+
+
+    useEffect(() => {
+        const fetchPolicies = async () => {
+            const { data } = await apiPolicyList(param)
+            const newData = data?.map((e: any) => {
+                return {
+                    ...e,
+                    link: `/policy?type=${e?.type}&id=${e?.id}`
+                }
+            })
+            setIdPolicy(id)
+            setDataPolicy(newData)
+        }
+        fetchPolicies();
+    }, [pathname, param, id])
 
     const tabsNavigation = [
         {
@@ -50,7 +76,8 @@ const LayoutPolicy = ({ children }: { children: React.ReactNode }) => {
     ]
 
     const handleChangeTab = (value: string) => {
-        router.push(value)
+        router.push(`/policy?type=${param}&id=${value}`)
+        setIdPolicy(value)
     }
 
     if (!isMounted) {
@@ -61,7 +88,7 @@ const LayoutPolicy = ({ children }: { children: React.ReactNode }) => {
         <div className='flex flex-col lg:gap-20 md:gap-16 gap-10 custom-container'>
             <div className="w-full lg:h-[50vh] md:h-[50dvh] h-[30dvh] bg-[url('/policy/banner_supercar.jpg')] bg-cover bg-center rounded-xl flex justify-center items-center">
                 <div className='3xl:text-6xl md:text-5xl text-3xl text-white font-semibold'>
-                    Chính sách & quy định
+                    {dataPolicy?.find(e => e?.id == isIdPolicy)?.title ?? ""}
                 </div>
             </div>
             <div className='bg-[#2FB9BD]/20 w-full xl:p-8 p-4 rounded-xl flex flex-col gap-4'>
@@ -101,10 +128,7 @@ const LayoutPolicy = ({ children }: { children: React.ReactNode }) => {
                     {
                         isVisibleTablet
                             ?
-                            <SelectNocheck
-                                onValueChange={(value) => handleChangeTab(value)}
-                                defaultValue={`${pathname}`}
-                            >
+                            <SelectNocheck onValueChange={(value) => handleChangeTab(value)}>
                                 <div className='w-full flex justify-center'>
                                     <SelectTriggerNocheck className="max-w-[80%] focus:outline-none focus:ring-0 focus:ring-offset-0">
                                         <SelectValueNocheck placeholder="Chọn giờ nhận xe" />
@@ -113,10 +137,10 @@ const LayoutPolicy = ({ children }: { children: React.ReactNode }) => {
                                 <SelectContentNocheck>
                                     <SelectGroupNocheck>
                                         {
-                                            tabsNavigation && tabsNavigation.map((tab) => (
+                                            dataPolicy && dataPolicy.map((tab) => (
                                                 <SelectItemNocheck
                                                     key={tab.id}
-                                                    value={tab.link}
+                                                    value={tab.id}
                                                     className='flex flex-row items-center'
                                                 >
                                                     {tab.title}
@@ -127,24 +151,28 @@ const LayoutPolicy = ({ children }: { children: React.ReactNode }) => {
                                 </SelectContentNocheck>
                             </SelectNocheck>
                             :
-                            tabsNavigation && tabsNavigation.map((tab) => (
+                            dataPolicy && dataPolicy?.map((tab) => (
                                 <div key={tab.id} className='w-full flex flex-col gap-1'>
-                                    <Link
-                                        href={`${tab.link}`}
-                                        className={`${tab.link.startsWith(pathname) ? "bg-[#2FB9BD] text-white rounded-r-3xl font-medium" : "font-light hover:scale-[1.01] hover:font-medium"} w-fit 2xl:text-base text-sm xxl:px-6 xl:px-4 px-2 py-3 `}
+                                    <div
+                                        onClick={() => {
+                                            setIdPolicy(tab?.id)
+                                            router.push(tab?.link)
+                                        }}
+                                        className={`${tab.id == isIdPolicy ? "bg-[#2FB9BD] text-white rounded-r-3xl font-medium" : "font-light hover:scale-[1.01] hover:font-medium"} 
+                                        w-fit 2xl:text-base text-sm xxl:px-6 xl:px-4 px-2 py-3 cursor-pointer`}
                                     >
                                         {tab.title ? tab.title : ""}
-                                    </Link>
+                                    </div>
                                 </div>
                             ))
                     }
                 </div>
-                <div className='lg:col-span-4 col-span-5 w-full h=full'>
-                    {children}
+                <div className='lg:col-span-4 col-span-5 w-full h-full 2xl:pb-20 pb-16'>
+                    <div dangerouslySetInnerHTML={{ __html: dataPolicy?.find(e => e?.id == isIdPolicy)?.content ?? "" }}></div>
                 </div>
             </div>
         </div>
     )
 }
 
-export default LayoutPolicy
+export default Page
