@@ -84,6 +84,7 @@ const LayoutContainer = ({
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
 
+
     const { getKeySettings } = useAuthenticationAPI()
     const { apiGetCurrentPosition } = useGoogleApi()
     const { informationUser, setInformationUser } = useAuth()
