@@ -7,6 +7,8 @@ import { FaInstagram, FaFacebook, FaLinkedinIn, FaTwitter } from "react-icons/fa
 import Link from 'next/link';
 import { FormatPhoneNumber } from '../format/FormatNumber';
 import usePolicyApi from '@/services/policy/policy.services';
+import { ScrollToSection } from '@/utils/scroll/ScrollToSection';
+import { useRouter } from 'next/navigation';
 
 const initDataFooter = [
     {
@@ -126,9 +128,10 @@ const initDataFooter = [
 ]
 
 const Footer = () => {
+    const router = useRouter()
     const { apiPolicyList } = usePolicyApi()
-    const [dataFooter, setDataFooter] = useState<any>(initDataFooter)
     const [isMounted, setIsMounted] = useState<boolean>(false)
+    const [dataFooter, setDataFooter] = useState<any>(initDataFooter)
 
     useEffect(() => {
         setIsMounted(true)
@@ -199,6 +202,7 @@ const Footer = () => {
         fetchPolicies();
     }, [])
 
+
     if (!isMounted) {
         return null;
     }
@@ -253,6 +257,11 @@ const Footer = () => {
                                             <div key={e.id} className='w-fit'>
                                                 <Link
                                                     href={e.link}
+                                                    onClick={(event) => {
+                                                        event.preventDefault()
+                                                        router.push(e.link)
+                                                        // ScrollToSection('policy')
+                                                    }}
                                                     className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1 hover:scale-[1.01] hover:font-medium transition-colors'
                                                     prefetch={false}
                                                 >

@@ -1,13 +1,13 @@
 'use client'
 
-import { useResize } from '@/hooks/useResize'
-import Link from 'next/link'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
 import { SelectContentNocheck, SelectGroupNocheck, SelectItemNocheck, SelectNocheck, SelectTriggerNocheck, SelectValueNocheck } from '@/components/ui/selectNocheck'
+import { useResize } from '@/hooks/useResize'
 import usePolicyApi from '@/services/policy/policy.services'
+import { ScrollToSection } from '@/utils/scroll/ScrollToSection'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-const Page = ({ children }: { children: React.ReactNode }) => {
+const Page = () => {
     const router = useRouter()
 
     const pathname = usePathname()
@@ -45,6 +45,7 @@ const Page = ({ children }: { children: React.ReactNode }) => {
             setDataPolicy(newData)
         }
         fetchPolicies();
+        ScrollToSection('policy')
     }, [pathname, param, id])
 
     const tabsNavigation = [
@@ -85,7 +86,7 @@ const Page = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <div className='flex flex-col lg:gap-20 md:gap-16 gap-10 custom-container'>
+        <div id='policy' className='flex flex-col lg:gap-20 md:gap-16 gap-10 custom-container'>
             <div className="w-full lg:h-[50vh] md:h-[50dvh] h-[30dvh] bg-[url('/policy/banner_supercar.jpg')] bg-cover bg-center rounded-xl flex justify-center items-center">
                 <div className='3xl:text-6xl md:text-5xl text-3xl text-white font-semibold'>
                     {dataPolicy?.find(e => e?.id == isIdPolicy)?.title ?? ""}
