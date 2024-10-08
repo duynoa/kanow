@@ -1,4 +1,3 @@
-import LayoutPolicy from '@/components/layout/LayoutPolicy'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {

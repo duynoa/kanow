@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { v4 as uuidv4 } from 'uuid';
@@ -5,8 +6,128 @@ import { v4 as uuidv4 } from 'uuid';
 import { FaInstagram, FaFacebook, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 import Link from 'next/link';
 import { FormatPhoneNumber } from '../format/FormatNumber';
+import usePolicyApi from '@/services/policy/policy.services';
+
+const initDataFooter = [
+    {
+        id: "1",
+        title: 'Xe tự lái',
+        list: [
+            // {
+            //     id: uuidv4(),
+            //     name: 'Chính sách và quy định',
+            //     link: '/policy-regulations?type=1'
+            // },
+            // {
+            //     id: uuidv4(),
+            //     name: 'Quy chế hoạt động',
+            //     link: '/operating-regulations?type=1'
+            // },
+            // {
+            //     id: uuidv4(),
+            //     name: 'Bảo mật thông tin',
+            //     link: '/security-info?type=1'
+            // },
+            // {
+            //     id: uuidv4(),
+            //     name: 'Giải quyết tranh chấp',
+            //     link: '/dispute-resolution?type=1'
+            // },
+            // {
+            //     id: uuidv4(),
+            //     name: 'Chính sách huỷ chuyến',
+            //     link: '/cancel-policy?type=1'
+            // },
+        ]
+    },
+    {
+        id: "2",
+        title: 'Tài xế lái xe hộ',
+        list: [
+            // {
+            //     id: uuidv4(),
+            //     name: 'Chính sách và quy định',
+            //     link: '/policy-regulations?type=2'
+            // },
+            // {
+            //     id: uuidv4(),
+            //     name: 'Quy chế hoạt động',
+            //     link: '/operating-regulations?type=2'
+            // },
+            // {
+            //     id: uuidv4(),
+            //     name: 'Bảo mật thông tin',
+            //     link: '/security-info?type=2'
+            // },
+            // {
+            //     id: uuidv4(),
+            //     name: 'Giải quyết tranh chấp',
+            //     link: '/dispute-resolution?type=2'
+            // },
+            // {
+            //     id: uuidv4(),
+            //     name: 'Chính sách huỷ chuyến',
+            //     link: '/cancel-policy?type=2'
+            // },
+        ]
+    },
+    {
+        id: uuidv4(),
+        title: 'Tìm Hiểu Thêm',
+        list: [
+            {
+                id: uuidv4(),
+                title: 'Hướng dẫn chung',
+                link: '/general-guide'
+            },
+            {
+                id: uuidv4(),
+                title: 'Hướng dẫn đặt xe',
+                link: '/book-guide'
+            },
+            {
+                id: uuidv4(),
+                title: 'Hướng dẫn thanh toán',
+                link: '/payment-guide'
+            },
+            {
+                id: uuidv4(),
+                title: 'Câu hỏi thường gặp',
+                link: '/faq'
+            },
+        ]
+    },
+    {
+        id: uuidv4(),
+        title: '',
+        list: [
+            {
+                id: uuidv4(),
+                title: 'Về KANOW',
+                link: '/about-us'
+            },
+            {
+                id: uuidv4(),
+                title: 'Tuyển dụng',
+                link: '/career'
+            },
+            {
+                id: uuidv4(),
+                title: 'Tin tức và hoạt động',
+                link: '/news-events'
+            },
+            // {
+            //     id: uuidv4(),
+            //     name: 'Bài viết',
+            //     link: '/dispute-resolution'
+            // },
+        ]
+    },
+]
 
 const Footer = () => {
+    const { apiPolicyList } = usePolicyApi()
+    const [dataFooter, setDataFooter] = useState<any>(initDataFooter)
     const [isMounted, setIsMounted] = useState<boolean>(false)
 
     useEffect(() => {
@@ -37,91 +158,46 @@ const Footer = () => {
         },
     ]
 
-    const dataFooter = [
-        {
-            id: uuidv4(),
-            title: 'Chính sách',
-            list: [
-                {
-                    id: uuidv4(),
-                    name: 'Chính sách và quy định',
-                    link: '/policy-regulations'
-                },
-                {
-                    id: uuidv4(),
-                    name: 'Quy chế hoạt động',
-                    link: '/operating-regulations'
-                },
-                {
-                    id: uuidv4(),
-                    name: 'Bảo mật thông tin',
-                    link: '/security-info'
-                },
-                {
-                    id: uuidv4(),
-                    name: 'Giải quyết tranh chấp',
-                    link: '/dispute-resolution'
-                },
-                {
-                    id: uuidv4(),
-                    name: 'Chính sách huỷ chuyến',
-                    link: '/cancel-policy'
-                },
-            ]
-        },
-        {
-            id: uuidv4(),
-            title: 'Tìm Hiểu Thêm',
-            list: [
-                {
-                    id: uuidv4(),
-                    name: 'Hướng dẫn chung',
-                    link: '/general-guide'
-                },
-                {
-                    id: uuidv4(),
-                    name: 'Hướng dẫn đặt xe',
-                    link: '/book-guide'
-                },
-                {
-                    id: uuidv4(),
-                    name: 'Hướng dẫn thanh toán',
-                    link: '/payment-guide'
-                },
-                {
-                    id: uuidv4(),
-                    name: 'Câu hỏi thường gặp',
-                    link: '/faq'
-                },
-            ]
-        },
-        {
-            id: uuidv4(),
-            title: '',
-            list: [
-                {
-                    id: uuidv4(),
-                    name: 'Về KANOW',
-                    link: '/about-us'
-                },
-                {
-                    id: uuidv4(),
-                    name: 'Tuyển dụng',
-                    link: '/career'
-                },
-                {
-                    id: uuidv4(),
-                    name: 'Tin tức và hoạt động',
-                    link: '/news-events'
-                },
-                // {
-                //     id: uuidv4(),
-                //     name: 'Bài viết',
-                //     link: '/dispute-resolution'
-                // },
-            ]
-        },
-    ]
+    useEffect(() => {
+        const fetchPolicies = async () => {
+            const [selfDrivingPolicy, driverPolicy] = await Promise.all([
+                apiPolicyList("1"),
+                apiPolicyList("2")
+            ]);
+
+            if (selfDrivingPolicy.data && driverPolicy.data) {
+                const newData = dataFooter.map((e: any) => {
+                    if (e.id == "1") {
+                        const list = selfDrivingPolicy?.data?.map((i: any) => {
+                            return {
+                                ...i,
+                                link: `/policy?type=${i?.type}&id=${i?.id}`,
+                            }
+                        });
+                        return {
+                            ...e,
+                            list: [...e.list, ...list]
+                        }
+                    }
+                    if (e.id == "2") {
+                        const list = driverPolicy?.data?.map((i: any) => {
+                            return {
+                                ...i,
+                                link: `/policy?type=${i?.type}&id=${i?.id}`,
+                            }
+                        });
+                        return {
+                            ...e,
+                            list: [...e.list, ...list]
+                        }
+                    }
+                    return e
+                });
+                setDataFooter(newData);
+            }
+        }
+        fetchPolicies();
+    }, [])
 
     if (!isMounted) {
         return null;
@@ -129,8 +205,8 @@ const Footer = () => {
 
     return (
         <footer className='bg-[#FFFFFF] pt-16 pb-10 w-full overflow-hidden border border-t border-x-0 border-b-0'>
-            <div className='custom-container grid lg:grid-cols-12 grid-cols-1 lg:gap-2 gap-6 pb-10'>
-                <div className='lg:col-span-2 col-span-1 w-full flex flex-col 2xl:gap-5 gap-3'>
+            <div className='custom-container grid lg:grid-cols-11 grid-cols-1 lg:gap-2 gap-6 pb-10'>
+                <div className='lg:col-span-2 col-span-1 w-full flex flex-col 2xl:gap-5 gap-3 h-fit'>
                     <div className='lg:w-full md:w-[40%] w-full h-full'>
                         <Image
                             alt='logo'
@@ -160,7 +236,7 @@ const Footer = () => {
                 </div>
                 <div className='col-span-1' />
                 {
-                    dataFooter.map((item, index) => (
+                    dataFooter.map((item: any, index: any) => (
                         <React.Fragment key={item.id}>
                             <div className='lg:col-span-2 col-span-1 flex flex-col lg:gap-4 gap-2'>
                                 {
@@ -173,14 +249,14 @@ const Footer = () => {
                                 }
                                 <div className='flex flex-col lg:gap-3 gap-1'>
                                     {
-                                        item.list.map((e) => (
+                                        item.list.map((e: any) => (
                                             <div key={e.id} className='w-fit'>
                                                 <Link
                                                     href={e.link}
                                                     className='text-[#484D5C]/80 2xl:text-base xl:text-[15px] lg:text-sm text-base font-normal mt-1 hover:scale-[1.01] hover:font-medium transition-colors'
                                                     prefetch={false}
                                                 >
-                                                    {e.name}
+                                                    {e.title}
                                                 </Link>
                                             </div>
                                         ))
@@ -190,8 +266,8 @@ const Footer = () => {
                         </React.Fragment>
                     ))
                 }
-                <div className='col-span-1' />
-                <div className='lg:col-span-2 col-span-1 flex flex-wrap flex-col lg:gap-4 gap-2'>
+                {/* <div className='col-span-1' /> */}
+                {/* <div className='lg:col-span-2 col-span-1 flex flex-wrap flex-col lg:gap-4 gap-2'>
                     <div className='text-[#000000] 2xl:text-2xl xl:text-[22px] lg:text-[19px] text-xl font-semibold'>
                         Đối tác
                     </div>
@@ -211,7 +287,7 @@ const Footer = () => {
                             Đăng ký thành tài xế
                         </Link>
                     </div>
-                </div>
+                </div> */}
             </div>
             <div className='bg-[#F6F7F8]/80 py-6'>
                 <div className='custom-container grid lg:grid-cols-12 grid-cols-1 lg:gap-2 gap-6'>
