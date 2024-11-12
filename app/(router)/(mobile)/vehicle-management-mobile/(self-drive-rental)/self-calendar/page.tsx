@@ -572,14 +572,16 @@ export default function SeflCalendar(props: Props) {
                                             const currentYear = currentDate?.getFullYear(); // Lấy năm hiện tại
                                             const monthData = dataCalendar?.filter(item => +item?.year === currentYear);
 
+                                            // Xử lý logic năm và tháng dựa trên dữ liệu hiện tại
+                                            const itemYear = item.year; // Lấy năm từ dữ liệu item
                                             const month: any = item?.month;
                                             const formattedMonth = parseInt(month, 10)?.toString() // tháng format bỏ số 0
 
                                             const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'];
                                             // Tìm ngày đầu tiên của tháng và ngày cuối của tháng
                                             // Lưu ý: month phải trừ đi 1 vì months trong JavaScript bắt đầu từ 0 (tháng 1 là tháng 0)
-                                            const firstDayOfMonth = new Date(currentYear, month - 1, 1);
-                                            const lastDayOfMonth = new Date(currentYear, month, 1);
+                                            const firstDayOfMonth = new Date(itemYear, month - 1, 1);
+                                            const lastDayOfMonth = new Date(itemYear, month, 1);
 
                                             // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
                                             const firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay();
@@ -667,7 +669,7 @@ export default function SeflCalendar(props: Props) {
                                             return (
                                                 <div key={`id-${item.id}`} className='flex flex-col 3xl:gap-6 gap-4'>
                                                     <div className='w-full flex items-center justify-center text-xl font-semibold text-[#2FB9BD] uppercase'>
-                                                        Tháng {formattedMonth}, {currentYear}
+                                                        Tháng {formattedMonth}, {itemYear}
                                                     </div>
 
                                                     <div className='flex flex-col 3xl:gap-4 gap-2'>
@@ -701,14 +703,16 @@ export default function SeflCalendar(props: Props) {
                                                     const currentYear = currentDate?.getFullYear(); // Lấy năm hiện tại
                                                     const monthData = dataCalendar?.filter(item => +item?.year === currentYear);
 
+                                                    // Xử lý logic năm và tháng dựa trên dữ liệu hiện tại
+                                                    const itemYear = item.year; // Lấy năm từ dữ liệu item
                                                     const month: any = item?.month;
                                                     const formattedMonth = parseInt(month, 10)?.toString() // tháng format bỏ số 0
 
                                                     const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'];
                                                     // Tìm ngày đầu tiên của tháng và ngày cuối của tháng
                                                     // Lưu ý: month phải trừ đi 1 vì months trong JavaScript bắt đầu từ 0 (tháng 1 là tháng 0)
-                                                    const firstDayOfMonth = new Date(currentYear, month - 1, 1);
-                                                    const lastDayOfMonth = new Date(currentYear, month, 1);
+                                                    const firstDayOfMonth = new Date(itemYear, month - 1, 1);
+                                                    const lastDayOfMonth = new Date(itemYear, month, 1);
 
                                                     // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
                                                     const firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay();
@@ -796,7 +800,7 @@ export default function SeflCalendar(props: Props) {
                                                     return (
                                                         <div key={`id-${item.id}`} className='flex flex-col 3xl:gap-6 gap-4'>
                                                             <div className='w-full flex items-center justify-center text-xl font-semibold text-[#2FB9BD] uppercase'>
-                                                                Tháng {formattedMonth}, {currentYear}
+                                                                Tháng {formattedMonth}, {itemYear}
                                                             </div>
 
                                                             <div className='flex flex-col 3xl:gap-4 gap-2'>
