@@ -6,7 +6,8 @@ const config = {
         "./pages/**/*.{ts,tsx}",
         "./components/**/*.{ts,tsx}",
         "./app/**/*.{ts,tsx}",
-        "./src/**/*.{ts,tsx}"
+        "./src/**/*.{ts,tsx}",
+        "./features/**/*.{js,ts,jsx,tsx,mdx}",
     ],
     prefix: "",
     theme: {
@@ -84,6 +85,10 @@ const config = {
             screens: {
                 "3xl": "1920px",
                 xxl: "1440px",
+            },
+            aspectRatio: {
+                '1.343/1': '1.343 / 1',
+                '4/3': '4 / 3',
             },
         },
     },

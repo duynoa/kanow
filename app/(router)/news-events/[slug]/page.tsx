@@ -132,22 +132,38 @@ const DetailBlog = (props: Props) => {
                         isStateDetailNewsEvents?.dataDetail
                             ?
                             <>
-                                <div
-                                    className="md:mt-14 mt-10 w-full lg:h-[60vh] md:h-[50dvh] h-[30dvh] bg-cover bg-no-repeat bg-center rounded-xl flex justify-center items-center"
+                                {/* <div
+                                    className="md:mt-14 mt-10 lg:h-[60vh] md:h-[50dvh] h-[30dvh] aspect-video bg-cover bg-no-repeat bg-center rounded-xl flex justify-center items-center"
                                     style={{ backgroundImage: `url(${isStateDetailNewsEvents?.dataDetail?.image ? isStateDetailNewsEvents?.dataDetail?.image : "/defaul/default.png"}` }}
-                                />
+                                /> */}
+                                <div className='md:mt-14 mt-10 lg:h-[60vh] md:h-[50dvh] h-[30dvh] aspect-video'>
+                                    <Image
+                                        alt="image"
+                                        src={isStateDetailNewsEvents?.dataDetail?.image ?? "/default/default.png"}
+                                        width={1920}
+                                        height={1080}
+                                        className='size-full object-contain aspect-video'
+                                        priority
+                                    />
+                                </div>
 
                                 <div className='flex flex-col gap-4 custom-container'>
                                     <div className='3xl:text-5xl 2xl:text-3xl text-2xl text-[#000000] font-semibold'>
                                         {isStateDetailNewsEvents?.dataDetail?.title ? isStateDetailNewsEvents?.dataDetail?.title : ""}
                                     </div>
-                                    <div className='flex flex-col gap-2 mt-6'>
-                                        <span
-                                            ref={contentRef}
-                                            dangerouslySetInnerHTML={{ __html: `${isStateDetailNewsEvents?.dataDetail?.content ? isStateDetailNewsEvents?.dataDetail?.content : ''}` }}
-                                            className="[&_a]:flex [&_a]:items-center [&_a]:justify-center [&_a_has-[img]]:bg-contain [&_a:has(img)]:w-full [&_a:not(:has(img))]:w-fit whitespace-break-spaces"
-                                        />
-                                    </div>
+                                    <span
+                                        ref={contentRef}
+                                        dangerouslySetInnerHTML={{ __html: `${isStateDetailNewsEvents?.dataDetail?.content ? isStateDetailNewsEvents?.dataDetail?.content : ''}` }}
+                                        className="
+                                            mt-6
+                                            [&_a_has-[img]]:bg-contain [&_a:has(img)]:w-full [&_a:not(:has(img))]:w-fit whitespace-break-spaces 
+                                            [&_img]:mx-auto [&_figure]:flex [&_figure]:justify-center
+                                            [&_table]:w-full [&_table]:border-collapse [&_table]:border [&_table]:border-gray-300
+                                          [&_th]:bg-gray-100 [&_th]:border [&_th]:border-gray-300 [&_th]:p-1 [&_th]:text-left
+                                            [&_td]:border [&_td]:border-gray-300 [&_td]:p-1
+                                              [&_strong]:inline [&_span]:inline [&_p]:inline
+                                            "
+                                    />
                                 </div>
                             </>
                             :
@@ -210,8 +226,8 @@ const DetailBlog = (props: Props) => {
                                                                 className='w-full h-full object-fill rounded-xl group-hover:scale-[1.03] duration-300 ease-in-out transition'
                                                             />
                                                         </div>
-                                                        <div className='flex flex-col gap-2'>
-                                                            <div className='3xl:text-xl 2xl:text-[17px] xxl:text-[17px] xl:text-base lg:text-base md:text-xl text-xl  text-[#272D37] font-semibold group-hover:text-[#272D37]/70 duration-500 transition ease-in-out line-clamp-2'>
+                                                        <div className='flex flex-col gap-2 '>
+                                                            <div className='3xl:text-xl 2xl:text-[17px] xxl:text-[17px] xl:text-base lg:text-base md:text-xl text-xl  text-[#272D37] font-semibold group-hover:text-[#272D37]/70 duration-500 transition ease-in-out line-clamp-2 min-h-[56px]'>
                                                                 {item.title}
                                                             </div>
                                                             <div className='3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out line-clamp-4'>
