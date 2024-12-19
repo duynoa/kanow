@@ -67,6 +67,8 @@ import { AnimatePresence } from 'framer-motion';
 import { toastCore } from '@/lib/toast';
 import { Toaster } from 'react-hot-toast';
 import ButtonDownloadApp from '../button/ButtonDownloadApp';
+import { DialogCustom } from '../modals/DialogCustom';
+import { useDialogStore } from '@/stores/dialogStores';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -122,6 +124,8 @@ const LayoutContainer = ({
         onCloseResizeTablet
     } = useResize()
     const { openDialogReviewCar, setOpenDialogReviewCar } = useDialogReviewCar()
+
+    const { openDialogCustom } = useDialogStore()
 
     const { openDialogRequestCarRental } = useDialogRequestCarRental()
     const { openDialogPayment } = useDialogPayment()
@@ -610,6 +614,7 @@ const LayoutContainer = ({
                         <DialogNotification />
 
                         {openDialogPayment && <DialogPayment />}
+                        {openDialogCustom && <DialogCustom />}
                     </main>
                     {
                         pathname !== "/list-cars-autonomous" &&
