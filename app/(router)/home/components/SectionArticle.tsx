@@ -1,3 +1,4 @@
+import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
 import BlurImage from '@/components/image/BlurImage'
 import { Button } from '@/components/ui/button'
 import { useResize } from '@/hooks/useResize'
@@ -44,15 +45,20 @@ const SectionArticle = (props: Props) => {
         },
     }
 
-    console.log('dataNewsEventList dataNewsEventList: ', dataNewsEventList);
-
-
     return (
         <div className="flex lg:bg-[url('/background/folder_background.png')] bg-[url('/background/folder_background_mobile.png')] bg-cover border-b drop-shadow-lg 3xl:-mt-[520px] 2xl:-mt-[420px] xl:-mt-[390px] lg:-mt-[300px] md:-mt-[420px] -mt-[280px]">
             <div className='custom-container flex flex-col md:items-center items-start md:justify-center w-full 3xl:pt-64 3xl:pb-32 2xl:pt-48 2xl:pb-32 xxl:pt-44 xxl:pb-28 xl:pt-44 xl:pb-24 lg:pt-32 lg:pb-20 md:pt-72 md:pb-20 pt-44 pb-10'>
                 <div className='3xl:text-[36px] 2xl:text-[30px] xl:text-[30px] lg:text-[30px] md:text-[30px] text-[26px] leading-tight capitalize font-bold text-[#101010]'>
                     Bài viết
                 </div>
+                <Link
+                    href={`/news-events/24`}
+                    className='relative group w-fit hidden'
+                    aria-hidden="true"
+                >
+                    hidden
+                </Link>
+
                 {
                     isVisibleTablet ?
                         <Swiper
@@ -84,7 +90,7 @@ const SectionArticle = (props: Props) => {
                                 dataNewsEventList?.data && dataNewsEventList?.data?.map((item: any, index: number) => (
                                     <SwiperSlide key={item.id}>
                                         <Link
-                                            href="#"
+                                            href={`/news-events/${item.id}?${ConvertToSlug(item?.title ?? "")}`}
                                             className='relative group w-full'
                                             aria-hidden="true"
                                         >
