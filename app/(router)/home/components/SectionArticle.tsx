@@ -2,6 +2,7 @@ import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
 import BlurImage from '@/components/image/BlurImage'
 import { Button } from '@/components/ui/button'
 import { useResize } from '@/hooks/useResize'
+import { useGetDetailNewsEvent } from '@/managers/api-management/news-event/useGetDetailNewsEvent'
 import { useGetNewsEventList } from '@/managers/api-management/news-event/useGetNewsEventList'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -16,6 +17,11 @@ type Props = {}
 const SectionArticle = (props: Props) => {
     const { data: dataNewsEventList } = useGetNewsEventList({ page: 1, limit: 3 })
     const { isVisibleMobile, isVisibleTablet } = useResize()
+
+    const { data: dataDetail } = useGetDetailNewsEvent({ idBlog: 24 })
+
+    console.log('dataDetail', dataDetail);
+
 
     const dataArticle = [
         {
@@ -56,7 +62,34 @@ const SectionArticle = (props: Props) => {
                     className='relative group w-fit hidden'
                     aria-hidden="true"
                 >
-                    hidden
+                    <div className='md:mt-14 mt-10 lg:h-[60vh] md:h-[50dvh] h-[30dvh] aspect-video'>
+                        <Image
+                            alt="image"
+                            src={dataDetail?.data?.image ?? "/default/default.png"}
+                            width={1920}
+                            height={1080}
+                            className='size-full object-contain aspect-video'
+                            priority
+                        />
+                    </div>
+
+                    <div className='flex flex-col gap-4 custom-container'>
+                        <div className='3xl:text-5xl 2xl:text-3xl text-2xl text-[#000000] font-semibold'>
+                            {dataDetail?.data?.title ? dataDetail?.data?.title : ""}
+                        </div>
+                        <span
+                            dangerouslySetInnerHTML={{ __html: `${dataDetail?.data?.content ? dataDetail?.data?.content : ''}` }}
+                            className="
+                                            mt-6 text-justify
+                                            [&_a_has-[img]]:bg-contain [&_a:has(img)]:w-full [&_a:not(:has(img))]:w-fit whitespace-break-spaces 
+                                            [&_img]:mx-auto [&_figure]:flex [&_figure]:justify-center
+                                            [&_table]:w-full [&_table]:border-collapse [&_table]:border [&_table]:border-gray-300
+                                          [&_th]:bg-gray-100 [&_th]:border [&_th]:border-gray-300 [&_th]:p-1 [&_th]:text-left
+                                            [&_td]:border [&_td]:border-gray-300 [&_td]:p-1
+                                              [&_strong]:inline [&_span]:inline [&_p]:inline
+                                            "
+                        />
+                    </div>
                 </Link>
 
                 {

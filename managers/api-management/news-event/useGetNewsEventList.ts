@@ -2,14 +2,19 @@ import { getListBlogNewsAndEvents } from "@/services/blog/blog.services";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 interface NewsEventParams {
-
+    page: number | string,
+    limit: number | string
 }
 
-export const useGetNewsEventList = ({  }: NewsEventParams) => {
+export const useGetNewsEventList = ({ page, limit }: NewsEventParams) => {
 
     const fetchNewsEventList = async () => {
         try {
-            const { data } = await getListBlogNewsAndEvents();
+            const dataParams = {
+                current_page: page,
+                per_page: limit
+            }
+            const { data } = await getListBlogNewsAndEvents(dataParams);
 
             return data
         } catch (err) {

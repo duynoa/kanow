@@ -155,7 +155,7 @@ const DetailBlog = (props: Props) => {
                                         ref={contentRef}
                                         dangerouslySetInnerHTML={{ __html: `${isStateDetailNewsEvents?.dataDetail?.content ? isStateDetailNewsEvents?.dataDetail?.content : ''}` }}
                                         className="
-                                            mt-6
+                                            mt-6 text-justify
                                             [&_a_has-[img]]:bg-contain [&_a:has(img)]:w-full [&_a:not(:has(img))]:w-fit whitespace-break-spaces 
                                             [&_img]:mx-auto [&_figure]:flex [&_figure]:justify-center
                                             [&_table]:w-full [&_table]:border-collapse [&_table]:border [&_table]:border-gray-300
