@@ -52,7 +52,6 @@ import { DialogPromotions } from '@/components/modals/DialogPromotions';
 import { getDataPolicy } from '@/services/cars/policy.services';
 import { CustomDataPolicy } from '@/custom/CustomData';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import Head from 'next/head';
 import useGoogleApi from '@/services/filter/google/google.services';
 import DialogRouteAddress from '../modals/DialogRouteAddress';
 
@@ -61,19 +60,26 @@ import { DialogNotification } from '../modals/DialogNotification';
 import { useAuth } from '@/hooks/useAuth';
 import { useNotification } from '@/hooks/useNotification';
 import { DialogSubmit } from '../modals/DialogSubmit';
-import { DialogReviewCar } from '../modals/DialogReviewCar';
 import { DialogPayment } from '../modals/DialogPayment';
-import { AnimatePresence } from 'framer-motion';
-import { toastCore } from '@/lib/toast';
 import { Toaster } from 'react-hot-toast';
 import ButtonDownloadApp from '../button/ButtonDownloadApp';
-import { DialogCustom } from '../modals/DialogCustom';
+// import { DialogCustom } from '../modals/DialogCustom';
 import { useDialogStore } from '@/stores/dialogStores';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
     weight: ['300', '400', '500', '600', '700', '800', '900'],
     display: 'swap'
+})
+
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false
+        }
+    }
 })
 
 const LayoutContainer = ({
@@ -566,69 +572,71 @@ const LayoutContainer = ({
     ]);
 
     return (
-        <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>
-            <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
-                <Suspense>
-                    {
-                        !pathname.startsWith("/vehicle-management-mobile") &&
-                        !pathname.startsWith("/income-statistic-mobile") &&
-                        !pathname.startsWith("/transaction-statement-mobile") &&
-                        <Header />
-                    }
-                    <main className='overflow-hidden w-full h-full'>
-                        {children}
+        <QueryClientProvider client={queryClient}>
+            <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>
+                <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
+                    <Suspense>
                         {
                             !pathname.startsWith("/vehicle-management-mobile") &&
                             !pathname.startsWith("/income-statistic-mobile") &&
                             !pathname.startsWith("/transaction-statement-mobile") &&
-                            <>
-                                <ButtonToTop />
-                                {
-                                    isVisibleTablet &&
-                                    <ButtonDownloadApp />
-                                }
-                            </>
+                            <Header />
                         }
-                        <AlertDialogLogout />
-                        <DialogLogin />
-                        <DialogCalendar />
-                        <DialogReviewImage />
+                        <main className='overflow-hidden w-full h-full'>
+                            {children}
+                            {
+                                !pathname.startsWith("/vehicle-management-mobile") &&
+                                !pathname.startsWith("/income-statistic-mobile") &&
+                                !pathname.startsWith("/transaction-statement-mobile") &&
+                                <>
+                                    <ButtonToTop />
+                                    {
+                                        isVisibleTablet &&
+                                        <ButtonDownloadApp />
+                                    }
+                                </>
+                            }
+                            <AlertDialogLogout />
+                            <DialogLogin />
+                            <DialogCalendar />
+                            <DialogReviewImage />
 
-                        {openDialogRequestCarRental && <DialogRequestCarRental />}
+                            {openDialogRequestCarRental && <DialogRequestCarRental />}
 
-                        <DialogValidate />
-                        <AlertCancel />
-                        <DialogAnswerPolicy />
-                        <DialogCancelCar />
-                        <DialogPromotions />
-                        <DialogReportCar />
-                        {openDialogAddress && <DialogFilterAddress />}
-                        <DialogRouteAddress />
+                            <DialogValidate />
+                            <AlertCancel />
+                            <DialogAnswerPolicy />
+                            <DialogCancelCar />
+                            <DialogPromotions />
+                            <DialogReportCar />
+                            {openDialogAddress && <DialogFilterAddress />}
+                            <DialogRouteAddress />
 
-                        <AlertDialogCustom />
-                        <DialogSubmit />
-                        <DialogRegisterOwnerDriver />
-                        <DialogFilterMyCar />
-                        <DialogFilterListCars />
+                            <AlertDialogCustom />
+                            <DialogSubmit />
+                            <DialogRegisterOwnerDriver />
+                            <DialogFilterMyCar />
+                            <DialogFilterListCars />
 
-                        <DialogNotification />
+                            <DialogNotification />
 
-                        {openDialogPayment && <DialogPayment />}
-                        {openDialogCustom && <DialogCustom />}
-                    </main>
-                    {
-                        pathname !== "/list-cars-autonomous" &&
-                        pathname !== "/list-cars-driver" &&
-                        !pathname.startsWith("/vehicle-management-mobile") &&
-                        !pathname.startsWith("/income-statistic-mobile") &&
-                        !pathname.startsWith("/transaction-statement-mobile") &&
-                        !pathname.startsWith("/transaction-statement") &&
-                        <Footer />
-                    }
-                    <Toaster position="top-right" reverseOrder={false} />
-                </Suspense>
-            </body>
-        </GoogleOAuthProvider>
+                            {openDialogPayment && <DialogPayment />}
+                            {/* {openDialogCustom && <DialogCustom />} */}
+                        </main>
+                        {
+                            pathname !== "/list-cars-autonomous" &&
+                            pathname !== "/list-cars-driver" &&
+                            !pathname.startsWith("/vehicle-management-mobile") &&
+                            !pathname.startsWith("/income-statistic-mobile") &&
+                            !pathname.startsWith("/transaction-statement-mobile") &&
+                            !pathname.startsWith("/transaction-statement") &&
+                            <Footer />
+                        }
+                        <Toaster position="top-right" reverseOrder={false} />
+                    </Suspense>
+                </body>
+            </GoogleOAuthProvider>
+        </QueryClientProvider>
     )
 }
 
