@@ -15,7 +15,7 @@ import { TITLE_REVICE_DELIVER_ADDRESS } from "@/constants/DialogContants";
 
 import { useEffect, useState } from "react";
 import { useDialogStore } from "@/stores/dialogStores";
-import ReviceDeliverAddress from "./status-modals/ReviceDeliverAddress";
+// import ReviceDeliverAddress from "./status-modals/ReviceDeliverAddress";
 
 import { AnimatePresence, motion } from 'framer-motion'
 import AnimateOnScroll from "../animation/AnimateOnScroll";
