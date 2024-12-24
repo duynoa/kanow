@@ -198,7 +198,8 @@ const LayoutVehicleManagementMobile = ({ children }: { children: React.ReactNode
             setDataOther({ other, dtFee, other_talent })
         }
         if (!Array.isArray(db?.data)) {
-            form.setValue("openSelf", db?.data.type == 1)
+            // form.setValue("openSelf", db?.data.type == 1)
+            form.setValue("openSelf", db?.data?.status?.id == 1)
             form.setValue("openTalented", db?.data.type_talent == 1)
             setDataDetail(db)
             if (['1', '2'].includes(type)) {

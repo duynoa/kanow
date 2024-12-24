@@ -186,8 +186,11 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
             setDataOther({ other, dtFee, other_talent })
         }
         if (!Array.isArray(db?.data)) {
-            form.setValue("openSelf", db?.data.type == 1)
-            form.setValue("openTalented", db?.data.type_talent == 1)
+            console.log("db?.data", db?.data);
+
+            form.setValue("openSelf", db?.data?.status?.id == 1)
+            // form.setValue("openSelf", db?.data.type == 1)
+            form.setValue("openTalented", db?.data?.type_talent == 1)
             setDataDetail(db)
             if (['1', '2'].includes(type)) {
                 await fetchRentCost(db)
@@ -358,7 +361,7 @@ const LayoutVehicleManagement = ({ children }: { children: React.ReactNode }) =>
                                         <div key={`e-${e.id}`} className=''>
                                             <div className='flex flex-col gap-3 caret-transparent'>
                                                 <div className='xxl:text-xs text-[11px] uppercase font-semibold text-[#6F7689] flex items-center justify-between'>
-                                                    <h1>{e.lable}</h1>
+                                                    <h1 className='text-xs'>{e.lable}</h1>
                                                     {
                                                         e.id != 1 ?
                                                             <Form {...form}>
