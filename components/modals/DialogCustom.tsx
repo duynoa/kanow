@@ -95,7 +95,7 @@ export function DialogCustom({ }: Props) {
                                 type="hover"
                                 className={`max-h-[93dvh] overflow-y-auto`}
                             >
-                                {statusDialog === "revice_deliver_address" && <ReviceDeliverAddress />}
+                                {/* {statusDialog === "revice_deliver_address" && <ReviceDeliverAddress />} */}
                             </ScrollArea>
                         </DialogContent>
                     </AnimateOnModal>
