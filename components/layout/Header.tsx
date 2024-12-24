@@ -98,6 +98,12 @@ const initDataHeader = [
                 link: '/partner/driver',
                 linkNologin: '/partner/driver',
             },
+            {
+                id: "-5",
+                title: "Hướng dẫn sử dụng",
+                link: '/policy?type=2&id=-5',
+                linkNologin: '/policy?type=2&id=-5',
+            },
             // {
             //     id: uuidv4(),
             //     title: "Chính sách và quy định",

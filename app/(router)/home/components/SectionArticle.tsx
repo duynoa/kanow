@@ -2,14 +2,14 @@ import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
 import BlurImage from '@/components/image/BlurImage'
 import { Button } from '@/components/ui/button'
 import { useResize } from '@/hooks/useResize'
+import { useGetDetailNewsEvent } from '@/managers/api-management/news-event/useGetDetailNewsEvent'
 import { useGetNewsEventList } from '@/managers/api-management/news-event/useGetNewsEventList'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
 import { IoArrowForwardOutline } from 'react-icons/io5'
 import { A11y, Pagination } from 'swiper/modules'
-import { SwiperSlide, Swiper } from 'swiper/react'
-import { v4 as uuidv4 } from 'uuid';
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { v4 as uuidv4 } from 'uuid'
 
 type Props = {}
 

@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import LayoutContainer from '@/components/layout/LayoutContainer';
-import GoogleAnalytics from '@/components/google-script/GoogleAnalytics';
 import Script from 'next/script';
 
 export const metadata: Metadata = {

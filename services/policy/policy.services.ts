@@ -5,7 +5,12 @@ const usePolicyApi = () => {
         return axios.get(`/policy/getList?type=${type}`);
     };
 
-    return { apiPolicyList };
+    // hd sử dụng
+    const apiPolicyUse = () => {
+        return axios.get(`/setup_qa/getListCategorySetupQa`);
+    };
+
+    return { apiPolicyList, apiPolicyUse };
 };
 
 export default usePolicyApi;

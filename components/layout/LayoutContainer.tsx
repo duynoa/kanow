@@ -580,6 +580,7 @@ const LayoutContainer = ({
                             !pathname.startsWith("/vehicle-management-mobile") &&
                             !pathname.startsWith("/income-statistic-mobile") &&
                             !pathname.startsWith("/transaction-statement-mobile") &&
+                            !pathname.startsWith("/policy-mobi") &&
                             <Header />
                         }
                         <main className='overflow-hidden w-full h-full'>
@@ -588,6 +589,7 @@ const LayoutContainer = ({
                                 !pathname.startsWith("/vehicle-management-mobile") &&
                                 !pathname.startsWith("/income-statistic-mobile") &&
                                 !pathname.startsWith("/transaction-statement-mobile") &&
+                                !pathname.startsWith("/policy-mobi") &&
                                 <>
                                     <ButtonToTop />
                                     {
@@ -630,6 +632,7 @@ const LayoutContainer = ({
                             !pathname.startsWith("/income-statistic-mobile") &&
                             !pathname.startsWith("/transaction-statement-mobile") &&
                             !pathname.startsWith("/transaction-statement") &&
+                            !pathname.startsWith("/policy-mobi") &&
                             <Footer />
                         }
                         <Toaster position="top-right" reverseOrder={false} />
