@@ -128,7 +128,7 @@ const Page = () => {
     }
 
     return (
-        <div id='policy' className='flex flex-col lg:gap-20 md:gap-16 gap-10 custom-container mt-16'>
+        <div id='policy' className='flex flex-col lg:gap-20 md:gap-16 gap-10 px-6 pt-8 bg-[#f2f2f6]/60'>
             <div className='grid grid-cols-5 gap-6'>
                 <div className='col-span-5 w-full h-full 2xl:pb-20 pb-16'>
                     {
@@ -136,14 +136,14 @@ const Page = () => {
                             ?
                             <div className='flex flex-col gap-4'>
                                 <ScrollArea type='hover' className='w-full'>
-                                    <div className="flex items-center gap-8 w-full">
+                                    <div className="flex items-center gap-3 w-full">
                                         {
                                             datatab && datatab?.map((e: any) => {
                                                 return (
                                                     <div
                                                         key={e?.id}
                                                         className={`w-fit whitespace-nowrap h-full col-span-1 cursor-pointer  font-medium text-sm  text-center pb-1 transition-all duration-150 ease-linear
-                                                        ${e?.id == tab.idTab ? "border-b-[#2FB9BD] text-gray-800" : "border-b-white text-gray-500"} hover:border-b-[#2FB9BD] hover:text-gray-800 border-b-2`}
+                                                        ${e?.id == tab.idTab ? "border-b-[#2FB9BD] text-gray-800" : "border-b-transparent text-gray-500"} hover:border-b-[#2FB9BD] hover:text-gray-800 border-b-2`}
                                                         onClick={() => {
                                                             setTab((x: any) => ({
                                                                 idContent: e?.setup_qa_parent[0]?.id ?? null,
@@ -187,7 +187,7 @@ const Page = () => {
                                                         className={`rounded-lg p-3 transition-all duration-150 ease-linear border border-gray-200  ${tab.idContent == question.id ? 'bg-gray-100/60' : ''}  leading-normal shadow-sm md:leading-relaxed`}>
                                                         <AccordionTrigger className={`focus-visible:outline-none w-full py-2 hover:no-underline`}>
                                                             <div className='flex items-center gap-4 justify-between w-full group transition-all duration-150 ease-linear'>
-                                                                <div className={`text-sm ${tab.idContent == question.id ? 'text-[#2FB9BD]' : 'text-[#000000] group-hover:text-[#2FB9BD]'} 
+                                                                <div className={`text-base ${tab.idContent == question.id ? 'text-[#2FB9BD]' : 'text-[#000000] group-hover:text-[#2FB9BD]'} 
                                                                  transition-all duration-150 ease-linear  font-medium text-start`}
                                                                 >
                                                                     {question?.name ?? ''}
@@ -202,7 +202,7 @@ const Page = () => {
                                                                 </div>
                                                             </div >
                                                         </AccordionTrigger >
-                                                        <AccordionContent className='xl:text-base text-sm'>
+                                                        <AccordionContent className='text-sm'>
                                                             <span className="[&_img]:w-full [&_img]:object-cover" dangerouslySetInnerHTML={{ __html: question?.content ?? "" }}></span>
                                                         </AccordionContent>
                                                     </AccordionItem >
