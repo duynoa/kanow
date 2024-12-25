@@ -128,7 +128,7 @@ const Page = () => {
     }
 
     return (
-        <div id='policy' className='flex flex-col lg:gap-20 md:gap-16 gap-10 px-6 pt-8 bg-[#f2f2f6]/60'>
+        <div id='policy' className='flex flex-col lg:gap-20 md:gap-16 gap-10 px-6 pt-8 bg-[#eefefe]'>
             <div className='grid grid-cols-5 gap-6'>
                 <div className='col-span-5 w-full h-full 2xl:pb-20 pb-16'>
                     {
@@ -203,7 +203,8 @@ const Page = () => {
                                                             </div >
                                                         </AccordionTrigger >
                                                         <AccordionContent className='text-sm'>
-                                                            <span className="[&_img]:w-full [&_img]:object-cover" dangerouslySetInnerHTML={{ __html: question?.content ?? "" }}></span>
+                                                            <span className="" dangerouslySetInnerHTML={{ __html: question?.content ?? "" }}></span>
+                                                            {/* <span className="[&_img]:w-full [&_img]:object-cover" dangerouslySetInnerHTML={{ __html: question?.content ?? "" }}></span> */}
                                                         </AccordionContent>
                                                     </AccordionItem >
                                                 ))

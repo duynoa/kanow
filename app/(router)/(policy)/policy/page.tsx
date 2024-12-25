@@ -283,7 +283,8 @@ const Page = () => {
                                                             </div >
                                                         </AccordionTrigger >
                                                         <AccordionContent className='xl:text-base text-sm'>
-                                                            <span className="[&_img]:w-full [&_img]:object-cover" dangerouslySetInnerHTML={{ __html: question?.content ?? "" }}></span>
+                                                            <span className="" dangerouslySetInnerHTML={{ __html: question?.content ?? "" }}></span>
+                                                            {/* <span className="[&_img]:w-full [&_img]:object-cover" dangerouslySetInnerHTML={{ __html: question?.content ?? "" }}></span> */}
                                                         </AccordionContent>
                                                     </AccordionItem >
                                                 ))
