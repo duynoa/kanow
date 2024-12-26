@@ -128,7 +128,7 @@ const PolicyMobile = () => {
                                 return (
                                     <div
                                         key={e?.id}
-                                        className={`w-fit whitespace-nowrap h-full col-span-1 cursor-pointer  font-medium text-[15px]  text-center pb-1 transition-all duration-150 ease-linear
+                                        className={`w-fit select-none whitespace-nowrap h-full col-span-1 cursor-pointer  font-medium text-[15px]  text-center pb-1 transition-all duration-150 ease-linear
                                                         ${e?.id == tab.idTab ? "border-b-[#2FB9BD] text-gray-800" : "border-b-transparent text-gray-500"} hover:border-b-[#2FB9BD] hover:text-gray-800 border-b-2`}
                                         onClick={() => {
                                             setTab((x: any) => ({
