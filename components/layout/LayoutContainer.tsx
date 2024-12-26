@@ -67,6 +67,8 @@ import ButtonDownloadApp from '../button/ButtonDownloadApp';
 import { useDialogStore } from '@/stores/dialogStores';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useDrawerStore } from '@/stores/drawerStores';
+import DrawerCustom from '../drawer/DrawerCustom';
 
 const inter = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -92,12 +94,16 @@ const LayoutContainer = ({
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
 
+    const { openDrawer } = useDrawerStore()
 
     const { getKeySettings } = useAuthenticationAPI()
+
     const { apiGetCurrentPosition } = useGoogleApi()
+
     const { informationUser, setInformationUser } = useAuth()
 
     const { generalKey, setGeneralKey } = useGeneralKey()
+
     const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
     const {
         openDialogAddress,
@@ -602,7 +608,9 @@ const LayoutContainer = ({
                             <DialogLogin />
                             <DialogCalendar />
                             <DialogReviewImage />
-
+                            {
+                                openDrawer && <DrawerCustom />
+                            }
                             {openDialogRequestCarRental && <DialogRequestCarRental />}
 
                             <DialogValidate />

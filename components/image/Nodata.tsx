@@ -47,6 +47,9 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
             case "list-calendar":
                 quertyState({ title: 'Chưa có lịch xe!', image: '/nodata/no-data-calendar.png' })
                 break;
+            case "policyMobi":
+                quertyState({ title: 'Không có dữ liệu', image: '/nodata/no-data-amico.png' })
+                break;
             default:
                 break;
         }
