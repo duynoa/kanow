@@ -26,7 +26,7 @@ const DrawerCustom = () => {
                             onClick={() => setOpenDrawer(true)} />
                     )
                 }
-                <DrawerContent className={'h-[97svh] dark:bg-[#040B24] dark-mode border-none focus:outline-none  rounded-tr-2xl rounded-tl-2xl'}>
+                <DrawerContent className={'h-[100svh] dark:bg-[#040B24] dark-mode border-none focus:outline-none  rounded-tr-2xl rounded-tl-2xl'}>
                     {/* <DrawerContent data-vaul-no-drag className={'h-[90svh] dark:bg-[#040B24] dark-mode border-none focus:outline-none  rounded-tr-2xl rounded-tl-2xl'}> */}
                     <div className="relative">
                         {stringMap[statusDrawer]}

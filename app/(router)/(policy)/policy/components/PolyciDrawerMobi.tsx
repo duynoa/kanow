@@ -45,7 +45,7 @@ const PolyciDrawerMobi = () => {
                                             </div> */}
                                             <Image
                                                 alt={slide?.content}
-                                                src={slide?.image ?? "/nodata/no-data-amico.png"}
+                                                src={slide?.image ?? "/logo/logo_kanow_black.png"}
                                                 width={1280}
                                                 height={1024}
                                                 className="size-full object-contain"
@@ -65,7 +65,15 @@ const PolyciDrawerMobi = () => {
 
                     </Swiper>
                     :
-                    <Nodata type='policyMobi' />
+                    <div className="h-[calc(100vh_-_140px)] flex flex-col items-center justify-center">
+                        <Image
+                            alt={"@logo_kanow_black"}
+                            src={"/logo/logo_kanow_black.png"}
+                            width={1280}
+                            height={1024}
+                            className="size-1/2 object-contain"
+                        />
+                    </div>
             }
 
             <style jsx global>{`

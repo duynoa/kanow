@@ -180,13 +180,26 @@ const PolicyMobile = () => {
                                         }}
                                     >
                                         <div className="size-[80px] bg-gray-200 rounded-md overflow-hidden">
-                                            <Image
-                                                src={e?.setup_qa_items[0]?.image ?? '/nodata/no-data-amico.png'}
-                                                width={1280}
-                                                height={1024}
-                                                className="size-full block rounded-md object-cover px-2 pt-2"
-                                                alt=""
-                                            />
+                                            {
+                                                e?.setup_qa_items[0]?.image
+                                                    ?
+                                                    <Image
+                                                        src={e?.setup_qa_items[0]?.image}
+                                                        width={1280}
+                                                        height={1024}
+                                                        className="size-full block rounded-md object-cover px-2 pt-2"
+                                                        alt=""
+                                                    />
+                                                    :
+                                                    <Image
+                                                        src={'/logo/logo_kanow_black.png'}
+                                                        width={1280}
+                                                        height={1024}
+                                                        className="size-full block rounded-md object-contain px-2 py-2"
+                                                        alt=""
+                                                    />
+                                            }
+
                                         </div>
                                         <div className="flex flex-col gap-1 h-full flex-1">
                                             <h2 className="text-base font-bold line-clamp-3">{e?.name}</h2>
