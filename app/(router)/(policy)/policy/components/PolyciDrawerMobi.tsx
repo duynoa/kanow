@@ -30,7 +30,7 @@ const PolyciDrawerMobi = () => {
                                 <SwiperSlide key={index} >
                                     <div className="flex flex-col">
                                         <div className="h-[380px] flex items-center justify-center bg-gray-200">
-                                            <div className="mockup-modal max-h-full max-w-full w-[216px]">
+                                            {/* <div className="mockup-modal max-h-full max-w-full w-[216px]">
                                                 <div className="relative h-full w-full ">
                                                     <span className="absolute box-border block overflow-hidden w-full h-full bg-none opacity-100 border-0 m-0 p-0 ">
                                                         <Image
@@ -38,11 +38,18 @@ const PolyciDrawerMobi = () => {
                                                             src={slide?.image ?? "/nodata/no-data-amico.png"}
                                                             width={1280}
                                                             height={1024}
-                                                            className="block absolute inset-0 box-border p-0 border-none m-auto w-0 h-0 min-w-full max-w-full min-h-full max-h-full object-cover"
+                                                            className="block absolute inset-0 box-border p-0 border-none m-auto w-0 h-0 min-w-full max-w-full min-h-full max-h-full object-contain"
                                                         />
                                                     </span>
                                                 </div>
-                                            </div>
+                                            </div> */}
+                                            <Image
+                                                alt={slide?.content}
+                                                src={slide?.image ?? "/nodata/no-data-amico.png"}
+                                                width={1280}
+                                                height={1024}
+                                                className="size-full object-contain"
+                                            />
                                         </div>
                                         <div className="px-6 pb-14 pt-7">
                                             <h2 className="text-lg font-semibold text-start">
