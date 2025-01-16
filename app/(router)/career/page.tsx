@@ -9,7 +9,7 @@ import PaginationCustom from '@/components/pagination/PaginationCustom'
 import SkeletonCarrer from '@/components/skeleton/SkeletonCarrer'
 
 import { useDataListCarrer } from '@/hooks/useDataQueryKey'
-import { ReadonlyURLSearchParams,  useSearchParams } from 'next/navigation'
+import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 import { getListCarrer } from '@/services/blog/blog.services'
 
 import { FaUsers } from 'react-icons/fa'
@@ -185,7 +185,6 @@ const Career = (props: Props) => {
                 }
                 const { data } = await getListCarrer(dataParams)
 
-                console.log("data current_page", data);
                 if (data && data.data && data.base && data.meta && data.links) {
                     queryKeyIsStateListCarrer({
                         listCarrer: data.data,
@@ -349,7 +348,6 @@ const Career = (props: Props) => {
                         {
                             isStateListCarrer?.params?.total_blog > isStateListCarrer?.params?.limit ?
                                 <PaginationCustom
-                                    data={isStateListCarrer?.listCarrer}
                                     current_page={isStateListCarrer?.params?.page}
                                     limit={isStateListCarrer?.params?.limit}
                                     total={isStateListCarrer?.params?.total_blog}
