@@ -68,12 +68,6 @@ import { useDialogStore } from '@/stores/dialogStores';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-const inter = Be_Vietnam_Pro({
-    subsets: ['latin'],
-    weight: ['300', '400', '500', '600', '700', '800', '900'],
-    display: 'swap'
-})
-
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
@@ -574,7 +568,7 @@ const LayoutContainer = ({
     return (
         <QueryClientProvider client={queryClient}>
             <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>
-                <body className={`${inter.className} w-full bg-[#FCFDFD]`}>
+                <main className={`w-full bg-[#FCFDFD]`}>
                     <Suspense>
                         {
                             !pathname.startsWith("/vehicle-management-mobile") &&
@@ -634,7 +628,7 @@ const LayoutContainer = ({
                         }
                         <Toaster position="top-right" reverseOrder={false} />
                     </Suspense>
-                </body>
+                </main>
             </GoogleOAuthProvider>
         </QueryClientProvider>
     )
