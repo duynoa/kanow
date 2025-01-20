@@ -13,7 +13,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
 type Props = {
-    data: any[]
+    data?: any[]
     current_page: number,
     limit: number,
     total: number,
