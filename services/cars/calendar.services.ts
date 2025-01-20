@@ -17,6 +17,11 @@ const putPriceSingleDate = (data: any) => {
     return axios.post("/car/updatePrice", data)
 }
 
+// update tiền nhiều ngày 
+const putPriceMultiDate = (data: any) => {
+    return axios.post("/car/updateStatusPriceMulti", data)
+}
+
 // update tiền thứ 7 và chủ nhật
 const putPriceSaturdayAndSunday = (data: any) => {
     return axios.post("/car/updateStatusPriceSunday", data)
@@ -40,6 +45,7 @@ const postChangeQuantityMonthsTalend = (data: any) => {
 export {
     getListCalendarPriceMonth,
     putPriceSingleDate,
+    putPriceMultiDate,
     putPriceSaturdayAndSunday,
     putPriceBusyDay,
     postChangeQuantityMonths,

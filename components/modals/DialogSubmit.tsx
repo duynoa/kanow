@@ -20,9 +20,12 @@ import { useDialogCalendar, useDialogSubmit } from "@/hooks/useOpenDialog";
 import { FormatNumberToThousands, FormatOnlyNumberToThousands, FormatOriginalString } from "../format/FormatNumber";
 import { NumericFormatCore } from "@/lib/numericFormat";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
-import { putPriceSaturdayAndSunday, putPriceSingleDate } from "@/services/cars/calendar.services";
+import { putPriceMultiDate, putPriceSaturdayAndSunday, putPriceSingleDate } from "@/services/cars/calendar.services";
 import { useLoadSuccess } from "@/hooks/useLoadSuccess";
 import ButtonLoading from "../button/ButtonLoading";
+import { useStateTalentedCalendar } from "@/app/(router)/(mobile)/vehicle-management-mobile/(talented-rental)/talented-calendar/_state/useStateTalentedCalendar";
+import { FORMAT_DATE } from "@/constants/FormatDate";
+import moment from "moment";
 
 type Props = {};
 
@@ -35,6 +38,8 @@ export function DialogSubmit({ }: Props) {
     const { dataDetail, dataOther } = useVehicleManage()
     const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
 
+    const { isStateTalentedCalendar, queryKeyIsStateTalentedCalendar } = useStateTalentedCalendar()
+
     const param: ReadonlyURLSearchParams = useSearchParams()
     const car_id: string | null = param.get("key") || ''
     const type: string | null = param.get("t") || ''
@@ -45,6 +50,7 @@ export function DialogSubmit({ }: Props) {
             singlePrice: "0",
             saturdayPrice: "0",
             sundayPrice: "0",
+            customPriceMultiDay: "0"
         }
     })
 
@@ -54,10 +60,17 @@ export function DialogSubmit({ }: Props) {
         dataItem,
         setOpenDialogSubmit,
         setTypeDialogSubmit,
+        setDataItem
     } = useDialogSubmit()
 
     const handleOpenChangeModal = (value: boolean) => {
         setOpenDialogSubmit(value)
+
+        if (isStateTalentedCalendar?.selectedMultiDates?.length > 0) {
+            queryKeyIsStateTalentedCalendar({
+                selectedMultiDates: []
+            })
+        }
     }
 
     useEffect(() => {
@@ -171,12 +184,71 @@ export function DialogSubmit({ }: Props) {
                     }, 200);
                     toastCore.error(data.message)
                 }
+            } else if (typeDialogSubmit === "customPriceMultiDay") {
+                const dataSubmit = new FormData()
+                dataSubmit.append(`type`, type ?? "")
+                dataSubmit.append(`car_id`, car_id ?? "")
+
+                dataItem?.forEach((item: any, index: number) => {
+                    dataSubmit.append(`arr_id[${index}]`, item.id ?? "")
+                });
+                dataSubmit.append(`price`, value.customPriceMultiDay === "0" ? `${dataDetail.data.rent_cost}` : `${FormatOriginalString(value.customPriceMultiDay)}000`)
+
+                const { data } = await putPriceMultiDate(dataSubmit)
+
+                console.log('value', value);
+                console.log('dataItem', dataItem);
+                if (data && data.result) {
+                    toastCore.success("Thay đổi giá thành công!")
+
+                    handleOpenChangeModal(false)
+
+                    setTimeout(() => {
+                        queryKeyIsStateLoadSuccess({
+                            loading: {
+                                ...isStateLoadSuccess.loading,
+                                isSuccessFetchApi: true,
+                                isLoadingButtonSecond: false
+                            }
+                        })
+                    }, 200);
+                } else {
+                    toastCore.error(data.message)
+                    setTimeout(() => {
+                        queryKeyIsStateLoadSuccess({
+                            loading: {
+                                ...isStateLoadSuccess.loading,
+                                isSuccessFetchApi: true,
+                                isLoadingButtonSecond: false
+                            }
+                        })
+                    }, 200);
+                }
+
             }
 
         } catch (err) {
             throw err
         }
     }
+
+    const getFirstAndLastDate = (datesArray: any) => {
+        if (!datesArray || datesArray.length === 0) return { firstDate: null, lastDate: null };
+
+        // Sắp xếp mảng theo ngày
+        const sortedDates = datesArray.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+        return {
+            firstDate: sortedDates[0], // Ngày đầu tiên
+            lastDate: sortedDates[sortedDates.length - 1], // Ngày cuối cùng
+        };
+    };
+
+    const { firstDate, lastDate } = getFirstAndLastDate(isStateTalentedCalendar?.selectedMultiDates || []);
+
+    console.log('firstDate', firstDate);
+    console.log('lastDate', lastDate);
+
 
     return (
         <Dialog
@@ -196,7 +268,8 @@ export function DialogSubmit({ }: Props) {
 
                 <DialogHeader className="flex items-center justify-center w-full 3xl:mt-6 mt-3">
                     <DialogTitle className={` capitalize text-2xl`}>
-                        {typeDialogSubmit === "price_single" && "Tuỳ chỉnh giá"}
+                        {typeDialogSubmit === "price_single" && "Tuỳ chỉnh giá (Single)"}
+                        {typeDialogSubmit === "customPriceMultiDay" && "Tuỳ chỉnh giá (Multi)"}
                         {typeDialogSubmit === "price_weekend" && "Tuỳ chỉnh giá ngày cuối tuần"}
                     </DialogTitle>
                 </DialogHeader>
@@ -391,6 +464,79 @@ export function DialogSubmit({ }: Props) {
                                     title="Xác nhận"
                                     type="submit"
                                     onClick={() => form.handleSubmit((values) => onSubmit(values))}
+                                    className="flex items-center gap-2 w-full text-white border-[#2FB9BD] rounded-xl
+                                border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
+                                    disabled={isStateLoadSuccess.loading.isLoadingButtonSecond}
+                                    isStateloading={isStateLoadSuccess.loading.isLoadingButtonSecond}
+                                />
+                            </div>
+                        }
+
+                        {
+                            typeDialogSubmit === "customPriceMultiDay" &&
+                            <div className='flex flex-col gap-2'>
+                                <FormLabel>
+                                    <h1 className="text-xs font-medium text-[#AAAAAA]">
+                                        Nhập giá truỳ chỉnh cho ngày <span className='font-bold text-[#2FB9BD]'>{moment(firstDate?.date).format(FORMAT_DATE?.DATE_SLASH_LONG)} đến {moment(lastDate?.date).format(FORMAT_DATE?.DATE_SLASH_LONG)}</span>. Nhập 0 nếu muốn dùng giá mặc định
+                                    </h1>
+                                </FormLabel>
+                                <FormField
+                                    control={form.control}
+                                    name="customPriceMultiDay"
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: 'Vui lòng nhập đơn giá thuê',
+                                        },
+                                        validate: {
+                                            function: (value: any) => {
+                                                try {
+                                                    let message = ''
+                                                    if (value < 0) {
+                                                        message = 'Vui lòng không nhập số âm!'
+                                                    }
+                                                    return message || true;
+                                                } catch (error) {
+                                                    throw error;
+                                                }
+                                            }
+                                        }
+                                    }}
+                                    render={({ field, fieldState }) => {
+                                        return (
+                                            <FormItem className="space-y-0 flex flex-col gap-2">
+                                                <FormControl>
+                                                    <div className='flex gap-2 items-center'>
+                                                        <NumericFormatCore
+                                                            className={`w-[60%] max-w-[60%] disabled:bg-[#E6E8EC] 2xl:text-sm lg:text-xs disabled:border-gray-300 disabled:border-2 focus:border-[#2FB9BD] outline-none border-2  2xl:py-3 lg:py-2 md:py-2 py-2  rounded-lg px-3 focus-visible:ring-0 text-[#3E424E] font-normal focus-visible:ring-offset-0`}
+                                                            placeholder="Nhập đơn giá thuê"
+                                                            thousandSeparator={','}
+                                                            maxLength={10}
+                                                            {...field}
+                                                        />
+                                                        <span>k</span>
+                                                    </div>
+                                                </FormControl>
+
+
+                                                {fieldState?.invalid && fieldState?.error && (
+                                                    <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                                )}
+                                            </FormItem>
+                                        );
+                                    }}
+                                />
+                                {
+                                    dataOther?.rent_cost_propose > 0 &&
+                                    <h1 className="text-xs font-medium text-[#AAAAAA]">
+                                        <span>Giá đề xuất</span>
+                                        <span className="px-1">{FormatNumberToThousands(dataOther?.rent_cost_propose)}</span>
+                                    </h1>
+                                }
+                                <ButtonLoading
+                                    title="Xác nhận"
+                                    type="submit"
+                                    onClick={() => { }}
                                     className="flex items-center gap-2 w-full text-white border-[#2FB9BD] rounded-xl
                                 border-2 h-14 bg-[#2FB9BD] font-semibold text-base leading-[17px] hover:bg-[#2FB9BD]/80 hover:border-[#2FB9BD]/80"
                                     disabled={isStateLoadSuccess.loading.isLoadingButtonSecond}

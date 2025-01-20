@@ -16,7 +16,8 @@ import { useLoadSuccess } from "@/hooks/useLoadSuccess";
 import { useDialogCalendar, useDialogSubmit } from "@/hooks/useOpenDialog";
 import { useVehicleManage } from "@/hooks/useVehicleManage";
 
-import { getListCalendarPriceMonth, postChangeQuantityMonths, putPriceBusyDay } from "@/services/cars/calendar.services";
+import { getListCalendarPriceMonth, postChangeQuantityMonths, postChangeQuantityMonthsTalend, putPriceBusyDay } from "@/services/cars/calendar.services";
+
 
 import { isSameDay } from "date-fns";
 
@@ -32,16 +33,15 @@ import moment from "moment";
 import SkeletonCalendar from "@/components/skeleton/SkeletonCalendar";
 import Nodata from "@/components/image/Nodata";
 import ButtonLoading from "@/components/button/ButtonLoading";
-import { useStateSelfCalendar } from "./_state/useStateSelfCalendar";
 
 type Props = {}
 
-export default function SeflCalendar(props: Props) {
+export default function TalentedCalender(props: Props) {
     const options = [
         {
             key: 'option-1',
             value: 'customPriceSingleDay',
-            label: 'Tuỳ chỉnh giá',
+            label: 'Tuỳ chỉnh giá (Single)',
             icon: null,
         },
         {
@@ -56,24 +56,28 @@ export default function SeflCalendar(props: Props) {
             label: 'Thiết lập lịch bận',
             icon: null,
         },
+        {
+            key: 'option-4',
+            value: 'customPriceMultiDay',
+            label: 'Tuỳ chỉnh giá (Multi)',
+            icon: null,
+        },
     ];
 
     const [optionRadio, setOptionRadio] = useState<string>("customPriceSingleDay")
     const [dataCalendarComponent, setDataCalendarComponent] = useState<any[]>([])
     const [openCombobox, setOpenCombobox] = useState<boolean>(false)
-    const [hoverDate, setHoverDate] = useState<Date | null>(null);
+
+    const [selectedDates, setSelectedDates] = useState<any[]>([]); // chọn nhiều ngày
 
     const { isStatePolicy } = useDataPolicy()
     const { isStateLoadSuccess, queryKeyIsStateLoadSuccess } = useLoadSuccess()
-    const { isStateSelfCalendar, queryKeyIsStateSelfCalendar } = useStateSelfCalendar()
-
 
     const {
-        dataItem,
         setOpenDialogSubmit,
         setTypeDialogSubmit,
         setTypeCar,
-        setDataItem,
+        setDataItem
     } = useDialogSubmit()
 
     const {
@@ -88,15 +92,6 @@ export default function SeflCalendar(props: Props) {
     const id: string | null = param.get("key") || ''
 
     const type: string | null = param.get("t") || ''
-
-    const form = useForm({
-        defaultValues: {
-            month: {
-                startMonth: 0,
-                endMonth: 0
-            },
-        }
-    })
 
     // fetch data calendar detail
     const fetchDataListCalendarPriceMonth = useCallback(async () => {
@@ -161,6 +156,16 @@ export default function SeflCalendar(props: Props) {
         }
     }, [isStateLoadSuccess.loading.isSuccessFetchApi, fetchDataListCalendarPriceMonth]);
 
+
+    const form = useForm({
+        defaultValues: {
+            month: {
+                startMonth: 0,
+                endMonth: 0
+            },
+        }
+    })
+
     useEffect(() => {
         if (
             dataCalendar.length > 0 &&
@@ -183,11 +188,6 @@ export default function SeflCalendar(props: Props) {
 
     const handleChangeRadio = (value: any) => {
         setOptionRadio(value)
-
-        setDataItem(undefined)
-        queryKeyIsStateSelfCalendar({
-            selectedMultiDates: []
-        })
     }
 
     const handleChangePriceWeekend = () => {
@@ -216,63 +216,23 @@ export default function SeflCalendar(props: Props) {
                     return;
                 }
 
-                if (isStateSelfCalendar?.selectedMultiDates?.length === 0 || (isStateSelfCalendar?.selectedMultiDates?.length === 1 && isStateSelfCalendar?.selectedMultiDates[0]?.id === item.id)) {
-                    // If no date is selected or clicking on the same date, just select/deselect this date
-                    const updateSelectedDates = (prevDates: any, item: any) => {
-                        return prevDates.some((date: any) => date.id === item.id)
-                            ? prevDates.filter((date: any) => date.id !== item.id)
-                            : [...prevDates, item];
-                    };
+                const isSelected = selectedDates.some((date) => date.id === item.id);
 
-                    // setSelectedMultiDates(prev => updateSelectedDates(prev, item));
-
-                    setDataItem((prev: any) => updateSelectedDates(prev, item))
-
-                    queryKeyIsStateSelfCalendar({
-                        selectedMultiDates: updateSelectedDates(isStateSelfCalendar?.selectedMultiDates, item)
-                    })
+                if (isSelected) {
+                    // Nếu ngày đã được chọn, xóa khỏi danh sách
+                    setSelectedDates((prev) => prev.filter((date) => date.id !== item.id));
                 } else {
-                    // If a date is already selected, select all dates between
-                    const startDate = new Date(Math.min(new Date(isStateSelfCalendar?.selectedMultiDates[0].date) as any, new Date(item.date) as any));
-                    const endDate = new Date(Math.max(new Date(isStateSelfCalendar?.selectedMultiDates[0].date) as any, new Date(item.date) as any));
-
-                    const newSelectedDates = [];
-                    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-                        const currentDate = new Date(d);
-                        const matchingItem = dataCalendar
-                            .flatMap(month => month.price_detail)
-                            .find(detail => new Date(detail.date).toDateString() === currentDate.toDateString());
-
-                        if (matchingItem) {
-                            newSelectedDates.push(matchingItem);
-                        }
-                    }
-
-                    console.log('newSelectedDates', newSelectedDates);
-
-                    // setSelectedMultiDates(newSelectedDates);
-
-                    setOpenDialogSubmit(true)
-                    setTypeDialogSubmit("customPriceMultiDay")
-                    setTypeCar(type)
-                    setDataItem(newSelectedDates)
-
-                    queryKeyIsStateSelfCalendar({
-                        selectedMultiDates: newSelectedDates
-                    })
+                    // Nếu ngày chưa được chọn, thêm vào danh sách
+                    setSelectedDates((prev) => [...prev, item]);
                 }
             }
         }
     };
 
-    const handleDateHover = (item: any) => {
-        if (optionRadio === "customPriceMultiDay" && isStateSelfCalendar?.selectedMultiDates?.length === 1) {
-            setHoverDate(new Date(item.date));
-        }
-    };
-
     const onSubmitBusyDay = async (item: any) => {
         try {
+
+
             const dataSubmit = {
                 type: type,
                 price_detail_id: item.id
@@ -286,6 +246,7 @@ export default function SeflCalendar(props: Props) {
                         isSuccessFetchApi: true
                     }
                 })
+
                 toastCore.success("Cập nhật ngày bận thành công!")
             } else {
                 toastCore.error(data.message)
@@ -340,7 +301,7 @@ export default function SeflCalendar(props: Props) {
                     {
                         id: uuidv4(),
                         price_month_car_id: monthInfoId,
-                        price: dataDetail?.data?.car?.rent_cost,
+                        price: dataDetail?.data?.car_talent?.rent_cost,
                         date: dateString,
                         date_word: dateWord,
                         day: day,
@@ -364,43 +325,44 @@ export default function SeflCalendar(props: Props) {
         }
         // setDataCalendar(monthInfoArray)
         setDataCalendarComponent(monthInfoArray)
+
     };
 
     const onSubmit = async (value: any) => {
         try {
             let dataSubmit = new FormData();
             dataSubmit.append('car_id', id);
-            dataSubmit.append('time_end', value?.month?.endMonth)
+            dataSubmit.append('time_end_talent', value?.month?.endMonth)
 
             if (dataCalendarComponent.length > 0) {
                 dataCalendarComponent.forEach((item, index) => {
-                    dataSubmit.append(`month[]`, item?.month ? item?.month : 0);
-                    dataSubmit.append(`year[${item?.month}]`, item?.year ? item?.year : "");
+                    dataSubmit.append(`month_talent[]`, item?.month ? item?.month : 0);
+                    dataSubmit.append(`year_talent[${item?.month}]`, item?.year ? item?.year : "");
 
 
                     if (item.price_detail && item.price_detail.length > 0) {
                         item.price_detail.forEach((priceItem: any, priceIndex: any) => {
                             // Thực hiện các thao tác bạn muốn với mỗi priceItem ở đây
                             // Ví dụ:
-                            dataSubmit.append(`day[${item?.month}][]`, moment(priceItem?.date).format("DD/MM/YYYY"));
-                            dataSubmit.append(`price[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, dataDetail?.data?.car?.rent_cost);
-                            dataSubmit.append(`status[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, "0");
+                            dataSubmit.append(`day_talent[${item?.month}][]`, moment(priceItem?.date).format("DD/MM/YYYY"));
+                            dataSubmit.append(`price_talent[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, dataDetail?.data?.car_talent?.rent_cost);
+                            dataSubmit.append(`status_talent[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, "0");
                             // và những cái khác...
                         });
                     }
                 });
             } else if (dataCalendar.length > 0) {
                 dataCalendar.forEach((item, index) => {
-                    dataSubmit.append(`month[]`, item?.month ? item?.month : 0);
-                    dataSubmit.append(`year[${item?.month}]`, item?.year ? item?.year : "");
+                    dataSubmit.append(`month_talent[]`, item?.month ? item?.month : 0);
+                    dataSubmit.append(`year_talent[${item?.month}]`, item?.year ? item?.year : "");
 
                     if (item.price_detail && item.price_detail.length > 0) {
                         item.price_detail.forEach((priceItem: any, priceIndex: any) => {
                             // Thực hiện các thao tác bạn muốn với mỗi priceItem ở đây
                             // Ví dụ:
-                            dataSubmit.append(`day[${item?.month}][]`, moment(priceItem?.date).format("DD/MM/YYYY"));
-                            dataSubmit.append(`price[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, dataDetail?.data?.car?.rent_cost);
-                            dataSubmit.append(`status[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, "0");
+                            dataSubmit.append(`day_talent[${item?.month}][]`, moment(priceItem?.date).format("DD/MM/YYYY"));
+                            dataSubmit.append(`price_talent[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, dataDetail?.data?.car_talent?.rent_cost);
+                            dataSubmit.append(`status_talent[${item?.month}][${moment(priceItem?.date).format("DD/MM/YYYY")}]`, "0");
                             // và những cái khác...
                         });
                     }
@@ -447,19 +409,8 @@ export default function SeflCalendar(props: Props) {
         }
     }
 
-    const getFirstAndLastDate = (datesArray: any) => {
-        if (!datesArray || datesArray.length === 0) return { firstDate: null, lastDate: null };
+    console.log('selectedDates', selectedDates);
 
-        // Sắp xếp mảng theo ngày
-        const sortedDates = datesArray.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-        return {
-            firstDate: sortedDates[0], // Ngày đầu tiên
-            lastDate: sortedDates[sortedDates.length - 1], // Ngày cuối cùng
-        };
-    };
-
-    const { firstDate, lastDate } = getFirstAndLastDate(isStateSelfCalendar?.selectedMultiDates || []);
 
     return (
         <BackgroundUiVehicle className={"min-h-[90vh]"}>
@@ -499,6 +450,7 @@ export default function SeflCalendar(props: Props) {
                                 );
                             }}
                         />
+
                         <FormField
                             control={form.control}
                             name="month.endMonth"
@@ -517,46 +469,47 @@ export default function SeflCalendar(props: Props) {
                                             Cho đến <span className="text-red-500 px-1">*</span>
                                         </FormLabel>
                                         <FormControl>
-                                            <>
-                                                <Popover
-                                                    open={openCombobox}
-                                                    onOpenChange={() => setOpenCombobox(!openCombobox)}
-                                                >
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            variant="outline"
-                                                            role="combobox"
-                                                            className={`${checkValue ? "justify-between" : "justify-end"} 2xl:py-3 w-full 3xl:h-12 h-10 3xl:rounded-2xl rounded-lg lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs border-[#E6E8EC] border-2 hover:bg-transparent`}
-                                                        >
-                                                            <span className='text-base'>
-                                                                {checkValue ? checkValue : ""}
-                                                            </span>
-                                                            <MdKeyboardArrowDown className="ml-2 text-xl shrink-0 opacity-50" />
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="3xl:w-[600px] xxl:w-[560px] 2xl:w-[500px] xl:w-[400px] lg:w-[300px] md:w-[320px] w-auto">
-                                                        <SelectCombobox
-                                                            data={isStatePolicy?.dataPolicy?.getListPriceMonth}
-                                                            field={field}
-                                                            onChange={(e: any) => {
-                                                                field.onChange(e)
-                                                                setOpenCombobox(false)
-                                                                handleChangeMonthCalendar(e)
-                                                            }}
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
-                                            </>
+                                            <Popover
+                                                open={openCombobox}
+                                                onOpenChange={() => setOpenCombobox(!openCombobox)}
+                                            >
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        className={`${checkValue ? "justify-between" : "justify-end"} 2xl:py-3 w-full 3xl:h-12 h-10 3xl:rounded-2xl rounded-lg lg:py-2 md:py-2 py-2 px-3 2xl:text-sm lg:text-xs border-[#E6E8EC] border-2 hover:bg-transparent`}
+                                                    >
+                                                        <span className='text-base'>
+                                                            {checkValue ? checkValue : ""}
+                                                        </span>
+                                                        <MdKeyboardArrowDown className="ml-2 text-xl shrink-0 opacity-50" />
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="3xl:w-[600px] xxl:w-[560px] 2xl:w-[500px] xl:w-[400px] lg:w-[300px] md:w-[320px] w-auto">
+                                                    <SelectCombobox
+                                                        data={isStatePolicy?.dataPolicy?.getListPriceMonth}
+                                                        field={field}
+                                                        onChange={(e: any) => {
+                                                            field.onChange(e)
+                                                            setOpenCombobox(false)
+                                                            handleChangeMonthCalendar(e)
+                                                        }}
+                                                    />
+                                                </PopoverContent>
+                                            </Popover>
                                         </FormControl>
 
-                                        {fieldState?.invalid && fieldState?.error && (
-                                            <FormMessage>{fieldState?.error?.message}</FormMessage>
-                                        )}
+                                        {
+                                            fieldState?.invalid && fieldState?.error && (
+                                                <FormMessage>{fieldState?.error?.message}</FormMessage>
+                                            )
+                                        }
                                     </FormItem>
                                 );
                             }}
                         />
                     </div>
+
                     <div className="flex items-center md:justify-end justify-between gap-2 mt-2">
                         {/* <ButtonSaveForm
                             title="Cập Nhật Tháng"
@@ -578,7 +531,7 @@ export default function SeflCalendar(props: Props) {
             </div>
 
             <div className='flex flex-col gap-4 pt-8'>
-                <div className='text-xl uppercase font-bold'>
+                <div className='3xl:text-2xl text-xl font-semibold'>
                     Lịch xe
                 </div>
 
@@ -607,6 +560,32 @@ export default function SeflCalendar(props: Props) {
                         </div>
                     </div>
 
+                    <div
+                        onClick={() => handleChangePriceWeekend()}
+                        className='flex items-center gap-2'
+                    >
+                        <LuCalendarClock className='text-lg text-[#2FB9BD] hover:text-[#2FB9BD]/80 cursor-pointer transition-all duration-300 custom-transition' />
+                        <div className='text-base font-normal capitalize hover:text-[#2FB9BD]/80 cursor-pointer custom-transition'>
+                            Chỉnh giá ngày cuối tuần
+                        </div>
+                    </div>
+
+                    <div key={'option-3'} className='flex items-center 3xl:space-x-3 space-x-2 group w-fit'>
+                        <RadioGroupItem
+                            value={`settingCalendarBusy`}
+                            id={`settingCalendarBusy`}
+                            className={`${optionRadio == "settingCalendarBusy" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
+                        />
+                        <Label
+                            htmlFor={`settingCalendarBusy`}
+                            className="flex items-center gap-4 cursor-pointer"
+                        >
+                            <div className='text-base font-normal capitalize'>
+                                Thiết lập lịch bận
+                            </div>
+                        </Label>
+                    </div>
+
                     <div key={'option-4'} className='flex items-center 3xl:space-x-3 space-x-2 group w-fit'>
                         <RadioGroupItem
                             value={`customPriceMultiDay`}
@@ -619,32 +598,6 @@ export default function SeflCalendar(props: Props) {
                         >
                             <div className='text-base font-normal capitalize'>
                                 Tuỳ Chỉnh giá (Multi)
-                            </div>
-                        </Label>
-                    </div>
-
-                    <div
-                        onClick={() => handleChangePriceWeekend()}
-                        className='flex items-center gap-2'
-                    >
-                        <LuCalendarClock className='text-lg text-[#2FB9BD] hover:text-[#2FB9BD]/80 cursor-pointer transition-all duration-300 custom-transition' />
-                        <div className='text-base font-normal capitalize hover:text-[#2FB9BD]/80 cursor-pointer custom-transition'>
-                            Chỉnh giá ngày cuối tuần
-                        </div>
-                    </div>
-
-                    <div key={'option-2'} className='flex items-center 3xl:space-x-3 space-x-2 group w-fit'>
-                        <RadioGroupItem
-                            value={`settingCalendarBusy`}
-                            id={`settingCalendarBusy`}
-                            className={`${optionRadio == "settingCalendarBusy" ? "border-[#2FB9BD]" : "border-[#B4B8C5]"} focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none group-hover:border-[#2FB9BD] text-[#2FB9BD] duration-300 transition`}
-                        />
-                        <Label
-                            htmlFor={`settingCalendarBusy`}
-                            className="flex items-center gap-4 cursor-pointer"
-                        >
-                            <div className='text-base font-normal capitalize'>
-                                Thiết lập lịch bận
                             </div>
                         </Label>
                     </div>
@@ -678,8 +631,6 @@ export default function SeflCalendar(props: Props) {
                                             // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
                                             const firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay();
                                             const lastDayOfWeek = lastDayOfMonth.getDay() === 0 ? 7 : lastDayOfMonth.getDay();
-                                            // const firstDayOfWeek = firstDayOfMonth?.getDay();
-                                            // const lastDayOfWeek = lastDayOfMonth?.getDay();
 
                                             // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
                                             const startOfPreviousWeek = new Date(firstDayOfMonth);
@@ -727,8 +678,6 @@ export default function SeflCalendar(props: Props) {
                                                 const isSaturday = dayOfWeek === 6;
                                                 const isSunday = dayOfWeek === 0;
 
-                                                const isSelected = isStateSelfCalendar?.selectedMultiDates?.some((date: any) => date.id === dayData.id);
-
                                                 return (
                                                     <div
                                                         key={`day-${i}`}
@@ -738,28 +687,21 @@ export default function SeflCalendar(props: Props) {
                                                                 :
                                                                 (event) => handleSelectDate(event, dayData)
                                                         }
-                                                        onMouseEnter={() => handleDateHover(dayData)}
-                                                        onMouseLeave={() => setHoverDate(null)}
                                                         className={`col-span-1  border-[#F4F4F4] border-r border-b flex flex-col justify-center items-center 3xl:gap-1 gap-0 w-full 3xl:h-14 h-12 group text-center                            
-                                                            ${isSelected ? "bg-[#2FB9BD] hover:!bg-[#2FB9BD]/80 !text-white" : ""}
-                                                            ${!isPastDay && dayData.status === 2 || !isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-pointer" : ""}
-                                                            ${isPastDay && dayData.status === 2 || isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-default" : ""}
-                                                            ${isPastDay || dayData.isNextMonthDay || dayData.isPreviousMonthDay ? "text-gray-400 font-normal cursor-default" : " cursor-pointer hover:bg-[#E0E0E0]/20 duration-200 transition-all"}
-                                                            ${(!dayData.isNextMonthDay || !dayData.isPreviousMonthDay) && optionRadio === "customPriceMultiDay" && isStateSelfCalendar?.selectedMultiDates?.length === 1 &&
-                                                                new Date(dayData.date) >= new Date(isStateSelfCalendar?.selectedMultiDates[0]?.date) &&
-                                                                new Date(dayData.date) <= (hoverDate || new Date(isStateSelfCalendar?.selectedMultiDates[0]?.date)) ?
-                                                                "bg-[#2FB9BD]/40 !text-[#2FB9BD]" : ""}
-                                                            `}
+                                    ${!isPastDay && dayData.status === 2 || !isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-pointer" : ""}
+                                    ${isPastDay && dayData.status === 2 || isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-default" : ""}
+                                    ${isPastDay || dayData.isNextMonthDay || dayData.isPreviousMonthDay ? "text-gray-400 font-normal cursor-default" : " cursor-pointer hover:bg-[#E0E0E0]/20 duration-200 transition-all"}
+                                    `}
                                                     >
-                                                        <div className='3xl:text-xs text-[11px] font-normal'>
+                                                        <div className='text-sm font-normal'>
                                                             {dayData.day}
                                                         </div>
 
                                                         <div
                                                             className={`3xl:text-[13px] text-xs 
-                                    ${isPastDay ? "font-normal" : "font-semibold"} 
-                                ${(isSaturday && !isPastDay) || (isSunday && !isPastDay) ? 'text-[#2FB9BD]' : ''} 
-                                `}
+                                        ${isPastDay ? "font-normal" : "font-semibold"} 
+                                    ${(isSaturday && !isPastDay) || (isSunday && !isPastDay) ? 'text-[#2FB9BD]' : ''} 
+                                    `}
                                                         >
                                                             {dayData.price ? FormatNumberToThousands(dayData.price) : ''}
                                                         </div>
@@ -818,8 +760,6 @@ export default function SeflCalendar(props: Props) {
                                                     // Xác định ngày đầu tiên của tuần và ngày cuối cùng của tuần
                                                     const firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay();
                                                     const lastDayOfWeek = lastDayOfMonth.getDay() === 0 ? 7 : lastDayOfMonth.getDay();
-                                                    // const firstDayOfWeek = firstDayOfMonth?.getDay();
-                                                    // const lastDayOfWeek = lastDayOfMonth?.getDay();
 
                                                     // Xác định ngày bắt đầu và kết thúc của tuần trước và tuần sau
                                                     const startOfPreviousWeek = new Date(firstDayOfMonth);
@@ -867,7 +807,7 @@ export default function SeflCalendar(props: Props) {
                                                         const isSaturday = dayOfWeek === 6;
                                                         const isSunday = dayOfWeek === 0;
 
-                                                        const isSelected = isStateSelfCalendar?.selectedMultiDates?.some((date) => date.id === dayData.id);
+                                                        const isSelected = selectedDates.some((date) => date.id === dayData.id);
 
                                                         return (
                                                             <div
@@ -878,28 +818,22 @@ export default function SeflCalendar(props: Props) {
                                                                         :
                                                                         (event) => handleSelectDate(event, dayData)
                                                                 }
-                                                                onMouseEnter={() => handleDateHover(dayData)}
-                                                                onMouseLeave={() => setHoverDate(null)}
                                                                 className={`col-span-1  border-[#F4F4F4] border-r border-b flex flex-col justify-center items-center 3xl:gap-1 gap-0 w-full 3xl:h-14 h-12 group text-center                            
-                                                                    ${isSelected && "!bg-[#2FB9BD] hover:!bg-[#2FB9BD]/80 !text-white"}
+                                                                    ${isSelected ? "bg-[#2FB9BD] hover:!bg-[#2FB9BD]/80 !text-white" : ""}
                                                                     ${!isPastDay && dayData.status === 2 || !isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-pointer" : ""}
                                                                     ${isPastDay && dayData.status === 2 || isPastDay && dayData.status === 3 ? "bg-[#E0E0E0]/80 cursor-default" : ""}
                                                                     ${isPastDay || dayData.isNextMonthDay || dayData.isPreviousMonthDay ? "text-gray-400 font-normal cursor-default" : " cursor-pointer hover:bg-[#E0E0E0]/20 duration-200 transition-all"}
-                                                                    ${(!dayData.isNextMonthDay || !dayData.isPreviousMonthDay) && optionRadio === "customPriceMultiDay" && isStateSelfCalendar?.selectedMultiDates?.length === 1 &&
-                                                                        new Date(dayData.date) >= new Date(isStateSelfCalendar?.selectedMultiDates[0]?.date) &&
-                                                                        new Date(dayData.date) <= (hoverDate || new Date(isStateSelfCalendar?.selectedMultiDates[0]?.date)) ?
-                                                                        "bg-[#2FB9BD]/40 !text-[#2FB9BD]" : ""}
-                                                                        `}
+                                        `}
                                                             >
-                                                                <div className='3xl:text-xs text-[11px] font-normal'>
+                                                                <div className='text-sm font-normal'>
                                                                     {dayData.day}
                                                                 </div>
 
                                                                 <div
                                                                     className={`3xl:text-[13px] text-xs 
                                                                         ${isPastDay ? "font-normal" : "font-semibold"} 
+                                                                        ${isSelected ? " !text-white" : ""}
                                                                         ${(isSaturday && !isPastDay) || (isSunday && !isPastDay) ? 'text-[#2FB9BD]' : ''} 
-                                                                        ${!isSelected && ((isSaturday && !isPastDay) || (isSunday && !isPastDay)) ? 'text-[#2FB9BD]' : ''} 
                                                                     `}
                                                                 >
                                                                     {dayData.price ? FormatNumberToThousands(dayData.price) : ''}
@@ -936,9 +870,7 @@ export default function SeflCalendar(props: Props) {
                                                 })
                                             )
                                             :
-                                            (
-                                                <Nodata type="list-calendar" />
-                                            )
+                                            <Nodata type="list-calendar" />
                                     )
                             )
                     }
