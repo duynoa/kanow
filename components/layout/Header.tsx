@@ -22,6 +22,7 @@ import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
 import { Skeleton } from '../ui/skeleton';
 import usePolicyApi from '@/services/policy/policy.services';
+import { redirectToApp } from '@/utils/fnChange/redirectoApp';
 
 interface IDataHeader {
     id: string,
@@ -414,6 +415,8 @@ const Header = () => {
 
     const dataListUnreadNotify = isStateNotification.dataListNotifications?.filter((item) => item?.is_read == 0)
 
+
+
     if (!isMounted) {
         return null;
     }
@@ -533,7 +536,10 @@ const Header = () => {
                                             <div className='flex gap-2 mb-6'>
                                                 <Button
                                                     type="button"
-                                                    onClick={() => handleOpenChangeModal('signup')}
+                                                    onClick={() => {
+                                                        redirectToApp()
+                                                    }}
+                                                    // onClick={() => handleOpenChangeModal('signup')}
                                                     className='3xl:text-base text-sm 3xl:py-4 3xl:px-4 lg:p-3 px-4 py-2 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
                                                 >
                                                     Đăng Ký
@@ -772,7 +778,10 @@ const Header = () => {
                                                     <Button
                                                         type="button"
                                                         className='3xl:text-base text-sm 3xl:py-4 3xl:px-4 p-3 w-fit 3xl:gap-2 gap-1 rounded-2xl cursor-pointer hover:scale-105 hover:bg-transparent transition-all overflow-hidden bg-transparent text-[#585F71]'
-                                                        onClick={() => handleOpenChangeModal('signup')}
+                                                        onClick={() => {
+                                                            redirectToApp()
+                                                        }}
+                                                    // onClick={() => handleOpenChangeModal('signup')}
                                                     >
                                                         Đăng Ký
                                                     </Button>
