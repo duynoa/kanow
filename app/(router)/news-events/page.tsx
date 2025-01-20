@@ -321,7 +321,6 @@ const NewsEvents = (props: Props) => {
                         {
                             isStateNewsEvents?.params?.total_blog > isStateNewsEvents?.params?.limit ?
                                 <PaginationCustom
-                                    data={isStateNewsEvents?.listNewsEvents}
                                     current_page={isStateNewsEvents?.params?.page}
                                     limit={isStateNewsEvents?.params?.limit}
                                     total={isStateNewsEvents?.params?.total_blog}

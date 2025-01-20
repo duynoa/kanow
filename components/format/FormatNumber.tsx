@@ -115,6 +115,11 @@ function FormatDistanceFullKm(distance: number) {
     }
 }
 
+function FormatDistanceMToKm(distance: number) {
+    // Chuyển đổi tất cả về mét
+    return (distance / 1000).toFixed(1);
+}
+
 // format bỏ dấu "," trong chuỗi string
 const FormatOriginalString = (value: string) => {
     return value.replace(/[.,]/g, "")
@@ -133,5 +138,6 @@ export {
     FormatDistance,
     FormatDistanceFullKm,
     FormatNumberComma,
-    FormatNumberSpace
+    FormatNumberSpace,
+    FormatDistanceMToKm
 }

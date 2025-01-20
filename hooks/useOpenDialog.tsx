@@ -351,7 +351,7 @@ interface IOpenDialogSubmit {
     setOpenDialogSubmit: (key: any) => void;
     setTypeDialogSubmit: (type: string) => void;
     setTypeCar: (typeCar: string) => void;
-    setDataItem: (dataItem: string) => void;
+    setDataItem: (dataItem: any) => void;
 }
 
 export const useDialogSubmit = create<IOpenDialogSubmit>((set) => ({

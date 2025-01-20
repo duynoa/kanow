@@ -151,12 +151,12 @@ const DetailBlog = (props: Props) => {
                                     <div className='3xl:text-5xl 2xl:text-3xl text-2xl text-[#000000] font-semibold'>
                                         {isStateDetailNewsEvents?.dataDetail?.title ? isStateDetailNewsEvents?.dataDetail?.title : ""}
                                     </div>
-                                    <span
+                                    <div
                                         ref={contentRef}
                                         dangerouslySetInnerHTML={{ __html: `${isStateDetailNewsEvents?.dataDetail?.content ? isStateDetailNewsEvents?.dataDetail?.content : ''}` }}
                                         className="
                                             mt-6 text-justify
-                                            [&_a_has-[img]]:bg-contain [&_a:has(img)]:w-full [&_a:not(:has(img))]:w-fit whitespace-break-spaces 
+                                            [&_a_has-[img]]:bg-contain [&_a:has(img)]:w-full [&_a:not(:has(img))]:w-fit 
                                             [&_img]:mx-auto [&_figure]:flex [&_figure]:justify-center
                                             [&_table]:w-full [&_table]:border-collapse [&_table]:border [&_table]:border-gray-300
                                           [&_th]:bg-gray-100 [&_th]:border [&_th]:border-gray-300 [&_th]:p-1 [&_th]:text-left

@@ -329,13 +329,14 @@ const Footer = () => {
             </div>
             <div className='custom-container grid lg:grid-cols-12 grid-cols-1 lg:gap-2 gap-6 pt-6 items-center'>
                 <div className='lg:col-span-2 col-span-1 w-full flex flex-col 2xl:gap-5 gap-3'>
-                    {/* <Image
+                    <Image
                         alt='logo'
                         src="/logo/logo_register.png"
                         width={800}
                         height={600}
-                        className='w-full h-auto object-contain'
-                    /> */}
+                        className='w-full h-auto object-contain cursor-pointer'
+                        onClick={() => window.open("http://online.gov.vn/Home/WebDetails/118353")}
+                    />
                 </div>
                 <div className='col-span-1' />
                 <div className='lg:col-span-5 col-span-1 w-full flex flex-col'>
