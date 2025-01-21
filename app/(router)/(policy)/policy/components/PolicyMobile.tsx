@@ -4,6 +4,7 @@ import Nodata from "@/components/image/Nodata"
 import SearchNormal from "@/components/search/SearchNormal"
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useResize } from "@/hooks/useResize"
 import { useGetUsePolicy } from '@/managers/api-management/policy/useGetUsePolicy'
 import usePolicyApi from '@/services/policy/policy.services'
 import { useDrawerStore } from "@/stores/drawerStores"
@@ -114,7 +115,7 @@ const PolicyMobile = () => {
     }
 
     return (
-        <div id='policy' className='px-6 pt-8 flex flex-col gap-4'>
+        <div id='policy' className={`px-6 pt-8 flex flex-col gap-4`}>
             <ScrollArea type='hover' className='w-full'>
                 <div className="flex items-center gap-3 w-full">
                     {

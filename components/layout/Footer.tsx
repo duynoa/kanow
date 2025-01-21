@@ -194,13 +194,13 @@ const Footer = () => {
                         return {
                             ...e,
                             list: [
-                                // {
-                                //     id: -5,
-                                //     title: "Hướng dẫn sử dụng",
-                                //     link: '/policy?type=2&id=-5',
-                                //     descption: null,
-                                //     content: null
-                                // },
+                                {
+                                    id: -5,
+                                    title: "Hướng dẫn sử dụng",
+                                    link: '/policy?type=2&id=-5',
+                                    descption: null,
+                                    content: null
+                                },
                                 ...e.list,
                                 ...list
                             ]

@@ -50,6 +50,9 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
             case "policyMobi":
                 quertyState({ title: 'Không có dữ liệu', image: '/nodata/no-data-amico.png' })
                 break;
+            case "policy":
+                quertyState({ title: 'Không có dữ liệu', image: '/nodata/no-data-amico.png' })
+                break;
             default:
                 break;
         }
@@ -76,6 +79,7 @@ const Nodata = ({ type, className }: { type: string, className?: string }) => {
                  ${type == 'list-my-car' && (isVisibleMobile ? "size-full" : 'size-[50%]')}
                  ${type == 'list-notifications' && (isVisibleMobile ? "size-full" : 'size-[80%]')}
                  ${type == 'list-calendar' && (isVisibleMobile ? "size-full" : 'size-[45%]')}
+                 ${type == 'policy' && (isVisibleMobile ? "size-full" : 'size-[45%]')}
                  mx-auto`} />
             </div>
             <h1 className="3xl:text-lg lg:text-sm text-base font-medium">{data.title}</h1>
