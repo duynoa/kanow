@@ -304,7 +304,7 @@ const Page = () => {
                             // <PolicyMobile />
                             <div id='policy' className={`px-6 flex flex-col gap-4`}>
                                 <ScrollArea type='hover' className='w-full'>
-                                    <div className="flex items-center gap-3 w-full">
+                                    <div className="flex items-center xl:gap-7 gap-4 w-full">
                                         {
                                             isLoading
                                                 ?
