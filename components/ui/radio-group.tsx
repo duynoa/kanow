@@ -5,6 +5,7 @@ import * as RadioGroupPrimitive from "@radix-ui/react-radio-group"
 import { Circle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { FaCheck } from "react-icons/fa6"
 
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
@@ -22,8 +23,8 @@ RadioGroup.displayName = RadioGroupPrimitive.Root.displayName
 
 const RadioGroupItem = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
->(({ className, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> & { typeRadio?: string }
+>(({ className, typeRadio = "circle", ...props }, ref) => {
   return (
     <RadioGroupPrimitive.Item
       ref={ref}
@@ -34,7 +35,14 @@ const RadioGroupItem = React.forwardRef<
       {...props}
     >
       <RadioGroupPrimitive.Indicator className="flex items-center justify-center text-center">
-        <Circle className="3xl:h-2.5 3xl:w-2.5 h-2 w-2 fill-current text-current" />
+        {
+          typeRadio === "circle" &&
+          <Circle className="3xl:h-2.5 3xl:w-2.5 h-2 w-2 fill-current text-current" />
+        }
+        {
+          typeRadio === "checked" &&
+          <FaCheck className="3xl:h-3 3xl:w-3 h-2.5 w-2.5 fill-current text-current" />
+        }
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   )

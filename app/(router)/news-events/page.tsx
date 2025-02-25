@@ -230,7 +230,7 @@ const NewsEvents = (props: Props) => {
                         <div className='grid grid-cols-3 3xl:gap-8 xl:gap-6 gap-4 w-full h-full'>
                             {isStateNewsEvents?.listNewsEvents?.length > 0 && (
                                 <div className='w-full lg:col-span-2 col-span-3 3xl:h-[532px] 2xl:h-[480px] xxl:h-[480px] xl:h-[464px] lg:h-[416px] md:h-[320px] h-[200px]'>
-                                    <Link href={`/news-events/${isStateNewsEvents?.listNewsEvents[0].id}?${ConvertToSlug(isStateNewsEvents?.listNewsEvents[0]?.title)}`} className='relative group'>
+                                    <Link href={`/news-events/${isStateNewsEvents?.listNewsEvents[0].slug}`} className='relative group'>
                                         <div className='relative w-full h-full group overflow-hidden rounded-2xl'>
                                             <div className='absolute rounded-2xl top-0 w-full h-full z-[5] bg-[#000000]/30' />
                                             <BlurImage
@@ -258,7 +258,7 @@ const NewsEvents = (props: Props) => {
                                 {isStateNewsEvents?.listNewsEvents?.length > 1 && isStateNewsEvents?.listNewsEvents?.slice(1, 3)?.map((article, index) => (
                                     <Link
                                         key={`news-${article.id}`}
-                                        href={`/news-events/${article.id}?${ConvertToSlug(article?.title)}`}
+                                        href={`/news-events/${article.slug}`}
                                         className='relative group lg:row-span-1 h-full'
                                     >
                                         <div className='w-full h-full group overflow-hidden rounded-2xl'>
@@ -291,7 +291,7 @@ const NewsEvents = (props: Props) => {
                                     <Link
                                         key={`news-${item.id}`}
                                         className='col-span-1 bg-white border w-full p-4 flex flex-col 3xl:gap-4 gap-3 rounded-xl relative z-0 group hover:scale-[1.02] transition duration-200 ease-in-out'
-                                        href={`/news-events/${item.id}?${ConvertToSlug(item?.title)}`}
+                                        href={`/news-events/${item.slug}`}
                                         prefetch={false}
                                     >
                                         <div className='w-full 3xl:h-[220px] xxl:h-[200px] xl:h-[180px] h-[180px] relative overflow-hidden rounded-xl'>

@@ -23,7 +23,10 @@ const DetailBlog = (props: Props) => {
     const swiperRefBlogs = useRef<any>(null);
     const contentRef = useRef<any>(null);
     const params = useParams()
-    const idBlog = +params.slug
+    const idBlog = params.slug
+
+    console.log('idBlog', params);
+
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
     // slider banner
@@ -148,7 +151,7 @@ const DetailBlog = (props: Props) => {
                                 </div>
 
                                 <div className='flex flex-col gap-4 custom-container'>
-                                    <div className='3xl:text-5xl 2xl:text-3xl text-2xl text-[#000000] font-semibold'>
+                                    <div className='3xl:text-[48px] 2xl:text-[30px] text-[24px] text-[#000000] font-semibold leading-tight'>
                                         {isStateDetailNewsEvents?.dataDetail?.title ? isStateDetailNewsEvents?.dataDetail?.title : ""}
                                     </div>
                                     <div
@@ -211,36 +214,40 @@ const DetailBlog = (props: Props) => {
                                         className='custom-swiper'
                                     >
                                         {
-                                            isStateDetailNewsEvents?.listNewsEventsRelated.map((item) => (
-                                                <SwiperSlide key={`carRelated-${item.id}`}>
-                                                    <Link
-                                                        href={`/news-events/${item.id}?${ConvertToSlug(item.title)}`}
-                                                        className='bg-white border p-4 flex flex-col gap-4 rounded-xl relative z-0 transition duration-200 ease-in-out group'
-                                                    >
-                                                        <div className='w-full 3xl:h-[220px] xxl:h-[180px] xl:h-[180px] h-[180px] relative overflow-hidden rounded-xl'>
-                                                            <Image
-                                                                width={600}
-                                                                height={600}
-                                                                alt="image_card"
-                                                                src={item.image}
-                                                                className='w-full h-full object-fill rounded-xl group-hover:scale-[1.03] duration-300 ease-in-out transition'
-                                                            />
-                                                        </div>
-                                                        <div className='flex flex-col gap-2 '>
-                                                            <div className='3xl:text-xl 2xl:text-[17px] xxl:text-[17px] xl:text-base lg:text-base md:text-xl text-xl  text-[#272D37] font-semibold group-hover:text-[#272D37]/70 duration-500 transition ease-in-out line-clamp-2 min-h-[56px]'>
-                                                                {item.title}
+                                            isStateDetailNewsEvents?.listNewsEventsRelated.map((item) => {
+                                                console.log('item.slug', item.slug);
+
+                                                return (
+                                                    <SwiperSlide key={`carRelated-${item.id}`}>
+                                                        <Link
+                                                            href={`/news-events/${item.slug}`}
+                                                            className='bg-white border p-4 flex flex-col gap-4 rounded-xl relative z-0 transition duration-200 ease-in-out group'
+                                                        >
+                                                            <div className='w-full 3xl:h-[220px] xxl:h-[180px] xl:h-[180px] h-[180px] relative overflow-hidden rounded-xl'>
+                                                                <Image
+                                                                    width={600}
+                                                                    height={600}
+                                                                    alt="image_card"
+                                                                    src={item.image}
+                                                                    className='w-full h-full object-fill rounded-xl group-hover:scale-[1.03] duration-300 ease-in-out transition'
+                                                                />
                                                             </div>
-                                                            <div className='3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out line-clamp-4'>
-                                                                <span dangerouslySetInnerHTML={{ __html: `${item?.descption ? item?.descption : ''}` }} className="whitespace-break-spaces"></span>
+                                                            <div className='flex flex-col gap-2 '>
+                                                                <div className='3xl:text-xl 2xl:text-[17px] xxl:text-[17px] xl:text-base lg:text-base md:text-xl text-xl  text-[#272D37] font-semibold group-hover:text-[#272D37]/70 duration-500 transition ease-in-out line-clamp-2 min-h-[56px]'>
+                                                                    {item.title}
+                                                                </div>
+                                                                <div className='3xl:text-base 2xl:text-sm xxl:text-sm xl:text-sm lg:text-sm md:text-base text-base text-[#5F6D7E] group-hover:text-[#5F6D7E]/80 duration-500 transition ease-in-out line-clamp-4'>
+                                                                    <span dangerouslySetInnerHTML={{ __html: `${item?.descption ? item?.descption : ''}` }} className="whitespace-break-spaces"></span>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </Link>
-                                                </SwiperSlide>
-                                            ))
+                                                        </Link>
+                                                    </SwiperSlide>
+                                                )
+                                            })
                                         }
                                     </Swiper>
 
-                                    {
+                                    {///
                                         isVisibleMobile ?
                                             (null)
                                             :
