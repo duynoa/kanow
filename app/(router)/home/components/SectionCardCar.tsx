@@ -385,9 +385,7 @@ const SectionCardCar = () => {
                                                                             </div>
                                                                         </div>
                                                                         :
-                                                                        <div className='3xl:text-sm text-xs text-[#8C93A3]'>
-                                                                            Chưa có chuyến
-                                                                        </div>
+                                                                       null
                                                                 }
                                                             </div>
 
@@ -545,9 +543,7 @@ const SectionCardCar = () => {
                                                                 </div>
                                                             </div>
                                                             :
-                                                            <div className='3xl:text-sm text-xs text-[#8C93A3]'>
-                                                                Chưa có chuyến
-                                                            </div>
+                                                          null
                                                     }
                                                 </div>
 
@@ -582,9 +578,7 @@ const SectionCardCar = () => {
                                         </Link>
                                     ))
                             )
-
                     }
-
                 </div>
             </div>
         </div >

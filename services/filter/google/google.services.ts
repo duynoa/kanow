@@ -29,6 +29,7 @@ const useGoogleApi = () => {
             `${process.env.NEXT_PUBLIC_URL_API_MAP4D}/sdk/place/viewbox-search`, config
         )
     }
+
     const apiTextSearch = (param?: any) => {
         let config: AxiosRequestConfig = {
             params: {
@@ -51,12 +52,24 @@ const useGoogleApi = () => {
         )
     }
 
+    const apiMatrixAddress = (param?: any) => {
+        let config: AxiosRequestConfig = {
+            params: {
+                ...param, // Nối các tham số trong param object
+            },
+        };
+        return axios.get(
+            `${process.env.NEXT_PUBLIC_URL_API_MAP4D}/sdk/route/matrix`, config
+        )
+    }
+
     return {
         apiGetAddress,
         apiViewboxSearch,
         apiGetCurrentPosition,
         apiRouteMatrixAddress,
         apiTextSearch,
+        apiMatrixAddress
     };
 };
 

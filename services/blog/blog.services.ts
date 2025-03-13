@@ -11,13 +11,13 @@ const getListBlogNewsAndEvents = (param?: any) => {
     return axios.get("/blog/getListBlog", config)
 }
 // get detail Tin tức & Hoạt động
-const getDetailNewsEvents = (id: string | number, param?: any) => {
+const getDetailNewsEvents = (slug: string | number | any, param?: any) => {
     let config: AxiosRequestConfig = {
         params: {
             ...param, // Nối các tham số trong param object
         },
     };
-    return axios.get(`/blog/getDetail/${id}`, config)
+    return axios.get(`/blog/getDetail/${slug}`, config)
 }
 
 // get list tuỷen dụng

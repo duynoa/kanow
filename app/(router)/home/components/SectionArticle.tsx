@@ -115,7 +115,7 @@ const SectionArticle = (props: Props) => {
                                 dataNewsEventList?.data && dataNewsEventList?.data?.map((item: any, index: number) => (
                                     <SwiperSlide key={item.id}>
                                         <Link
-                                            href={`/news-events/${item.id}?${ConvertToSlug(item?.title ?? "")}`}
+                                            href={`/news-events/${item.slug}`}
                                             className='relative group w-full'
                                             aria-hidden="true"
                                         >
@@ -157,7 +157,7 @@ const SectionArticle = (props: Props) => {
                         <div className='xl:mt-10 mt-6 grid grid-cols-3 3xl:gap-8 xl:gap-6 gap-4 w-full'>
                             {dataNewsEventList?.data?.length > 0 && (
                                 <div className='w-full lg:col-span-2 col-span-3'>
-                                    <Link href={`/news-events/${dataNewsEventList?.data[0].id}?${ConvertToSlug(dataNewsEventList?.data[0]?.title ?? "")}`} className='relative group'>
+                                    <Link href={`/news-events/${dataNewsEventList?.data[0].slug}`} className='relative group'>
                                         <div className='w-full 3xl:h-[532px] 2xl:h-[532px] xxl:h-[524px] xl:h-[464px] lg:h-[416px] md:h-[320px] h-[200px] group overflow-hidden rounded-2xl'>
                                             <div className='absolute rounded-2xl top-0 w-full h-full z-[5] bg-[#000000]/30' />
                                             <BlurImage
@@ -199,7 +199,7 @@ const SectionArticle = (props: Props) => {
 
                             <div className='w-full lg:col-span-1 col-span-3 flex flex-col 3xl:gap-8 xl:gap-6 gap-4 xxl:max-h-[500px] xl:max-h-[440px] lg:max-h-[400px] md:max-h-[640px] max-h-[200px]'>
                                 {dataNewsEventList?.data?.length > 1 && dataNewsEventList?.data?.slice(1, 3)?.map((article: any, index: number) => (
-                                    <Link key={index} href={`/news-events/${article.id}?${ConvertToSlug(article?.title ?? "")}`} className='relative group'>
+                                    <Link key={index} href={`/news-events/${article.slug}`} className='relative group'>
                                         <div className='w-full 3xl:h-[250px] 2xl:h-[250px] xxl:h-[250px] xl:h-[220px] lg:h-[200px] md:h-[320px] h-[200px] group overflow-hidden rounded-2xl relative'>
                                             <div className='absolute rounded-2xl top-0 w-full h-full z-[5] bg-[#000000]/30' />
                                             <BlurImage

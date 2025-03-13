@@ -5,6 +5,7 @@ interface IDetailNewsEvents {
     content: string,
     image: string,
     created_at: string,
+    slug?: any
 }
 
 type IListNewsEvents = IDetailNewsEvents[]
@@ -25,6 +26,7 @@ interface IDetailCareer {
     job_requirement: string,
     your_benefit: string,
     created_at: string,
+    slug?: any,
 }
 type IListCareer = IDetailCareer[]
 
