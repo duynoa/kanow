@@ -12,29 +12,31 @@ import { useResize } from '@/hooks/useResize';
 
 type Props = {}
 
+const dataBanner = [
+    {
+        id: "232323",
+        image: '/other/banner/banner6.png',
+    },
+    {
+        id: "4344343",
+        image: '/other/banner/banner7.png',
+    },
+    {
+        id: "54545464",
+        image: '/other/banner/banner6.png',
+    },
+    {
+        id: "545235322",
+        image: '/other/banner/banner7.png',
+    },
+    {
+        id: "65465656",
+        image: '/other/banner/banner6.png',
+    },
+]
+
 const SectionBannerPromotion = (props: Props) => {
-    const dataBanner = [
-        {
-            id: uuidv4(),
-            image: '/other/banner/banner6.png',
-        },
-        {
-            id: uuidv4(),
-            image: '/other/banner/banner7.png',
-        },
-        {
-            id: uuidv4(),
-            image: '/other/banner/banner6.png',
-        },
-        {
-            id: uuidv4(),
-            image: '/other/banner/banner7.png',
-        },
-        {
-            id: uuidv4(),
-            image: '/other/banner/banner6.png',
-        },
-    ]
+
     const { isVisibleMobile } = useResize()
     const swiperRefBanner = useRef<any>(null);
     // slider banner

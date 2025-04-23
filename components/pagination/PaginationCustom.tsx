@@ -67,7 +67,7 @@ const PaginationCustom = ({ data, current_page, limit, total, handleChangePage }
     //                         ? "bg-[#1EAAB1] text-white hover:bg-[#1EAAB1]/80 hover:text-white"
     //                         : "hover:bg-[#000000]/10"
     //                         } size-10 flex justify-center items-center duration-300 transition rounded-lg cursor-pointer`}
-    //                     onClick={(e) => handlePageChange(e, i)}
+    //                     onClick={(e) => handlePageChangeComponent(e, i)}
     //                 >
     //                     {i}
     //                 </div>
@@ -94,7 +94,7 @@ const PaginationCustom = ({ data, current_page, limit, total, handleChangePage }
     //                             ? "bg-[#1EAAB1] text-white hover:bg-[#1EAAB1]/80 hover:text-white"
     //                             : "hover:bg-[#000000]/10"
     //                             } size-10 flex justify-center items-center duration-300 transition rounded-lg cursor-pointer`}
-    //                         onClick={(e) => handlePageChange(e, i)}
+    //                         onClick={(e) => handlePageChangeComponent(e, i)}
     //                     >
     //                         {i}
     //                     </div>
@@ -120,7 +120,7 @@ const PaginationCustom = ({ data, current_page, limit, total, handleChangePage }
                                 ? "bg-[#1EAAB1] text-white hover:bg-[#1EAAB1]/80 hover:text-white"
                                 : "hover:bg-[#000000]/10"
                                 } size-10 flex justify-center items-center duration-300 transition rounded-lg cursor-pointer`}
-                            onClick={(e) => handlePageChange(e, i)}
+                            onClick={(e) => handlePageChangeComponent(e, i)}
                         >
                             {i}
                         </div>
@@ -140,7 +140,7 @@ const PaginationCustom = ({ data, current_page, limit, total, handleChangePage }
                                 ? "bg-[#1EAAB1] text-white hover:bg-[#1EAAB1]/80 hover:text-white"
                                 : "hover:bg-[#000000]/10"
                                 } size-10 flex justify-center items-center duration-300 transition rounded-lg cursor-pointer`}
-                            onClick={(e) => handlePageChange(e, i)}
+                            onClick={(e) => handlePageChangeComponent(e, i)}
                         >
                             {i}
                         </div>
@@ -162,7 +162,7 @@ const PaginationCustom = ({ data, current_page, limit, total, handleChangePage }
                                 ? "bg-[#1EAAB1] text-white hover:bg-[#1EAAB1]/80 hover:text-white"
                                 : "hover:bg-[#000000]/10"
                                 } size-10 flex justify-center items-center duration-300 transition rounded-lg cursor-pointer`}
-                            onClick={(e) => handlePageChange(e, i)}
+                            onClick={(e) => handlePageChangeComponent(e, i)}
                         >
                             {i}
                         </div>
@@ -182,7 +182,7 @@ const PaginationCustom = ({ data, current_page, limit, total, handleChangePage }
                             ? "bg-[#1EAAB1] text-white hover:bg-[#1EAAB1]/80 hover:text-white"
                             : "hover:bg-[#000000]/10"
                             } size-10 flex justify-center items-center duration-300 transition rounded-lg cursor-pointer`}
-                        onClick={(e) => handlePageChange(e, i)}
+                        onClick={(e) => handlePageChangeComponent(e, i)}
                     >
                         {i}
                     </div>
@@ -204,7 +204,7 @@ const PaginationCustom = ({ data, current_page, limit, total, handleChangePage }
                             ? "bg-[#1EAAB1] text-white hover:bg-[#1EAAB1]/80 hover:text-white"
                             : "hover:bg-[#000000]/10"
                             } size-10 flex justify-center items-center duration-300 transition rounded-lg cursor-pointer`}
-                        onClick={(e) => handlePageChange(e, i)}
+                        onClick={(e) => handlePageChangeComponent(e, i)}
                     >
                         {i}
                     </div>
@@ -223,7 +223,7 @@ const PaginationCustom = ({ data, current_page, limit, total, handleChangePage }
                     <div
                         className={`${current_page === 1 ? "cursor-not-allowed" : "cursor-pointer"
                             } size-10 hover:bg-[#000000]/10 flex justify-center items-center duration-300 transition rounded-lg`}
-                        onClick={(e) => handlePageChange(e, Math.max(current_page - 1, 1))}
+                        onClick={(e) => handlePageChangeComponent(e, Math.max(current_page - 1, 1))}
                     >
                         <ChevronLeft className="h-4 w-4" />
                     </div>
@@ -235,7 +235,7 @@ const PaginationCustom = ({ data, current_page, limit, total, handleChangePage }
                     <div
                         className={`${current_page === totalPages ? "cursor-not-allowed" : "cursor-pointer"
                             } size-10 hover:bg-[#000000]/10 flex justify-center items-center duration-300 transition rounded-lg`}
-                        onClick={(e) => handlePageChange(e, Math.min(current_page + 1, totalPages))}
+                        onClick={(e) => handlePageChangeComponent(e, Math.min(current_page + 1, totalPages))}
                     >
                         <ChevronRight className="h-4 w-4" />
                     </div>

@@ -13,6 +13,7 @@ import SectionArticle from "./components/SectionArticle";
 import { getListCarsForYou } from "@/services/cars/cars.services";
 import { useDataHome } from "@/hooks/useDataQueryKey";
 import { CustomDataListCars } from "@/custom/CustomData";
+import SectionFeedbackCustomer from './components/SectionFeedbackCustomer';
 
 export default function Home() {
     const [isMounted, setIsMounted] = useState<boolean>(false)
@@ -78,6 +79,7 @@ export default function Home() {
             <SectionPlaceProminent />
             <SectionTripCarServices />
             <SectitonWhyWe />
+            <SectionFeedbackCustomer />
             <SectionShowApp />
             <SectionArticle />
         </div>

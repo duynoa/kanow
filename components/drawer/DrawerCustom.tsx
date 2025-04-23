@@ -28,7 +28,7 @@ const DrawerCustom = () => {
                 }
                 <DrawerContent className={'h-[100svh] dark:bg-[#040B24] dark-mode border-none focus:outline-none  rounded-tr-2xl rounded-tl-2xl'}>
                     {/* <DrawerContent data-vaul-no-drag className={'h-[90svh] dark:bg-[#040B24] dark-mode border-none focus:outline-none  rounded-tr-2xl rounded-tl-2xl'}> */}
-                    <div className="relative">
+                    <div className="relative h-full">
                         {stringMap[statusDrawer]}
                         <DrawerClose onClick={() => setOpenDrawer(false)} className='absolute top-4 right-3'>
                             <Button variant="outline" className='border-none'>

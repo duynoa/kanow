@@ -8,10 +8,11 @@ const PolyciDrawerMobi = () => {
     const { objectData } = useDrawerStore();
 
     return (
-        <div className='h-full'>
-            <div className=" flex items-center justify-center pt-4  pb-4 px-11 font-semibold border-b border-gray-200">
+        <div className='flex flex-col h-full'>
+            <div className="flex items-center justify-center pt-4  pb-4 px-11 font-semibold border-b border-gray-200">
                 {objectData?.name ?? ""}
             </div>
+            <div className='flex-1 min-h-0 h-full'>
             {
                 objectData?.setup_qa_items?.length > 0
                     ?
@@ -23,12 +24,12 @@ const PolyciDrawerMobi = () => {
                                 return `<span class="${className}"></span>`
                             },
                         }}
-                        className="w-full max-w-2xl mx-auto  modal-htu"
+                        className="w-full max-w-2xl mx-auto h-full modal-htu"
                     >
                         {
                             objectData?.setup_qa_items && objectData?.setup_qa_items?.map((slide: any, index: any) => (
                                 <SwiperSlide key={index} >
-                                    <div className="flex flex-col">
+                                    <div className="flex flex-col h-full overflow-y-auto">
                                         <div className="h-[380px] flex items-center justify-center bg-gray-200">
                                             {/* <div className="mockup-modal max-h-full max-w-full w-[216px]">
                                                 <div className="relative h-full w-full ">
@@ -51,11 +52,9 @@ const PolyciDrawerMobi = () => {
                                                 className="size-full object-contain"
                                             />
                                         </div>
-                                        <div className="px-6 pb-14 pt-7">
+                                        <div className="px-6 py-6">
                                             <h2 className="text-lg font-semibold text-start">
                                                 {slide?.content}
-                                                {/* Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ducimus, alias ipsam ab recusandae amet autem, tempora maiores nesciunt quod necessitatibus voluptate accusantium consequatur. Corporis quae architecto amet enim deleniti incidunt. */}
-                                                {/* <span className="" dangerouslySetInnerHTML={{ __html: slide?.content ?? "" }}></span> */}
                                             </h2>
                                         </div>
                                     </div>
@@ -75,6 +74,7 @@ const PolyciDrawerMobi = () => {
                         />
                     </div>
             }
+            </div>
 
             <style jsx global>{`
             .mockup-modal {
