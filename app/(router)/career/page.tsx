@@ -5,7 +5,6 @@ import Link from 'next/link'
 
 import { uuidv4 } from '@/lib/uuid'
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
-import PaginationCustom from '@/components/pagination/PaginationCustom'
 import SkeletonCarrer from '@/components/skeleton/SkeletonCarrer'
 
 import { useDataListCarrer } from '@/hooks/useDataQueryKey'
@@ -18,6 +17,7 @@ import { RiPassValidLine } from 'react-icons/ri'
 import { PiGenderIntersexBold } from 'react-icons/pi'
 
 import { motion } from 'framer-motion'
+import PaginationCustom from '@/components/pagination/PaginationCustom'
 
 type Props = {}
 
@@ -259,6 +259,7 @@ const Career = (props: Props) => {
                         {
                             isStateListCarrer?.params?.total_blog > isStateListCarrer?.params?.limit ?
                                 <PaginationCustom
+
                                     current_page={isStateListCarrer?.params?.page}
                                     limit={isStateListCarrer?.params?.limit}
                                     total={isStateListCarrer?.params?.total_blog}

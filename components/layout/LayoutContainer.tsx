@@ -67,6 +67,8 @@ import ButtonDownloadApp from '../button/ButtonDownloadApp';
 import { useDialogStore } from '@/stores/dialogStores';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useDrawerStore } from '@/stores/drawerStores';
+import DrawerCustom from '../drawer/DrawerCustom';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -86,12 +88,16 @@ const LayoutContainer = ({
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
 
+    const { openDrawer } = useDrawerStore()
 
     const { getKeySettings } = useAuthenticationAPI()
+
     const { apiGetCurrentPosition } = useGoogleApi()
+
     const { informationUser, setInformationUser } = useAuth()
 
     const { generalKey, setGeneralKey } = useGeneralKey()
+
     const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar()
     const {
         openDialogAddress,
@@ -574,6 +580,7 @@ const LayoutContainer = ({
                             !pathname.startsWith("/vehicle-management-mobile") &&
                             !pathname.startsWith("/income-statistic-mobile") &&
                             !pathname.startsWith("/transaction-statement-mobile") &&
+                            !pathname.startsWith("/policy-mobi") &&
                             <Header />
                         }
                         <main className='overflow-hidden w-full h-full'>
@@ -582,6 +589,7 @@ const LayoutContainer = ({
                                 !pathname.startsWith("/vehicle-management-mobile") &&
                                 !pathname.startsWith("/income-statistic-mobile") &&
                                 !pathname.startsWith("/transaction-statement-mobile") &&
+                                !pathname.startsWith("/policy-mobi") &&
                                 <>
                                     <ButtonToTop />
                                     {
@@ -594,7 +602,9 @@ const LayoutContainer = ({
                             <DialogLogin />
                             <DialogCalendar />
                             <DialogReviewImage />
-
+                            {
+                                openDrawer && <DrawerCustom />
+                            }
                             {openDialogRequestCarRental && <DialogRequestCarRental />}
 
                             <DialogValidate />
@@ -624,6 +634,7 @@ const LayoutContainer = ({
                             !pathname.startsWith("/income-statistic-mobile") &&
                             !pathname.startsWith("/transaction-statement-mobile") &&
                             !pathname.startsWith("/transaction-statement") &&
+                            !pathname.startsWith("/policy-mobi") &&
                             <Footer />
                         }
                         <Toaster position="top-right" reverseOrder={false} />

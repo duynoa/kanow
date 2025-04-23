@@ -189,9 +189,21 @@ const Footer = () => {
                                 link: `/policy?type=${i?.type}&id=${i?.id}`,
                             }
                         });
+
+
                         return {
                             ...e,
-                            list: [...e.list, ...list]
+                            list: [
+                                {
+                                    id: -5,
+                                    title: "Hướng dẫn sử dụng",
+                                    link: '/policy?type=2&id=-5',
+                                    descption: null,
+                                    content: null
+                                },
+                                ...e.list,
+                                ...list
+                            ]
                         }
                     }
                     return e

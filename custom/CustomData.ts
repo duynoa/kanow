@@ -98,36 +98,42 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
             // số là ngày điền vào...
             total_amount:
                 res?.data?.promotion?.length > 0
-                    ?
-                    (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) * (numberDay ? numberDay : 1) - res?.data?.promotion[0]?.price_promotion
-                    :
-                    (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+                    ? (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
+                          (numberDay ? numberDay : 1) -
+                      res?.data?.promotion[0]?.price_promotion
+                    : (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
+                      (numberDay ? numberDay : 1),
             // % tiền đặt cọc
             percent_deposit: res?.data?.price?.percent_deposit,
             // tiền đặt cọc
             price_depoist:
                 res?.data?.promotion?.length > 0
-                    ?
-                    ((res?.data?.price?.rent_cost_day - res?.data?.promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) + res?.data?.price?.price_insurance_day) * (res?.data?.price?.percent_deposit / 100)
-                    :
-                    (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (res?.data?.price?.percent_deposit / 100),
+                    ? ((res?.data?.price?.rent_cost_day - res?.data?.promotion[0]?.price_promotion) *
+                          (numberDay ? numberDay : 1) +
+                          res?.data?.price?.price_insurance_day) *
+                      (res?.data?.price?.percent_deposit / 100)
+                    : (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
+                      (numberDay ? numberDay : 1) *
+                      (res?.data?.price?.percent_deposit / 100),
             // số ngày
             number_day: numberDay ? numberDay : 1,
             // thanh toán khi nhận xe (Thành tiền - tiền cọc)
             cash_on_delivery:
                 res?.data?.promotion?.length > 0
-                    ?
-                    ((+res?.data?.price?.rent_cost_day) - (+res?.data?.promotion[0]?.price_promotion) + (+res?.data?.price?.price_insurance_day)) *
-                    (numberDay ? numberDay : 1) -
-                    (res?.data?.price?.rent_cost_day - res?.data?.promotion[0]?.price_promotion + res?.data?.price?.price_insurance_day) *
-                    (numberDay ? numberDay : 1) *
-                    (res?.data?.price?.percent_deposit / 100)
-                    :
-                    (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
-                    (numberDay ? numberDay : 1) -
-                    (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
-                    (numberDay ? numberDay : 1) *
-                    (res?.data?.price?.percent_deposit / 100),
+                    ? (+res?.data?.price?.rent_cost_day -
+                          +res?.data?.promotion[0]?.price_promotion +
+                          +res?.data?.price?.price_insurance_day) *
+                          (numberDay ? numberDay : 1) -
+                      (res?.data?.price?.rent_cost_day -
+                          res?.data?.promotion[0]?.price_promotion +
+                          res?.data?.price?.price_insurance_day) *
+                          (numberDay ? numberDay : 1) *
+                          (res?.data?.price?.percent_deposit / 100)
+                    : (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
+                          (numberDay ? numberDay : 1) -
+                      (res?.data?.price?.rent_cost_day + res?.data?.price?.price_insurance_day) *
+                          (numberDay ? numberDay : 1) *
+                          (res?.data?.price?.percent_deposit / 100),
             max_money_discount: 0,
         },
         promotion: res?.data?.promotion,
@@ -158,10 +164,10 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
     return { customDataDetailCar };
 };
 
-const CustomPriceDetailCar = (res: any, numberDay?: number, promotion?: any) => {
+const CustomPriceDetailCar = (res: any, numberDay?: number, promotion?: any, total_km_day?: any) => {
     let customPriceDetailCar: IPriceDetailCar = {
         // Tổng số km đi được trong ngày theo xe
-        total_km_day: +res?.total_km_day ? res?.total_km_day : 1,
+        total_km_day: total_km_day ? +total_km_day : 1,
         // tiền trước khuyến mãi đầu
         price_before_promotion: res?.price?.rent_cost_day,
         // tiền sau khuyến mãi đầu (nếu có lấy tiền gốc - tiền khuyến mãi trong mảng lấy cái đầu tiên)
@@ -182,43 +188,40 @@ const CustomPriceDetailCar = (res: any, numberDay?: number, promotion?: any) => 
         // ** option 2: chọn khuyến mãi từ mã tính cho tổng bill (bill = tổng bill - số tiền cố định của khuyến mãi)
 
         // tổng tạm tính
-        temp_total_amount:
-            (res?.price?.rent_cost_day + res?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+        temp_total_amount: (res?.price?.rent_cost_day + res?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
 
         // thành tiền
         // số là ngày điền vào...
         total_amount:
             promotion?.length > 0
-                ?
-                (res?.price?.rent_cost_day + res?.price?.price_insurance_day) * (numberDay ? numberDay : 1) - promotion[0]?.price_promotion
-                :
-                (res?.price?.rent_cost_day + res?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
+                ? (res?.price?.rent_cost_day + res?.price?.price_insurance_day) * (numberDay ? numberDay : 1) -
+                  promotion[0]?.price_promotion
+                : (res?.price?.rent_cost_day + res?.price?.price_insurance_day) * (numberDay ? numberDay : 1),
         // % tiền đặt cọc
         percent_deposit: res?.price?.percent_deposit,
         // tiền đặt cọc
         price_depoist:
             promotion?.length > 0
-                ?
-                ((res?.price?.rent_cost_day - promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) + res?.price?.price_insurance_day) * (res?.price?.percent_deposit / 100)
-                :
-                (res?.price?.rent_cost_day + res?.price?.price_insurance_day) * (numberDay ? numberDay : 1) * (res?.price?.percent_deposit / 100),
+                ? ((res?.price?.rent_cost_day - promotion[0]?.price_promotion) * (numberDay ? numberDay : 1) +
+                      res?.price?.price_insurance_day) *
+                  (res?.price?.percent_deposit / 100)
+                : (res?.price?.rent_cost_day + res?.price?.price_insurance_day) *
+                  (numberDay ? numberDay : 1) *
+                  (res?.price?.percent_deposit / 100),
         // số ngày
         number_day: numberDay ? numberDay : 1,
         // thanh toán khi nhận xe (Thành tiền - tiền cọc)
         cash_on_delivery:
             promotion?.length > 0
-                ?
-                ((+res?.price?.rent_cost_day) - (+promotion[0]?.price_promotion) + (+res?.price?.price_insurance_day)) *
-                (numberDay ? numberDay : 1) -
-                (res?.price?.rent_cost_day - promotion[0]?.price_promotion + res?.price?.price_insurance_day) *
-                (numberDay ? numberDay : 1) *
-                (res?.price?.percent_deposit / 100)
-                :
-                (res?.price?.rent_cost_day + res?.price?.price_insurance_day) *
-                (numberDay ? numberDay : 1) -
-                (res?.price?.rent_cost_day + res?.price?.price_insurance_day) *
-                (numberDay ? numberDay : 1) *
-                (res?.price?.percent_deposit / 100),
+                ? (+res?.price?.rent_cost_day - +promotion[0]?.price_promotion + +res?.price?.price_insurance_day) *
+                      (numberDay ? numberDay : 1) -
+                  (res?.price?.rent_cost_day - promotion[0]?.price_promotion + res?.price?.price_insurance_day) *
+                      (numberDay ? numberDay : 1) *
+                      (res?.price?.percent_deposit / 100)
+                : (res?.price?.rent_cost_day + res?.price?.price_insurance_day) * (numberDay ? numberDay : 1) -
+                  (res?.price?.rent_cost_day + res?.price?.price_insurance_day) *
+                      (numberDay ? numberDay : 1) *
+                      (res?.price?.percent_deposit / 100),
         max_money_discount: 0,
     };
     return { customPriceDetailCar };
@@ -240,7 +243,7 @@ const CustomDataInfoRentalCar = (res: any) => {
             date: res?.data?.date,
             date_start: res?.data?.date_start,
             date_end: res?.data?.date_end,
-            date_status: res?.data?.date_status
+            date_status: res?.data?.date_status,
         },
         customer: {
             id: res?.data?.customer?.id,
@@ -266,8 +269,8 @@ const CustomDataInfoRentalCar = (res: any) => {
                 customer_id: res?.data?.customer_renter?.driving_liscense?.customer_id,
                 created_at: res?.data?.customer_renter?.driving_liscense?.created_at,
                 updated_at: res?.data?.customer_renter?.driving_liscense?.updated_at,
-                status: res?.data?.customer_renter?.driving_liscense?.status
-            }
+                status: res?.data?.customer_renter?.driving_liscense?.status,
+            },
         },
         address: {
             district: res?.data?.district,
@@ -320,7 +323,7 @@ const CustomDataInfoRentalCar = (res: any) => {
         },
         policy: {
             rent_cost_owner: res?.data?.rent_cost_owner,
-            fee_service_owner: res?.data?.fee_service_owner
+            fee_service_owner: res?.data?.fee_service_owner,
         },
         note: res?.data?.note,
         type: {
@@ -354,10 +357,9 @@ const CustomDataPolicy = (res: any) => {
             return {
                 label: item.name,
                 value: item.id,
-                selected: item.selected
-            }
-        })
-
+                selected: item.selected,
+            };
+        }),
     };
     return { customDataPolicy };
 };

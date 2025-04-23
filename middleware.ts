@@ -22,6 +22,10 @@ export async function middleware(request: NextRequest) {
         pathname.startsWith("/vehicle-management-mobile")
     ) {
         if (!token || token?.value == "kanow") {
+            // check ở mobi nhúng link
+            if (pathname.startsWith("/vehicle-management-mobile")) {
+                return NextResponse.next();
+            }
             return NextResponse.redirect(process.env.NEXT_PUBLIC_URL_WEBSITE as string);
         } else {
             return NextResponse.next();

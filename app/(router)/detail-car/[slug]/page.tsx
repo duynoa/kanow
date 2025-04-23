@@ -122,159 +122,7 @@ const DetailCar = ({ params }: Props) => {
         }
     }
 
-    // fetch data api google lấy toạ độ vị trí, total km, tính số ngày khi ở type xe có tài 
-    useEffect(() => {
-        if (typeCarDetail == "2" &&
-            isStateDetailCar.price.total_km_day &&
-            coordinates.lat != 0 && coordinates.lng != 0 &&
-            coordinates.latTo != 0 && coordinates.lngTo != 0
-        ) {
-            const fetchDataRouteMatrixAddress = async () => {
-                try {
-                    setIsLoadingSkeletonDetailCar(true)
 
-                    const dataParams = {
-                        key: process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D,
-                        origin: `${coordinates.lat},${coordinates.lng}`,
-                        destination: `${coordinates.lat},${coordinates.lng}`,
-                        points: `${coordinates.latTo},${coordinates.lngTo}`,
-                        mode: "car",
-                    }
-
-                    const { data } = await apiRouteMatrixAddress(dataParams)
-
-                    if (data && data.code == "ok" && data.result) {
-                        const formatDataToOptions = (data: any) => {
-                            // Khởi tạo mảng routes rỗng
-                            const routes1: any[] = [];
-                            const routes2: any[] = [];
-                            // Duyệt qua mỗi tuyến đường trong data.routes
-                            data.routes.forEach((route: any) => {
-                                // Xử lý mỗi tuyến đường
-                                const processedRouteStart = route.legs[0].steps.map((step: any) => ({
-                                    lng: step.startLocation.lng,
-                                    lat: step.startLocation.lat,
-                                }));
-
-                                const processedRouteEnd = route.legs[0].steps.map((step: any) => ({
-                                    lng: step.endLocation.lng,
-                                    lat: step.endLocation.lat,
-                                }));
-
-                                // Thêm tuyến đường đã xử lý vào mảng routes
-                                routes1.push(processedRouteStart);
-                                routes2.push(processedRouteEnd);
-                            });
-
-                            const originPosition = {
-                                lat: parseFloat(data.routes[0].legs[0].startLocation.lat),
-                                lng: parseFloat(data.routes[0].legs[0].startLocation.lng)
-                            };
-
-                            const destinationPosition = {
-                                lat: parseFloat(data.routes[0].legs[0].endLocation.lat),
-                                lng: parseFloat(data.routes[0].legs[0].endLocation.lng)
-                            };
-
-                            const originMarkerOptions = {
-                                position: originPosition,
-                                title: "Start",
-                                draggable: true,
-                                visible: true
-                            };
-
-                            const destinationMarkerOptions = {
-                                position: destinationPosition,
-                                title: "End",
-                                draggable: true,
-                                visible: true,
-                                userInteractionEnabled: false
-                            };
-
-                            const options = {
-                                // routes: [routes1[0], routes2[1]],
-                                routes: routes2,
-                                originMarkerOptions: originMarkerOptions,
-                                destinationMarkerOptions: destinationMarkerOptions,
-                                activeOutlineWidth: 0,
-                                inactiveOutlineWidth: 1,
-                                inactiveOutlineColor: "#FF00FF"
-                            };
-
-                            return options;
-                        };
-
-                        // Sử dụng hàm để format data thành options
-                        const options = formatDataToOptions(data.result);
-                        const dataSubmit = data.result.routes.map((item: any) => {
-                            return {
-                                total_km: item.distance.text,
-                                total_route: item.distance.value,
-                                duration_text: item.duration.text,
-                                duration_value: item.duration.value,
-                                routes: item.legs.map((e: any, index: number) => {
-                                    return {
-                                        total_route: e.distance.value,
-                                        duration_text: e.duration.text,
-                                        duration_value: e.duration.value,
-                                        lat_start: e.startLocation.lat,
-                                        lng_start: e.startLocation.lng,
-                                        lat_end: e.endLocation.lat,
-                                        lng_end: e.endLocation.lng,
-                                        name_location: index == 0 ? valueAddressPickup : valueAddressDestination[indexAddressDestination].valueAddress,
-                                    }
-                                }),
-                            }
-                        })
-
-                        let numberDayWithAddress = parseInt(FormatDistanceFullKm(data.result.routes[0].distance.value)) / (isStateDetailCar.price.total_km_day ? isStateDetailCar.price.total_km_day : 1)
-
-                        // Đặt options vào state
-                        queryKeyIsStateDetailCar({
-                            ...isStateDetailCar,
-                            map: {
-                                ...isStateDetailCar.map,
-                                options: options,
-                                totalDistance: data.result.routes[0].distance.value,
-                                dataSubmit: dataSubmit,
-                            },
-                        })
-
-                        // Kiểm tra xem dateReal và dateReal.from có tồn tại hay không
-                        if (dateReal?.from) {
-                            // Lấy ngày từ dateReal.from và sau đó tăng nó lên 2 ngày
-                            const fromDate = dateReal.from;
-                            const toDate = addDays(fromDate, numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1);
-
-                            // Thiết lập giá trị mặc định cho defaultDateRange
-                            const defaultDateRange: DateRange = {
-                                from: setMinutes(setHours(fromDate, 8), 0),
-                                to: setMinutes(setHours(toDate, 8), 0),
-                            };
-
-                            // Thiết lập giá trị cho dateTemp
-                            setDateTemp(defaultDateRange);
-                        } else {
-                            console.error("Không thể thiết lập giá trị mặc định vì dateReal.from không tồn tại.");
-                        }
-
-                        setNumberDay(numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1)
-                        setIsLoadingSkeletonDetailCar(false);
-                    } else {
-                        setIsLoadingSkeletonDetailCar(false);
-                    }
-
-                } catch (err) {
-                    throw err
-                }
-            }
-            fetchDataRouteMatrixAddress()
-        }
-    }, [
-        typeCarDetail,
-        coordinates,
-        isStateDetailCar.price.total_km_day,
-    ])
 
     // fetch lisst car related
     const fetchDataListCarsRelated = async () => {
@@ -436,7 +284,7 @@ const DetailCar = ({ params }: Props) => {
 
             if (data && data.price) {
                 if (isStateDetailCar?.dataDetailCar?.promotion) {
-                    let { customPriceDetailCar } = CustomPriceDetailCar(data, numberDay, isStateDetailCar?.dataDetailCar?.promotion)
+                    let { customPriceDetailCar } = CustomPriceDetailCar(data, numberDay, isStateDetailCar?.dataDetailCar?.promotion, isStateDetailCar?.dataDetailCar?.price?.total_km_day)
 
                     queryKeyIsStateDetailCar({
                         price: customPriceDetailCar
@@ -449,7 +297,6 @@ const DetailCar = ({ params }: Props) => {
                         price: customPriceDetailCar
                     })
                 }
-
                 // setIsLoadingSkeletonDetailCar(false);
             }
         } catch (err) {
@@ -642,6 +489,161 @@ const DetailCar = ({ params }: Props) => {
         fetchDataListCarsRelated()
         fetchDataListCalendarPriceMonth()
     }, [params.slug, typeCarDetail, numberDay, router])
+
+
+    // fetch data api google lấy toạ độ vị trí, total km, tính số ngày khi ở type xe có tài 
+    useEffect(() => {
+        if (typeCarDetail == "2" &&
+            isStateDetailCar?.dataDetailCar?.price?.total_km_day &&
+            coordinates.lat != 0 && coordinates.lng != 0 &&
+            coordinates.latTo != 0 && coordinates.lngTo != 0
+        ) {
+            const fetchDataRouteMatrixAddress = async () => {
+                try {
+                    setIsLoadingSkeletonDetailCar(true)
+
+                    const dataParams = {
+                        key: process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D,
+                        origin: `${coordinates.lat},${coordinates.lng}`,
+                        destination: `${coordinates.lat},${coordinates.lng}`,
+                        points: `${coordinates.latTo},${coordinates.lngTo}`,
+                        mode: "car",
+                    }
+
+                    const { data } = await apiRouteMatrixAddress(dataParams)
+
+                    if (data && data.code == "ok" && data.result) {
+                        const formatDataToOptions = (data: any) => {
+                            // Khởi tạo mảng routes rỗng
+                            const routes1: any[] = [];
+                            const routes2: any[] = [];
+                            // Duyệt qua mỗi tuyến đường trong data.routes
+                            data.routes.forEach((route: any) => {
+                                // Xử lý mỗi tuyến đường
+                                const processedRouteStart = route.legs[0].steps.map((step: any) => ({
+                                    lng: step.startLocation.lng,
+                                    lat: step.startLocation.lat,
+                                }));
+
+                                const processedRouteEnd = route.legs[0].steps.map((step: any) => ({
+                                    lng: step.endLocation.lng,
+                                    lat: step.endLocation.lat,
+                                }));
+
+                                // Thêm tuyến đường đã xử lý vào mảng routes
+                                routes1.push(processedRouteStart);
+                                routes2.push(processedRouteEnd);
+                            });
+
+                            const originPosition = {
+                                lat: parseFloat(data.routes[0].legs[0].startLocation.lat),
+                                lng: parseFloat(data.routes[0].legs[0].startLocation.lng)
+                            };
+
+                            const destinationPosition = {
+                                lat: parseFloat(data.routes[0].legs[0].endLocation.lat),
+                                lng: parseFloat(data.routes[0].legs[0].endLocation.lng)
+                            };
+
+                            const originMarkerOptions = {
+                                position: originPosition,
+                                title: "Start",
+                                draggable: true,
+                                visible: true
+                            };
+
+                            const destinationMarkerOptions = {
+                                position: destinationPosition,
+                                title: "End",
+                                draggable: true,
+                                visible: true,
+                                userInteractionEnabled: false
+                            };
+
+                            const options = {
+                                // routes: [routes1[0], routes2[1]],
+                                routes: routes2,
+                                originMarkerOptions: originMarkerOptions,
+                                destinationMarkerOptions: destinationMarkerOptions,
+                                activeOutlineWidth: 0,
+                                inactiveOutlineWidth: 1,
+                                inactiveOutlineColor: "#FF00FF"
+                            };
+
+                            return options;
+                        };
+
+                        // Sử dụng hàm để format data thành options
+                        const options = formatDataToOptions(data.result);
+                        const dataSubmit = data.result.routes.map((item: any) => {
+                            return {
+                                total_km: item.distance.text,
+                                total_route: item.distance.value,
+                                duration_text: item.duration.text,
+                                duration_value: item.duration.value,
+                                routes: item.legs.map((e: any, index: number) => {
+                                    return {
+                                        total_route: e.distance.value,
+                                        duration_text: e.duration.text,
+                                        duration_value: e.duration.value,
+                                        lat_start: e.startLocation.lat,
+                                        lng_start: e.startLocation.lng,
+                                        lat_end: e.endLocation.lat,
+                                        lng_end: e.endLocation.lng,
+                                        name_location: index == 0 ? valueAddressPickup : valueAddressDestination[indexAddressDestination].valueAddress,
+                                    }
+                                }),
+                            }
+                        })
+
+                        let numberDayWithAddress = parseInt(FormatDistanceFullKm(data.result.routes[0].distance.value)) / (isStateDetailCar?.dataDetailCar?.price?.total_km_day ? isStateDetailCar?.dataDetailCar?.price?.total_km_day : 1)
+
+                        // Đặt options vào state
+                        queryKeyIsStateDetailCar({
+                            ...isStateDetailCar,
+                            map: {
+                                ...isStateDetailCar.map,
+                                options: options,
+                                totalDistance: data.result.routes[0].distance.value,
+                                dataSubmit: dataSubmit,
+                            },
+                        })
+
+                        // Kiểm tra xem dateReal và dateReal.from có tồn tại hay không
+                        if (dateReal?.from) {
+                            // Lấy ngày từ dateReal.from và sau đó tăng nó lên 2 ngày
+                            const fromDate = dateReal.from;
+                            const toDate = addDays(fromDate, numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1);
+
+                            // Thiết lập giá trị mặc định cho defaultDateRange
+                            const defaultDateRange: DateRange = {
+                                from: setMinutes(setHours(fromDate, 8), 0),
+                                to: setMinutes(setHours(toDate, 8), 0),
+                            };
+
+                            // Thiết lập giá trị cho dateTemp
+                            setDateTemp(defaultDateRange);
+                        } else {
+                            console.error("Không thể thiết lập giá trị mặc định vì dateReal.from không tồn tại.");
+                        }
+
+                        setNumberDay(numberDayWithAddress ? Math.ceil(numberDayWithAddress) : 1)
+                        setIsLoadingSkeletonDetailCar(false);
+                    } else {
+                        setIsLoadingSkeletonDetailCar(false);
+                    }
+
+                } catch (err) {
+                    throw err
+                }
+            }
+            fetchDataRouteMatrixAddress()
+        }
+    }, [
+        typeCarDetail,
+        coordinates,
+        isStateDetailCar?.dataDetailCar?.price?.total_km_day,
+    ])
 
     // on/off thả tim
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {

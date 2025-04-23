@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import LayoutContainer from '@/components/layout/LayoutContainer';
-import GoogleAnalytics from '@/components/script/GoogleAnalytics';
 import Script from 'next/script';
 import { Be_Vietnam_Pro } from 'next/font/google';
+import GoogleAnalytics from '@/components/script/GoogleAnalytics';
 
 export const metadata: Metadata = {
     title: 'Kanow - Thuê Xe Tự Lái Và Tài Xế Lái Xe Hộ',

@@ -7,21 +7,19 @@ import {
 } from "@/components/ui/pagination";
 
 type Props = {
-    current_page: number;
-    limit: number;
-    total: number;
-    handleChangePage?: (page: number) => void;
-};
+    data?: any[]
+    current_page: number,
+    limit: number,
+    total: number,
+    handleChangePage?: (page: number) => void
+}
 
-const PaginationCustom = ({
-    current_page,
-    limit,
-    total,
-    handleChangePage,
-}: Props) => {
-    const totalPages = Math.ceil(total / limit);
+const PaginationCustom = ({ data, current_page, limit, total, handleChangePage }: Props) => {
+    // Giả sử bạn muốn 3 bài viết trên mỗi trang
+    const itemsPerPage = limit;
+    const totalPages = Math.ceil(total / itemsPerPage);
 
-    const handlePageChange = (event: React.MouseEvent, page: number) => {
+    const handlePageChangeComponent = (event: React.MouseEvent, page: number) => {
         event.preventDefault();
         if (handleChangePage) {
             handleChangePage(page);
