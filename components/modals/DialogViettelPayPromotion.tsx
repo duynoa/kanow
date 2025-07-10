@@ -42,6 +42,7 @@ const DialogViettelPayPromotion = () => {
   const handleSearchPromotion = debounce(async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value) {
       setIsLoadingDataPromotion(true);
+      setDataPromotion(null);
       try {
         const dataSearch = {
           code_promotion_voucher: event.target.value ? event.target.value : null,
@@ -162,7 +163,7 @@ const DialogViettelPayPromotion = () => {
           {dataPromotion && (
             <>
               <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between w-full">
+                <div className="flex items-center justify-between w-full gap-x-4">
                   <div className="flex gap-3">
                     <TbDiscount2 className="text-5xl min-w-[52px] text-[#2FB9BD]" />
                     <div className="flex flex-col gap-1">
