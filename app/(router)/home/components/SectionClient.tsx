@@ -11,6 +11,8 @@ import { TiArrowLeft, TiArrowRight } from "react-icons/ti";
 import { useResize } from "@/hooks/useResize";
 import { useGetHomepageData } from "@/managers/api-management/homepage/useGetHomepageData";
 import { PartnerItem } from "@/types/Homepage/IHomepage";
+import { Button } from "@/components/ui/button";
+import { IoArrowForwardOutline } from "react-icons/io5";
 
 type Props = {};
 
@@ -114,6 +116,28 @@ const SectionClient = (props: Props) => {
       swiperRefPartner?.current?.slideNext();
       setSliderStartPartner(swiperRefPartner.current.isBeginning);
       setSliderEndPartner(swiperRefPartner.current.isEnd);
+    }
+  };
+
+  const handleDownloadClick = () => {
+    const userAgent =
+      navigator.userAgent || (navigator as any).vendor || (window as any).opera;
+
+    if (/android/i.test(userAgent)) {
+      // Điều hướng đến Google Play
+      window.location.href =
+        "https://play.google.com/store/apps/details?id=com.kanow&pcampaignid=web_share";
+    } else if (
+      /iPad|iPhone|iPod/.test(userAgent) &&
+      !(window as any).MSStream
+    ) {
+      // Điều hướng đến App Store
+      window.location.href =
+        "https://apps.apple.com/vn/app/kanow-thu%C3%AA-xe-t%E1%BB%B1-l%C3%A1i/id6503139402?l=vi";
+    } else {
+      // Điều hướng đến trang web hoặc link dự phòng
+      window.location.href =
+        "https://play.google.com/store/apps/details?id=com.kanow&pcampaignid=web_share";
     }
   };
 
@@ -227,6 +251,19 @@ const SectionClient = (props: Props) => {
               />
             </div>
           )}
+        </div>
+
+        <div className="pt-6 flex items-center  justify-center">
+          <Button
+            size="readMore"
+            className="2xl:px-8 2xl:py-3 xl:px-6 xl:py-3 px-4 py-2 flex items-center gap-2 font-bold text-[#000000] bg-[#9DF2EE] hover:bg-[#9DF2EE]/70 group-hover:translate-x-2"
+            onClick={handleDownloadClick}
+          >
+            <span className="xl:text-base lg:text-sm md:text-base text-lg">
+              Tìm tài xế ngay
+            </span>
+            <IoArrowForwardOutline className="xl:text-xl text-lg -rotate-45" />
+          </Button>
         </div>
       </div>
     </div>
