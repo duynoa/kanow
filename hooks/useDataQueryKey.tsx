@@ -109,6 +109,10 @@ const isStateDetailCar: IInitialStateDetailCar = {
         id: "",
         address: "",
         full_address: "",
+        location: {
+            latitude: 0,
+            longitude: 0,
+        },
         image_car: [],
         image_car_detail: [],
         customer: {

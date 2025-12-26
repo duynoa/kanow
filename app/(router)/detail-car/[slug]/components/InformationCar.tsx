@@ -381,7 +381,7 @@ const InformationCar = ({ handleClickFavorite }: Props) => {
                     </div>
                 </div>
                 <div className='w-full h-full'>
-                    <Map latitude={latitude} longitude={longitude} data={dataMaps} />
+                    <Map latitude={isStateDetailCar?.dataDetailCar?.location?.latitude} longitude={isStateDetailCar?.dataDetailCar?.location?.longitude} data={dataMaps} />
                 </div>
             </div>
 

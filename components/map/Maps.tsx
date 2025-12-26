@@ -17,7 +17,7 @@ const Map = ({ latitude, longitude, data }: Props) => {
 
     return (
         // <LoadScript  libraries={["marker"]} googleMapsApiKey={`${generalKey.google_api_key}`}>
-        <LoadScript googleMapsApiKey="AIzaSyBtYQtozFnAVu1CwrJfmJKIxw1_sMUgzqo">
+        <LoadScript googleMapsApiKey="AIzaSyDRXOjuiR6czPVsXg1G1CjT4lT7DdiCFnk">
             <GoogleMap
                 mapContainerClassName={'custom-container-map'}
                 center={center}

@@ -42,6 +42,10 @@ const CustomDataDetailCar = (res: any, numberDay?: number) => {
         id: res?.data?.id,
         address: `${res?.data?.district}, ${res?.data?.province}`,
         full_address: res?.data?.address,
+        location: {
+            latitude: res?.data?.location?.latitude || res?.data?.latitude || 0,
+            longitude: res?.data?.location?.longitude || res?.data?.longitude || 0,
+        },
         customer: {
             id: res?.data?.customer?.id,
             fullname: res?.data?.customer?.fullname,

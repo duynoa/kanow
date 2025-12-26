@@ -94,6 +94,10 @@ interface IDataDetailCar {
     id: string;
     address: string;
     full_address: string;
+    location: {
+        latitude: number;
+        longitude: number;
+    };
     image_car: {
         car_id: number;
         created_at: string;
