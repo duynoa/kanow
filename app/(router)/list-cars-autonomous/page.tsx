@@ -852,6 +852,84 @@ const ListCarAutonomous = (props: Props) => {
 
         }
     };
+    
+    // Ngăn extension translateHtml can thiệp vào DOM
+    useEffect(() => {
+        if (!isMounted) return;
+
+        // Hàm helper để áp dụng attributes notranslate
+        const applyNotranslateAttributes = (element: HTMLElement) => {
+            element.setAttribute('data-translate', 'no');
+            element.setAttribute('data-notranslate', 'true');
+            element.setAttribute('translate', 'no');
+            element.classList.add('notranslate');
+        };
+
+        // Kiểm tra xem element có nằm trong container được bảo vệ không
+        const isInProtectedContainer = (element: HTMLElement): boolean => {
+            let currentParent = element.parentElement;
+            while (currentParent) {
+                if (currentParent.classList.contains('notranslate') || currentParent.hasAttribute('data-translate')) {
+                    return true;
+                }
+                currentParent = currentParent.parentElement;
+            }
+            return false;
+        };
+
+        // Áp dụng attributes cho tất cả elements có class notranslate
+        const applyToExistingElements = () => {
+            const elements = document.querySelectorAll('.notranslate, [data-translate="no"]');
+            elements.forEach((el) => {
+                if (el instanceof HTMLElement) {
+                    applyNotranslateAttributes(el);
+                }
+            });
+        };
+
+        // Chạy ngay lập tức
+        applyToExistingElements();
+
+        // Sử dụng MutationObserver để theo dõi các node mới được thêm vào
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node instanceof HTMLElement) {
+                            // Nếu node nằm trong container được bảo vệ, áp dụng attributes
+                            if (isInProtectedContainer(node)) {
+                                applyNotranslateAttributes(node);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        // Override removeChild để ngăn extension remove các nodes không hợp lệ
+        const originalRemoveChild = Node.prototype.removeChild;
+        Node.prototype.removeChild = function<T extends Node>(child: T): T {
+            try {
+                if (this.contains(child)) {
+                    return originalRemoveChild.call(this, child) as T;
+                }
+                return child;
+            } catch (error) {
+                return child;
+            }
+        };
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: false
+        });
+
+        return () => {
+            observer.disconnect();
+            Node.prototype.removeChild = originalRemoveChild;
+        };
+    }, [isMounted])
 
     useEffect(() => {
         if (isStateListCarAutonomous.dataParams.company_car_search != "0") {
