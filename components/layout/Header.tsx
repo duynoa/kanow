@@ -193,7 +193,7 @@ const Header = () => {
 
     const { isVisibleTablet } = useResize()
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [isMounted, setIsMounted] = useState<boolean>(false)
+    // const [isMounted, setIsMounted] = useState<boolean>(false)
     const [showActive, setShowActive] = useState<boolean>(false);
     const [isZoomAnimated, setIsZoomAnimated] = useState<boolean>(false);
     const [isScrollBlocked, setIsScrollBlocked] = useState<boolean>(false);
@@ -207,9 +207,9 @@ const Header = () => {
     const { openDialogLogin, setOpenDialogLogin, setStatusModal } = useDialogLogin()
     const { isStateNotification, queryKeyIsStateNotification } = useNotification()
 
-    useEffect(() => {
-        setIsMounted(true)
-    }, [])
+    // useEffect(() => {
+    //     setIsMounted(true)
+    // }, [])
 
     useEffect(() => {
         const getInfoUser = async () => {
@@ -417,9 +417,9 @@ const Header = () => {
 
 
 
-    if (!isMounted) {
-        return null;
-    }
+    // if (!isMounted) {
+    //     return null;
+    // }
 
     return (
         <>
@@ -427,10 +427,7 @@ const Header = () => {
                 className='w-full 3xl:h-[120px] h-[80px] sticky z-40'
                 style={{ background: pathname === "/" || pathname === "/home" ? "#D7F9F9" : "linear-gradient(180deg, rgba(194, 249, 249, 0.60) 0%, rgba(194, 249, 249, 0.00) 100%)" }}
             >
-                {
-                    isVisibleTablet ?
-                        // màn hình mobile, tablet
-                        <div className={`grid-cols-4 custom-container 3xl:h-[120px] h-[80px] grid `}>
+                        <div className={`xl:hidden grid-cols-4 custom-container 3xl:h-[120px] h-[80px] grid `}>
                             <Link
                                 href="/"
                                 className='col-span-2 flex items-center justify-start'
@@ -624,9 +621,7 @@ const Header = () => {
                                 </div>
                             }
                         </div>
-                        :
-                        // màn hình laptop
-                        <div className="custom-container 3xl:h-[120px] h-[80px] grid grid-cols-12 items-center justify-center">
+                        <div className="hidden custom-container 3xl:h-[120px] h-[80px] xl:grid grid-cols-12 items-center justify-center">
                             <Link
                                 href="/"
                                 className='col-span-2 w-full h-auto'
@@ -799,7 +794,6 @@ const Header = () => {
                                 }
                             </div>
                         </div>
-                }
             </header >
         </>
     )

@@ -197,46 +197,42 @@ const IntroSection = () => {
 
     return (
         <div className='xl:h-[100vh] lg:h-[80vh] md:h-[80svh] h-[100svh] w-full relative '>
-            {
-                isVisibleMobile ?
-                    <>
-                        <Image
-                            alt="background"
-                            width={1920}
-                            height={1080}
-                            src="/background/cityHomeMobile.png"
-                            className='w-full h-auto object-contain absolute'
-                            priority
-                        />
-                        <Image
-                            alt="background"
-                            width={1920}
-                            height={1080}
-                            src="/background/line_background_mobile1.png"
-                            className='w-full h-auto object-contain absolute -bottom-8 drop-shadow'
-                            priority
-                        />
-                    </>
-                    :
-                    <>
-                        <Image
-                            alt="background"
-                            width={1920}
-                            height={1080}
-                            src="/background/cityHome.png"
-                            className='w-full h-auto object-contain absolute'
-                            priority
-                        />
-                        <Image
-                            alt="background"
-                            width={1920}
-                            height={1080}
-                            src="/background/line_background1.png"
-                            className='w-full h-auto object-contain absolute 3xl:-bottom-[4px] 2xl:-bottom-[20px] xxl:-bottom-[16px] xl:bottom-0 lg:-bottom-[10px] md:bottom-0 bottom-0 drop-shadow'
-                            priority
-                        />
-                    </>
-            }
+            <div className="xl:hidden">
+                <Image
+                    alt="background"
+                    width={1920}
+                    height={1080}
+                    src="/background/cityHomeMobile.png"
+                    className='w-full h-auto object-contain absolute'
+                    priority
+                />
+                <Image
+                    alt="background"
+                    width={1920}
+                    height={1080}
+                    src="/background/line_background_mobile1.png"
+                    className='w-full h-auto object-contain absolute -bottom-8 drop-shadow'
+                    priority
+                />
+            </div>
+            <div className="hidden xl:block">
+                <Image
+                    alt="background"
+                    width={1920}
+                    height={1080}
+                    src="/background/cityHome.png"
+                    className='w-full h-auto object-contain absolute'
+                    priority
+                />
+                <Image
+                    alt="background"
+                    width={1920}
+                    height={1080}
+                    src="/background/line_background1.png"
+                    className='w-full h-auto object-contain absolute 3xl:-bottom-[4px] 2xl:-bottom-[20px] xxl:-bottom-[16px] xl:bottom-0 lg:-bottom-[10px] md:bottom-0 bottom-0 drop-shadow'
+                    priority
+                />
+            </div>
             <div
                 className='xl:h-[60vh] h-[40vh] '
                 style={{ background: "linear-gradient(0deg, rgba(3, 107, 116, 0.04) -75.88%, rgba(0, 0, 0, 0.00) 129.69%), rgba(194, 249, 249, 0.60)" }}
