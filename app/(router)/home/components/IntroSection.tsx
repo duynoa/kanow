@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useDataHome } from '@/hooks/useDataQueryKey';
 import { useDialogAddress, useDialogCalendar } from '@/hooks/useOpenDialog';
-import { useResize } from '@/hooks/useResize';
 import { regexPatterns } from '@/lib/regex';
 import { toastCore } from '@/lib/toast';
 import { cn } from '@/lib/utils';
@@ -26,7 +25,6 @@ const IntroSection = () => {
     const MAX_DESTINATIONS = 4;
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
-    const { isVisibleMobile } = useResize()
     const router = useRouter()
     const { dateReal, setOpenDialogCalendar, setTypeCarCalendar, setDateReal } = useDialogCalendar()
     const {
@@ -75,9 +73,9 @@ const IntroSection = () => {
     // Tính thời điểm hết hạn của cookie là 60 giây sau thời điểm hiện tại
     const expirationTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         queryKeyIsStateDataHome({
-            ...isStateDataHome,
             tabSearch: {
                 tabId: tabSearch[0].id,
                 type: tabSearch[0].type,
@@ -105,7 +103,6 @@ const IntroSection = () => {
         setDateReal(defaultDateRange)
 
         queryKeyIsStateDataHome({
-            ...isStateDataHome,
             tabSearch: {
                 tabId: item.id,
                 type: item.type,
@@ -205,6 +202,7 @@ const IntroSection = () => {
                     src="/background/cityHomeMobile.png"
                     className='w-full h-auto object-contain absolute'
                     priority
+                    sizes="100vw"
                 />
                 <Image
                     alt="background"
@@ -213,6 +211,7 @@ const IntroSection = () => {
                     src="/background/line_background_mobile1.png"
                     className='w-full h-auto object-contain absolute -bottom-8 drop-shadow'
                     priority
+                    sizes="100vw"
                 />
             </div>
             <div className="hidden xl:block">

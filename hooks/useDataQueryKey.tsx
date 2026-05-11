@@ -25,8 +25,8 @@ interface isStateDataHome {
 const isStateDataHome: IInitialStateDataHome = {
     listCardCarsForYou: [],
     tabSearch: {
-        tabId: "0",
-        type: "",
+        tabId: "232",
+        type: "list-cars-autonomous",
         tab: 1,
     },
     loading: {
