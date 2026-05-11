@@ -83,17 +83,17 @@ export default function TalentedShuttle(props: Props) {
                 within: {
                     ...isState.within,
                     propose: +dataOther.other_talent?.km_delivery_car,
-                    step: +dataOther.other_talent?.range_km_delivery_car_talent ?? 1
+                    step: +(dataOther.other_talent?.range_km_delivery_car_talent ?? 1)
                 },
                 shuttleFee: {
                     ...isState.shuttleFee,
                     propose: +dataOther.other_talent?.fee_km_delivery_car,
-                    step: +dataOther.other_talent?.range_fee_km_delivery_car_talent ?? 1
+                    step: +(dataOther.other_talent?.range_fee_km_delivery_car_talent ?? 1)
                 },
                 freeShuttle: {
                     ...isState.freeShuttle,
                     propose: +dataOther.other_talent?.free_km_delivery_car,
-                    step: +dataOther.other_talent?.range_free_km_delivery_car_talent ?? 1
+                    step: +(dataOther.other_talent?.range_free_km_delivery_car_talent ?? 1)
                 },
             })
             return
