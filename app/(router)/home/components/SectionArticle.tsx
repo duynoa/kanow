@@ -22,26 +22,26 @@ const SectionArticle = (props: Props) => {
 
   const { data: dataDetail } = useGetDetailNewsEvent({ idBlog: 24 });
 
-  const dataArticle = [
-    {
-      id: uuidv4(),
-      image: "/other/car/car1.png",
-      description: "Một số lưu ý cho chủ xe khi lần đầu cho thuê xe tại KANOW",
-      type: "Thông báo",
-    },
-    {
-      id: uuidv4(),
-      image: "/other/car/car1.png",
-      description: "Một số lưu ý cho chủ xe khi lần đầu cho thuê xe tại KANOW",
-      type: "Thông báo",
-    },
-    {
-      id: uuidv4(),
-      image: "/other/car/car1.png",
-      description: "Một số lưu ý cho chủ xe khi lần đầu cho thuê xe tại KANOW",
-      type: "Thông báo",
-    },
-  ];
+  // const dataArticle = [
+  //   {
+  //     id: uuidv4(),
+  //     image: "/other/car/car1.png",
+  //     description: "Một số lưu ý cho chủ xe khi lần đầu cho thuê xe tại KANOW",
+  //     type: "Thông báo",
+  //   },
+  //   {
+  //     id: uuidv4(),
+  //     image: "/other/car/car1.png",
+  //     description: "Một số lưu ý cho chủ xe khi lần đầu cho thuê xe tại KANOW",
+  //     type: "Thông báo",
+  //   },
+  //   {
+  //     id: uuidv4(),
+  //     image: "/other/car/car1.png",
+  //     description: "Một số lưu ý cho chủ xe khi lần đầu cho thuê xe tại KANOW",
+  //     type: "Thông báo",
+  //   },
+  // ];
 
   const customPaginationBanner = {
     clickable: true,
