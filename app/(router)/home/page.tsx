@@ -15,7 +15,7 @@ export default function Home() {
     <div className="bg-[#FBFBFC] ">
       <IntroSection />
       <SectionCardCar />
-      <SectionClient />
+      {/* <SectionClient /> */}
       <SectionBannerPromotion />
       <SectionPlaceProminent />
       <SectionTripCarServices />
