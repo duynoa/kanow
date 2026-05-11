@@ -1,75 +1,71 @@
 "use client";
 
-import Image from "next/image";
-import { v4 as uuidv4 } from "uuid";
-import React, { useRef, useState } from "react";
-
-import { Swiper, SwiperSlide } from "swiper/react";
-import { A11y, Autoplay } from "swiper/modules";
-
-import { TiArrowLeft, TiArrowRight } from "react-icons/ti";
+import { Button } from "@/components/ui/button";
 import { useResize } from "@/hooks/useResize";
 import { useGetHomepageData } from "@/managers/api-management/homepage/useGetHomepageData";
 import { PartnerItem } from "@/types/Homepage/IHomepage";
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { useRef, useState } from "react";
 import { IoArrowForwardOutline } from "react-icons/io5";
+import { TiArrowLeft, TiArrowRight } from "react-icons/ti";
+import { Autoplay } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 type Props = {};
 
-const dataPartners: PartnerItem[] = [
-  {
-    id: 1,
-    image: "/icon/about/icon_about_1.png", // Placeholder image
-    name: "Quán Rành Là Nhậu",
-    address: "2.8 phan xích long Tân Bình",
-    phone: "0938598494",
-  },
-  {
-    id: 2,
-    image: "/icon/about/icon_about_2.png",
-    name: "Cafe Sáng Tạo",
-    address: "Nguyễn Trãi, Quận 1",
-    phone: "0966696609",
-  },
-  {
-    id: 3,
-    image: "/icon/about/icon_about_3.png",
-    name: "Nhà Hàng Gia Đình",
-    address: "Lê Lợi, Quận 3",
-    phone: "0329283498",
-  },
-  {
-    id: 4,
-    image: "/icon/about/icon_about_4.png",
-    name: "Bar Rooftop View",
-    address: "Đồng Khởi, Quận 1",
-    phone: "0908308113",
-  },
-  {
-    id: 5,
-    image: "/icon/about/icon_about_5.png",
-    name: "Quán Nướng BBQ",
-    address: "Hai Bà Trưng, Quận 3",
-    phone: "0983611989",
-  },
-  {
-    id: 6,
-    image: "/icon/about/icon_about_6.png",
-    name: "Spa Relax Center",
-    address: "Nam Kỳ Khởi Nghĩa, Quận 3",
-    phone: "0937632118",
-  },
-  {
-    id: 7,
-    image: "/icon/about/icon_about_7.png",
-    name: "Karaoke Golden",
-    address: "Cách Mạng Tháng 8, Quận 10",
-    phone: "0985593011",
-  },
-];
+// const dataPartners: PartnerItem[] = [
+//   {
+//     id: 1,
+//     image: "/icon/about/icon_about_1.png", // Placeholder image
+//     name: "Quán Rành Là Nhậu",
+//     address: "2.8 phan xích long Tân Bình",
+//     phone: "0938598494",
+//   },
+//   {
+//     id: 2,
+//     image: "/icon/about/icon_about_2.png",
+//     name: "Cafe Sáng Tạo",
+//     address: "Nguyễn Trãi, Quận 1",
+//     phone: "0966696609",
+//   },
+//   {
+//     id: 3,
+//     image: "/icon/about/icon_about_3.png",
+//     name: "Nhà Hàng Gia Đình",
+//     address: "Lê Lợi, Quận 3",
+//     phone: "0329283498",
+//   },
+//   {
+//     id: 4,
+//     image: "/icon/about/icon_about_4.png",
+//     name: "Bar Rooftop View",
+//     address: "Đồng Khởi, Quận 1",
+//     phone: "0908308113",
+//   },
+//   {
+//     id: 5,
+//     image: "/icon/about/icon_about_5.png",
+//     name: "Quán Nướng BBQ",
+//     address: "Hai Bà Trưng, Quận 3",
+//     phone: "0983611989",
+//   },
+//   {
+//     id: 6,
+//     image: "/icon/about/icon_about_6.png",
+//     name: "Spa Relax Center",
+//     address: "Nam Kỳ Khởi Nghĩa, Quận 3",
+//     phone: "0937632118",
+//   },
+//   {
+//     id: 7,
+//     image: "/icon/about/icon_about_7.png",
+//     name: "Karaoke Golden",
+//     address: "Cách Mạng Tháng 8, Quận 10",
+//     phone: "0985593011",
+//   },
+// ];
 
 const SectionClient = (props: Props) => {
-  const { isVisibleMobile } = useResize();
   const swiperRefPartner = useRef<any>(null);
 
   // Call homepage API and log data
@@ -201,8 +197,8 @@ const SectionClient = (props: Props) => {
                         src={item.image}
                         width={1000}
                         height={1000}
-                        className="w-full h-full object-cover rounded-xl "
-                        priority
+                        className="w-full h-full object-cover rounded-xl"
+                        sizes="100vw"
                       />
                     </div>
 
@@ -234,8 +230,7 @@ const SectionClient = (props: Props) => {
               ))}
           </Swiper>
 
-          {isVisibleMobile ? null : (
-            <div className="flex gap-2 absolute 3xl:-top-24 xl:top-[-15%] lg:top-[-15%] md:top-[-15%] top-[-12%] right-0 disable-selection">
+            <div className="hidden xl:flex gap-2 absolute 3xl:-top-24 xl:top-[-15%] lg:top-[-15%] md:top-[-15%] top-[-12%] right-0 disable-selection">
               <TiArrowLeft
                 onClick={(e) => handlePrev(e, "partner")}
                 className={`${
@@ -253,7 +248,6 @@ const SectionClient = (props: Props) => {
                 } p-1 2xl:w-10 2xl:h-10 xl:w-9 xl:h-9 w-8 h-8 rounded-full`}
               />
             </div>
-          )}
         </div>
 
         <div className="pt-6 flex items-center  justify-center">
