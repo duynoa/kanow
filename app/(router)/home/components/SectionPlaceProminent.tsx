@@ -171,7 +171,7 @@ const SectionPlaceProminent = (props: Props) => {
                             height={1080}
                             src="/background/line_background2.png"
                             className='w-full h-auto object-contain absolute 3xl:-bottom-[90px] lg:-bottom-[70px] md:bottom-0 bottom-14 3xl:right-12 xl:right-8 lg:-right-0 -right-0 drop-shadow z-[1]'
-                            loading="lazy"
+                            priority
                         />
                         <Image
                             alt="background"
@@ -179,7 +179,7 @@ const SectionPlaceProminent = (props: Props) => {
                             height={1080}
                             src="/background/triangle.png"
                             className='3xl:w-[300px] 3xl:h-[300px] xl:w-[260px] xl:h-[260px] lg:w-[220px] lg:h-[220px] w-[200px] h-[200px] object-contain absolute 3xl:-bottom-56 2xl:-bottom-44 xxl:-bottom-44 xl:-bottom-44 lg:-bottom-40 -bottom-32 -right-20 z-[1]'
-                            loading="lazy"
+                            priority
                         />
                     </>
             }

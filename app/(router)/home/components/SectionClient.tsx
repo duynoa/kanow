@@ -196,9 +196,11 @@ const SectionClient = (props: Props) => {
                   <div className="bg-white rounded-xl border border-gray-200 transition-shadow duration-300 overflow-hidden cursor-pointer h-full">
                     {/* Image Container */}
                     <div className=" px-4 pt-4 relative w-full h-[180px] md:h-[220px] lg:h-[230px] xl:h-[240px] xxl:h-[280px]">
-                      <img
+                      <Image
                         alt={`${item.name} image`}
                         src={item.image}
+                        width={1000}
+                        height={1000}
                         className="w-full h-full object-cover rounded-xl "
                       />
                     </div>
