@@ -191,7 +191,7 @@ const SectionClient = (props: Props) => {
                 <SwiperSlide key={item.id}>
                   <div className="bg-white rounded-xl border border-gray-200 transition-shadow duration-300 overflow-hidden cursor-pointer h-full">
                     {/* Image Container */}
-                    <div className=" px-4 pt-4 relative w-full h-[180px] md:h-[220px] lg:h-[230px] xl:h-[240px] xxl:h-[280px]">
+                    <div className="px-4 pt-4 relative w-full h-[180px] md:h-[220px] lg:h-[230px] xl:h-[240px] xxl:h-[280px]">
                       <Image
                         alt={`${item.name} image`}
                         src={item.image}
@@ -199,6 +199,9 @@ const SectionClient = (props: Props) => {
                         height={1000}
                         className="w-full h-full object-cover rounded-xl"
                         sizes="100vw"
+                        priority
+                        fetchPriority="high"
+                        quality={60}
                       />
                     </div>
 
