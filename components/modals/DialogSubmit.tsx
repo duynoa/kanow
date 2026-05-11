@@ -246,8 +246,8 @@ export function DialogSubmit({ }: Props) {
 
     const { firstDate, lastDate } = getFirstAndLastDate(isStateTalentedCalendar?.selectedMultiDates || []);
 
-    console.log('firstDate', firstDate);
-    console.log('lastDate', lastDate);
+    // console.log('firstDate', firstDate);
+    // console.log('lastDate', lastDate);
 
 
     return (

@@ -4,6 +4,10 @@ import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
 import { FormatNumberHundred, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber';
 import BlurImage from '@/components/image/BlurImage';
 import { Badge } from '@/components/ui/badge';
+import { useEffect, useState } from 'react'
+import { CustomDataListCars } from '@/custom/CustomData';
+import { useDataHome } from '@/hooks/useDataQueryKey';
+import { getListCarsForYou } from '@/services/cars/cars.services';
 import { useResize } from '@/hooks/useResize';
 import Image from 'next/image'
 import Link from 'next/link';
@@ -14,7 +18,6 @@ import { TiHeartFullOutline, TiLocation } from 'react-icons/ti';
 import { v4 as uuidv4 } from 'uuid';
 import { A11y, Pagination } from 'swiper/modules'
 import { SwiperSlide, Swiper } from 'swiper/react'
-import { useDataHome } from '@/hooks/useDataQueryKey';
 import { useCookie } from '@/hooks/useCookie';
 import { postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
 import { useDialogLogin } from '@/hooks/useOpenDialog';
@@ -27,152 +30,40 @@ const SectionCardCar = () => {
     const { getCookie } = useCookie()
     const { setOpenDialogLogin } = useDialogLogin()
 
-    const dataListCardCars = [
-        {
-            id: uuidv4(),
-            image: '/card/card_car1.png',
-            favorite: false,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            title: "Mitsubishi xpander 2023",
-            address: 'Quận Phú Nhuận, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 392000,
-            priceAfterPromotion: 292000,
-            point: 4.9,
-            quantityTrips: 19
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 30
-        },
-        {
-            id: uuidv4(),
-            image: '/card/card_car2.png',
-            favorite: true,
-            type: {
-                orderFastCar: true,
-                mortgageFree: true,
-                automaticNumber: true,
-                doorstepDelivery: true,
-            },
-            title: "Mitsubishi xpander 2024",
-            address: 'Quận 1, TP.Hồ Chí Minh',
-            promotion: '25%',
-            priceBeforePromotion: 322000,
-            priceAfterPromotion: 282000,
-            point: 5,
-            quantityTrips: 101
-        },
-    ]
+    useEffect(() => {
+        const fetchListCarsForYou = async () => {
+            const params = { type: 1 };
+
+            queryKeyIsStateDataHome({
+                ...isStateDataHome,
+                loading: {
+                    isLoadingListCars: true,
+                },
+            });
+
+            const { data } = await getListCarsForYou(params);
+
+            if (data && data.data && data.base) {
+                let { customDataListCars } = CustomDataListCars(data);
+
+                queryKeyIsStateDataHome({
+                    listCardCarsForYou: customDataListCars,
+                    loading: {
+                        isLoadingListCars: false,
+                    },
+                });
+            } else {
+                queryKeyIsStateDataHome({
+                    ...isStateDataHome,
+                    loading: {
+                        isLoadingListCars: false,
+                    },
+                });
+            }
+        };
+
+        fetchListCarsForYou();
+    }, []);
 
     const handleClickFavorite = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>, car_id?: number | string, index?: number) => {
         e.stopPropagation()

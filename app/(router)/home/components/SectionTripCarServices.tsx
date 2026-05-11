@@ -1,3 +1,4 @@
+
 import { useResize } from '@/hooks/useResize';
 import Image from 'next/image';
 import React from 'react'
@@ -5,7 +6,6 @@ import React from 'react'
 type Props = {}
 
 const SectionTripCarServices = (props: Props) => {
-    const {isVisibleMobile} = useResize()
 
     return (
         <div className='2xl:pt-20 md:pt-16 md:pb-0 py-16'>

@@ -1,4 +1,4 @@
-import ConvertToSlug from "@/components/convertSlug/ConvertToSlug";
+"use client";
 import BlurImage from "@/components/image/BlurImage";
 import { Button } from "@/components/ui/button";
 import { useResize } from "@/hooks/useResize";

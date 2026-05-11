@@ -81,19 +81,19 @@ const SectionClient = (props: Props) => {
   } = useGetHomepageData();
 
   // Log data để debug
-  React.useEffect(() => {
-    if (homepageData) {
-      console.log("🏠 Homepage Data:", homepageData);
-      console.log("🏢 Partners Data:", homepageData.partner);
-      console.log("🗺️ Provinces Data:", homepageData.data);
-    }
-    if (isError) {
-      console.error("❌ Homepage API Error:", error);
-    }
-    if (isLoading) {
-      console.log("⏳ Homepage API Loading...");
-    }
-  }, [homepageData, isLoading, isError, error]);
+  // React.useEffect(() => {
+  //   if (homepageData) {
+  //     console.log("🏠 Homepage Data:", homepageData);
+  //     console.log("🏢 Partners Data:", homepageData.partner);
+  //     console.log("🗺️ Provinces Data:", homepageData.data);
+  //   }
+  //   if (isError) {
+  //     console.error("❌ Homepage API Error:", error);
+  //   }
+  //   if (isLoading) {
+  //     console.log("⏳ Homepage API Loading...");
+  //   }
+  // }, [homepageData, isLoading, isError, error]);
 
   // Sử dụng dữ liệu thực từ API, fallback sang mock data nếu chưa có
   const partnersToDisplay: PartnerItem[] = homepageData?.partner || [];

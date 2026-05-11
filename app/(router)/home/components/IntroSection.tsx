@@ -1,30 +1,26 @@
-import { Label } from '@/components/ui/label';
-import Image from 'next/image'
-import React, { useEffect } from 'react'
-import { TiLocation } from 'react-icons/ti';
-
-import { Button } from "@/components/ui/button"
-import { useResize } from '@/hooks/useResize';
-import { useRouter } from 'next/navigation';
-import { FaCalendarAlt, FaPlusCircle } from 'react-icons/fa';
-
-import { addDays, format, setHours, setMinutes } from 'date-fns';
-import { cn } from '@/lib/utils';
-import { useDialogAddress, useDialogCalendar, useDialogRouteAddress } from '@/hooks/useOpenDialog';
-import { vi } from 'date-fns/locale';
-import { useDataHome } from '@/hooks/useDataQueryKey';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { uuidv4 } from '@/lib/uuid';
-import { toastCore } from '@/lib/toast';
-import Cookies from 'js-cookie';
-import { DateRange } from 'react-day-picker';
+"use client";
+import { Button } from "@/components/ui/button";
 import { Input } from '@/components/ui/input';
-
-import { PiPiBold } from "react-icons/pi";
-import { MdOutlineGpsFixed } from 'react-icons/md';
-import { useForm } from 'react-hook-form';
+import { Label } from '@/components/ui/label';
+import { useDataHome } from '@/hooks/useDataQueryKey';
+import { useDialogAddress, useDialogCalendar } from '@/hooks/useOpenDialog';
+import { useResize } from '@/hooks/useResize';
 import { regexPatterns } from '@/lib/regex';
+import { toastCore } from '@/lib/toast';
+import { cn } from '@/lib/utils';
+import { uuidv4 } from '@/lib/uuid';
 import { postDriverAppointment } from '@/services/cars/cars.services';
+import { addDays, format, setHours, setMinutes } from 'date-fns';
+import { vi } from 'date-fns/locale';
+import Cookies from 'js-cookie';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { DateRange } from 'react-day-picker';
+import { useForm } from 'react-hook-form';
+import { FaCalendarAlt } from 'react-icons/fa';
+import { MdOutlineGpsFixed } from 'react-icons/md';
+import { TiLocation } from 'react-icons/ti';
 
 const IntroSection = () => {
     const MAX_DESTINATIONS = 4;

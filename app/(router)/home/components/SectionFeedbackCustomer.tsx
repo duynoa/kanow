@@ -1,14 +1,3 @@
-'use client'
-
-import Image from 'next/image'
-import { v4 as uuidv4 } from 'uuid';
-import React, { useRef, useState } from 'react'
-
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { A11y, Autoplay, Pagination } from 'swiper/modules'
-
-import { TiArrowLeft, TiArrowRight } from 'react-icons/ti';
-import { useResize } from '@/hooks/useResize';
 import SliderMarquee from './ui/SliderMarquee';
 
 type Props = {}
