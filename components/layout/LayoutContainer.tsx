@@ -26,16 +26,14 @@ import useGoogleApi from '@/services/filter/google/google.services';
 import { useDialogStore } from '@/stores/dialogStores';
 import { useDrawerStore } from '@/stores/drawerStores';
 import '@/styles/globals.scss';
-import dynamic from 'next/dynamic';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
+import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import React, { Suspense, useEffect } from 'react';
-
-
 import 'swiper/css/bundle';
-
-
+import Footer from './Footer';
+import Header from './Header';
 
 // ── QueryClient singleton ──────────────────────────────────────────────
 const queryClient = new QueryClient({
@@ -74,8 +72,6 @@ const DialogViettelPayPromotion = dynamic(() => import('@/components/modals/Dial
 const DrawerCustom = dynamic(() => import('@/components/drawer/DrawerCustom'), { ssr: false });
 const ButtonToTop = dynamic(() => import('@/components/button/ButtonToTop'), { ssr: false });
 const ButtonDownloadApp = dynamic(() => import('@/components/button/ButtonDownloadApp'), { ssr: false });
-const Footer = dynamic(() => import('@/components/layout/Footer'), { ssr: false });
-const Header = dynamic(() => import('@/components/layout/Header'), { ssr: false });
 const Toaster = dynamic(() => import('react-hot-toast').then((m) => m.Toaster), { ssr: false });
 
 const LayoutContainer = ({ children }: { children: React.ReactNode }) => {
