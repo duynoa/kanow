@@ -15,13 +15,42 @@ import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useResize } from '@/hooks/useResize';
 import { DateRange } from 'react-day-picker';
 import { useForm } from 'react-hook-form';
 import { FaCalendarAlt } from 'react-icons/fa';
 import { MdOutlineGpsFixed } from 'react-icons/md';
 import { TiLocation } from 'react-icons/ti';
 
+const tabSearch = [
+    {
+        id: "232",
+        name: "Xe tự lái",
+        icon_active: "/icon/home/icon_car_active_1.png",
+        icon_no_active: "/icon/home/icon_car_no_active_1.png",
+        type: "list-cars-autonomous",
+        tab: 1,
+    },
+    {
+        id: "4343",
+        name: "Xe có tài xế",
+        icon_active: "/icon/home/icon_car_active_2.png",
+        icon_no_active: "/icon/home/icon_car_no_active_2.png",
+        type: "list-cars-driver",
+        tab: 2,
+    },
+    {
+        id: "5454",
+        name: "Tìm tài xế",
+        icon_active: "/icon/home/icon_car_active_3.png",
+        icon_no_active: "/icon/home/icon_car_no_active_3.png",
+        type: "search-driver",
+        tab: 3,
+    },
+]
+
 const IntroSection = () => {
+    const { isVisibleMobile } = useResize();
     const MAX_DESTINATIONS = 4;
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
@@ -40,32 +69,7 @@ const IntroSection = () => {
 
     const { isStateDataHome, queryKeyIsStateDataHome } = useDataHome()
 
-    const tabSearch = [
-        {
-            id: "232",
-            name: "Xe tự lái",
-            icon_active: "/icon/home/icon_car_active_1.png",
-            icon_no_active: "/icon/home/icon_car_no_active_1.png",
-            type: "list-cars-autonomous",
-            tab: 1,
-        },
-        {
-            id: "4343",
-            name: "Xe có tài xế",
-            icon_active: "/icon/home/icon_car_active_2.png",
-            icon_no_active: "/icon/home/icon_car_no_active_2.png",
-            type: "list-cars-driver",
-            tab: 2,
-        },
-        {
-            id: "5454",
-            name: "Tìm tài xế",
-            icon_active: "/icon/home/icon_car_active_3.png",
-            icon_no_active: "/icon/home/icon_car_no_active_3.png",
-            type: "search-driver",
-            tab: 3,
-        },
-    ]
+
 
     // Lấy thời điểm hiện tại
     const currentTime = new Date();
@@ -73,7 +77,7 @@ const IntroSection = () => {
     // Tính thời điểm hết hạn của cookie là 60 giây sau thời điểm hiện tại
     const expirationTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     useEffect(() => {
         queryKeyIsStateDataHome({
             tabSearch: {
@@ -197,8 +201,8 @@ const IntroSection = () => {
             <div className="xl:hidden">
                 <Image
                     alt="background"
-                    width={1920}
-                    height={1080}
+                    width={375}
+                    height={664}
                     src="/background/cityHomeMobile.png"
                     className='w-full h-auto object-contain absolute'
                     priority
@@ -206,8 +210,8 @@ const IntroSection = () => {
                 />
                 <Image
                     alt="background"
-                    width={1920}
-                    height={1080}
+                    width={375}
+                    height={780}
                     src="/background/line_background_mobile1.png"
                     className='w-full h-auto object-contain absolute -bottom-8 drop-shadow'
                     priority
@@ -237,13 +241,17 @@ const IntroSection = () => {
                 style={{ background: "linear-gradient(0deg, rgba(3, 107, 116, 0.04) -75.88%, rgba(0, 0, 0, 0.00) 129.69%), rgba(194, 249, 249, 0.60)" }}
             >
                 <div className='custom-container relative'>
-                    <div className='3xl:py-16 2xl:py-12 xl:py-12 py-8 3xl:text-[3.75rem] 2xl:text-[3rem] xxl:text-[2.25rem] xl:text-[2.25rem] lg:text-[1.875rem] md:text-[1.5rem] text-[2rem] font-bold md:max-w-[45%] max-w-full capitalize leading-tight'>
+                    <div className='xl:hidden 3xl:py-16 2xl:py-12 xl:py-12 py-8 3xl:text-[3.75rem] 2xl:text-[3rem] xxl:text-[2.25rem] xl:text-[2.25rem] lg:text-[1.875rem] md:text-[1.5rem] text-[2rem] font-bold md:max-w-[45%] max-w-full capitalize leading-tight'>
+                        <span>{heroTitle}</span>
+                    </div>
+                    <div className='hidden xl:block 3xl:py-16 2xl:py-12 xl:py-12 py-8 3xl:text-[3.75rem] 2xl:text-[3rem] xxl:text-[2.25rem] xl:text-[2.25rem] lg:text-[1.875rem] md:text-[1.5rem] text-[2rem] font-bold md:max-w-[45%] max-w-full capitalize leading-tight'>
                         {
                             heroPerTitle.map(e => (
                                 <span
                                     key={e.id.toString()}
                                     data-aos="fade-up"
-                                    data-aos-delay={`${e.letter !== "" && e.id * 50}`}>
+                                    data-aos-delay={e.letter !== "" ? `${e.id * 50}` : "0"}
+                                >
                                     {e.letter}
                                 </span>
                             ))
