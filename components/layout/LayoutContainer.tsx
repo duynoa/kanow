@@ -1,18 +1,5 @@
 'use client';
 
-import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy';
-import { DialogCalendar } from '@/components/modals/DialogCalendar';
-import { DialogCancelCar } from '@/components/modals/DialogCancelCar';
-import DialogFilterAddress from '@/components/modals/DialogFilterAddress';
-import DialogFilterListCars from '@/components/modals/DialogFilterListCars';
-import DialogFilterMyCar from '@/components/modals/DialogFilterMyCar';
-import { DialogLogin } from '@/components/modals/DialogLogin';
-import { DialogPromotions } from '@/components/modals/DialogPromotions';
-import { DialogRegisterOwnerDriver } from '@/components/modals/DialogRegisterOwnerDriver';
-import { DialogReportCar } from '@/components/modals/DialogReportCar';
-import { DialogRequestCarRental } from '@/components/modals/DialogRequestCarRental';
-import { DialogReviewImage } from '@/components/modals/DialogReviewImage';
-import { DialogValidate } from '@/components/modals/DialogValidate';
 import { CustomDataPolicy } from '@/custom/CustomData';
 import { useAuth } from '@/hooks/useAuth';
 import {
@@ -39,31 +26,16 @@ import useGoogleApi from '@/services/filter/google/google.services';
 import { useDialogStore } from '@/stores/dialogStores';
 import { useDrawerStore } from '@/stores/drawerStores';
 import '@/styles/globals.scss';
+import dynamic from 'next/dynamic';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
-import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import React, { Suspense, useEffect } from 'react';
-import { Toaster } from 'react-hot-toast';
-import 'swiper/css';
-import 'swiper/css/autoplay';
+
+
 import 'swiper/css/bundle';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/swiper-bundle.css';
-import AlertCancel from '../alert/AlertCancel';
-import AlertDialogCustom from '../alert/AlertDialogCustom';
-import AlertDialogLogout from '../alert/AlertDialogLogout';
-import ButtonDownloadApp from '../button/ButtonDownloadApp';
-import ButtonToTop from '../button/ButtonToTop';
-import DrawerCustom from '../drawer/DrawerCustom';
-import { DialogNotification } from '../modals/DialogNotification';
-import { DialogPayment } from '../modals/DialogPayment';
-import DialogRouteAddress from '../modals/DialogRouteAddress';
-import { DialogSubmit } from '../modals/DialogSubmit';
-import DialogViettelPayPromotion from '../modals/DialogViettelPayPromotion';
-import Footer from './Footer';
-import Header from './Header';
+
+
 
 // ── QueryClient singleton ──────────────────────────────────────────────
 const queryClient = new QueryClient({
@@ -78,6 +50,33 @@ const queryClient = new QueryClient({
 const AOSInitializer = dynamic(() => import('@/components/init/AOSInitializer'), { ssr: false });
 const PusherProvider = dynamic(() => import('@/components/providers/PusherProvider'), { ssr: false });
 const GoogleOAuthWrapper = dynamic(() => import('@/components/providers/GoogleOAuthWrapper'), { ssr: false });
+const AlertCancel = dynamic(() => import('@/components/alert/AlertCancel'), { ssr: false });
+const AlertDialogCustom = dynamic(() => import('@/components/alert/AlertDialogCustom'), { ssr: false });
+const AlertDialogLogout = dynamic(() => import('@/components/alert/AlertDialogLogout'), { ssr: false });
+const DialogAnswerPolicy = dynamic(() => import('@/components/modals/DialogAnswerPolicy').then((m) => m.DialogAnswerPolicy), { ssr: false });
+const DialogCalendar = dynamic(() => import('@/components/modals/DialogCalendar').then((m) => m.DialogCalendar), { ssr: false });
+const DialogCancelCar = dynamic(() => import('@/components/modals/DialogCancelCar').then((m) => m.DialogCancelCar), { ssr: false });
+const DialogFilterAddress = dynamic(() => import('@/components/modals/DialogFilterAddress'), { ssr: false });
+const DialogFilterListCars = dynamic(() => import('@/components/modals/DialogFilterListCars'), { ssr: false });
+const DialogFilterMyCar = dynamic(() => import('@/components/modals/DialogFilterMyCar'), { ssr: false });
+const DialogLogin = dynamic(() => import('@/components/modals/DialogLogin').then((m) => m.DialogLogin), { ssr: false });
+const DialogPromotions = dynamic(() => import('@/components/modals/DialogPromotions').then((m) => m.DialogPromotions), { ssr: false });
+const DialogRegisterOwnerDriver = dynamic(() => import('@/components/modals/DialogRegisterOwnerDriver').then((m) => m.DialogRegisterOwnerDriver), { ssr: false });
+const DialogReportCar = dynamic(() => import('@/components/modals/DialogReportCar').then((m) => m.DialogReportCar), { ssr: false });
+const DialogRequestCarRental = dynamic(() => import('@/components/modals/DialogRequestCarRental').then((m) => m.DialogRequestCarRental), { ssr: false });
+const DialogReviewImage = dynamic(() => import('@/components/modals/DialogReviewImage').then((m) => m.DialogReviewImage), { ssr: false });
+const DialogValidate = dynamic(() => import('@/components/modals/DialogValidate').then((m) => m.DialogValidate), { ssr: false });
+const DialogNotification = dynamic(() => import('@/components/modals/DialogNotification').then((m) => m.DialogNotification), { ssr: false });
+const DialogPayment = dynamic(() => import('@/components/modals/DialogPayment').then((m) => m.DialogPayment), { ssr: false });
+const DialogRouteAddress = dynamic(() => import('@/components/modals/DialogRouteAddress'), { ssr: false });
+const DialogSubmit = dynamic(() => import('@/components/modals/DialogSubmit').then((m) => m.DialogSubmit), { ssr: false });
+const DialogViettelPayPromotion = dynamic(() => import('@/components/modals/DialogViettelPayPromotion'), { ssr: false });
+const DrawerCustom = dynamic(() => import('@/components/drawer/DrawerCustom'), { ssr: false });
+const ButtonToTop = dynamic(() => import('@/components/button/ButtonToTop'), { ssr: false });
+const ButtonDownloadApp = dynamic(() => import('@/components/button/ButtonDownloadApp'), { ssr: false });
+const Footer = dynamic(() => import('@/components/layout/Footer'), { ssr: false });
+const Header = dynamic(() => import('@/components/layout/Header'), { ssr: false });
+const Toaster = dynamic(() => import('react-hot-toast').then((m) => m.Toaster), { ssr: false });
 
 const LayoutContainer = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
