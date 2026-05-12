@@ -187,7 +187,7 @@ const IntroSection = () => {
                     alt="background"
                     width={375}
                     height={664}
-                    src="/background/cityHomeMobile.png"
+                    src="/background/cityHomeMobile.webp"
                     className='w-full h-auto object-contain absolute'
                     priority
                     sizes="100vw"
@@ -196,7 +196,7 @@ const IntroSection = () => {
                     alt="background"
                     width={375}
                     height={780}
-                    src="/background/line_background_mobile1.png"
+                    src="/background/line_background_mobile1.webp"
                     className='w-full h-auto object-contain absolute -bottom-8 drop-shadow'
                     priority
                     sizes="100vw"
@@ -207,7 +207,7 @@ const IntroSection = () => {
                     alt="background"
                     width={1920}
                     height={1080}
-                    src="/background/cityHome.png"
+                    src="/background/cityHome.webp"
                     className='w-full h-auto object-contain absolute'
                     priority
                 />
@@ -215,7 +215,7 @@ const IntroSection = () => {
                     alt="background"
                     width={1920}
                     height={1080}
-                    src="/background/line_background1.png"
+                    src="/background/line_background1.webp"
                     className='w-full h-auto object-contain absolute 3xl:-bottom-[4px] 2xl:-bottom-[20px] xxl:-bottom-[16px] xl:bottom-0 lg:-bottom-[10px] md:bottom-0 bottom-0 drop-shadow'
                     priority
                 />
@@ -257,6 +257,7 @@ const IntroSection = () => {
                                                     src={tab.id == isStateDataHome.tabSearch.tabId ? (tab.icon_active ? tab.icon_active : "/default/default.png") : (tab.icon_no_active ? tab.icon_no_active : "/default/default.png")}
                                                     width={80}
                                                     height={80}
+                                                    priority
                                                     className="w-full h-full object-contain"
                                                 />
                                             </div>

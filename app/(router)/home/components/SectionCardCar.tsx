@@ -2,27 +2,23 @@
 
 import ConvertToSlug from '@/components/convertSlug/ConvertToSlug';
 import { FormatNumberHundred, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber';
-import BlurImage from '@/components/image/BlurImage';
+import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { useEffect, useState } from 'react'
 import { CustomDataListCars } from '@/custom/CustomData';
+import { useCookie } from '@/hooks/useCookie';
 import { useDataHome } from '@/hooks/useDataQueryKey';
-import { getListCarsForYou } from '@/services/cars/cars.services';
+import { useDialogLogin } from '@/hooks/useOpenDialog';
 import { useResize } from '@/hooks/useResize';
-import Image from 'next/image'
+import { getListCarsForYou, postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
+import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react'
+import React, { useEffect } from 'react';
 import { FaStar } from 'react-icons/fa';
 import { FaCircleCheck } from 'react-icons/fa6';
 import { TiHeartFullOutline, TiLocation } from 'react-icons/ti';
-import { v4 as uuidv4 } from 'uuid';
-import { A11y, Pagination } from 'swiper/modules'
-import { SwiperSlide, Swiper } from 'swiper/react'
-import { useCookie } from '@/hooks/useCookie';
-import { postUpdateFavoriteHeartCar } from '@/services/cars/cars.services';
-import { useDialogLogin } from '@/hooks/useOpenDialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import SkeletonListCar from '@/components/skeleton/SkeletonListCar';
+import { A11y, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 const SectionCardCar = () => {
     const { isVisibleMobile } = useResize()

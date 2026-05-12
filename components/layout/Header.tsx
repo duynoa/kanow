@@ -436,8 +436,8 @@ const Header = () => {
                                 <Image
                                     alt='logo'
                                     src="/logo/logo_kanow.svg"
-                                    width={1920}
-                                    height={1080}
+                                    width={300}
+                                    height={300}
                                     priority
                                     className='w-[150px] h-[95px] object-contain'
                                 />
@@ -480,8 +480,8 @@ const Header = () => {
                                             <Image
                                                 alt='logo'
                                                 src="/logo/logo_kanow.svg"
-                                                width={800}
-                                                height={600}
+                                                width={300}
+                                                height={300}
                                                 priority
                                                 className='w-[120px] h-[80px] object-contain'
                                             />

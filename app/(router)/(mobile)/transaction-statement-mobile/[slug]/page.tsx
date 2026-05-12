@@ -1,30 +1,16 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-
-import Link from 'next/link'
-import Image from 'next/image'
-
-import { FaStar } from 'react-icons/fa'
-import { FaArrowLeftLong, FaCircleCheck } from 'react-icons/fa6'
-import { TiArrowBackOutline, TiHeartFullOutline, TiLocation } from 'react-icons/ti'
-
-import { A11y, Autoplay, Pagination } from 'swiper/modules'
-import { Swiper, SwiperSlide } from 'swiper/react'
-
-import ConvertToSlug from '@/components/convertSlug/ConvertToSlug'
-
-import { useResize } from '@/hooks/useResize'
-import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { FormatNumberDot, FormatNumberHundred, FormatNumberSpace, FormatNumberToDecimal, FormatNumberToThousands } from '@/components/format/FormatNumber'
-
-import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
-import moment from 'moment'
-import { getListDetailSyntheticTransaction } from '@/services/cars/historyPayment.services'
+import { FormatNumberDot, FormatNumberSpace } from '@/components/format/FormatNumber'
 import { useAuth } from '@/hooks/useAuth'
-import { endOfMonth, isSameMonth, isThisMonth, parse, startOfMonth } from 'date-fns'
+import { useResize } from '@/hooks/useResize'
+import { getListDetailSyntheticTransaction } from '@/services/cars/historyPayment.services'
 import { IInitialTransactionStatement } from '@/types/Payment/IPaymentCar'
+import { endOfMonth, isSameMonth, parse, startOfMonth } from 'date-fns'
+import moment from 'moment'
+import Link from 'next/link'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
+import { TiArrowBackOutline } from 'react-icons/ti'
 
 type Props = {
     params: {

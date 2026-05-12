@@ -1,29 +1,20 @@
 'use client'
 
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
+import Nodata from "@/components/image/Nodata"
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { SelectContentNocheck, SelectGroupNocheck, SelectItemNocheck, SelectNocheck, SelectTriggerNocheck, SelectValueNocheck } from '@/components/ui/selectNocheck'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useResize } from '@/hooks/useResize'
+import { cn } from "@/lib/utils"
 import { useGetUsePolicy } from '@/managers/api-management/policy/useGetUsePolicy'
 import usePolicyApi from '@/services/policy/policy.services'
 import { ScrollToSection } from '@/utils/scroll/ScrollToSection'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
-import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
-import PolicyMobile from "./components/PolicyMobile"
+import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
-import { cn } from "@/lib/utils"
-import Nodata from "@/components/image/Nodata"
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useRef, useState } from 'react'
+import { Navigation, Pagination } from "swiper/modules"
+import { Swiper, SwiperSlide } from "swiper/react"
 const Page = () => {
     const router = useRouter()
 

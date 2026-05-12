@@ -1,52 +1,5 @@
 'use client';
 
-import Aos from 'aos';
-import React, { Suspense, useEffect, useState } from 'react';
-
-import Footer from './Footer';
-import Header from './Header';
-
-import { useResize } from '@/hooks/useResize';
-
-import { usePathname, useRouter } from 'next/navigation';
-import Pusher from 'pusher-js';
-import ButtonToTop from '../button/ButtonToTop';
-
-import AlertCancel from '../alert/AlertCancel';
-import AlertDialogLogout from '../alert/AlertDialogLogout';
-
-import { useGeneralKey } from '@/hooks/useGeneralKey';
-import useAuthenticationAPI from '@/services/auth/auth.services';
-import AlertDialogCustom from '../alert/AlertDialogCustom';
-
-import '@/styles/globals.scss';
-import 'aos/dist/aos.css';
-import 'moment/locale/vi';
-import 'react-toastify/dist/ReactToastify.css';
-import 'swiper/css';
-import 'swiper/css/autoplay';
-import 'swiper/css/bundle';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/swiper-bundle.css';
-
-import {
-  useDataDetailCar,
-  useDataHome,
-  useDataInfoRentalCar,
-  useDataListCarAutonomous,
-  useDataListCarsDriver,
-  useDataPolicy,
-} from '@/hooks/useDataQueryKey';
-import {
-  useDialogAddress,
-  useDialogPayment,
-  useDialogRegisterOwnerDriver,
-  useDialogRequestCarRental,
-  useDialogReviewCar,
-  useDialogRouteAddress,
-} from '@/hooks/useOpenDialog';
-
 import { DialogAnswerPolicy } from '@/components/modals/DialogAnswerPolicy';
 import { DialogCalendar } from '@/components/modals/DialogCalendar';
 import { DialogCancelCar } from '@/components/modals/DialogCancelCar';
@@ -61,27 +14,58 @@ import { DialogRequestCarRental } from '@/components/modals/DialogRequestCarRent
 import { DialogReviewImage } from '@/components/modals/DialogReviewImage';
 import { DialogValidate } from '@/components/modals/DialogValidate';
 import { CustomDataPolicy } from '@/custom/CustomData';
+import { useAuth } from '@/hooks/useAuth';
+import {
+  useDataDetailCar,
+  useDataInfoRentalCar,
+  useDataListCarAutonomous,
+  useDataListCarsDriver,
+  useDataPolicy,
+} from '@/hooks/useDataQueryKey';
+import { useGeneralKey } from '@/hooks/useGeneralKey';
+import { useNotification } from '@/hooks/useNotification';
+import {
+  useDialogAddress,
+  useDialogPayment,
+  useDialogRegisterOwnerDriver,
+  useDialogRequestCarRental,
+  useDialogReviewCar,
+  useDialogRouteAddress,
+} from '@/hooks/useOpenDialog';
+import { useResize } from '@/hooks/useResize';
+import useAuthenticationAPI from '@/services/auth/auth.services';
 import { getDataPolicy } from '@/services/cars/policy.services';
 import useGoogleApi from '@/services/filter/google/google.services';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import DialogRouteAddress from '../modals/DialogRouteAddress';
-
-import { useAuth } from '@/hooks/useAuth';
-import { useNotification } from '@/hooks/useNotification';
+import { useDialogStore } from '@/stores/dialogStores';
+import { useDrawerStore } from '@/stores/drawerStores';
+import '@/styles/globals.scss';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
+import dynamic from 'next/dynamic';
+import { usePathname } from 'next/navigation';
+import React, { Suspense, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
+import 'swiper/css';
+import 'swiper/css/autoplay';
+import 'swiper/css/bundle';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/swiper-bundle.css';
+import AlertCancel from '../alert/AlertCancel';
+import AlertDialogCustom from '../alert/AlertDialogCustom';
+import AlertDialogLogout from '../alert/AlertDialogLogout';
 import ButtonDownloadApp from '../button/ButtonDownloadApp';
+import ButtonToTop from '../button/ButtonToTop';
+import DrawerCustom from '../drawer/DrawerCustom';
 import { DialogNotification } from '../modals/DialogNotification';
 import { DialogPayment } from '../modals/DialogPayment';
+import DialogRouteAddress from '../modals/DialogRouteAddress';
 import { DialogSubmit } from '../modals/DialogSubmit';
-// import { DialogCustom } from '../modals/DialogCustom';
-import { useDialogStore } from '@/stores/dialogStores';
-
-import { useDrawerStore } from '@/stores/drawerStores';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import DrawerCustom from '../drawer/DrawerCustom';
 import DialogViettelPayPromotion from '../modals/DialogViettelPayPromotion';
+import Footer from './Footer';
+import Header from './Header';
 
+// ── QueryClient singleton ──────────────────────────────────────────────
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -90,22 +74,18 @@ const queryClient = new QueryClient({
   },
 });
 
+// ── Lazy-loaded components ────────────────────────────────────────────
+const AOSInitializer = dynamic(() => import('@/components/init/AOSInitializer'), { ssr: false });
+const PusherProvider = dynamic(() => import('@/components/providers/PusherProvider'), { ssr: false });
+const GoogleOAuthWrapper = dynamic(() => import('@/components/providers/GoogleOAuthWrapper'), { ssr: false });
+
 const LayoutContainer = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
   const pathname = usePathname();
-
-  const [isMounted, setIsMounted] = useState<boolean>(false);
-
   const { openDrawer } = useDrawerStore();
-
   const { getKeySettings } = useAuthenticationAPI();
-
   const { apiGetCurrentPosition } = useGoogleApi();
-
   const { informationUser, setInformationUser } = useAuth();
-
   const { generalKey, setGeneralKey } = useGeneralKey();
-
   const { isStateInfoRentalCar, queryKeyIsStateInfoRentalCar } = useDataInfoRentalCar();
   const {
     openDialogAddress,
@@ -116,11 +96,8 @@ const LayoutContainer = ({ children }: { children: React.ReactNode }) => {
     setValueAddressDestination,
     setCoordinates,
   } = useDialogAddress();
-
   const { isStateNotification, queryKeyIsStateNotification } = useNotification();
-
   const { isStateDetailCar, queryKeyIsStateDetailCar } = useDataDetailCar();
-
   const { setValueTwoAddress } = useDialogRouteAddress();
   const { openDialogRegisterOwnerDriver } = useDialogRegisterOwnerDriver();
   const { isStateListCarAutonomous, queryKeyIsStateListCarAutonomous } = useDataListCarAutonomous();
@@ -128,16 +105,14 @@ const LayoutContainer = ({ children }: { children: React.ReactNode }) => {
   const { queryKeyIsStatePolicy } = useDataPolicy();
   const { isVisibleMobile, isVisibleTablet, onResizeMobile, onResizeTablet, onCloseResizeMobile, onCloseResizeTablet } = useResize();
   const { openDialogReviewCar, setOpenDialogReviewCar } = useDialogReviewCar();
-
   const { openDialogCustom } = useDialogStore();
-
   const { openDialogRequestCarRental } = useDialogRequestCarRental();
   const { openDialogPayment } = useDialogPayment();
 
   const currentTime = new Date();
   const expirationTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
 
-  let InitialCoordinates = {
+  const InitialCoordinates = {
     latCurrent: 0,
     lngCurrent: 0,
     lat: 0,
@@ -146,256 +121,159 @@ const LayoutContainer = ({ children }: { children: React.ReactNode }) => {
     lngTo: 0,
   };
 
-  const { isStateDataHome } = useDataHome();
-
+  // ── Lazy load: Gọi API policy + key settings sau khi hydration ──
   useEffect(() => {
-    setIsMounted(true);
-
-    Aos.init({
-      duration: 1800,
-      once: true,
-    });
-
     const fetchDataPolicy = async () => {
-      const { data } = await getDataPolicy();
-
-      if (data) {
-        let { customDataPolicy } = CustomDataPolicy(data);
-        queryKeyIsStatePolicy({
-          dataPolicy: customDataPolicy,
-        });
+      try {
+        const { data } = await getDataPolicy();
+        if (data) {
+          let { customDataPolicy } = CustomDataPolicy(data);
+          queryKeyIsStatePolicy({ dataPolicy: customDataPolicy });
+        }
+      } catch (e) {
+        console.error('fetchDataPolicy error:', e);
       }
     };
 
     const fetchKeyApi = async () => {
       try {
         const { data } = await getKeySettings();
-
         if (data) {
           setGeneralKey(data);
         }
-      } catch (error) {
-        throw error;
+      } catch (e) {
+        console.error('fetchKeyApi error:', e);
       }
     };
 
     fetchKeyApi();
     fetchDataPolicy();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchAddressLocalStorage = async () => {
-    // const savedCoordinates = localStorage.getItem('coordinates');
     const savedCoordinates = Cookies.get('coordinates');
 
-    // Kiểm tra xem giá trị từ localStorage có tồn tại không
-    if (savedCoordinates) {
-      // if (savedCoordinates && !valueAddressPickup || savedCoordinates && !valueAddressDestination.some(item => item.valueAddress !== "")) {
-      const parseCoordinates = JSON.parse(savedCoordinates);
+    if (!savedCoordinates) return;
 
-      const dataParamsPickup = {
-        key: process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D,
-        location: `${parseCoordinates.lat},${parseCoordinates.lng}`,
-        address: '',
-        viewbox: '',
-      };
+    const parseCoordinates = JSON.parse(savedCoordinates);
 
-      const dataParamsDestination = {
-        key: process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D,
-        location: `${parseCoordinates.latTo},${parseCoordinates.lngTo}`,
-        address: '',
-        viewbox: '',
-      };
+    const dataParamsPickup = {
+      key: process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D,
+      location: `${parseCoordinates.lat},${parseCoordinates.lng}`,
+      address: '',
+      viewbox: '',
+    };
 
-      if (pathname.startsWith('/list-cars-autonomous')) {
-        if (parseCoordinates.lat && parseCoordinates.lng) {
-          const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup);
+    const dataParamsDestination = {
+      key: process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_MAP4D,
+      location: `${parseCoordinates.latTo},${parseCoordinates.lngTo}`,
+      address: '',
+      viewbox: '',
+    };
 
-          if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
-            const address = dataPickup.result[0].address;
-            const location = dataPickup.result[0].location;
-
-            setValueAddressPickup(address);
-            setCoordinates({
-              ...parseCoordinates,
-              lat: location.lat,
-              lng: location.lng,
-            });
-          }
+    if (pathname.startsWith('/list-cars-autonomous')) {
+      if (parseCoordinates.lat && parseCoordinates.lng) {
+        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup);
+        if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
+          const address = dataPickup.result[0].address;
+          const location = dataPickup.result[0].location;
+          setValueAddressPickup(address);
+          setCoordinates({ ...parseCoordinates, lat: location.lat, lng: location.lng });
         }
-      } else if (pathname.startsWith('/list-cars-driver')) {
-        if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
-          const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup);
-          const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination);
-
-          // điểm đón
-          if (
-            dataPickup &&
-            dataPickup.code == 'ok' &&
-            dataPickup.result &&
-            dataDestination &&
-            dataDestination.code == 'ok' &&
-            dataDestination.result
-          ) {
-            const addressPickup = dataPickup.result[0].address;
-            const locationPickup = dataPickup.result[0].location;
-            const addressDestination = dataDestination.result[0].address;
-            const locationDestination = dataDestination.result[0].location;
-
-            // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-            const updatedAddressDestination = [...valueAddressDestination];
-            updatedAddressDestination[indexAddressDestination] = {
-              id: valueAddressDestination[indexAddressDestination].id,
-              valueAddress: addressDestination ? addressDestination : '',
-            };
-
-            setValueAddressPickup(addressPickup);
-
-            setValueAddressDestination(updatedAddressDestination);
-
-            setCoordinates({
-              ...parseCoordinates,
-              lat: locationPickup.lat,
-              lng: locationPickup.lng,
-              latTo: locationDestination.lat,
-              lngTo: locationDestination.lng,
-            });
-
-            setValueTwoAddress(`${dataPickup.result[0].name} - ${dataDestination.result[0].name}`);
-          }
-        } else if (parseCoordinates.lat && parseCoordinates.lng) {
-          const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup);
-
-          if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
-            const address = dataPickup.result[0].address;
-            const location = dataPickup.result[0].location;
-
-            setValueAddressPickup(address);
-            setCoordinates({
-              ...parseCoordinates,
-              lat: location.lat,
-              lng: location.lng,
-            });
-          }
-        } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
-          const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination);
-
-          if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
-            const address = dataDestination.result[0].address;
-            const location = dataDestination.result[0].location;
-
-            // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-            const updatedAddressDestination = [...valueAddressDestination];
-            updatedAddressDestination[indexAddressDestination] = {
-              id: valueAddressDestination[indexAddressDestination].id,
-              valueAddress: address ? address : '',
-            };
-
-            setValueAddressDestination(updatedAddressDestination);
-            setCoordinates({
-              ...parseCoordinates,
-              latTo: location.lat,
-              lngTo: location.lng,
-            });
-          }
-        }
-      } else if (pathname.startsWith('/detail-car')) {
-        if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
-          const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup);
-          const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination);
-
-          // điểm đón
-          if (
-            dataPickup &&
-            dataPickup.code == 'ok' &&
-            dataPickup.result &&
-            dataDestination &&
-            dataDestination.code == 'ok' &&
-            dataDestination.result
-          ) {
-            const addressPickup = dataPickup.result[0].address;
-            const locationPickup = dataPickup.result[0].location;
-            const addressDestination = dataDestination.result[0].address;
-            const locationDestination = dataDestination.result[0].location;
-
-            // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-            const updatedAddressDestination = [...valueAddressDestination];
-            updatedAddressDestination[indexAddressDestination] = {
-              id: valueAddressDestination[indexAddressDestination].id,
-              valueAddress: addressDestination ? addressDestination : '',
-            };
-
-            setValueAddressPickup(addressPickup);
-
-            setValueAddressDestination(updatedAddressDestination);
-
-            setCoordinates({
-              ...parseCoordinates,
-              lat: locationPickup.lat,
-              lng: locationPickup.lng,
-              latTo: locationDestination.lat,
-              lngTo: locationDestination.lng,
-            });
-
-            setValueTwoAddress(`${dataPickup.result[0].name} - ${dataDestination.result[0].name}`);
-          }
-        } else if (parseCoordinates.lat && parseCoordinates.lng) {
-          const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup);
-
-          if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
-            const address = dataPickup.result[0].address;
-            const location = dataPickup.result[0].location;
-
-            setValueAddressPickup(address);
-            setCoordinates({
-              ...parseCoordinates,
-              lat: location.lat,
-              lng: location.lng,
-            });
-          }
-        } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
-          const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination);
-
-          if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
-            const address = dataDestination.result[0].address;
-            const location = dataDestination.result[0].location;
-
-            // Cập nhật giá trị của điểm đến tại chỉ mục index bằng giá trị mới
-            const updatedAddressDestination = [...valueAddressDestination];
-            updatedAddressDestination[indexAddressDestination] = {
-              id: valueAddressDestination[indexAddressDestination].id,
-              valueAddress: address ? address : '',
-            };
-
-            setValueAddressDestination(updatedAddressDestination);
-            setCoordinates({
-              ...parseCoordinates,
-              latTo: location.lat,
-              lngTo: location.lng,
-            });
-          }
-        }
-      } else if (pathname === '/' || pathname === '/home') {
-        const dataJson = {
-          lat: 0,
-          lng: 0,
-          latTo: 0,
-          lngTo: 0,
-          latCurrent: 0,
-          lngCurrent: 0,
-        };
-
-        setCoordinates(InitialCoordinates);
-
-        const updatedAddressDestination = [...valueAddressDestination];
-        updatedAddressDestination[indexAddressDestination] = {
-          id: valueAddressDestination[indexAddressDestination].id,
-          valueAddress: '',
-        };
-
-        setValueAddressPickup('');
-        setValueAddressDestination(updatedAddressDestination);
-        Cookies.set('coordinates', JSON.stringify(InitialCoordinates), { expires: expirationTime });
       }
+    } else if (pathname.startsWith('/list-cars-driver')) {
+      if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
+        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup);
+        const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination);
+        if (dataPickup && dataPickup.code == 'ok' && dataPickup.result && dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
+          const addressPickup = dataPickup.result[0].address;
+          const locationPickup = dataPickup.result[0].location;
+          const addressDestination = dataDestination.result[0].address;
+          const locationDestination = dataDestination.result[0].location;
+          const updatedAddressDestination = [...valueAddressDestination];
+          updatedAddressDestination[indexAddressDestination] = {
+            id: valueAddressDestination[indexAddressDestination].id,
+            valueAddress: addressDestination || '',
+          };
+          setValueAddressPickup(addressPickup);
+          setValueAddressDestination(updatedAddressDestination);
+          setCoordinates({ ...parseCoordinates, lat: locationPickup.lat, lng: locationPickup.lng, latTo: locationDestination.lat, lngTo: locationDestination.lng });
+          setValueTwoAddress(`${dataPickup.result[0].name} - ${dataDestination.result[0].name}`);
+        }
+      } else if (parseCoordinates.lat && parseCoordinates.lng) {
+        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup);
+        if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
+          const address = dataPickup.result[0].address;
+          const location = dataPickup.result[0].location;
+          setValueAddressPickup(address);
+          setCoordinates({ ...parseCoordinates, lat: location.lat, lng: location.lng });
+        }
+      } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
+        const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination);
+        if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
+          const address = dataDestination.result[0].address;
+          const location = dataDestination.result[0].location;
+          const updatedAddressDestination = [...valueAddressDestination];
+          updatedAddressDestination[indexAddressDestination] = {
+            id: valueAddressDestination[indexAddressDestination].id,
+            valueAddress: address || '',
+          };
+          setValueAddressDestination(updatedAddressDestination);
+          setCoordinates({ ...parseCoordinates, latTo: location.lat, lngTo: location.lng });
+        }
+      }
+    } else if (pathname.startsWith('/detail-car')) {
+      if (parseCoordinates.lat && parseCoordinates.lng && parseCoordinates.latTo && parseCoordinates.lngTo) {
+        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup);
+        const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination);
+        if (dataPickup && dataPickup.code == 'ok' && dataPickup.result && dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
+          const addressPickup = dataPickup.result[0].address;
+          const locationPickup = dataPickup.result[0].location;
+          const addressDestination = dataDestination.result[0].address;
+          const locationDestination = dataDestination.result[0].location;
+          const updatedAddressDestination = [...valueAddressDestination];
+          updatedAddressDestination[indexAddressDestination] = {
+            id: valueAddressDestination[indexAddressDestination].id,
+            valueAddress: addressDestination || '',
+          };
+          setValueAddressPickup(addressPickup);
+          setValueAddressDestination(updatedAddressDestination);
+          setCoordinates({ ...parseCoordinates, lat: locationPickup.lat, lng: locationPickup.lng, latTo: locationDestination.lat, lngTo: locationDestination.lng });
+          setValueTwoAddress(`${dataPickup.result[0].name} - ${dataDestination.result[0].name}`);
+        }
+      } else if (parseCoordinates.lat && parseCoordinates.lng) {
+        const { data: dataPickup } = await apiGetCurrentPosition(dataParamsPickup);
+        if (dataPickup && dataPickup.code == 'ok' && dataPickup.result) {
+          const address = dataPickup.result[0].address;
+          const location = dataPickup.result[0].location;
+          setValueAddressPickup(address);
+          setCoordinates({ ...parseCoordinates, lat: location.lat, lng: location.lng });
+        }
+      } else if (parseCoordinates.latTo && parseCoordinates.lngTo) {
+        const { data: dataDestination } = await apiGetCurrentPosition(dataParamsDestination);
+        if (dataDestination && dataDestination.code == 'ok' && dataDestination.result) {
+          const address = dataDestination.result[0].address;
+          const location = dataDestination.result[0].location;
+          const updatedAddressDestination = [...valueAddressDestination];
+          updatedAddressDestination[indexAddressDestination] = {
+            id: valueAddressDestination[indexAddressDestination].id,
+            valueAddress: address || '',
+          };
+          setValueAddressDestination(updatedAddressDestination);
+          setCoordinates({ ...parseCoordinates, latTo: location.lat, lngTo: location.lng });
+        }
+      }
+    } else if (pathname === '/' || pathname === '/home') {
+      setCoordinates(InitialCoordinates);
+      const updatedAddressDestination = [...valueAddressDestination];
+      updatedAddressDestination[indexAddressDestination] = {
+        id: valueAddressDestination[indexAddressDestination].id,
+        valueAddress: '',
+      };
+      setValueAddressPickup('');
+      setValueAddressDestination(updatedAddressDestination);
+      Cookies.set('coordinates', JSON.stringify(InitialCoordinates), { expires: expirationTime });
     }
   };
 
@@ -405,14 +283,8 @@ const LayoutContainer = ({ children }: { children: React.ReactNode }) => {
     };
 
     if (!pathname.startsWith('/list-cars-autonomous') && !pathname.startsWith('/list-cars-driver')) {
-      queryKeyIsStateListCarAutonomous({
-        ...isStateListCarAutonomous,
-        page: 1,
-      });
-      queryKeyIsStateListCarsDriver({
-        ...isStateListCarsDriver,
-        page: 1,
-      });
+      queryKeyIsStateListCarAutonomous({ ...isStateListCarAutonomous, page: 1 });
+      queryKeyIsStateListCarsDriver({ ...isStateListCarsDriver, page: 1 });
     }
 
     if (!pathname.startsWith('/info-rental-car')) {
@@ -420,7 +292,6 @@ const LayoutContainer = ({ children }: { children: React.ReactNode }) => {
     }
 
     const metaViewport = document.querySelector('meta[name=viewport]');
-
     if (metaViewport) {
       metaViewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
     } else {
@@ -439,21 +310,19 @@ const LayoutContainer = ({ children }: { children: React.ReactNode }) => {
         },
         price: {
           ...isStateDetailCar?.price,
-          total_amount: isStateDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion[0]?.price_promotion,
+          total_amount: isStateDetailCar?.price?.temp_total_amount - isStateDetailCar?.dataDetailCar?.promotion?.[0]?.price_promotion,
         },
       });
     }
 
     scrollTop();
     fetchAddressLocalStorage();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  // ẩn/hiện khi chuyển qua màn hình nhỏ khi không dùng chung div để tránh xung đột
   useEffect(() => {
-    // Kiểm tra kích thước màn hình và cập nhật trạng thái isVisible
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        // khi đến màn 768 thì bắt đầu thực hiện function
         onResizeMobile();
       } else {
         onCloseResizeMobile();
@@ -465,19 +334,14 @@ const LayoutContainer = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    // Gọi hàm handleResize khi kích thước màn hình thay đổi
     window.addEventListener('resize', handleResize);
-
-    // Gọi hàm handleResize một lần khi component được render
     handleResize();
 
-    // Hủy lắng nghe sự kiện resize khi component bị unmount
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, [isVisibleMobile, isVisibleTablet, onCloseResizeMobile, onCloseResizeTablet, onResizeMobile, onResizeTablet]);
 
-  ///check chặn scroll của model lọc vị trí và model trở thành đối tác
   useEffect(() => {
     if (openDialogAddress || openDialogRegisterOwnerDriver) {
       document.body.style.overflow = 'hidden';
@@ -486,92 +350,53 @@ const LayoutContainer = ({ children }: { children: React.ReactNode }) => {
     document.body.style.overflow = 'unset';
   }, [openDialogAddress, openDialogRegisterOwnerDriver]);
 
-  useEffect(() => {
-    if (generalKey && generalKey?.pusher && generalKey?.cluster && informationUser?.id) {
-      const pusher = new Pusher(generalKey?.pusher, {
-        authTransport: 'ajax',
-        cluster: generalKey?.cluster,
-      });
-
-      pusher.connection.bind('connected', () => {
-        console.log('Đã kết nối thành công đến Pusher!');
-      });
-
-      pusher.connection.bind('error', (err: any) => {
-        console.error('Lỗi kết nối Pusher:', err);
-      });
-
-      const presenceChannel = pusher.subscribe(`notifications-channel-${informationUser?.id}-customer`);
-
-      presenceChannel.bind('notification', (data: any) => {
-        console.log('NOTIFICATION PUSHER: ', data);
-        if (data) {
-          const jsonData = JSON.parse(data?.json_data);
-
-          const newData: any = {
-            id: data.id,
-            object_id: +data.object_id,
-            object_type: `${data.object_type}`,
-            title: data.title,
-            content: data.content,
-            created_at: data.created_at,
-            is_read: 0,
-            customer_id: informationUser?.id,
-            json_data: jsonData,
-          };
-          // đổi trạng thái xác thực trong trang account
-          setInformationUser({
-            ...informationUser,
-            drivingLiscense: {
-              ...informationUser.drivingLiscense,
-              status: jsonData?.status,
-            },
-          });
-
-          const newListNotifications = [newData, ...isStateNotification.dataListNotifications];
-
-          queryKeyIsStateNotification({
-            ...isStateNotification,
-            dataListNotifications: newListNotifications,
-          });
-        }
-      });
-
-      presenceChannel.bind('change-status', (data: any) => {
-        console.log('CHANGE-STATUS PUSHER LAYOUT: ', data);
-        if (data) {
-          queryKeyIsStateInfoRentalCar({
-            detailRentalCar: {
-              ...isStateInfoRentalCar?.detailRentalCar,
-              status: {
-                ...isStateInfoRentalCar?.detailRentalCar?.status,
-                status: +data.status,
-                statusCustom: +data.status,
-                note: data.note_status,
-              },
-            },
-            loading: {
-              ...isStateInfoRentalCar.loading,
-              isLoadingButton: false,
-            },
-          });
-        }
-      });
-
-      return () => {
-        presenceChannel.unbind('notification'); // Unbind sự kiện khi component bị unmounted
-        presenceChannel.unbind('change-status'); // Unbind sự kiện khi component bị unmounted
-        // presenceChannel.unbind("check-payment-alepay"); // Unbind sự kiện khi component bị unmounted
-        pusher.unsubscribe(`notifications-channel-${informationUser.id}-customer`); // Unsubscribe channel khi component bị unmounted
-        pusher.disconnect(); // Ngắt kết nối khi component bị unmounted
-      };
-    }
-  }, [generalKey, informationUser?.id, queryKeyIsStateNotification, isStateNotification.dataListNotifications]);
-
   return (
     <QueryClientProvider client={queryClient}>
-      <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_REACT_API_GOOGLE_API_CLIENT_ID}`}>
-        <main className={`w-full bg-[#FCFDFD]`}>
+      <GoogleOAuthWrapper>
+        <AOSInitializer />
+        <PusherProvider
+          generalKey={generalKey}
+          informationUser={informationUser}
+          onStatusChange={(status) => {
+            queryKeyIsStateInfoRentalCar({
+              detailRentalCar: {
+                ...isStateInfoRentalCar?.detailRentalCar,
+                status: {
+                  ...isStateInfoRentalCar?.detailRentalCar?.status,
+                  ...status,
+                },
+              },
+              loading: {
+                ...isStateInfoRentalCar.loading,
+                isLoadingButton: false,
+              },
+            });
+          }}
+          onNotification={(data) => {
+            const jsonData = JSON.parse(data?.json_data);
+            const newData = {
+              id: data.id,
+              object_id: +data.object_id,
+              object_type: `${data.object_type}`,
+              title: data.title,
+              content: data.content,
+              created_at: data.created_at,
+              is_read: 0,
+              customer_id: informationUser?.id,
+              json_data: jsonData,
+            };
+            setInformationUser({
+              ...informationUser,
+              drivingLiscense: {
+                ...informationUser.drivingLiscense,
+                status: jsonData?.status,
+              },
+            });
+            const newListNotifications = [newData, ...isStateNotification.dataListNotifications];
+            queryKeyIsStateNotification({ ...isStateNotification, dataListNotifications: newListNotifications });
+          }}
+        />
+        <main className="w-full bg-[#FCFDFD]">
           <Suspense>
             {!pathname.startsWith('/vehicle-management-mobile') &&
               !pathname.startsWith('/income-statistic-mobile') &&
@@ -614,7 +439,6 @@ const LayoutContainer = ({ children }: { children: React.ReactNode }) => {
               <DialogNotification />
 
               {openDialogPayment && <DialogPayment />}
-              {/* {openDialogCustom && <DialogCustom />} */}
             </main>
             {pathname !== '/list-cars-autonomous' &&
               pathname !== '/list-cars-driver' &&
@@ -626,7 +450,7 @@ const LayoutContainer = ({ children }: { children: React.ReactNode }) => {
             <Toaster position="top-right" reverseOrder={false} />
           </Suspense>
         </main>
-      </GoogleOAuthProvider>
+      </GoogleOAuthWrapper>
     </QueryClientProvider>
   );
 };
