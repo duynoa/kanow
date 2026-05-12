@@ -15,7 +15,6 @@ import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useResize } from '@/hooks/useResize';
 import { DateRange } from 'react-day-picker';
 import { useForm } from 'react-hook-form';
 import { FaCalendarAlt } from 'react-icons/fa';
@@ -50,7 +49,6 @@ const tabSearch = [
 ]
 
 const IntroSection = () => {
-    const { isVisibleMobile } = useResize();
     const MAX_DESTINATIONS = 4;
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
@@ -68,8 +66,6 @@ const IntroSection = () => {
     } = useDialogAddress()
 
     const { isStateDataHome, queryKeyIsStateDataHome } = useDataHome()
-
-
 
     // Lấy thời điểm hiện tại
     const currentTime = new Date();
@@ -149,18 +145,6 @@ const IntroSection = () => {
 
     var heroTitle: string = "KANOW - Đồng hành mọi chuyến đi của bạn";
     var heroPerTitle: { letter: string, id: number }[] = heroTitle.split('').map((letter, index) => ({ letter: letter, id: index + 1 }));
-
-    const handleAddDestination = () => {
-        if (valueAddressDestination.length < MAX_DESTINATIONS) {
-            setValueAddressDestination([
-                ...valueAddressDestination,
-                {
-                    id: uuidv4(),
-                    valueAddress: ''
-                }
-            ]);
-        }
-    };
 
     const handleOpenDialogAddress = (type: string, index?: number) => {
         setOpenDialogAddress(true)

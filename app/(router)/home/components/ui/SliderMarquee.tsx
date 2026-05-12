@@ -29,8 +29,8 @@ const SliderMarquee: React.FC<SkewedMarqueeProps> = ({ dataMarque }) => {
                     firstRowItems.map((item) => (
                         <div key={item.id} className="3xl:w-[360px] md:w-[300px] w-[240px] aspect-square lg:mx-4 mx-2">
                             <Image
-                                width={800}
-                                height={800}
+                                width={500}
+                                height={500}
                                 alt="feedback"
                                 src={item.image}
                                 loading="lazy"

@@ -873,7 +873,7 @@ export function DialogCalendar({ }: Props) {
             <DialogPortal >
                 <DialogOverlay className='z-40' />
                 <DialogContent className={`
-                ${pathname.startsWith('/detail-car/') ? "h-[95vh]" : "w-fit"} 
+                ${pathname.startsWith('/detail-car/') ? "h-[95vh]" : "w-full"} 
                 ${typeCarCalendar === "calendar_car_autonomous" ? "lg:max-w-[840px] md:max-w-[640px] max-w-[380px]" : "2xl:max-w-[480px] max-w-[420px]"}
                 p-0 max-h-[95vh] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0`
                 }>

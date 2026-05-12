@@ -11,6 +11,9 @@ import { A11y, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { v4 as uuidv4 } from "uuid";
 
+const stripImgTags = (html: string) =>
+  html.replace(/<img[^>]*\/?>/gi, "").replace(/<\/img>/gi, "");
+
 type Props = {};
 
 const SectionArticle = (props: Props) => {
@@ -176,7 +179,7 @@ const SectionArticle = (props: Props) => {
                         "/default/default.png"
                       }
                       alt="image_card"
-                      width={1200}
+                      width={1000}
                       height={600}
                       className="rounded-2xl"
                       zoomIn={true}
@@ -194,9 +197,9 @@ const SectionArticle = (props: Props) => {
                     </div>
                     <span
                       dangerouslySetInnerHTML={{
-                        __html: `${
+                        __html: stripImgTags(
                           dataNewsEventList?.data[0]?.descption ?? ""
-                        }`,
+                        ),
                       }}
                       className="3xl:!text-2xl 2xl:text-xl xxl:text-xl xl:text-lg lg:text-lg md:text-sm text-base text-white font-semibold line-clamp-2 max-w-full"
                     />
@@ -231,7 +234,7 @@ const SectionArticle = (props: Props) => {
                         <BlurImage
                           image={article.image || "/default/default.png"}
                           alt="image_card"
-                          width={1200}
+                          width={1000}
                           height={600}
                           className="rounded-2xl"
                           zoomIn={true}
@@ -243,7 +246,7 @@ const SectionArticle = (props: Props) => {
                         </div>
                         <span
                           dangerouslySetInnerHTML={{
-                            __html: `${article?.descption ?? ""}`,
+                            __html: stripImgTags(article?.descption ?? ""),
                           }}
                           className="3xl:text-xl 2xl:text-xl xxl:text-xl xl:text-lg lg:text-lg md:text-sm text-base text-white font-semibold line-clamp-2 max-w-full"
                         />

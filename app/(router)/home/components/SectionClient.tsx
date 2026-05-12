@@ -195,8 +195,8 @@ const SectionClient = (props: Props) => {
                       <Image
                         alt={`${item.name} image`}
                         src={item.image}
-                        width={1000}
-                        height={1000}
+                        width={500}
+                        height={300}
                         className="w-full h-full object-cover rounded-xl"
                         sizes="100vw"
                         priority

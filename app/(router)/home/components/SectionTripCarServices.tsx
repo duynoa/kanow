@@ -12,7 +12,7 @@ const SectionTripCarServices = (props: Props) => {
             <div className='custom-container z-20 flex md:flex-row flex-col 3xl:gap-32 lg:gap-16 gap-2 relative'>
                 <Image
                     alt="background"
-                    width={1920}
+                    width={1000}
                     height={1080}
                     src="/background/trip_car.png"
                     className='2xl:w-[50%] 2xl:max-w-[50%] xxl:w-[55%] xxl:max-w-[55%] lg:w-[60%] lg:max-w-[60%] md:w-[70%] md:max-w-[70%] w-full max-w-full h-full object-cover md:order-none order-2'
@@ -22,7 +22,7 @@ const SectionTripCarServices = (props: Props) => {
                 {/* phần này absolute */}
                 <Image
                     alt="background"
-                    width={1920}
+                    width={1000}
                     height={1080}
                     src="/background/icon_the_best.png"
                     className='3xl:w-[200px] 3xl:h-[200px] xl:w-[160px] xl:h-[160px] lg:w-[140px] lg:h-[140px] md:w-[100px] md:h-[100px] w-[120px] h-[120px] object-contain absolute 3xl:top-56 lg:top-40 md:top-[150px] top-48 xxl:left-[45%] lg:left-[50%] left-[58%]'
@@ -42,7 +42,7 @@ const SectionTripCarServices = (props: Props) => {
                     <div className='flex md:justify-end w-full'>
                         <Image
                             alt="background"
-                            width={600}
+                            width={400}
                             height={400}
                             src="/sponsor/pvi.png"
                             className='3xl:w-[300px] 2xl:w-[240px] xxl:w-[240px] xl:w-[240px] lg:w-[200px] md:w-[160px] w-full h-auto object-contain'
@@ -52,7 +52,7 @@ const SectionTripCarServices = (props: Props) => {
                     <div className='flex md:justify-center w-full'>
                         <Image
                             alt="background"
-                            width={600}
+                            width={400}
                             height={400}
                             src="/sponsor/global_care.png"
                             className='3xl:w-[300px] 2xl:w-[240px] xxl:w-[240px] xl:w-[240px] lg:w-[200px] md:w-[160px] w-full h-auto object-contain'

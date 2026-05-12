@@ -123,8 +123,8 @@ const SectionPlaceProminent = (props: Props) => {
                                     <div className='flex md:flex-row flex-col items-center cursor-pointer 2xl:gap-4 gap-2 w-fit'>
                                         <div className='3xl:w-[90px] 3xl:max-w-[90px] 3xl:h-[90px] xl:w-[80px] xl:max-w-[80px] xl:h-[80px] lg:w-[70px] lg:max-w-[70px] lg:h-[70px] w-[60px] max-w-[60px] h-[60px]'>
                                             <Image
-                                                width={800}
-                                                height={800}
+                                                width={200}
+                                                height={200}
                                                 alt='image banner'
                                                 src={item.image}
                                                 className='3xl:w-[90px] 3xl:max-w-[90px] 3xl:h-[90px] xl:w-[80px] xl:max-w-[80px] xl:h-[80px] lg:w-[70px] lg:max-w-[70px] lg:h-[70px] w-[60px] max-w-[60px] h-[60px] object-cover rounded-full'

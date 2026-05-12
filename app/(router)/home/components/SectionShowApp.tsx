@@ -11,7 +11,7 @@ const SectionShowApp = (props: Props) => {
                     <Image
                         alt="app_kanow"
                         src="/background/app_kanow.png"
-                        width={1920}
+                        width={1000}
                         height={1080}
                         className='w-full h-auto object-contain'
                         priority
